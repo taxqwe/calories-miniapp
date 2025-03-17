@@ -271,7 +271,7 @@
         try {
             // Расширенное логирование для отладки
             logToPage("Подготовка к отправке данных:", "info");
-            logToPage("URL: https://calories-bot.duckdns.org:8443/bot/bmr", "info");
+            logToPage("URL: https://calories-bot.duckdns.org:8443/bot", "info");
             logToPage("Заголовки: " + JSON.stringify({ 
                 "Content-Type": "application/json",
                 "Host": "calories-bot.duckdns.org"
@@ -336,7 +336,7 @@
                 // Создаем форму
                 const form = document.createElement('form');
                 form.method = 'POST';
-                form.action = 'https://calories-bot.duckdns.org:8443/bot/bmr';
+                form.action = 'https://calories-bot.duckdns.org:8443/bot';
                 form.target = 'hidden_iframe';
                 form.style.display = 'none';
                 
@@ -388,7 +388,7 @@
             // Проверим доступность сервера через HEAD запрос
             logToPage("Проверка доступности сервера через HEAD...", "warning");
             try {
-                fetch("https://calories-bot.duckdns.org:8443/bot/bmr", {
+                fetch("https://calories-bot.duckdns.org:8443/bot", {
                     method: "HEAD",
                     headers: { 
                         "Host": "calories-bot.duckdns.org"
@@ -407,7 +407,7 @@
             // Проверим доступность по IP напрямую
             logToPage("Проверка доступности по IP...", "warning");
             try {
-                fetch("https://89.110.114.8:8443/bot/bmr", {
+                fetch("https://89.110.114.8:8443/bot", {
                     method: "HEAD",
                     headers: { 
                         "Host": "calories-bot.duckdns.org"
@@ -435,7 +435,7 @@
             resultDiv.innerHTML += `
                 <p class="error-status">Ошибка отправки данных: ${error.message}</p>
                 <div class="debug-info">
-                    <p>URL: https://calories-bot.duckdns.org:8443/bot/bmr</p>
+                    <p>URL: https://calories-bot.duckdns.org:8443/bot</p>
                     <p>Тип ошибки: ${error.name}</p>
                     <p>Стек вызовов: ${error.stack || "недоступен"}</p>
                 </div>
