@@ -2,6 +2,9 @@
     const tg = window.Telegram.WebApp;
     tg.expand();
     
+    // Для отладки - вывод initData в консоль
+    console.log("Telegram initData:", tg.initData);
+    
     // Включаем кнопку Telegram "Назад" (если доступно)
     if (tg.BackButton) {
         tg.BackButton.hide();
@@ -115,7 +118,7 @@
             resultDiv.innerHTML += `<p class="sending-status">Отправка данных...</p>`;
             
             // Попытка отправки данных
-            const response = await fetch("https://calories-bot.duckdns.org:8443/bot/mbr", {
+            const response = await fetch("https://calories-bot.duckdns.org:8443/bot/bmr", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
