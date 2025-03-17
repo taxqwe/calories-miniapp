@@ -5,6 +5,54 @@
     // Для отладки - вывод initData в консоль
     console.log("Telegram initData:", tg.initData);
     
+    // Создаем контейнер для логов
+    const createLogContainer = () => {
+        let logContainer = document.getElementById('debug-logs');
+        if (!logContainer) {
+            logContainer = document.createElement('div');
+            logContainer.id = 'debug-logs';
+            logContainer.style.cssText = 'margin-top: 20px; padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 5px; font-family: monospace; font-size: 12px; white-space: pre-wrap; overflow-x: auto; max-height: 300px; overflow-y: auto;';
+            document.body.appendChild(logContainer);
+        }
+        return logContainer;
+    };
+    
+    // Функция для логирования в страницу
+    const logToPage = (message, type = 'info') => {
+        const container = createLogContainer();
+        const logEntry = document.createElement('div');
+        logEntry.style.margin = '5px 0';
+        logEntry.style.borderLeft = type === 'error' ? '3px solid #dc3545' : 
+                                   type === 'warning' ? '3px solid #ffc107' : 
+                                   '3px solid #28a745';
+        logEntry.style.paddingLeft = '5px';
+        
+        // Преобразование объектов в строки
+        let displayMessage;
+        if (typeof message === 'object') {
+            try {
+                displayMessage = JSON.stringify(message, null, 2);
+            } catch (e) {
+                displayMessage = message.toString();
+            }
+        } else {
+            displayMessage = message;
+        }
+        
+        logEntry.textContent = new Date().toLocaleTimeString() + ': ' + displayMessage;
+        container.appendChild(logEntry);
+        container.scrollTop = container.scrollHeight; // Автопрокрутка вниз
+        
+        // Параллельно в консоль
+        if (type === 'error') {
+            console.error(message);
+        } else if (type === 'warning') {
+            console.warn(message);
+        } else {
+            console.log(message);
+        }
+    };
+    
     // Включаем кнопку Telegram "Назад" (если доступно)
     if (tg.BackButton) {
         tg.BackButton.hide();
@@ -199,6 +247,19 @@
         };
 
         try {
+            // Расширенное логирование для отладки
+            logToPage("Подготовка к отправке данных:", "info");
+            logToPage("URL: https://calories-bot.duckdns.org:8443/bot/bmr", "info");
+            logToPage("Заголовки: " + JSON.stringify({ 
+                "Content-Type": "application/json",
+                "Host": "calories-bot.duckdns.org"
+            }), "info");
+            logToPage("Данные payload: " + JSON.stringify(payload, null, 2), "info");
+            
+            // Проверка DNS резолвинга
+            logToPage("Проверка DNS...", "info");
+            const checkDnsStart = Date.now();
+            
             // Отображаем сообщение об отправке
             resultDiv.innerHTML += `<p class="sending-status">Отправка данных...</p>`;
             
@@ -211,6 +272,9 @@
                 },
                 body: JSON.stringify(payload)
             });
+            
+            logToPage("DNS резолвинг занял: " + (Date.now() - checkDnsStart) + " мс", "info");
+            logToPage("Ответ получен: " + response.status + " " + response.statusText, "info");
             
             // Обработка ответа
             if (response.ok) {
@@ -254,12 +318,66 @@
             }
         } catch (error) {
             console.error("Ошибка отправки данных:", error);
+            
+            // Расширенное логирование ошибки
+            logToPage("Ошибка отправки данных: " + error, "error");
+            logToPage("Тип ошибки: " + error.name, "error");
+            logToPage("Сообщение ошибки: " + error.message, "error");
+            logToPage("Стек вызовов: " + (error.stack || "недоступен"), "error");
+            
+            // Проверим доступность сервера через HEAD запрос
+            logToPage("Проверка доступности сервера через HEAD...", "warning");
+            try {
+                fetch("https://calories-bot.duckdns.org:8443/bot/bmr", {
+                    method: "HEAD",
+                    headers: { 
+                        "Host": "calories-bot.duckdns.org"
+                    },
+                })
+                .then(response => {
+                    logToPage("HEAD запрос успешен: " + response.status, "info");
+                })
+                .catch(headError => {
+                    logToPage("HEAD запрос не удался: " + headError, "error");
+                });
+            } catch (headAttemptError) {
+                logToPage("Не удалось выполнить HEAD запрос: " + headAttemptError, "error");
+            }
+            
+            // Проверим доступность по IP напрямую
+            logToPage("Проверка доступности по IP...", "warning");
+            try {
+                fetch("https://89.110.114.8:8443/bot/bmr", {
+                    method: "HEAD",
+                    headers: { 
+                        "Host": "calories-bot.duckdns.org"
+                    },
+                })
+                .then(response => {
+                    logToPage("HEAD запрос по IP успешен: " + response.status, "info");
+                })
+                .catch(ipHeadError => {
+                    logToPage("HEAD запрос по IP не удался: " + ipHeadError, "error");
+                });
+            } catch (ipAttemptError) {
+                logToPage("Не удалось выполнить HEAD запрос по IP: " + ipAttemptError, "error");
+            }
+            
+            // Проверка наличия сетевого соединения
+            logToPage("Проверка сетевого соединения: " + (navigator.onLine ? "онлайн" : "офлайн"), "info");
+            
+            // Попробуем CORS-проверку с известным публичным API
+            logToPage("Проверка CORS с публичным API...", "warning");
+            fetch("https://jsonplaceholder.typicode.com/todos/1")
+                .then(response => logToPage("Публичный API доступен: " + response.status, "info"))
+                .catch(corsError => logToPage("Публичный API недоступен: " + corsError, "error"));
+            
             resultDiv.innerHTML += `
                 <p class="error-status">Ошибка отправки данных: ${error.message}</p>
                 <div class="debug-info">
                     <p>URL: https://calories-bot.duckdns.org:8443/bot/bmr</p>
                     <p>Тип ошибки: ${error.name}</p>
-                    <p>Стек вызовов: ${error.stack}</p>
+                    <p>Стек вызовов: ${error.stack || "недоступен"}</p>
                 </div>
             `;
         }
