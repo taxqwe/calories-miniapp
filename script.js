@@ -2,28 +2,65 @@
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    // Функция для получения значения параметра из URL
     function getQueryParam(param) {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(param);
     }
 
-    // Получаем секрет из URL-параметра (например, ?secret=abc123)
     const secret = getQueryParam('secret') || '';
+
+    // Обновление описания активности в зависимости от выбранного значения
+    const activityRange = document.getElementById('activityRange');
+    const activityDescription = document.getElementById('activityDescription');
+
+    const activityTexts = {
+      1: {
+        level: "Сидячий образ жизни (минимальная активность)",
+        details: "Вы проводите большую часть дня в сидячем положении и практически не занимаетесь спортом."
+      },
+      2: {
+        level: "Легкая активность (1-3 тренировки в неделю)",
+        details: "Вы немного двигаетесь, ходите пешком или занимаетесь легкими упражнениями несколько раз в неделю."
+      },
+      3: {
+        level: "Умеренная активность (3-5 тренировок в неделю)",
+        details: "Вы тренируетесь несколько раз в неделю, поддерживая хорошую физическую форму."
+      },
+      4: {
+        level: "Высокая активность (6-7 тренировок в неделю)",
+        details: "Вы регулярно занимаетесь спортом, что требует хорошей физической подготовки."
+      },
+      5: {
+        level: "Очень высокая активность (интенсивные тренировки)",
+        details: "У вас интенсивный тренировочный режим, возможно, с несколькими тренировками в день, что требует высокой выносливости."
+      }
+    };
+
+    activityRange.addEventListener('input', function() {
+      const activity = activityTexts[this.value];
+      activityDescription.innerHTML = `
+        <div class="activity-level">${activity.level}</div>
+        <div class="activity-details">${activity.details}</div>
+      `;
+    });
+
+    // Инициализируем начальное описание
+    const initialActivity = activityTexts[activityRange.value];
+    activityDescription.innerHTML = `
+      <div class="activity-level">${initialActivity.level}</div>
+      <div class="activity-details">${initialActivity.details}</div>
+    `;
 
     document.getElementById('bmr-form').addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        // Получаем данные из формы
         const height = parseFloat(document.getElementById('height').value);
         const weight = parseFloat(document.getElementById('weight').value);
         const age = parseFloat(document.getElementById('age').value);
-        const gender = document.getElementById('gender').value;
-        const activityLevel = parseInt(document.getElementById('activity').value);
+        const genderRadio = document.querySelector('input[name="gender"]:checked');
+        const gender = genderRadio ? genderRadio.value : "";
+        const activityLevel = parseInt(activityRange.value);
 
-        // Расчёт BMR по формуле Mifflin-St Jeor:
-        // Для мужчин: BMR = 10 * вес + 6.25 * рост - 5 * возраст + 5
-        // Для женщин: BMR = 10 * вес + 6.25 * рост - 5 * возраст - 161
         let bmr;
         if (gender === 'м') {
             bmr = 10 * weight + 6.25 * height - 5 * age + 5;
@@ -31,68 +68,44 @@
             bmr = 10 * weight + 6.25 * height - 5 * age - 161;
         }
 
-        // Определяем множитель активности:
-        // 1: 1.2, 2: 1.375, 3: 1.55, 4: 1.725, 5: 1.9
         let multiplier;
         switch (activityLevel) {
-            case 1:
-                multiplier = 1.2;
-                break;
-            case 2:
-                multiplier = 1.375;
-                break;
-            case 3:
-                multiplier = 1.55;
-                break;
-            case 4:
-                multiplier = 1.725;
-                break;
-            case 5:
-                multiplier = 1.9;
-                break;
-            default:
-                multiplier = 1.0;
+            case 1: multiplier = 1.2; break;
+            case 2: multiplier = 1.375; break;
+            case 3: multiplier = 1.55; break;
+            case 4: multiplier = 1.725; break;
+            case 5: multiplier = 1.9; break;
+            default: multiplier = 1.0;
         }
 
-        // Расчёт TDEE (общее количество калорий с учетом активности)
         const tdee = bmr * multiplier;
-
-        // Вывод результата на страницу
         const resultDiv = document.getElementById('result');
         resultDiv.innerHTML = `
             <h3>Результат:</h3>
-            <p>BMR (базальный уровень метаболизма): <strong>${Math.round(bmr)}</strong> калорий/день</p>
-            <p>TDEE (с учётом активности): <strong>${Math.round(tdee)}</strong> калорий/день</p>
+            <p>BMR: <strong>${Math.round(bmr)}</strong> калорий/день</p>
+            <p>TDEE: <strong>${Math.round(tdee)}</strong> калорий/день</p>
         `;
 
-        // Формируем объект с данными для отправки на сервер
         const payload = {
-            // tg.initDataUnsafe не гарантирует безопасность — для проверки используйте tg.initData
             chat_id: tg.initDataUnsafe?.user?.id,
             secret: secret,
             data: {
-                height: height,
-                weight: weight,
-                age: age,
-                gender: gender,
-                activityLevel: activityLevel,
+                height, weight, age, gender, activityLevel,
                 bmr: Math.round(bmr),
                 tdee: Math.round(tdee)
             },
-            initData: tg.initData  // безопасные данные для проверки подписи на сервере
+            initData: tg.initData
         };
 
         try {
-            const response = await fetch("https://calories-bot.duckdns.org/bot/mbr", {
+            const response = await fetch("https://calories-bot.duckdns.org:8443/bot/mbr", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
             if (response.ok) {
-                // Если отправка успешна, закрываем мини-приложение
                 tg.close();
             } else {
-                // Если не удалось отправить данные – выводим сообщение
                 resultDiv.innerHTML += `<p style="color:red;">Ошибка отправки данных: ${response.statusText}</p>`;
             }
         } catch (error) {

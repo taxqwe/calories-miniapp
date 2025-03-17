@@ -1,48 +1,214 @@
+/* Общие стили */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: Arial, sans-serif;
   background-color: #f5f5f5;
-  padding: 20px;
-  margin: 0;
-}
-
-.container {
-  max-width: 500px;
-  margin: 0 auto;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-h2, h3 {
+  padding: 15px;
+  line-height: 1.5;
   color: #333;
 }
 
-label {
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+h2, h3 {
+  margin-bottom: 10px;
+}
+
+p {
+  margin-bottom: 15px;
+}
+
+form label {
   display: block;
-  margin-top: 10px;
+  margin: 10px 0 5px;
   font-weight: bold;
 }
 
-input, select, button {
+form input[type="number"] {
   width: 100%;
-  padding: 8px;
-  margin-top: 5px;
+  padding: 10px;
   margin-bottom: 10px;
-  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-button {
+/* Стили для range-элемента */
+form input[type="range"] {
+  width: 100%;
+  margin: 10px 0;
+  -webkit-appearance: none;
+  background: transparent;
+  padding: 0;
+}
+
+/* Отрисовка дорожки ползунка */
+form input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: #ddd;
+  border-radius: 3px;
+  width: 100%;
+}
+
+/* Отрисовка ползунка */
+form input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #0088cc;
+  border-radius: 50%;
+  margin-top: -7px;
+  cursor: pointer;
+}
+
+/* Стили для контейнера шкалы и засечек */
+.range-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 30px;
+  padding: 0;
+}
+
+.range-container input[type="range"] {
+  margin: 0 0 15px 0;
+  width: 100%;
+}
+
+.range-ticks {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0;
+  margin-top: 0;
+  position: relative;
+}
+
+.tick-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 20px;
+}
+
+.tick {
+  position: relative;
+  color: #666;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.tick-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 8px;
+  background-color: #888;
+}
+
+form input[type="range"]:focus {
+  outline: none;
+}
+
+/* Стили для радиокнопок гендера */
+.checkbox-group {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.checkbox-group input[type="radio"] {
+  margin-right: 8px;
+  accent-color: #0088cc;
+  width: 16px;
+  height: 16px;
+}
+
+/* Стили для описания активности */
+.activity-description {
+  margin-bottom: 20px;
+  color: #555;
+  line-height: 1.4;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  border-left: 3px solid #0088cc;
+}
+
+.activity-level {
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.activity-details {
+  font-size: 14px;
+}
+
+/* Кнопка */
+form button {
+  width: 100%;
+  padding: 12px;
   background-color: #0088cc;
   color: #fff;
   border: none;
-  cursor: pointer;
+  border-radius: 4px;
   font-size: 16px;
 }
 
-button:hover {
+form button:hover {
   background-color: #006da1;
 }
 
-#result {
-  margin-top: 20px;
+/* Адаптивные корректировки для мобильных */
+@media (max-height: 600px) {
+  .container {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  form input[type="number"],
+  form button {
+    padding: 8px;
+    font-size: 14px;
+  }
+  
+  /* Адаптивные стили для засечек на мобильных устройствах */
+  .tick {
+    font-size: 12px;
+    margin-top: 8px;
+  }
+  
+  .tick-container::before {
+    height: 6px;
+  }
+  
+  .range-container {
+    margin-bottom: 25px;
+  }
+  
+  .range-container input[type="range"] {
+    margin-bottom: 10px;
+  }
 }

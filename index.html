@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>BMR Калькулятор</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -14,40 +14,46 @@
       BMR (Basal Metabolic Rate) — это количество калорий, которое ваш организм сжигает в состоянии покоя за 24 часа. Это базовая потребность организма в энергии для поддержания жизнедеятельности.
     </p>
     <h3>Как рассчитать BMR?</h3>
-    <p>Для расчёта введите следующие данные:</p>
-    <ul>
-      <li>Ваш рост (в см)</li>
-      <li>Ваш вес (в кг)</li>
-      <li>Ваш возраст</li>
-      <li>Ваш пол (м/ж)</li>
-      <li>Уровень физической активности (1-5):</li>
-    </ul>
-    <p>Пример ввода: <code>175 70 30 м 3</code></p>
+    <p>Введите данные ниже:</p>
     <form id="bmr-form">
       <label for="height">Рост (см):</label>
-      <input type="number" id="height" required>
-      
+      <input type="number" id="height" inputmode="numeric" pattern="[0-9]*" required>
+
       <label for="weight">Вес (кг):</label>
-      <input type="number" id="weight" required>
-      
+      <input type="number" id="weight" inputmode="numeric" pattern="[0-9]*" required>
+
       <label for="age">Возраст:</label>
-      <input type="number" id="age" required>
-      
-      <label for="gender">Пол:</label>
-      <select id="gender" required>
-        <option value="м">Мужской</option>
-        <option value="ж">Женский</option>
-      </select>
-      
-      <label for="activity">Уровень физической активности (1-5):</label>
-      <select id="activity" required>
-        <option value="1">1 - Сидячий образ жизни</option>
-        <option value="2">2 - Легкая активность</option>
-        <option value="3">3 - Умеренная активность</option>
-        <option value="4">4 - Высокая активность</option>
-        <option value="5">5 - Очень высокая активность</option>
-      </select>
-      
+      <input type="number" id="age" inputmode="numeric" pattern="[0-9]*" required>
+
+      <p>Пол:</p>
+      <div class="checkbox-group gender-group">
+        <label>
+          <input type="radio" name="gender" value="м" class="gender-radio">
+          Мужской
+        </label>
+        <label>
+          <input type="radio" name="gender" value="ж" class="gender-radio">
+          Женский
+        </label>
+      </div>
+
+      <p>Уровень физической активности:</p>
+      <label for="activityRange">Выберите уровень на шкале:</label>
+      <div class="range-container">
+        <input type="range" id="activityRange" name="activity" min="1" max="5" step="1" value="3">
+        <div class="range-ticks">
+          <div class="tick-container"><span class="tick">1</span></div>
+          <div class="tick-container"><span class="tick">2</span></div>
+          <div class="tick-container"><span class="tick">3</span></div>
+          <div class="tick-container"><span class="tick">4</span></div>
+          <div class="tick-container"><span class="tick">5</span></div>
+        </div>
+      </div>
+      <div id="activityDescription" class="activity-description">
+        <div class="activity-level">Умеренная активность (3-5 тренировок в неделю)</div>
+        <div class="activity-details">Вы тренируетесь несколько раз в неделю, поддерживая хорошую физическую форму.</div>
+      </div>
+
       <button type="submit">Рассчитать</button>
     </form>
     <div id="result"></div>
