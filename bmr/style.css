@@ -283,3 +283,26 @@ form button:hover {
 #result p {
   margin-bottom: 10px;
 }
+
+/* Стили для адаптации при открытой клавиатуре */
+.keyboard-open {
+  padding-bottom: 50vh; /* Обеспечивает достаточное пространство для прокрутки */
+  transition: padding-bottom 0.3s ease;
+}
+
+@media (max-height: 500px) {
+  .keyboard-open {
+    padding-bottom: 70vh;
+  }
+}
+
+/* Стили для формы */
+.form-group {
+  margin-bottom: 15px;
+}
+
+/* Стили для подсказок в полях ввода */
+input::placeholder {
+  color: #aaa;
+  font-size: 14px;
+}

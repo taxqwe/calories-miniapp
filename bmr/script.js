@@ -15,6 +15,9 @@
         tg.MainButton.hide();
     }
 
+    // Настраиваем поля ввода для удобства использования на мобильных устройствах
+    setupInputFields();
+
     // Обновление описания активности в зависимости от выбранного значения
     const activityRange = document.getElementById('activityRange');
     const activityDescription = document.getElementById('activityDescription');
@@ -57,8 +60,83 @@
       <div class="activity-details">${initialActivity.details}</div>
     `;
 
+    // Функция для настройки полей ввода
+    function setupInputFields() {
+        // Получаем все поля ввода на форме
+        const inputFields = [
+            document.getElementById('height'),
+            document.getElementById('weight'),
+            document.getElementById('age')
+        ];
+
+        // Настраиваем поля для корректной работы с мобильной клавиатурой
+        inputFields.forEach((field, index) => {
+            // Проверяем, что атрибуты enterkeyhint уже установлены
+            if (!field.getAttribute('enterkeyhint')) {
+                field.setAttribute('enterkeyhint', index < inputFields.length - 1 ? 'next' : 'done');
+            }
+            
+            // Обработчик события нажатия Enter/Done
+            field.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    
+                    // Переход к следующему полю или закрытие клавиатуры
+                    if (index < inputFields.length - 1) {
+                        inputFields[index + 1].focus();
+                    } else {
+                        field.blur(); // Закрываем клавиатуру на последнем поле
+                    }
+                }
+            });
+        });
+
+        // Обработка проблемы скрытия содержимого клавиатурой
+        handleKeyboardVisibility();
+    }
+
+    // Функция для обработки видимости клавиатуры
+    function handleKeyboardVisibility() {
+        const form = document.getElementById('bmr-form');
+        const container = document.querySelector('.container');
+        
+        // Обработчики фокуса на полях ввода
+        const inputElements = form.querySelectorAll('input[type="number"]');
+        inputElements.forEach(input => {
+            input.addEventListener('focus', function() {
+                // Добавляем класс, указывающий что клавиатура открыта
+                container.classList.add('keyboard-open');
+                
+                // Прокручиваем к активному полю
+                setTimeout(() => {
+                    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            });
+            
+            input.addEventListener('blur', function() {
+                // Удаляем класс при закрытии клавиатуры
+                container.classList.remove('keyboard-open');
+            });
+        });
+
+        // Наблюдаем за изменением размера окна (когда клавиатура появляется/исчезает)
+        let windowHeight = window.innerHeight;
+        window.addEventListener('resize', function() {
+            // Если высота окна уменьшилась (клавиатура открылась)
+            if (window.innerHeight < windowHeight) {
+                container.classList.add('keyboard-open');
+            } else {
+                container.classList.remove('keyboard-open');
+            }
+            windowHeight = window.innerHeight;
+        });
+    }
+
     document.getElementById('bmr-form').addEventListener('submit', async function(e) {
         e.preventDefault();
+
+        // Скрываем клавиатуру при отправке формы
+        document.activeElement.blur();
 
         const height = parseFloat(document.getElementById('height').value);
         const weight = parseFloat(document.getElementById('weight').value);
@@ -97,6 +175,9 @@
             <p>BMR: <strong>${Math.round(bmr)}</strong> калорий/день</p>
             <p>TDEE: <strong>${Math.round(tdee)}</strong> калорий/день</p>
         `;
+
+        // Прокручиваем к результатам
+        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
         // Получаем данные из Telegram WebApp
         const userId = tg.initDataUnsafe?.user?.id || '';

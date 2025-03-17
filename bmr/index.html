@@ -16,14 +16,18 @@
     <h3>Как рассчитать BMR?</h3>
     <p>Введите данные ниже:</p>
     <form id="bmr-form">
-      <label for="height">Рост (см):</label>
-      <input type="number" id="height" inputmode="numeric" pattern="[0-9]*" required>
-
-      <label for="weight">Вес (кг):</label>
-      <input type="number" id="weight" inputmode="numeric" pattern="[0-9]*" required>
-
-      <label for="age">Возраст:</label>
-      <input type="number" id="age" inputmode="numeric" pattern="[0-9]*" required>
+      <div class="form-group">
+        <label for="height">Рост (см)</label>
+        <input type="number" id="height" name="height" placeholder="Например, 175" inputmode="numeric" enterkeyhint="next">
+      </div>
+      <div class="form-group">
+        <label for="weight">Вес (кг)</label>
+        <input type="number" id="weight" name="weight" placeholder="Например, 70" inputmode="numeric" enterkeyhint="next">
+      </div>
+      <div class="form-group">
+        <label for="age">Возраст (лет)</label>
+        <input type="number" id="age" name="age" placeholder="Например, 30" inputmode="numeric" enterkeyhint="done">
+      </div>
 
       <p>Пол:</p>
       <div class="checkbox-group gender-group">
