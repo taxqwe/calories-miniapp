@@ -205,7 +205,10 @@
             // Попытка отправки данных
             const response = await fetch("https://calories-bot.duckdns.org:8443/bot/bmr", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Host": "calories-bot.duckdns.org"
+                },
                 body: JSON.stringify(payload)
             });
             
