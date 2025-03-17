@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Другая страница</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+      color: #333;
+    }
+    .container {
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #0088cc;
+      margin-bottom: 20px;
+    }
+    .navigation {
+      margin-top: 30px;
+      padding-top: 15px;
+      border-top: 1px solid #ddd;
+    }
+    a {
+      color: #0088cc;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Другая страница (/other)</h1>
+    
+    <p>Эта страница доступна по адресу <strong>/other</strong> и используется для демонстрации того, как работает маршрутизация.</p>
+    
+    <h2>Как это работает:</h2>
+    <p>Структура сайта организована по директориям:</p>
+    <ul>
+      <li><strong>/</strong> - корневая директория с перенаправлением на /bmr</li>
+      <li><strong>/bmr</strong> - BMR калькулятор</li>
+      <li><strong>/other</strong> - текущая страница</li>
+    </ul>
+    
+    <p>Это позволяет организовать веб-приложение с несколькими разделами, где каждый раздел имеет свой собственный URL.</p>
+    
+    <div class="navigation">
+      <p><a href="/">Главная страница</a> (будет перенаправлена на /bmr)</p>
+      <p><a href="/bmr">BMR Калькулятор</a></p>
+    </div>
+  </div>
+</body>
+</html> 
