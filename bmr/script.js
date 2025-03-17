@@ -170,6 +170,10 @@
 
         const tdee = bmr * multiplier;
         const resultDiv = document.getElementById('result');
+        
+        // Показываем блок с результатами
+        resultDiv.classList.add('visible');
+        
         resultDiv.innerHTML = `
             <h3>Результат:</h3>
             <p>BMR: <strong>${Math.round(bmr)}</strong> калорий/день</p>
@@ -227,11 +231,34 @@
                     resultDiv.appendChild(closeButton);
                 }
             } else {
-                resultDiv.innerHTML += `<p class="error-status">Ошибка отправки данных: ${response.statusText}</p>`;
+                // Получаем тело ответа для дополнительных данных об ошибке
+                let errorText = response.statusText;
+                try {
+                    const errorBody = await response.text();
+                    errorText += ` | Детали: ${errorBody}`;
+                } catch (textError) {
+                    console.error("Не удалось получить детали ошибки:", textError);
+                }
+                
+                resultDiv.innerHTML += `
+                    <p class="error-status">Ошибка отправки данных: ${errorText}</p>
+                    <div class="debug-info">
+                        <p>URL: https://calories-bot.duckdns.org:8443/bot/bmr</p>
+                        <p>Статус: ${response.status}</p>
+                        <p>Заголовки ответа: ${JSON.stringify(Object.fromEntries(response.headers))}</p>
+                    </div>
+                `;
             }
         } catch (error) {
             console.error("Ошибка отправки данных:", error);
-            resultDiv.innerHTML += `<p class="error-status">Ошибка отправки данных: ${error.message}</p>`;
+            resultDiv.innerHTML += `
+                <p class="error-status">Ошибка отправки данных: ${error.message}</p>
+                <div class="debug-info">
+                    <p>URL: https://calories-bot.duckdns.org:8443/bot/bmr</p>
+                    <p>Тип ошибки: ${error.name}</p>
+                    <p>Стек вызовов: ${error.stack}</p>
+                </div>
+            `;
         }
     });
 })();

@@ -268,11 +268,16 @@ form button:hover {
 
 /* Стили для контейнера результатов */
 #result {
+  display: none; /* Скрываем блок результатов по умолчанию */
   margin-top: 20px;
   padding: 15px;
   background-color: #f8f9fa;
   border-radius: 6px;
   border: 1px solid #e9ecef;
+}
+
+#result.visible {
+  display: block; /* Показываем только когда добавлен класс visible */
 }
 
 #result h3 {
@@ -305,4 +310,24 @@ form button:hover {
 input::placeholder {
   color: #aaa;
   font-size: 14px;
+}
+
+/* Стили для отладочной информации */
+.debug-info {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.debug-info p {
+  margin-bottom: 5px;
+  line-height: 1.3;
 }
