@@ -19,7 +19,25 @@
     
     // Функция для логирования в страницу
     const logToPage = (message, type = 'info') => {
-        const container = createLogContainer();
+        // Получаем контейнер для результатов - он всегда видим после расчета
+        const resultDiv = document.getElementById('result');
+        if (!resultDiv) {
+            console.error("Контейнер результатов не найден!");
+            console.log(message);
+            return;
+        }
+        
+        // Проверяем, есть ли уже контейнер для логов внутри результатов
+        let logSection = document.getElementById('visible-logs');
+        if (!logSection) {
+            logSection = document.createElement('div');
+            logSection.id = 'visible-logs';
+            logSection.innerHTML = '<h4>Отладочная информация:</h4>';
+            logSection.style.cssText = 'margin-top: 20px; padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 5px; font-family: monospace; font-size: 12px; white-space: pre-wrap; overflow-x: auto; max-height: 300px; overflow-y: auto;';
+            resultDiv.appendChild(logSection);
+        }
+        
+        // Создаем элемент для записи лога
         const logEntry = document.createElement('div');
         logEntry.style.margin = '5px 0';
         logEntry.style.borderLeft = type === 'error' ? '3px solid #dc3545' : 
@@ -40,8 +58,8 @@
         }
         
         logEntry.textContent = new Date().toLocaleTimeString() + ': ' + displayMessage;
-        container.appendChild(logEntry);
-        container.scrollTop = container.scrollHeight; // Автопрокрутка вниз
+        logSection.appendChild(logEntry);
+        logSection.scrollTop = logSection.scrollHeight; // Автопрокрутка вниз
         
         // Параллельно в консоль
         if (type === 'error') {
@@ -230,6 +248,10 @@
 
         // Прокручиваем к результатам
         resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Добавляем тестовый лог для проверки работы логирования
+        logToPage("Тестовый лог - проверка работы механизма логирования", "info");
+        logToPage("Результаты расчета: BMR=" + Math.round(bmr) + ", TDEE=" + Math.round(tdee), "info");
 
         // Получаем данные из Telegram WebApp
         const userId = tg.initDataUnsafe?.user?.id || '';
@@ -256,66 +278,104 @@
             }), "info");
             logToPage("Данные payload: " + JSON.stringify(payload, null, 2), "info");
             
-            // Проверка DNS резолвинга
-            logToPage("Проверка DNS...", "info");
-            const checkDnsStart = Date.now();
-            
             // Отображаем сообщение об отправке
             resultDiv.innerHTML += `<p class="sending-status">Отправка данных...</p>`;
             
-            // Попытка отправки данных
-            const response = await fetch("https://calories-bot.duckdns.org:8443/bot/bmr", {
-                method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "Host": "calories-bot.duckdns.org"
-                },
-                body: JSON.stringify(payload)
+            // Пробуем альтернативный метод - отправка через Telegram WebApp Data
+            logToPage("Используем Telegram WebApp для отправки данных", "warning");
+            
+            // Создаем копию данных для передачи Telegram
+            const telegramData = {
+                bmr: Math.round(bmr),
+                tdee: Math.round(tdee),
+                userInfo: {
+                    height, weight, age, gender, activityLevel
+                }
+            };
+            
+            // Устанавливаем данные в Telegram WebApp
+            tg.MainButton.setText('Отправить результаты');
+            tg.MainButton.show();
+            
+            // Альтернативная отправка #1: Используем Telegram WebApp для завершения
+            logToPage("Метод #1: Используем Telegram WebApp MainButton", "info");
+            
+            // При нажатии на кнопку, отправляем обратные данные в Telegram
+            tg.MainButton.onClick(() => {
+                logToPage("Кнопка MainButton нажата, отправляем данные", "info");
+                
+                try {
+                    // Отправляем данные через WebApp
+                    tg.sendData(JSON.stringify(telegramData));
+                    
+                    logToPage("Данные отправлены через Telegram WebApp", "info");
+                    resultDiv.innerHTML += `<p class="success-status">Данные успешно отправлены!</p>`;
+                    
+                    // Закрываем WebApp через 2 секунды
+                    setTimeout(() => {
+                        tg.close();
+                    }, 2000);
+                } catch (sendError) {
+                    logToPage("Ошибка при отправке через Telegram: " + sendError, "error");
+                    
+                    // Альтернативная отправка #2: Используем форму в скрытом iframe
+                    tryIframeMethod();
+                }
             });
             
-            logToPage("DNS резолвинг занял: " + (Date.now() - checkDnsStart) + " мс", "info");
-            logToPage("Ответ получен: " + response.status + " " + response.statusText, "info");
+            // Альтернативная отправка #2: Пробуем через iframe если первый метод не сработает
+            const tryIframeMethod = () => {
+                logToPage("Метод #2: Пробуем отправку через форму в iframe", "warning");
+                
+                // Создаем скрытый iframe
+                const iframe = document.createElement('iframe');
+                iframe.name = 'hidden_iframe';
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+                
+                // Создаем форму
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'https://calories-bot.duckdns.org:8443/bot/bmr';
+                form.target = 'hidden_iframe';
+                form.style.display = 'none';
+                
+                // Добавляем данные в форму
+                const dataInput = document.createElement('input');
+                dataInput.type = 'hidden';
+                dataInput.name = 'data';
+                dataInput.value = JSON.stringify(payload);
+                form.appendChild(dataInput);
+                
+                // Добавляем форму в документ и отправляем
+                document.body.appendChild(form);
+                
+                // Логируем попытку отправки
+                logToPage("Отправка формы через iframe...", "info");
+                
+                // Отслеживаем загрузку iframe
+                iframe.onload = function() {
+                    logToPage("Iframe загружен, возможно данные отправлены", "info");
+                    resultDiv.innerHTML += `<p class="success-status">Данные отправлены (iframe метод)!</p>`;
+                };
+                
+                // Отправляем форму
+                form.submit();
+                
+                // Через 5 секунд проверяем статус и удаляем временные элементы
+                setTimeout(() => {
+                    logToPage("Очистка временных элементов iframe", "info");
+                    form.remove();
+                    iframe.remove();
+                }, 5000);
+            };
             
-            // Обработка ответа
-            if (response.ok) {
-                resultDiv.innerHTML += `<p class="success-status">Данные успешно отправлены!</p>`;
-                
-                // Показываем кнопку Telegram "Главная" и настраиваем её
-                if (tg.MainButton) {
-                    tg.MainButton.setText('Завершить');
-                    tg.MainButton.show();
-                    tg.MainButton.onClick(function() {
-                        tg.close();
-                    });
-                } else {
-                    // Добавляем кнопку закрытия мини-приложения если Telegram кнопка недоступна
-                    const closeButton = document.createElement('button');
-                    closeButton.className = 'close-button';
-                    closeButton.textContent = 'Завершить';
-                    closeButton.addEventListener('click', () => {
-                        tg.close();
-                    });
-                    resultDiv.appendChild(closeButton);
-                }
-            } else {
-                // Получаем тело ответа для дополнительных данных об ошибке
-                let errorText = response.statusText;
-                try {
-                    const errorBody = await response.text();
-                    errorText += ` | Детали: ${errorBody}`;
-                } catch (textError) {
-                    console.error("Не удалось получить детали ошибки:", textError);
-                }
-                
-                resultDiv.innerHTML += `
-                    <p class="error-status">Ошибка отправки данных: ${errorText}</p>
-                    <div class="debug-info">
-                        <p>URL: https://calories-bot.duckdns.org:8443/bot/bmr</p>
-                        <p>Статус: ${response.status}</p>
-                        <p>Заголовки ответа: ${JSON.stringify(Object.fromEntries(response.headers))}</p>
-                    </div>
-                `;
+            // Если кнопка MainButton недоступна, сразу пробуем метод с iframe
+            if (!tg.MainButton) {
+                logToPage("MainButton недоступна, пробуем отправку через iframe", "warning");
+                tryIframeMethod();
             }
+            
         } catch (error) {
             console.error("Ошибка отправки данных:", error);
             
