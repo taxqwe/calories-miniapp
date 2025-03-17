@@ -67,7 +67,7 @@
 
         // Формируем объект с данными для отправки на сервер
         const payload = {
-            // Обратите внимание, что tg.initDataUnsafe не гарантирует безопасность — для проверки используйте tg.initData
+            // tg.initDataUnsafe не гарантирует безопасность — для проверки используйте tg.initData
             chat_id: tg.initDataUnsafe?.user?.id,
             secret: secret,
             data: {
@@ -88,14 +88,16 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
-            if (!response.ok) {
-                console.error("Ошибка отправки данных", response.statusText);
+            if (response.ok) {
+                // Если отправка успешна, закрываем мини-приложение
+                tg.close();
+            } else {
+                // Если не удалось отправить данные – выводим сообщение
+                resultDiv.innerHTML += `<p style="color:red;">Ошибка отправки данных: ${response.statusText}</p>`;
             }
         } catch (error) {
             console.error("Ошибка отправки данных:", error);
+            resultDiv.innerHTML += `<p style="color:red;">Ошибка отправки данных: ${error.message}</p>`;
         }
-
-        // Закрываем мини-приложение
-        tg.close();
     });
 })();
