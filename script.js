@@ -83,7 +83,7 @@
         };
 
         try {
-            const response = await fetch("https://89.110.114.8/bot/mbr", {
+            const response = await fetch("https://calories-bot.duckdns.org/bot/mbr", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
