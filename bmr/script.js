@@ -1,10 +1,4 @@
 (function() {
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-    
-    // Для отладки - вывод initData в консоль
-    console.log("Telegram initData:", tg.initData);
-    
     // Создаем контейнер для логов
     const createLogContainer = () => {
         let logContainer = document.getElementById('debug-logs');
@@ -70,11 +64,6 @@
             console.log(message);
         }
     };
-    
-    // Включаем кнопку Telegram "Назад" (если доступно)
-    if (tg.BackButton) {
-        tg.BackButton.hide();
-    }
     
     // Настраиваем поля ввода для удобства использования на мобильных устройствах
     setupInputFields();
@@ -247,20 +236,14 @@
         // Добавляем тестовый лог для проверки работы логирования
         logToPage("Тестовый лог - проверка работы механизма логирования", "info");
         logToPage("Результаты расчета: BMR=" + Math.round(bmr) + ", TDEE=" + Math.round(tdee), "info");
-
-        // Получаем данные из Telegram WebApp
-        const userId = tg.initDataUnsafe?.user?.id || '';
         
         // Подготовка данных для отправки
         const payload = {
-            chat_id: userId,
             data: {
                 height, weight, age, gender, activityLevel,
                 bmr: Math.round(bmr),
                 tdee: Math.round(tdee)
-            },
-            // Передаем initData без изменений - сервер сам проверит его подлинность
-            initData: tg.initData
+            }
         };
 
         try {
