@@ -1,0 +1,304 @@
+.container {
+  max-width: 100%;
+  padding: 20px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.calendar {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  background: #f8f9fa;
+}
+
+.calendar-header button {
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 5px 10px;
+  color: #333;
+}
+
+.calendar-header button:hover {
+  background: #e9ecef;
+  border-radius: 4px;
+}
+
+.current-month {
+  font-size: 1.2em;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #f8f9fa;
+  padding: 10px 0;
+  border-bottom: 1px solid #dee2e6;
+  font-weight: 500;
+}
+
+.weekday {
+  text-align: center;
+  color: #495057;
+  font-size: 0.9em;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: #dee2e6;
+  padding: 1px;
+}
+
+.day {
+  aspect-ratio: 1;
+  background: white;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: relative;
+  min-height: 40px;
+}
+
+.day:hover {
+  background: #f8f9fa;
+}
+
+.day.selected {
+  background: #e7f5ff;
+  font-weight: bold;
+}
+
+.day.empty {
+  background: #f8f9fa;
+  cursor: default;
+}
+
+.day.has-data {
+  background: #e7f5ff;
+}
+
+.day span {
+  font-size: 1em;
+  margin-bottom: 2px;
+}
+
+.day small {
+  font-size: 0.7em;
+  color: #666;
+  text-align: center;
+  word-break: break-word;
+}
+
+.edit-section {
+  margin-top: 20px;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: none;
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  box-sizing: border-box;
+}
+
+.edit-section input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .calendar {
+    box-shadow: none;
+  }
+
+  .current-month {
+    font-size: 1.1em;
+  }
+
+  .weekday {
+    font-size: 0.8em;
+  }
+
+  .day {
+    min-height: 35px;
+    padding: 2px;
+  }
+
+  .day span {
+    font-size: 0.9em;
+  }
+
+  .day small {
+    font-size: 0.65em;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 5px;
+  }
+
+  .calendar-header {
+    padding: 10px;
+  }
+
+  .current-month {
+    font-size: 1em;
+  }
+
+  .weekday {
+    font-size: 0.7em;
+  }
+
+  .day {
+    min-height: 30px;
+    padding: 1px;
+  }
+
+  .day span {
+    font-size: 0.8em;
+  }
+
+  .day small {
+    font-size: 0.6em;
+  }
+
+  .edit-section {
+    padding: 10px;
+  }
+}
+
+/* Поддержка темной темы */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #1a1a1a;
+    color: #ffffff;
+  }
+
+  .calendar {
+    background: #2d2d2d;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .calendar-header {
+    background: #333333;
+  }
+
+  .calendar-header button {
+    color: #ffffff;
+  }
+
+  .calendar-header button:hover {
+    background: #404040;
+  }
+
+  .weekdays {
+    background: #333333;
+    border-bottom-color: #404040;
+  }
+
+  .weekday {
+    color: #cccccc;
+  }
+
+  .day {
+    background: #2d2d2d;
+  }
+
+  .day:hover {
+    background: #404040;
+  }
+
+  .day.selected {
+    background: #1a4a6e;
+  }
+
+  .day.empty {
+    background: #333333;
+  }
+
+  .day.has-data {
+    background: #1a4a6e;
+  }
+
+  .day small {
+    color: #cccccc;
+  }
+
+  .edit-section {
+    background: #2d2d2d;
+  }
+
+  .edit-section input {
+    background: #333333;
+    border-color: #404040;
+    color: #ffffff;
+  }
+
+  .loading {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .spinner {
+    border-color: #333333;
+    border-top-color: #3498db;
+  }
+} 
