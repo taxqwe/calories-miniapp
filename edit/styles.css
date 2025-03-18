@@ -284,3 +284,7 @@ h1 {
     font-size: 16px;
   }
 } 
+
+.container.keyboard-open {
+  padding-bottom: 300px; /* или любой другой нужный отступ */
+}
