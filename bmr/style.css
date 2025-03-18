@@ -30,9 +30,11 @@ p {
   margin-bottom: 15px;
 }
 
-/* Уменьшаем отступ для параграфа "Пол:" */
-form p:nth-of-type(1) {
-  margin-bottom: 5px;
+/* Стиль для заголовков полей вне form-group */
+.field-label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: bold;
 }
 
 form label {

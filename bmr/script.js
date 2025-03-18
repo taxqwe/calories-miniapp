@@ -133,7 +133,7 @@
         document.getElementById('age').placeholder = t.agePlaceholder;
         
         // Обновляем текст для выбора пола, не затрагивая input
-        document.querySelector('.gender-group').previousElementSibling.textContent = t.gender;
+        document.querySelector('.field-label').textContent = t.gender;
         const genderLabels = document.querySelectorAll('.gender-group label');
         if (genderLabels.length >= 2) {
             // Обновляем текст внутри span, а не nextSibling
