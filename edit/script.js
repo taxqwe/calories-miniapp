@@ -234,8 +234,8 @@
   function updateCalendarSize() {
     const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     
-    // Вычисляем размер ячеек для полной ширины
-    const containerWidth = vw - 20; // с небольшими отступами по краям
+    // Вычисляем размер ячеек для полной ширины с минимальными отступами
+    const containerWidth = vw - 4; // 2px отступ с каждой стороны
     const daySize = Math.floor((containerWidth - 14) / 7); // учитываем минимальные отступы
     
     // Адаптивный размер шрифта
@@ -271,6 +271,14 @@
     // Установка курсора в конец поля ввода при фокусе
     document.getElementById('caloriesInput').addEventListener('focus', function() {
       this.setSelectionRange(this.value.length, this.value.length);
+      
+      // Добавляем отступ снизу для скролла
+      document.querySelector('.container').style.paddingBottom = '350px';
+    });
+    
+    // При потере фокуса убираем отступ
+    document.getElementById('caloriesInput').addEventListener('blur', function() {
+      document.querySelector('.container').style.paddingBottom = '';
     });
     
     // Добавляем обработчики для кнопок быстрого изменения

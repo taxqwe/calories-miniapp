@@ -42,9 +42,10 @@ h1 {
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  padding: 10px;
+  padding: 2px;
   background-color: var(--dark-bg);
   overflow-x: hidden;
+  transition: padding-bottom 0.3s ease;
 }
 
 .calendar {
