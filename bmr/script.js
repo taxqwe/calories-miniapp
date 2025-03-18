@@ -136,14 +136,14 @@
         document.querySelector('.gender-group').previousElementSibling.textContent = t.gender;
         const genderLabels = document.querySelectorAll('.gender-group label');
         if (genderLabels.length >= 2) {
-            // Обновляем текст сразу после input, чтобы гарантированно не затронуть сам input
-            const maleInput = genderLabels[0].querySelector('input');
-            if (maleInput && maleInput.nextSibling) {
-                maleInput.nextSibling.textContent = " " + t.male;
+            // Обновляем текст внутри span, а не nextSibling
+            const maleSpan = genderLabels[0].querySelector('span');
+            if (maleSpan) {
+                maleSpan.textContent = t.male;
             }
-            const femaleInput = genderLabels[1].querySelector('input');
-            if (femaleInput && femaleInput.nextSibling) {
-                femaleInput.nextSibling.textContent = " " + t.female;
+            const femaleSpan = genderLabels[1].querySelector('span');
+            if (femaleSpan) {
+                femaleSpan.textContent = t.female;
             }
         }
         
@@ -218,6 +218,7 @@
         // Создаем элемент для записи лога
         const logEntry = document.createElement('div');
         logEntry.style.margin = '5px 0';
+        
         logEntry.style.borderLeft = type === 'error' ? '3px solid #dc3545' : 
                                    type === 'warning' ? '3px solid #ffc107' : 
                                    '3px solid #28a745';
