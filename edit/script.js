@@ -122,7 +122,7 @@
         };
         console.log('Отправляем запрос на обновление:', JSON.stringify(requestBody));
         
-        const response = await fetch('https://calories-bot.duckdns.org:8443/api/calories', {
+        const response = await fetch('https://calories-bot.duckdns.org:8443/api/edit', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
