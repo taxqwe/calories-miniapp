@@ -8,12 +8,41 @@
     let chatId = undefined;
     if (window.Telegram && window.Telegram.WebApp) {
         const webApp = window.Telegram.WebApp;
-        if (webApp.initDataUnsafe && webApp.initDataUnsafe.user && typeof webApp.initDataUnsafe.user.id !== 'undefined') {
-            chatId = webApp.initDataUnsafe.user.id;
+        if (isDebugMode) {
+            console.log('WebApp данные:', {
+                initDataUnsafe: webApp.initDataUnsafe,
+                user: webApp.initDataUnsafe?.user,
+                initData: webApp.initData
+            });
+        }
+        
+        // Пробуем получить chatId из initData
+        try {
+            const initData = webApp.initData ? JSON.parse(webApp.initData) : null;
+            if (initData && initData.user && typeof initData.user.id === 'number' && initData.user.id > 0) {
+                chatId = initData.user.id;
+                if (isDebugMode) {
+                    console.log('Получен chatId из initData:', chatId);
+                }
+            }
+        } catch (e) {
             if (isDebugMode) {
-                console.log('Получен chatId:', chatId);
+                console.warn('Ошибка при парсинге initData:', e);
             }
         }
+        
+        // Если не получилось из initData, пробуем из initDataUnsafe
+        if (!chatId && webApp.initDataUnsafe && webApp.initDataUnsafe.user && 
+            typeof webApp.initDataUnsafe.user.id === 'number' && webApp.initDataUnsafe.user.id > 0) {
+            chatId = webApp.initDataUnsafe.user.id;
+            if (isDebugMode) {
+                console.log('Получен chatId из initDataUnsafe:', chatId);
+            }
+        }
+    }
+
+    if (isDebugMode) {
+        console.log('Итоговый chatId:', chatId);
     }
     
     // Объекты с переводами
@@ -40,7 +69,7 @@
                     details: "Вы проводите большую часть дня в сидячем положении и практически не занимаетесь спортом."
                 },
                 2: {
-                    level: "Легкая активность (1-3 тренировки в неделю)",
+                    level: "Легкая активность (1-3 тренировок в неделю)",
                     details: "Вы немного двигаетесь, ходите пешком или занимаетесь легкими упражнениями несколько раз в неделю."
                 },
                 3: {
@@ -506,12 +535,14 @@
             }
         };
 
-        // Добавляем chatId если он доступен
-        if (typeof chatId !== 'undefined') {
+        // Добавляем chatId только если он положительное число
+        if (typeof chatId === 'number' && chatId > 0) {
             payload.data.chatId = chatId;
             if (isDebugMode) {
                 console.log('Добавлен chatId в payload:', chatId);
             }
+        } else if (isDebugMode) {
+            console.warn('chatId не добавлен в payload:', chatId);
         }
 
         try {
