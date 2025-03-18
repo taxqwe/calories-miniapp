@@ -285,29 +285,31 @@
       // Установка курсора в конец поля ввода
       this.setSelectionRange(this.value.length, this.value.length);
       
-      // Отмечаем состояние клавиатуры для стилей, но без больших отступов
+      // Добавляем класс к документу, CSS будет добавлять отступ
       document.body.classList.add('keyboard-active');
       
-      // Задержка для появления клавиатуры
+      // Получаем окончательную высоту контейнера, чтобы оставить место под клавиатурой
       setTimeout(() => {
-        // Получаем размеры экрана и позицию элемента
-        const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-        const inputRect = this.getBoundingClientRect();
+        const containerRect = document.querySelector('.container').getBoundingClientRect();
+        const keyboardHeight = window.innerHeight - (window.visualViewport?.height || window.innerHeight);
         
-        // Если элемент оказался под клавиатурой
-        if (inputRect.top > viewportHeight - 80) {
-          // Скроллим только на нужное расстояние, чтобы поле было видно
-          const scrollAmount = inputRect.top - (viewportHeight - 150);
-          window.scrollBy({
-            top: scrollAmount,
-            behavior: 'smooth'
-          });
+        // Если клавиатура занимает значительную часть экрана
+        if (keyboardHeight > 100) {
+          // Добавляем padding-bottom к контейнеру, чтобы создать пространство для скролла
+          document.querySelector('.container').style.paddingBottom = (keyboardHeight + 150) + 'px';
+          
+          // Скроллим к полю ввода, чтобы оно было видно
+          setTimeout(() => {
+            this.scrollIntoView({behavior: 'smooth', block: 'center'});
+          }, 100);
         }
       }, 300);
     });
     
     // При потере фокуса
     document.getElementById('caloriesInput').addEventListener('blur', function() {
+      // Убираем отступ внизу контейнера
+      document.querySelector('.container').style.paddingBottom = '';
       // Убираем маркер состояния клавиатуры
       document.body.classList.remove('keyboard-active');
     });
@@ -343,21 +345,32 @@
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     
     if (isIOS) {
-      // Обработчик скролла для iOS
-      document.addEventListener('scroll', function() {
-        if (document.activeElement === caloriesInput) {
-          // Если поле ввода в фокусе, не позволяем прокрутке опускать страницу
-          const formRect = editSection.getBoundingClientRect();
-          
-          // Если секция редактирования уходит вверх за пределы экрана
-          if (formRect.top < 50) {
-            window.scrollTo(0, window.scrollY - 10);
-          }
-        }
-      }, { passive: true });
-      
+      console.log('Обнаружено устройство iOS');
       // Добавляем стиль для body
       document.body.classList.add('ios-device');
+      
+      // Отслеживаем изменения в размере viewPort (обычно из-за клавиатуры)
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', function() {
+          console.log('Изменение viewPort:', {
+            height: window.visualViewport.height,
+            innerHeight: window.innerHeight,
+            difference: window.innerHeight - window.visualViewport.height
+          });
+          
+          // Если высота изменилась значительно, значит открылась/закрылась клавиатура
+          const keyboardHeight = window.innerHeight - window.visualViewport.height;
+          if (keyboardHeight > 100) {
+            // Клавиатура открыта
+            document.body.classList.add('keyboard-active');
+            document.querySelector('.container').style.paddingBottom = (keyboardHeight + 150) + 'px';
+          } else {
+            // Клавиатура закрыта
+            document.body.classList.remove('keyboard-active');
+            document.querySelector('.container').style.paddingBottom = '';
+          }
+        });
+      }
     }
   }
 

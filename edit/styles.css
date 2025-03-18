@@ -48,6 +48,7 @@ h1 {
   padding: 10px;
   background-color: var(--dark-bg);
   overflow-x: hidden;
+  transition: padding-bottom 0.3s;
 }
 
 .calendar {
@@ -287,18 +288,13 @@ h1 {
   }
 }
 
-/* Стили для iOS */
-.ios-device {
-  /* Запрещаем масштабирование страницы */
-  touch-action: manipulation;
-  /* Устанавливаем мягкий скролл */
-  -webkit-overflow-scrolling: touch;
-}
-
 /* Класс когда клавиатура активна */
 .keyboard-active .edit-section {
-  /* Небольшое выделение для секции редактирования */
-  border-left: 3px solid var(--accent-color);
+  /* Выделение для секции редактирования */
+  border-left: 4px solid var(--accent-color);
+  background-color: var(--border-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s, box-shadow 0.3s, border-left 0.3s;
 }
 
 /* Оптимизация для iOS */
@@ -321,4 +317,12 @@ h1 {
     position: static;
     -webkit-backface-visibility: hidden;
   }
+}
+
+/* Стили для iOS */
+.ios-device {
+  /* Запрещаем масштабирование страницы */
+  touch-action: manipulation;
+  /* Устанавливаем мягкий скролл */
+  -webkit-overflow-scrolling: touch;
 } 
