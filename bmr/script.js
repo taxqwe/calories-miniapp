@@ -5,11 +5,14 @@
     const lang = urlParams.get('lang') || 'ru'; // По умолчанию русский
     
     // Получаем chatId из Telegram WebApp если он доступен
-    let chatId = null;
+    let chatId = undefined;
     if (window.Telegram && window.Telegram.WebApp) {
         const webApp = window.Telegram.WebApp;
-        if (webApp.initDataUnsafe && webApp.initDataUnsafe.user) {
+        if (webApp.initDataUnsafe && webApp.initDataUnsafe.user && typeof webApp.initDataUnsafe.user.id !== 'undefined') {
             chatId = webApp.initDataUnsafe.user.id;
+            if (isDebugMode) {
+                console.log('Получен chatId:', chatId);
+            }
         }
     }
     
@@ -504,8 +507,11 @@
         };
 
         // Добавляем chatId если он доступен
-        if (chatId) {
+        if (typeof chatId !== 'undefined') {
             payload.chatId = chatId;
+            if (isDebugMode) {
+                console.log('Добавлен chatId в payload:', chatId);
+            }
         }
 
         try {
