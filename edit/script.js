@@ -89,6 +89,7 @@
           'Content-Type': 'application/json',
           'X-Source-App': 'Calories-Editor'
         },
+        mode: 'cors',
         body: JSON.stringify(requestBody)
       });
 
@@ -132,6 +133,7 @@
           'Content-Type': 'application/json',
           'X-Source-App': 'Calories-Editor'
         },
+        mode: 'cors',
         body: JSON.stringify(requestBody)
       });
 
