@@ -275,6 +275,18 @@
       }
     });
     
+    // Обработка фокуса для iOS - скроллим страницу вверх при фокусе
+    document.getElementById('caloriesInput').addEventListener('focus', function() {
+      // Небольшая задержка, чтобы дать клавиатуре время появиться
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        // Второй скролл для iOS с задержкой
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+        }, 100);
+      }, 50);
+    });
+    
     // Добавляем обработчики для кнопок быстрого изменения
     document.querySelectorAll('.quick-button').forEach(button => {
       button.addEventListener('click', function() {
