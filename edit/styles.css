@@ -330,7 +330,9 @@ h1 {
 }
 
 .ios-device.keyboard-visible {
-  height: calc(100% + 350px);
+  /* Увеличиваем высоту документа, чтобы был запас для скролла */
+  min-height: calc(100% + 400px);
+  padding-bottom: 400px;
 }
 
 .ios-device .edit-section {
@@ -340,7 +342,30 @@ h1 {
 }
 
 .ios-device .edit-section.keyboard-visible {
-  margin-bottom: 350px;
+  /* Добавляем отступ под формой при открытой клавиатуре */
+  margin-bottom: 300px;
+  /* Позиционируем форму относительно, чтобы она была выше других элементов */
+  position: relative;
+  z-index: 150;
+}
+
+/* Стили для клавиатуры на iOS */
+@supports (-webkit-touch-callout: none) {
+  #caloriesInput:focus {
+    position: static !important;
+    /* Отключаем sticky позиционирование, оно мешает скроллу */
+  }
+  
+  /* Отключаем анимацию скролла для iOS */
+  .keyboard-visible .days {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Добавляем отступ снизу для контейнера */
+  .container.keyboard-visible {
+    padding-bottom: 400px;
+  }
 }
 
 .ios-device .quick-buttons.keyboard-visible {

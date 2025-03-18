@@ -286,6 +286,12 @@
       editSection.classList.add('keyboard-visible');
       document.body.classList.add('keyboard-visible');
       
+      // Добавляем класс контейнеру
+      document.querySelector('.container').classList.add('keyboard-visible');
+      
+      // Установка курсора в конец поля ввода
+      this.setSelectionRange(this.value.length, this.value.length);
+      
       // Также добавляем класс для кнопок
       const quickButtons = document.querySelector('.quick-buttons');
       if (quickButtons) {
@@ -294,23 +300,22 @@
       
       // Задержка для появления клавиатуры
       setTimeout(() => {
-        // Получаем позицию поля ввода
-        const inputRect = this.getBoundingClientRect();
-        // Высота видимой части экрана
-        const visibleHeight = window.innerHeight;
-        // Позиция поля ввода относительно низа экрана
-        const inputFromBottom = visibleHeight - inputRect.bottom;
+        // Скроллим до секции редактирования
+        editSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
         
-        // Если поле ввода близко к нижней части экрана или уже под ней
-        if (inputFromBottom < 200) {
-          // Скроллим так, чтобы поле ввода было видно с отступом 80px от верха
-          const scrollPosition = window.scrollY + inputRect.top - 80;
-          window.scrollTo({
-            top: scrollPosition,
-            behavior: 'auto'
-          });
-        }
-      }, 300);
+        // Дополнительный скролл с задержкой для iOS
+        setTimeout(() => {
+          // Проверяем, видно ли поле ввода
+          const inputRect = this.getBoundingClientRect();
+          const windowHeight = window.innerHeight;
+          
+          // Если поле не видно (за пределами экрана)
+          if (inputRect.bottom > windowHeight || inputRect.top < 0) {
+            // Скроллим к полю ввода
+            this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 300);
+      }, 100);
     });
     
     // При потере фокуса восстанавливаем стандартные отступы
@@ -318,6 +323,9 @@
       // Удаляем класс состояния клавиатуры
       editSection.classList.remove('keyboard-visible');
       document.body.classList.remove('keyboard-visible');
+      
+      // Удаляем класс у контейнера
+      document.querySelector('.container').classList.remove('keyboard-visible');
       
       // Также удаляем класс для кнопок
       const quickButtons = document.querySelector('.quick-buttons');
