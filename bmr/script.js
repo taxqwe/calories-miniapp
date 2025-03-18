@@ -136,9 +136,15 @@
         document.querySelector('.gender-group').previousElementSibling.textContent = t.gender;
         const genderLabels = document.querySelectorAll('.gender-group label');
         if (genderLabels.length >= 2) {
-            // Обновляем текст, не переписывая элемент input
-            genderLabels[0].lastChild.textContent = " " + t.male;
-            genderLabels[1].lastChild.textContent = " " + t.female;
+            // Обновляем текст сразу после input, чтобы гарантированно не затронуть сам input
+            const maleInput = genderLabels[0].querySelector('input');
+            if (maleInput && maleInput.nextSibling) {
+                maleInput.nextSibling.textContent = " " + t.male;
+            }
+            const femaleInput = genderLabels[1].querySelector('input');
+            if (femaleInput && femaleInput.nextSibling) {
+                femaleInput.nextSibling.textContent = " " + t.female;
+            }
         }
         
         // Обновляем текст для уровня активности
