@@ -38,27 +38,7 @@
       }
 
       // Настраиваем обработчики событий
-      document.getElementById('prevMonth').addEventListener('click', () => {
-        currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1);
-        fetchAndRenderCalendar();
-      });
-
-      document.getElementById('nextMonth').addEventListener('click', () => {
-        currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
-        fetchAndRenderCalendar();
-      });
-
-      caloriesInput.addEventListener('change', async (e) => {
-        if (!selectedDate) return;
-
-        const calories = parseInt(e.target.value);
-        if (isNaN(calories) || calories < 0 || calories > 10000) {
-          alert('Пожалуйста, введите число от 0 до 10000');
-          return;
-        }
-
-        await updateCalories(selectedDate, calories);
-      });
+      setupCalendarEventListeners();
 
       // Загружаем начальные данные
       fetchAndRenderCalendar();
@@ -262,6 +242,41 @@
   // Вызываем функцию при загрузке и изменении размера окна
   window.addEventListener('resize', updateCalendarSize);
   window.addEventListener('load', updateCalendarSize);
+
+  function setupCalendarEventListeners() {
+    document.getElementById('prevMonth').addEventListener('click', function() {
+      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1);
+      fetchAndRenderCalendar();
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', function() {
+      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
+      fetchAndRenderCalendar();
+    });
+
+    document.getElementById('caloriesInput').addEventListener('change', function() {
+      const value = parseInt(this.value);
+      if (!isNaN(value) && value >= 0) {
+        updateCalories(selectedDate, value);
+      }
+    });
+    
+    // Добавляем обработчики для кнопок быстрого изменения
+    document.querySelectorAll('.quick-button').forEach(button => {
+      button.addEventListener('click', function() {
+        const change = parseInt(this.getAttribute('data-value'));
+        const input = document.getElementById('caloriesInput');
+        let currentValue = parseInt(input.value) || 0;
+        
+        // Проверяем, чтобы значение не стало отрицательным
+        const newValue = Math.max(0, currentValue + change);
+        input.value = newValue;
+        
+        // Обновляем калории на сервере
+        updateCalories(selectedDate, newValue);
+      });
+    });
+  }
 
   // Запускаем приложение
   init();

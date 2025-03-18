@@ -98,6 +98,7 @@ h1 {
   margin: 0;
   border-bottom: 1px solid var(--border-color);
   font-weight: 500;
+  border-radius: 0 0 8px 8px;
 }
 
 .weekday {
@@ -165,15 +166,12 @@ h1 {
 }
 
 .edit-section {
-  margin: 10px 0 0 0;
-  padding: 12px;
-  background: var(--light-bg);
+  background-color: var(--bg-secondary);
+  padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  display: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 15px;
   width: 100%;
-  box-sizing: border-box;
-  border-left: 3px solid var(--accent-color);
 }
 
 .edit-section input {
@@ -185,6 +183,68 @@ h1 {
   box-sizing: border-box;
   background: var(--dark-bg);
   color: var(--text-color);
+  margin-bottom: 10px;
+}
+
+.quick-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 15px;
+  width: 100%;
+}
+
+.quick-buttons-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.quick-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 32px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  user-select: none;
+}
+
+.quick-button:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+.quick-button.plus {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.quick-button.minus {
+  background-color: #ee5253;
+  color: white;
+}
+
+/* Добавляем стиль для input и улучшаем его внешний вид */
+#caloriesInput {
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 2px solid var(--accent-color);
+  background-color: var(--bg-secondary);
+  color: var(--text-color);
+  font-size: 18px;
+  text-align: center;
+  outline: none;
+}
+
+/* Добавляем стиль для недопустимого ввода */
+#caloriesInput:invalid {
+  border-color: #ee5253;
 }
 
 .loading {
