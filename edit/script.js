@@ -204,10 +204,18 @@
       const hasData = dateStr in caloriesData;
 
       dayElement.className = `day${dateStr === selectedDate ? ' selected' : ''}${hasData ? ' has-data' : ''}`;
-      dayElement.innerHTML = `
-        <span>${day}</span>
-        ${hasData ? `<small>${caloriesData[dateStr]} ккал</small>` : ''}
-      `;
+      
+      // Упрощаем содержимое ячеек для большей компактности
+      if (hasData && (dateStr === selectedDate || window.innerWidth > 360)) {
+        // Полное отображение с калориями для выбранной ячейки или на больших экранах
+        dayElement.innerHTML = `
+          <span>${day}</span>
+          <small>${caloriesData[dateStr]} ккал</small>
+        `;
+      } else {
+        // Упрощенное отображение только числа для компактности
+        dayElement.innerHTML = `<span>${day}</span>`;
+      }
 
       dayElement.addEventListener('click', () => {
         selectedDate = dateStr;
@@ -234,12 +242,12 @@
   function updateCalendarSize() {
     const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     
-    // Вычисляем оптимальный размер календаря на основе ширины окна
-    const calendarWidth = Math.min(vw - 20, 500); // максимум 500px
-    const daySize = Math.floor((calendarWidth - 14) / 7); // размер ячейки
+    // Вычисляем оптимальный размер календаря для мобильных устройств
+    const calendarWidth = Math.min(vw - 10, 400); // Уменьшаем ширину
+    const daySize = Math.floor((calendarWidth - 10) / 7); // Уменьшаем отступы
     
-    // Адаптируем размер шрифта под размер ячейки
-    const fontSize = Math.max(10, Math.min(14, Math.floor(vw / 30)));
+    // Уменьшаем размер шрифта для лучшей компактности
+    const fontSize = Math.max(9, Math.min(12, Math.floor(vw / 35)));
     
     // Устанавливаем CSS переменные
     document.documentElement.style.setProperty('--calendar-width', calendarWidth + 'px');
