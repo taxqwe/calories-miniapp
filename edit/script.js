@@ -197,9 +197,6 @@
       daysContainer.appendChild(emptyDay);
     }
 
-    // Определяем мобильный режим (полностью убираем калории на экранах до 400px)
-    const isMobileView = window.innerWidth <= 400;
-
     // Добавляем дни месяца
     for (let day = 1; day <= daysInMonth; day++) {
       const dayElement = document.createElement('div');
@@ -208,15 +205,13 @@
 
       dayElement.className = `day${dateStr === selectedDate ? ' selected' : ''}${hasData ? ' has-data' : ''}`;
       
-      // Максимально упрощаем содержимое ячеек на мобильных
-      if (hasData && dateStr === selectedDate && !isMobileView) {
-        // Полное отображение с калориями только для выбранной ячейки на больших экранах
+      // Всегда показываем калории, если они есть
+      if (hasData) {
         dayElement.innerHTML = `
           <span>${day}</span>
           <small>${caloriesData[dateStr]} ккал</small>
         `;
       } else {
-        // Супер-компактное отображение только числа для экономии места
         dayElement.innerHTML = `<span>${day}</span>`;
       }
 
@@ -245,24 +240,22 @@
   function updateCalendarSize() {
     const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     
-    // Вычисляем минимально возможный размер
-    const calendarWidth = vw; // Используем всю ширину экрана
-    // Минимальные отступы сетки
-    const daySize = Math.floor((calendarWidth - 2) / 7); 
+    // Вычисляем размер ячеек более адаптивно
+    const containerWidth = Math.min(vw - 30, 480); // контейнер максимум 480px
+    const daySize = Math.floor((containerWidth - 50) / 7); // учитываем отступы и границы
     
-    // Минимальный размер шрифта
-    const fontSize = Math.max(7, Math.min(9, Math.floor(vw / 45)));
+    // Адаптивный размер шрифта
+    const fontSize = Math.max(9, Math.min(12, Math.floor(daySize / 4)));
     
     // Устанавливаем CSS переменные
-    document.documentElement.style.setProperty('--calendar-width', calendarWidth + 'px');
     document.documentElement.style.setProperty('--day-size', daySize + 'px');
     document.documentElement.style.setProperty('--base-font-size', fontSize + 'px');
     
     // Подстраиваем высоту области редактирования
     if (editSection && editSection.style.display === 'block') {
       const calendarBottom = calendar.getBoundingClientRect().bottom;
-      const availableHeight = window.innerHeight - calendarBottom - 10;
-      editSection.style.maxHeight = Math.max(40, availableHeight) + 'px';
+      const availableHeight = window.innerHeight - calendarBottom - 20;
+      editSection.style.maxHeight = Math.max(60, availableHeight) + 'px';
     }
   }
 
