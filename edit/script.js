@@ -78,9 +78,10 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-Source-App': 'Calories-Editor'
         },
         body: JSON.stringify({
-          chatid: chatId,
+          chatId: chatId,
           date: `${year}-${month}`
         })
       });
@@ -116,9 +117,10 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-Source-App': 'Calories-Editor'
         },
         body: JSON.stringify({
-          chatid: chatId,
+          chatId: chatId,
           date: date,
           calories: calories
         })
