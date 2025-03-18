@@ -508,7 +508,7 @@
 
         // Добавляем chatId если он доступен
         if (typeof chatId !== 'undefined') {
-            payload.chatId = chatId;
+            payload.data.chatId = chatId;
             if (isDebugMode) {
                 console.log('Добавлен chatId в payload:', chatId);
             }
