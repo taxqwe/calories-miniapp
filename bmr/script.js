@@ -4,6 +4,15 @@
     const isDebugMode = urlParams.get('debug') === 'true';
     const lang = urlParams.get('lang') || 'ru'; // По умолчанию русский
     
+    // Получаем chatId из Telegram WebApp если он доступен
+    let chatId = null;
+    if (window.Telegram && window.Telegram.WebApp) {
+        const webApp = window.Telegram.WebApp;
+        if (webApp.initDataUnsafe && webApp.initDataUnsafe.user) {
+            chatId = webApp.initDataUnsafe.user.id;
+        }
+    }
+    
     // Объекты с переводами
     const translations = {
         ru: {
@@ -493,6 +502,11 @@
                 tdee: Math.round(tdee)
             }
         };
+
+        // Добавляем chatId если он доступен
+        if (chatId) {
+            payload.chatId = chatId;
+        }
 
         try {
             // Расширенное логирование для отладки (только в режиме отладки)
