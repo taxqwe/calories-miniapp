@@ -282,56 +282,34 @@
     
     // Улучшенная обработка фокуса для iOS
     document.getElementById('caloriesInput').addEventListener('focus', function() {
-      // Добавляем класс состояния клавиатуры
-      editSection.classList.add('keyboard-visible');
-      document.body.classList.add('keyboard-visible');
-      
-      // Добавляем класс контейнеру
-      document.querySelector('.container').classList.add('keyboard-visible');
-      
       // Установка курсора в конец поля ввода
       this.setSelectionRange(this.value.length, this.value.length);
       
-      // Также добавляем класс для кнопок
-      const quickButtons = document.querySelector('.quick-buttons');
-      if (quickButtons) {
-        quickButtons.classList.add('keyboard-visible');
-      }
+      // Отмечаем состояние клавиатуры для стилей, но без больших отступов
+      document.body.classList.add('keyboard-active');
       
       // Задержка для появления клавиатуры
       setTimeout(() => {
-        // Скроллим до секции редактирования
-        editSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Получаем размеры экрана и позицию элемента
+        const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+        const inputRect = this.getBoundingClientRect();
         
-        // Дополнительный скролл с задержкой для iOS
-        setTimeout(() => {
-          // Проверяем, видно ли поле ввода
-          const inputRect = this.getBoundingClientRect();
-          const windowHeight = window.innerHeight;
-          
-          // Если поле не видно (за пределами экрана)
-          if (inputRect.bottom > windowHeight || inputRect.top < 0) {
-            // Скроллим к полю ввода
-            this.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }, 300);
-      }, 100);
+        // Если элемент оказался под клавиатурой
+        if (inputRect.top > viewportHeight - 80) {
+          // Скроллим только на нужное расстояние, чтобы поле было видно
+          const scrollAmount = inputRect.top - (viewportHeight - 150);
+          window.scrollBy({
+            top: scrollAmount,
+            behavior: 'smooth'
+          });
+        }
+      }, 300);
     });
     
-    // При потере фокуса восстанавливаем стандартные отступы
+    // При потере фокуса
     document.getElementById('caloriesInput').addEventListener('blur', function() {
-      // Удаляем класс состояния клавиатуры
-      editSection.classList.remove('keyboard-visible');
-      document.body.classList.remove('keyboard-visible');
-      
-      // Удаляем класс у контейнера
-      document.querySelector('.container').classList.remove('keyboard-visible');
-      
-      // Также удаляем класс для кнопок
-      const quickButtons = document.querySelector('.quick-buttons');
-      if (quickButtons) {
-        quickButtons.classList.remove('keyboard-visible');
-      }
+      // Убираем маркер состояния клавиатуры
+      document.body.classList.remove('keyboard-active');
     });
     
     // Добавляем обработчики для кнопок быстрого изменения
