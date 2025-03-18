@@ -197,6 +197,9 @@
       daysContainer.appendChild(emptyDay);
     }
 
+    // Определяем мобильный режим (полностью убираем калории на экранах до 400px)
+    const isMobileView = window.innerWidth <= 400;
+
     // Добавляем дни месяца
     for (let day = 1; day <= daysInMonth; day++) {
       const dayElement = document.createElement('div');
@@ -205,15 +208,15 @@
 
       dayElement.className = `day${dateStr === selectedDate ? ' selected' : ''}${hasData ? ' has-data' : ''}`;
       
-      // Упрощаем содержимое ячеек для большей компактности
-      if (hasData && (dateStr === selectedDate || window.innerWidth > 360)) {
-        // Полное отображение с калориями для выбранной ячейки или на больших экранах
+      // Максимально упрощаем содержимое ячеек на мобильных
+      if (hasData && dateStr === selectedDate && !isMobileView) {
+        // Полное отображение с калориями только для выбранной ячейки на больших экранах
         dayElement.innerHTML = `
           <span>${day}</span>
           <small>${caloriesData[dateStr]} ккал</small>
         `;
       } else {
-        // Упрощенное отображение только числа для компактности
+        // Супер-компактное отображение только числа для экономии места
         dayElement.innerHTML = `<span>${day}</span>`;
       }
 
@@ -242,12 +245,13 @@
   function updateCalendarSize() {
     const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     
-    // Вычисляем оптимальный размер календаря для мобильных устройств
-    const calendarWidth = Math.min(vw - 10, 400); // Уменьшаем ширину
-    const daySize = Math.floor((calendarWidth - 10) / 7); // Уменьшаем отступы
+    // Вычисляем минимально возможный размер для мобильных устройств
+    const calendarWidth = Math.min(vw - 8, 350); // Делаем еще меньше
+    // Учитываем отступы сетки в 1px
+    const daySize = Math.floor((calendarWidth - 8) / 7); 
     
-    // Уменьшаем размер шрифта для лучшей компактности
-    const fontSize = Math.max(9, Math.min(12, Math.floor(vw / 35)));
+    // Ещё уменьшаем размер шрифта
+    const fontSize = Math.max(8, Math.min(11, Math.floor(vw / 40)));
     
     // Устанавливаем CSS переменные
     document.documentElement.style.setProperty('--calendar-width', calendarWidth + 'px');
@@ -257,8 +261,8 @@
     // Подстраиваем высоту области редактирования
     if (editSection && editSection.style.display === 'block') {
       const calendarBottom = calendar.getBoundingClientRect().bottom;
-      const availableHeight = window.innerHeight - calendarBottom - 20;
-      editSection.style.maxHeight = availableHeight + 'px';
+      const availableHeight = window.innerHeight - calendarBottom - 10;
+      editSection.style.maxHeight = Math.max(40, availableHeight) + 'px';
     }
   }
 

@@ -8,22 +8,19 @@ body {
   font-family: Arial, sans-serif;
   background-color: #1a1a1a;
   padding: 0;
-  line-height: 1.5;
+  line-height: 1.3;
   color: #fff;
   max-width: 100%;
   overflow-x: hidden;
 }
 
 :root {
-  --calendar-width: calc(100vw - 16px);
-  --day-size: calc((100vw - 30px) / 7);
-  --base-font-size: 12px;
+  --calendar-width: calc(100vw - 10px);
+  --day-size: calc((100vw - 25px) / 7);
+  --base-font-size: 10px;
 }
 
 h1 {
-  font-size: 18px;
-  margin-bottom: 8px;
-  text-align: center;
   display: none;
 }
 
@@ -38,7 +35,7 @@ h1 {
 
 .calendar {
   background: transparent;
-  border-radius: 8px;
+  border-radius: 4px;
   overflow: hidden;
   width: 100%;
   margin: 0 auto;
@@ -49,17 +46,17 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 4px;
+  padding: 4px 2px;
   background: #333333;
-  border-radius: 8px 8px 0 0;
+  border-radius: 4px 4px 0 0;
 }
 
 .calendar-header button {
   background: none;
   border: none;
-  font-size: calc(var(--base-font-size) * 1.5);
+  font-size: calc(var(--base-font-size) * 1.4);
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 2px 4px;
   color: #fff;
 }
 
@@ -78,7 +75,7 @@ h1 {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   background: #333333;
-  padding: 2px 0;
+  padding: 1px 0;
   border-bottom: 1px solid #404040;
   font-weight: 500;
 }
@@ -101,7 +98,7 @@ h1 {
   width: var(--day-size);
   height: var(--day-size);
   background: #2d2d2d;
-  padding: 1px;
+  padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -131,7 +128,7 @@ h1 {
 
 .day span {
   font-size: calc(var(--base-font-size) * 0.95);
-  margin-bottom: 1px;
+  margin-bottom: 0;
   color: #fff;
 }
 
@@ -143,20 +140,20 @@ h1 {
 }
 
 .edit-section {
-  margin-top: 8px;
-  padding: 6px;
+  margin-top: 4px;
+  padding: 4px;
   background: #2d2d2d;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
   display: none;
   width: 100%;
-  margin: 8px auto;
+  margin: 4px auto;
   box-sizing: border-box;
 }
 
 .edit-section input {
   width: 100%;
-  padding: 8px;
+  padding: 6px;
   border: 1px solid #404040;
   border-radius: 4px;
   font-size: var(--base-font-size);
@@ -179,10 +176,10 @@ h1 {
 }
 
 .spinner {
-  width: 30px;
-  height: 30px;
-  border: 3px solid #333333;
-  border-top: 3px solid #3498db;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #333333;
+  border-top: 2px solid #3498db;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -190,73 +187,6 @@ h1 {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-/* Медиа-запросы для адаптивности */
-@media (max-width: 768px) {
-  .container {
-    padding: 5px 2px;
-  }
-
-  .calendar {
-    box-shadow: none;
-  }
-
-  .current-month {
-    font-size: 1.1em;
-  }
-
-  .weekday {
-    font-size: 0.8em;
-  }
-
-  .day {
-    min-height: 35px;
-    padding: 2px;
-  }
-
-  .day span {
-    font-size: 0.9em;
-  }
-
-  .day small {
-    font-size: 0.65em;
-  }
-}
-
-@media (max-width: 480px) {
-  .container {
-    padding: 2px;
-  }
-
-  .calendar-header {
-    padding: 10px;
-  }
-
-  .current-month {
-    font-size: 1em;
-  }
-
-  .weekday {
-    font-size: 0.7em;
-  }
-
-  .day {
-    min-height: 30px;
-    padding: 1px;
-  }
-
-  .day span {
-    font-size: 0.8em;
-  }
-
-  .day small {
-    font-size: 0.6em;
-  }
-
-  .edit-section {
-    padding: 10px;
-  }
 }
 
 /* Поддержка темной темы */
