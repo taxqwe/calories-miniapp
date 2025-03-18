@@ -290,44 +290,61 @@
     }
 
     function handleKeyboardVisibility() {
-    const caloriesInput = document.getElementById('caloriesInput');
-    const container = document.querySelector('.container');
+  const caloriesInput = document.getElementById('caloriesInput');
+  const container = document.querySelector('.container');
+  let lastScrollPosition = 0;
 
-    caloriesInput.addEventListener('focus', () => {
-      // Добавляем временный padding для iOS
-      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-        const viewportHeight = window.innerHeight;
-        setTimeout(() => {
-          const inputBottom = caloriesInput.getBoundingClientRect().bottom;
-          const keyboardHeightApprox = viewportHeight - window.visualViewport.height;
-
-          if (keyboardHeightApprox > 0 && inputBottom > window.visualViewport.height / 2) {
-            container.style.paddingBottom = `${keyboardHeightApprox + 20}px`;
-            caloriesInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }, 300);
-      } else {
-        caloriesInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    });
-
-    caloriesInput.addEventListener('blur', () => {
-      // Убираем padding после закрытия клавиатуры
-      container.style.paddingBottom = '';
-    });
-
-    // Реагируем на изменения размера визуального вьюпорта (полезно для динамической клавиатуры)
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', () => {
-        if (document.activeElement === caloriesInput) {
-          const keyboardHeightApprox = window.innerHeight - window.visualViewport.height;
-          container.style.paddingBottom = keyboardHeightApprox > 0 ? `${keyboardHeightApprox + 20}px` : '';
-          caloriesInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      });
-    }
+  function scrollToInput() {
+    caloriesInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
+  caloriesInput.addEventListener('focus', () => {
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      setTimeout(() => {
+        const viewport = window.visualViewport;
+        const keyboardHeightApprox = window.innerHeight - viewport.height;
+
+        if (keyboardHeightApprox > 0) {
+          // Сохраняем текущий скролл
+          lastScrollPosition = window.scrollY || document.documentElement.scrollTop;
+
+          // Устанавливаем padding, но без смещения позиции просмотра
+          container.style.paddingBottom = `${keyboardHeightApprox + 20}px`;
+
+          // Восстанавливаем сохранённый скролл
+          window.scrollTo(0, lastScrollPosition);
+
+          // Прокручиваем к инпуту явно
+          scrollToInput();
+        }
+      }, 350);
+    } else {
+      scrollToInput();
+    }
+  });
+
+  caloriesInput.addEventListener('blur', () => {
+    container.style.paddingBottom = '';
+  });
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      if (document.activeElement === caloriesInput) {
+        const viewport = window.visualViewport;
+        const keyboardHeightApprox = window.innerHeight - viewport.height;
+
+        if (keyboardHeightApprox > 0) {
+          lastScrollPosition = window.scrollY || document.documentElement.scrollTop;
+          container.style.paddingBottom = `${keyboardHeightApprox + 20}px`;
+          window.scrollTo(0, lastScrollPosition);
+          scrollToInput();
+        } else {
+          container.style.paddingBottom = '';
+        }
+      }
+    });
+  }
+}
 
     // Запускаем приложение
     init();
