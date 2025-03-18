@@ -1,6 +1,6 @@
 .container {
   max-width: 100%;
-  padding: 20px;
+  padding: 10px 5px;
   margin: 0 auto;
   box-sizing: border-box;
 }
@@ -11,7 +11,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   width: 100%;
-  max-width: 800px;
+  max-width: 390px;
   margin: 0 auto;
 }
 
@@ -111,15 +111,15 @@
 }
 
 .edit-section {
-  margin-top: 20px;
-  padding: 15px;
+  margin-top: 10px;
+  padding: 10px;
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: none;
   width: 100%;
-  max-width: 800px;
-  margin: 20px auto;
+  max-width: 390px;
+  margin: 10px auto;
   box-sizing: border-box;
 }
 
@@ -162,7 +162,7 @@
 /* Медиа-запросы для адаптивности */
 @media (max-width: 768px) {
   .container {
-    padding: 10px;
+    padding: 5px 2px;
   }
 
   .calendar {
@@ -193,7 +193,7 @@
 
 @media (max-width: 480px) {
   .container {
-    padding: 5px;
+    padding: 2px;
   }
 
   .calendar-header {
