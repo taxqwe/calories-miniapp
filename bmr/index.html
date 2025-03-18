@@ -29,16 +29,18 @@
         <input type="number" id="age" name="age" placeholder="Например, 30" inputmode="numeric" enterkeyhint="done">
       </div>
 
-      <label class="field-label">Пол:</label>
-      <div class="checkbox-group gender-group">
-        <label>
-          <input type="radio" name="gender" value="м" class="gender-radio">
-          <span>Мужской</span>
-        </label>
-        <label>
-          <input type="radio" name="gender" value="ж" class="gender-radio">
-          <span>Женский</span>
-        </label>
+      <div class="form-group">
+        <label class="field-label">Пол:</label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" id="gender-male" name="gender" value="м">
+            <label for="gender-male">Мужской</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="gender-female" name="gender" value="ж">
+            <label for="gender-female">Женский</label>
+          </div>
+        </div>
       </div>
 
       <p>Уровень физической активности:</p>

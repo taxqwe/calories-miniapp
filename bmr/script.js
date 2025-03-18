@@ -132,20 +132,10 @@
         document.getElementById('weight').placeholder = t.weightPlaceholder;
         document.getElementById('age').placeholder = t.agePlaceholder;
         
-        // Обновляем текст для выбора пола, не затрагивая input
+        // Обновляем текст для выбора пола
         document.querySelector('.field-label').textContent = t.gender;
-        const genderLabels = document.querySelectorAll('.gender-group label');
-        if (genderLabels.length >= 2) {
-            // Обновляем текст внутри span, а не nextSibling
-            const maleSpan = genderLabels[0].querySelector('span');
-            if (maleSpan) {
-                maleSpan.textContent = t.male;
-            }
-            const femaleSpan = genderLabels[1].querySelector('span');
-            if (femaleSpan) {
-                femaleSpan.textContent = t.female;
-            }
-        }
+        document.querySelector('label[for="gender-male"]').textContent = t.male;
+        document.querySelector('label[for="gender-female"]').textContent = t.female;
         
         // Обновляем текст для уровня активности
         document.querySelector('.range-container').previousElementSibling.textContent = t.activityLevel;
@@ -539,9 +529,13 @@
                     }
                     resultDiv.innerHTML += `<p class="success-status">${t.success}</p>`;
                     
-                    // Закрываем окно через небольшую задержку, чтобы пользователь успел увидеть сообщение об успехе
+                    // Закрываем окно через небольшую задержку
                     setTimeout(() => {
-                        window.close();
+                        if (window.Telegram && window.Telegram.WebApp) {
+                            window.Telegram.WebApp.close();
+                        } else {
+                            window.close();
+                        }
                     }, 1500);
                     
                     return response.text();
