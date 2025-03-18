@@ -18,6 +18,7 @@
 
   // Инициализация
   function init() {
+    updateCalendarSize();
     try {
       // Получаем chatId
       if (tg.initDataUnsafe?.user?.id) {
@@ -229,6 +230,25 @@
     calendar.style.opacity = show ? '0.5' : '1';
     editSection.style.opacity = show ? '0.5' : '1';
   }
+
+  function updateCalendarSize() {
+    const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const vh = Math.min(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    
+    // Вычисляем оптимальный размер календаря
+    const calendarWidth = Math.min(360, vw - 10); // максимум 360px или на 10px меньше ширины экрана
+    const daySize = Math.floor((calendarWidth - 14) / 7); // размер ячейки (14px - отступы сетки)
+    const fontSize = Math.max(11, Math.min(14, Math.floor(daySize / 3))); // размер шрифта от 11px до 14px
+    
+    // Устанавливаем CSS переменные
+    document.documentElement.style.setProperty('--calendar-width', calendarWidth + 'px');
+    document.documentElement.style.setProperty('--day-size', daySize + 'px');
+    document.documentElement.style.setProperty('--base-font-size', fontSize + 'px');
+  }
+
+  // Вызываем функцию при загрузке и изменении размера окна
+  window.addEventListener('resize', updateCalendarSize);
+  window.addEventListener('load', updateCalendarSize);
 
   // Запускаем приложение
   init();
