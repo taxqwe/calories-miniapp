@@ -43,6 +43,9 @@
       // Загружаем начальные данные
       fetchAndRenderCalendar();
 
+      // Решение проблемы с перекрытием клавиатурой
+      handleKeyboardVisibility();
+
     } catch (error) {
       console.error('Ошибка инициализации:', error);
       alert('Ошибка инициализации приложения');
@@ -269,19 +272,6 @@
       }
     });
     
-    // Установка курсора в конец поля ввода при фокусе
-    document.getElementById('caloriesInput').addEventListener('focus', function() {
-      this.setSelectionRange(this.value.length, this.value.length);
-      
-      // Добавляем отступ снизу для скролла
-      document.querySelector('.container').style.paddingBottom = '350px';
-    });
-    
-    // При потере фокуса убираем отступ
-    document.getElementById('caloriesInput').addEventListener('blur', function() {
-      document.querySelector('.container').style.paddingBottom = '';
-    });
-    
     // Добавляем обработчики для кнопок быстрого изменения
     document.querySelectorAll('.quick-button').forEach(button => {
       button.addEventListener('click', function() {
@@ -296,6 +286,47 @@
         // Обновляем калории на сервере
         updateCalories(selectedDate, newValue);
       });
+    });
+  }
+
+  // Функция для управления перекрытием экранной клавиатурой
+  function handleKeyboardVisibility() {
+    // Проверяем поддержку VirtualKeyboard API
+    if ("virtualKeyboard" in navigator) {
+      navigator.virtualKeyboard.overlaysContent = true;
+    }
+    
+    // Настраиваем обработчики для поля ввода
+    const caloriesInput = document.getElementById('caloriesInput');
+    
+    caloriesInput.addEventListener('focus', function() {
+      // Устанавливаем курсор в конец поля ввода
+      this.setSelectionRange(this.value.length, this.value.length);
+      
+      // Сохраняем текущую позицию прокрутки
+      const scrollPosition = window.scrollY;
+      
+      // Даем немного времени для появления клавиатуры
+      setTimeout(() => {
+        // Убедимся, что поле ввода видно и прокручиваем к нему
+        this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Дополнительная прокрутка для iOS
+        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+          // Добавляем отступ снизу для скролла на iOS устройствах
+          document.querySelector('.container').style.paddingBottom = '350px';
+        }
+      }, 300);
+      
+      // Добавляем повторную прокрутку для обеспечения видимости
+      setTimeout(() => {
+        this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 600);
+    });
+    
+    caloriesInput.addEventListener('blur', function() {
+      // Удаляем дополнительный отступ
+      document.querySelector('.container').style.paddingBottom = '';
     });
   }
 
