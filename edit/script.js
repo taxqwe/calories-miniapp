@@ -15,11 +15,16 @@
     let selectedDate = null;
     let caloriesData = {};
     let chatId = null;
+    let initDataRaw = null;
 
     // Инициализация
     function init() {
       updateCalendarSize();
       try {
+        // Сохраняем initData
+        initDataRaw = tg.initData;
+        console.log('Получены initData длиной:', initDataRaw?.length || 0);
+        
         // Получаем chatId
         if (tg.initDataUnsafe?.user?.id) {
           chatId = tg.initDataUnsafe.user.id;
@@ -63,7 +68,8 @@
         
         const requestBody = {
           chatId: chatId,
-          date: `${year}-${month}`
+          date: `${year}-${month}`,
+          initData: initDataRaw
         };
         console.log('Отправляем запрос:', JSON.stringify(requestBody));
         
@@ -118,7 +124,8 @@
         const requestBody = {
           chatId: chatId,
           date: date,
-          calories: calories
+          calories: calories,
+          initData: initDataRaw
         };
         console.log('Отправляем запрос на обновление:', JSON.stringify(requestBody));
         
