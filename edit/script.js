@@ -299,37 +299,40 @@
     }
 
     function handleKeyboardVisibility() {
-  const caloriesInput = document.getElementById('caloriesInput');
   const container = document.querySelector('.container');
+  const input = document.getElementById('caloriesInput');
 
-  caloriesInput.addEventListener('focus', () => {
-    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-      setTimeout(() => {
-        const viewport = window.visualViewport;
-        const keyboardHeightApprox = window.innerHeight - viewport.height;
+  // Запоминаем исходную высоту окна (без клавиатуры)
+  let originalWindowHeight = window.innerHeight;
 
-        if (keyboardHeightApprox > 0) {
-          container.style.paddingBottom = `${keyboardHeightApprox + 20}px`;
-        }
-      }, 350);
+  // При фокусе на поле
+  input.addEventListener('focus', () => {
+    container.classList.add('keyboard-open');
+    
+    // Небольшая задержка, чтобы клавиатура успела открыться
+    setTimeout(() => {
+      input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
+  });
+
+  // При потере фокуса
+  input.addEventListener('blur', () => {
+    container.classList.remove('keyboard-open');
+  });
+
+  // Отслеживаем изменение высоты окна (появление/скрытие клавиатуры)
+  window.addEventListener('resize', () => {
+    if (window.innerHeight < originalWindowHeight) {
+      // Высота стала меньше — клавиатура открыта
+      container.classList.add('keyboard-open');
+    } else {
+      // Высота вернулась — клавиатура закрыта
+      container.classList.remove('keyboard-open');
     }
+    originalWindowHeight = window.innerHeight;
   });
-
-  caloriesInput.addEventListener('blur', () => {
-    container.style.paddingBottom = '';
-  });
-
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', () => {
-      if (document.activeElement === caloriesInput) {
-        const viewport = window.visualViewport;
-        const keyboardHeightApprox = window.innerHeight - viewport.height;
-
-        container.style.paddingBottom = keyboardHeightApprox > 0 ? `${keyboardHeightApprox + 20}px` : '';
-      }
-    });
-  }
 }
+
 
     
 
