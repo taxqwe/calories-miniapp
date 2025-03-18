@@ -142,6 +142,11 @@ form input[type="range"]:focus {
   accent-color: #0088cc;
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
+}
+
+.checkbox-group span {
+  margin-left: 5px;
 }
 
 /* Стили для описания активности */
