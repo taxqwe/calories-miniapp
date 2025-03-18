@@ -235,8 +235,9 @@
     const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     
     // Вычисляем размер ячеек для полной ширины с минимальными отступами
-    const containerWidth = vw - 4; // 2px отступ с каждой стороны
-    const daySize = Math.floor((containerWidth - 14) / 7); // учитываем минимальные отступы
+    const containerWidth = vw - 4; // 2px отступ с каждой стороны контейнера
+    // Используем меньшие отступы между ячейками (2px * 6 = 12px для промежутков)
+    const daySize = Math.floor((containerWidth - 12) / 7);
     
     // Адаптивный размер шрифта
     const fontSize = Math.max(10, Math.min(14, Math.floor(daySize / 3.5)));
