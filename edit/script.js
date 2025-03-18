@@ -107,12 +107,14 @@
       }
 
       const data = await response.json();
+      console.log('Получены данные от сервера:', data);
       
       // Преобразуем массив в объект для удобства использования
       caloriesData = data.reduce((acc, item) => {
         acc[item.date] = item.calories;
         return acc;
       }, {});
+      console.log('Данные после преобразования:', caloriesData);
 
       renderCalendar();
     } catch (error) {
