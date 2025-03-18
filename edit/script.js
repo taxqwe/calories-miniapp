@@ -282,36 +282,48 @@
     
     // Улучшенная обработка фокуса для iOS
     document.getElementById('caloriesInput').addEventListener('focus', function() {
-      // Метка позиции
-      const calendarRect = calendar.getBoundingClientRect();
-      const calendarTop = calendarRect.top;
+      // Добавляем класс состояния клавиатуры
+      editSection.classList.add('keyboard-visible');
+      document.body.classList.add('keyboard-visible');
       
-      // Скроллим календарь в верхнюю часть экрана
-      // Откладываем скролл, чтобы дать клавиатуре время появиться
+      // Также добавляем класс для кнопок
+      const quickButtons = document.querySelector('.quick-buttons');
+      if (quickButtons) {
+        quickButtons.classList.add('keyboard-visible');
+      }
+      
+      // Задержка для появления клавиатуры
       setTimeout(() => {
-        window.scrollTo({
-          top: calendarTop,
-          behavior: 'smooth'
-        });
+        // Получаем позицию поля ввода
+        const inputRect = this.getBoundingClientRect();
+        // Высота видимой части экрана
+        const visibleHeight = window.innerHeight;
+        // Позиция поля ввода относительно низа экрана
+        const inputFromBottom = visibleHeight - inputRect.bottom;
         
-        // Двойной таймаут для надежности
-        setTimeout(() => {
+        // Если поле ввода близко к нижней части экрана или уже под ней
+        if (inputFromBottom < 200) {
+          // Скроллим так, чтобы поле ввода было видно с отступом 80px от верха
+          const scrollPosition = window.scrollY + inputRect.top - 80;
           window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
+            top: scrollPosition,
+            behavior: 'auto'
           });
-        }, 300);
-      }, 100);
-      
-      // Сдвигаем внимание на верхнюю часть экрана
-      editSection.style.marginBottom = '300px';
+        }
+      }, 300);
     });
     
     // При потере фокуса восстанавливаем стандартные отступы
     document.getElementById('caloriesInput').addEventListener('blur', function() {
-      setTimeout(() => {
-        editSection.style.marginBottom = '0';
-      }, 100);
+      // Удаляем класс состояния клавиатуры
+      editSection.classList.remove('keyboard-visible');
+      document.body.classList.remove('keyboard-visible');
+      
+      // Также удаляем класс для кнопок
+      const quickButtons = document.querySelector('.quick-buttons');
+      if (quickButtons) {
+        quickButtons.classList.remove('keyboard-visible');
+      }
     });
     
     // Добавляем обработчики для кнопок быстрого изменения

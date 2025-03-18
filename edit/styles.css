@@ -14,6 +14,9 @@ body {
   max-width: 100vw;
   width: 100%;
   overflow-x: hidden;
+  scroll-behavior: smooth;
+  height: unset;
+  min-height: 100%;
 }
 
 :root {
@@ -305,16 +308,15 @@ h1 {
     touch-action: manipulation;
   }
   
-  #caloriesInput:focus {
-    position: relative;
-    /* Гарантируем, что поле будет выше других элементов */
-    z-index: 100;
+  .edit-section {
+    /* Обеспечиваем плавный переход */
+    transition: margin-bottom 0.2s ease, padding-bottom 0.2s ease;
   }
   
-  .edit-section:has(#caloriesInput:focus) {
-    /* Добавляем отступ снизу когда поле в фокусе */
-    margin-bottom: 350px !important;
-    transition: margin-bottom 0.3s ease;
+  #caloriesInput:focus {
+    position: sticky;
+    top: 80px;
+    z-index: 100;
   }
 }
 
@@ -324,14 +326,23 @@ h1 {
   touch-action: manipulation;
   /* Устанавливаем мягкий скролл */
   -webkit-overflow-scrolling: touch;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.ios-device.keyboard-visible {
+  height: calc(100% + 350px);
 }
 
 .ios-device .edit-section {
   /* Добавляем отступ внизу для iOS */
   padding-bottom: 20px;
+  z-index: 100;
 }
 
-.ios-device #caloriesInput:focus + .quick-buttons {
-  /* При фокусе на ввод делаем больше отступ для кнопок */
-  margin-bottom: 250px;
+.ios-device .edit-section.keyboard-visible {
+  margin-bottom: 350px;
+}
+
+.ios-device .quick-buttons.keyboard-visible {
+  margin-bottom: 200px;
 } 
