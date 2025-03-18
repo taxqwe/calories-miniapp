@@ -1,0 +1,31 @@
+.container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.container h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.editSection {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.editSection input {
+  padding: 0.75rem;
+  font-size: 1.2rem;
+  width: 200px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.editSection input:focus {
+  outline: none;
+  border-color: #2196f3;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+} 
