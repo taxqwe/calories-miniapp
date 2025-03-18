@@ -22,14 +22,17 @@
       // Получаем chatId
       if (tg.initDataUnsafe?.user?.id) {
         chatId = tg.initDataUnsafe.user.id;
+        console.log('chatId получен из initDataUnsafe:', chatId);
       } else {
         const initData = JSON.parse(tg.initData);
         if (initData.user?.id) {
           chatId = initData.user.id;
+          console.log('chatId получен из initData:', chatId);
         }
       }
 
       if (!chatId) {
+        console.error('chatId не получен!');
         throw new Error('Не удалось получить идентификатор пользователя');
       }
 
