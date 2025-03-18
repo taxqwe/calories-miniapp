@@ -7,9 +7,9 @@
     const validateInputs = (height, weight, age) => {
         const errors = [];
         
-        // Проверка роста (от 100 до 250 см)
-        if (height < 100 || height > 250) {
-            errors.push('Рост должен быть от 100 до 250 см');
+        // Проверка роста (от 100 до 230 см)
+        if (height < 100 || height > 230) {
+            errors.push('Рост должен быть от 100 до 230 см');
         }
         
         // Проверка веса (от 30 до 300 кг)
@@ -17,9 +17,9 @@
             errors.push('Вес должен быть от 30 до 300 кг');
         }
         
-        // Проверка возраста (от 12 до 120 лет)
-        if (age < 12 || age > 120) {
-            errors.push('Возраст должен быть от 12 до 120 лет');
+        // Проверка возраста (от 14 до 120 лет)
+        if (age < 14 || age > 120) {
+            errors.push('Возраст должен быть от 14 до 120 лет');
         }
         
         return errors;
@@ -94,8 +94,76 @@
         }
     };
     
+    // Функция для отображения ошибок валидации
+    const showValidationError = (field, message) => {
+        const input = document.getElementById(field);
+        const errorDiv = document.getElementById(`${field}-error`) || document.createElement('div');
+        errorDiv.id = `${field}-error`;
+        errorDiv.className = 'validation-error';
+        errorDiv.textContent = message;
+        errorDiv.style.cssText = 'color: #dc3545; font-size: 0.8em; margin-top: 5px;';
+        
+        // Добавляем стили для поля с ошибкой
+        input.style.borderColor = '#dc3545';
+        input.style.backgroundColor = '#fff8f8';
+        
+        // Добавляем сообщение об ошибке после поля
+        if (!document.getElementById(`${field}-error`)) {
+            input.parentNode.insertBefore(errorDiv, input.nextSibling);
+        }
+    };
+
+    // Функция для очистки ошибок валидации
+    const clearValidationError = (field) => {
+        const input = document.getElementById(field);
+        const errorDiv = document.getElementById(`${field}-error`);
+        
+        if (errorDiv) {
+            errorDiv.remove();
+        }
+        
+        // Возвращаем стандартные стили
+        input.style.borderColor = '';
+        input.style.backgroundColor = '';
+    };
+
+    // Добавляем валидацию при вводе
+    const setupValidation = () => {
+        const fields = ['height', 'weight', 'age'];
+        
+        fields.forEach(field => {
+            const input = document.getElementById(field);
+            
+            input.addEventListener('input', function() {
+                const value = parseFloat(this.value);
+                clearValidationError(field);
+                
+                if (isNaN(value)) return;
+                
+                switch(field) {
+                    case 'height':
+                        if (value < 100 || value > 230) {
+                            showValidationError(field, 'Рост должен быть от 100 до 230 см');
+                        }
+                        break;
+                    case 'weight':
+                        if (value < 30 || value > 300) {
+                            showValidationError(field, 'Вес должен быть от 30 до 300 кг');
+                        }
+                        break;
+                    case 'age':
+                        if (value < 14 || value > 120) {
+                            showValidationError(field, 'Возраст должен быть от 14 до 120 лет');
+                        }
+                        break;
+                }
+            });
+        });
+    };
+
     // Настраиваем поля ввода для удобства использования на мобильных устройствах
     setupInputFields();
+    setupValidation();
 
     // Обновление описания активности в зависимости от выбранного значения
     const activityRange = document.getElementById('activityRange');
@@ -233,8 +301,22 @@
         // Валидация данных
         const validationErrors = validateInputs(height, weight, age);
         if (validationErrors.length > 0) {
-            const errorMessage = 'Обнаружены ошибки в введенных данных:\n\n' + validationErrors.join('\n');
-            alert(errorMessage);
+            // Показываем ошибки для каждого поля
+            validationErrors.forEach(error => {
+                if (error.includes('Рост')) {
+                    showValidationError('height', error);
+                } else if (error.includes('Вес')) {
+                    showValidationError('weight', error);
+                } else if (error.includes('Возраст')) {
+                    showValidationError('age', error);
+                }
+            });
+            
+            // Прокручиваем к первому полю с ошибкой
+            const firstErrorField = document.querySelector('.validation-error');
+            if (firstErrorField) {
+                firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
             return;
         }
 
@@ -319,6 +401,12 @@
                         logToPage("Данные успешно отправлены!", "info");
                     }
                     resultDiv.innerHTML += `<p class="success-status">✅ Данные успешно отправлены!</p>`;
+                    
+                    // Закрываем окно через небольшую задержку, чтобы пользователь успел увидеть сообщение об успехе
+                    setTimeout(() => {
+                        window.close();
+                    }, 1500);
+                    
                     return response.text();
                 } else {
                     throw new Error("Ошибка HTTP: " + response.status);
