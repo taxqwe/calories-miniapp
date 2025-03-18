@@ -189,14 +189,15 @@
       for (let day = 1; day <= daysInMonth; day++) {
         const dayElement = document.createElement('div');
         const dateStr = formatDate(year, month + 1, day);
-        const hasData = dateStr in caloriesData;
+        // Считаем, что день имеет данные, только если калории больше 0
+        const hasData = dateStr in caloriesData && caloriesData[dateStr] > 0;
         
         // Проверяем, является ли этот день выбранным
         const isSelected = dateStr === selectedDate;
 
         dayElement.className = `day${isSelected ? ' selected' : ''}${hasData ? ' has-data' : ''}`;
         
-        // Всегда показываем калории, если они есть
+        // Показываем калории, только если они больше 0
         if (hasData) {
           dayElement.innerHTML = `
             <span>${day}</span>
