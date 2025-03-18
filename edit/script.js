@@ -300,46 +300,38 @@
     }
 
     function handleKeyboardVisibility() {
-      const caloriesInput = document.getElementById('caloriesInput');
-      const container = document.querySelector('.container');
-    
-      caloriesInput.addEventListener('focus', () => {
-        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-          setTimeout(() => {
-            const viewport = window.visualViewport;
-            const keyboardHeightApprox = window.innerHeight - viewport.height;
-    
-            if (keyboardHeightApprox > 0) {
-              container.style.paddingBottom = `${keyboardHeightApprox + 20}px`;
-              // Просто прокручиваем страницу в самый низ
-              window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-            }
-          }, 350);
-        } else {
-          caloriesInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const caloriesInput = document.getElementById('caloriesInput');
+  const container = document.querySelector('.container');
+
+  caloriesInput.addEventListener('focus', () => {
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      setTimeout(() => {
+        const viewport = window.visualViewport;
+        const keyboardHeightApprox = window.innerHeight - viewport.height;
+
+        if (keyboardHeightApprox > 0) {
+          container.style.paddingBottom = `${keyboardHeightApprox + 20}px`;
         }
-      });
-    
-      caloriesInput.addEventListener('blur', () => {
-        container.style.paddingBottom = '';
-      });
-    
-      if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', () => {
-          if (document.activeElement === caloriesInput) {
-            const viewport = window.visualViewport;
-            const keyboardHeightApprox = window.innerHeight - viewport.height;
-    
-            if (keyboardHeightApprox > 0) {
-              container.style.paddingBottom = `${keyboardHeightApprox + 20}px`;
-              window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-            } else {
-              container.style.paddingBottom = '';
-            }
-          }
-        });
-      }
+      }, 350);
     }
+  });
+
+  caloriesInput.addEventListener('blur', () => {
+    container.style.paddingBottom = '';
+  });
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      if (document.activeElement === caloriesInput) {
+        const viewport = window.visualViewport;
+        const keyboardHeightApprox = window.innerHeight - viewport.height;
+
+        container.style.paddingBottom = keyboardHeightApprox > 0 ? `${keyboardHeightApprox + 20}px` : '';
+      }
+    });
+  }
+}
+
     
 
     // Запускаем приложение
