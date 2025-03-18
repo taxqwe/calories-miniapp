@@ -182,8 +182,11 @@
       const dayElement = document.createElement('div');
       const dateStr = formatDate(year, month + 1, day);
       const hasData = dateStr in caloriesData;
+      
+      // Проверяем, является ли этот день выбранным
+      const isSelected = dateStr === selectedDate;
 
-      dayElement.className = `day${dateStr === selectedDate ? ' selected' : ''}${hasData ? ' has-data' : ''}`;
+      dayElement.className = `day${isSelected ? ' selected' : ''}${hasData ? ' has-data' : ''}`;
       
       // Всегда показываем калории, если они есть
       if (hasData) {
@@ -196,10 +199,21 @@
       }
 
       dayElement.addEventListener('click', () => {
+        // Сбрасываем класс 'selected' у всех дней
+        document.querySelectorAll('.day').forEach(day => {
+          day.classList.remove('selected');
+        });
+        
+        // Устанавливаем текущий день как выбранный
+        dayElement.classList.add('selected');
+        
         selectedDate = dateStr;
+        
+        // Показываем секцию редактирования
         editSection.style.display = 'block';
+        
+        // Устанавливаем значение калорий
         caloriesInput.value = caloriesData[dateStr] || '';
-        renderCalendar();
       });
 
       daysContainer.appendChild(dayElement);

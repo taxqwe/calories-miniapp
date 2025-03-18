@@ -50,13 +50,15 @@ h1 {
 }
 
 .calendar {
-  background: transparent;
+  background: var(--dark-bg);
   border-radius: 8px;
   overflow: hidden;
   width: 100%;
   margin: 0;
   padding: 0;
   font-size: var(--base-font-size);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin-bottom: 15px;
 }
 
 .calendar-header {
@@ -111,9 +113,10 @@ h1 {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 3px;
-  background: var(--dark-bg);
+  background-color: transparent;
   padding: 3px;
-  margin: 0;
+  margin: 6px 0 0 0;
+  border-radius: 8px;
 }
 
 .day {
@@ -166,7 +169,7 @@ h1 {
 }
 
 .edit-section {
-  background-color: var(--bg-secondary);
+  background: var(--light-bg);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -187,31 +190,25 @@ h1 {
 }
 
 .quick-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
   margin-top: 15px;
   width: 100%;
-}
-
-.quick-buttons-row {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
 }
 
 .quick-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 70px;
-  height: 32px;
-  border-radius: 6px;
+  height: 40px;
+  border-radius: 8px;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   transition: opacity 0.2s, transform 0.1s;
   user-select: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .quick-button:active {
@@ -232,14 +229,16 @@ h1 {
 /* Добавляем стиль для input и улучшаем его внешний вид */
 #caloriesInput {
   width: 100%;
-  padding: 10px 15px;
+  padding: 15px;
   border-radius: 8px;
   border: 2px solid var(--accent-color);
-  background-color: var(--bg-secondary);
+  background-color: var(--dark-bg);
   color: var(--text-color);
-  font-size: 18px;
+  font-size: 24px;
   text-align: center;
   outline: none;
+  margin-bottom: 15px;
+  font-weight: 500;
 }
 
 /* Добавляем стиль для недопустимого ввода */
