@@ -18,6 +18,8 @@
 
   // Инициализация
   function init() {
+    // Устанавливаем мета-тег viewport для предотвращения масштабирования
+    updateViewport();
     updateCalendarSize();
     try {
       // Получаем chatId
@@ -39,6 +41,9 @@
 
       // Настраиваем обработчики событий
       setupCalendarEventListeners();
+      
+      // Инициализация обработчиков для iOS
+      setupIOSScrollHandlers();
 
       // Загружаем начальные данные
       fetchAndRenderCalendar();
@@ -275,16 +280,38 @@
       }
     });
     
-    // Обработка фокуса для iOS - скроллим страницу вверх при фокусе
+    // Улучшенная обработка фокуса для iOS
     document.getElementById('caloriesInput').addEventListener('focus', function() {
-      // Небольшая задержка, чтобы дать клавиатуре время появиться
+      // Метка позиции
+      const calendarRect = calendar.getBoundingClientRect();
+      const calendarTop = calendarRect.top;
+      
+      // Скроллим календарь в верхнюю часть экрана
+      // Откладываем скролл, чтобы дать клавиатуре время появиться
       setTimeout(() => {
-        window.scrollTo(0, 0);
-        // Второй скролл для iOS с задержкой
+        window.scrollTo({
+          top: calendarTop,
+          behavior: 'smooth'
+        });
+        
+        // Двойной таймаут для надежности
         setTimeout(() => {
-          window.scrollTo(0, 0);
-        }, 100);
-      }, 50);
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }, 300);
+      }, 100);
+      
+      // Сдвигаем внимание на верхнюю часть экрана
+      editSection.style.marginBottom = '300px';
+    });
+    
+    // При потере фокуса восстанавливаем стандартные отступы
+    document.getElementById('caloriesInput').addEventListener('blur', function() {
+      setTimeout(() => {
+        editSection.style.marginBottom = '0';
+      }, 100);
     });
     
     // Добавляем обработчики для кнопок быстрого изменения
@@ -302,6 +329,38 @@
         updateCalories(selectedDate, newValue);
       });
     });
+  }
+
+  // Функция установки мета-тега viewport
+  function updateViewport() {
+    const viewport = document.querySelector('meta[name=viewport]');
+    if (viewport) {
+      viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+    }
+  }
+  
+  // Настройка обработчиков для iOS
+  function setupIOSScrollHandlers() {
+    // Определение iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    
+    if (isIOS) {
+      // Обработчик скролла для iOS
+      document.addEventListener('scroll', function() {
+        if (document.activeElement === caloriesInput) {
+          // Если поле ввода в фокусе, не позволяем прокрутке опускать страницу
+          const formRect = editSection.getBoundingClientRect();
+          
+          // Если секция редактирования уходит вверх за пределы экрана
+          if (formRect.top < 50) {
+            window.scrollTo(0, window.scrollY - 10);
+          }
+        }
+      }, { passive: true });
+      
+      // Добавляем стиль для body
+      document.body.classList.add('ios-device');
+    }
   }
 
   // Запускаем приложение
