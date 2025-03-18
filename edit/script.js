@@ -290,61 +290,47 @@
     }
 
     function handleKeyboardVisibility() {
-  const caloriesInput = document.getElementById('caloriesInput');
-  const container = document.querySelector('.container');
-  let lastScrollPosition = 0;
-
-  function scrollToInput() {
-    caloriesInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  caloriesInput.addEventListener('focus', () => {
-    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-      setTimeout(() => {
-        const viewport = window.visualViewport;
-        const keyboardHeightApprox = window.innerHeight - viewport.height;
-
-        if (keyboardHeightApprox > 0) {
-          // Сохраняем текущий скролл
-          lastScrollPosition = window.scrollY || document.documentElement.scrollTop;
-
-          // Устанавливаем padding, но без смещения позиции просмотра
-          container.style.paddingBottom = `${keyboardHeightApprox + 20}px`;
-
-          // Восстанавливаем сохранённый скролл
-          window.scrollTo(0, lastScrollPosition);
-
-          // Прокручиваем к инпуту явно
-          scrollToInput();
-        }
-      }, 350);
-    } else {
-      scrollToInput();
-    }
-  });
-
-  caloriesInput.addEventListener('blur', () => {
-    container.style.paddingBottom = '';
-  });
-
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', () => {
-      if (document.activeElement === caloriesInput) {
-        const viewport = window.visualViewport;
-        const keyboardHeightApprox = window.innerHeight - viewport.height;
-
-        if (keyboardHeightApprox > 0) {
-          lastScrollPosition = window.scrollY || document.documentElement.scrollTop;
-          container.style.paddingBottom = `${keyboardHeightApprox + 20}px`;
-          window.scrollTo(0, lastScrollPosition);
-          scrollToInput();
+      const caloriesInput = document.getElementById('caloriesInput');
+      const container = document.querySelector('.container');
+    
+      caloriesInput.addEventListener('focus', () => {
+        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+          setTimeout(() => {
+            const viewport = window.visualViewport;
+            const keyboardHeightApprox = window.innerHeight - viewport.height;
+    
+            if (keyboardHeightApprox > 0) {
+              container.style.paddingBottom = `${keyboardHeightApprox + 20}px`;
+              // Просто прокручиваем страницу в самый низ
+              window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }
+          }, 350);
         } else {
-          container.style.paddingBottom = '';
+          caloriesInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+      });
+    
+      caloriesInput.addEventListener('blur', () => {
+        container.style.paddingBottom = '';
+      });
+    
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', () => {
+          if (document.activeElement === caloriesInput) {
+            const viewport = window.visualViewport;
+            const keyboardHeightApprox = window.innerHeight - viewport.height;
+    
+            if (keyboardHeightApprox > 0) {
+              container.style.paddingBottom = `${keyboardHeightApprox + 20}px`;
+              window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            } else {
+              container.style.paddingBottom = '';
+            }
+          }
+        });
       }
-    });
-  }
-}
+    }
+    
 
     // Запускаем приложение
     init();
