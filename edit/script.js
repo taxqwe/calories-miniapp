@@ -246,9 +246,9 @@
     const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     
     // Вычисляем минимально возможный размер
-    const calendarWidth = Math.min(vw - 2, 320); // Максимально уменьшаем
+    const calendarWidth = vw; // Используем всю ширину экрана
     // Минимальные отступы сетки
-    const daySize = Math.floor((calendarWidth - 6) / 7); 
+    const daySize = Math.floor((calendarWidth - 2) / 7); 
     
     // Минимальный размер шрифта
     const fontSize = Math.max(7, Math.min(9, Math.floor(vw / 45)));
