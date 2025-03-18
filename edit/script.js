@@ -274,6 +274,8 @@
       document.getElementById('caloriesInput').addEventListener('change', function() {
         const value = parseInt(this.value) || 0;
         updateCalories(selectedDate, value);
+        // Скрываем клавиатуру после ввода
+        this.blur();
       });
       
       // Добавляем обработчики для кнопок быстрого изменения
@@ -289,6 +291,9 @@
           
           // Обновляем калории на сервере
           updateCalories(selectedDate, newValue);
+          
+          // Скрываем клавиатуру после изменения
+          input.blur();
         });
       });
     }
