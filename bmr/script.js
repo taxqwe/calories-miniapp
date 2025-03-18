@@ -1,7 +1,152 @@
 (function() {
-    // Проверяем параметр debug в URL
+    // Проверяем параметры в URL
     const urlParams = new URLSearchParams(window.location.search);
     const isDebugMode = urlParams.get('debug') === 'true';
+    const lang = urlParams.get('lang') || 'ru'; // По умолчанию русский
+    
+    // Объекты с переводами
+    const translations = {
+        ru: {
+            title: "Что такое BMR?",
+            bmrDescription: "BMR (Basal Metabolic Rate) — это количество калорий, которое ваш организм сжигает в состоянии покоя за 24 часа. Это базовая потребность организма в энергии для поддержания жизнедеятельности.",
+            howToCalculate: "Как рассчитать BMR?",
+            enterData: "Введите данные ниже:",
+            height: "Рост (см)",
+            weight: "Вес (кг)",
+            age: "Возраст (лет)",
+            heightPlaceholder: "Например, 175",
+            weightPlaceholder: "Например, 70",
+            agePlaceholder: "Например, 30",
+            gender: "Пол:",
+            male: "Мужской",
+            female: "Женский",
+            activityLevel: "Уровень физической активности:",
+            selectActivity: "Выберите уровень на шкале:",
+            activityLevels: {
+                1: {
+                    level: "Сидячий образ жизни (минимальная активность)",
+                    details: "Вы проводите большую часть дня в сидячем положении и практически не занимаетесь спортом."
+                },
+                2: {
+                    level: "Легкая активность (1-3 тренировки в неделю)",
+                    details: "Вы немного двигаетесь, ходите пешком или занимаетесь легкими упражнениями несколько раз в неделю."
+                },
+                3: {
+                    level: "Умеренная активность (3-5 тренировок в неделю)",
+                    details: "Вы тренируетесь несколько раз в неделю, поддерживая хорошую физическую форму."
+                },
+                4: {
+                    level: "Высокая активность (6-7 тренировок в неделю)",
+                    details: "Вы регулярно занимаетесь спортом, что требует хорошей физической подготовки."
+                },
+                5: {
+                    level: "Очень высокая активность (интенсивные тренировки)",
+                    details: "У вас интенсивный тренировочный режим, возможно, с несколькими тренировками в день, что требует высокой выносливости."
+                }
+            },
+            calculateButton: "Рассчитать и отправить",
+            result: "Результат:",
+            caloriesPerDay: "калорий/день",
+            sending: "Отправка данных...",
+            success: "✅ Данные успешно отправлены!",
+            error: "❌ Ошибка отправки данных:",
+            criticalError: "❌ Критическая ошибка:",
+            validationErrors: {
+                height: "Рост должен быть от 100 до 230 см",
+                weight: "Вес должен быть от 30 до 300 кг",
+                age: "Возраст должен быть от 14 до 120 лет",
+                fillAll: "Пожалуйста, заполните все поля"
+            }
+        },
+        en: {
+            title: "What is BMR?",
+            bmrDescription: "BMR (Basal Metabolic Rate) is the number of calories your body burns at rest over 24 hours. This is your body's basic energy requirement for maintaining vital functions.",
+            howToCalculate: "How to calculate BMR?",
+            enterData: "Enter your data below:",
+            height: "Height (cm)",
+            weight: "Weight (kg)",
+            age: "Age (years)",
+            heightPlaceholder: "Example: 175",
+            weightPlaceholder: "Example: 70",
+            agePlaceholder: "Example: 30",
+            gender: "Gender:",
+            male: "Male",
+            female: "Female",
+            activityLevel: "Physical Activity Level:",
+            selectActivity: "Select level on the scale:",
+            activityLevels: {
+                1: {
+                    level: "Sedentary (minimal activity)",
+                    details: "You spend most of your day sitting and rarely exercise."
+                },
+                2: {
+                    level: "Light activity (1-3 workouts per week)",
+                    details: "You do some light exercise or walking several times a week."
+                },
+                3: {
+                    level: "Moderate activity (3-5 workouts per week)",
+                    details: "You exercise several times a week, maintaining good physical condition."
+                },
+                4: {
+                    level: "High activity (6-7 workouts per week)",
+                    details: "You regularly engage in sports, requiring good physical fitness."
+                },
+                5: {
+                    level: "Very high activity (intensive training)",
+                    details: "You have an intensive training regime, possibly with multiple workouts per day, requiring high endurance."
+                }
+            },
+            calculateButton: "Calculate and Send",
+            result: "Result:",
+            caloriesPerDay: "calories/day",
+            sending: "Sending data...",
+            success: "✅ Data successfully sent!",
+            error: "❌ Error sending data:",
+            criticalError: "❌ Critical error:",
+            validationErrors: {
+                height: "Height must be between 100 and 230 cm",
+                weight: "Weight must be between 30 and 300 kg",
+                age: "Age must be between 14 and 120 years",
+                fillAll: "Please fill in all fields"
+            }
+        }
+    };
+
+    // Функция для обновления текста на странице
+    const updatePageText = () => {
+        const t = translations[lang];
+        
+        // Обновляем заголовки и описания
+        document.querySelector('h2').textContent = t.title;
+        document.querySelector('h2 + p').textContent = t.bmrDescription;
+        document.querySelector('h3').textContent = t.howToCalculate;
+        document.querySelector('h3 + p').textContent = t.enterData;
+        
+        // Обновляем метки полей ввода
+        document.querySelector('label[for="height"]').textContent = t.height;
+        document.querySelector('label[for="weight"]').textContent = t.weight;
+        document.querySelector('label[for="age"]').textContent = t.age;
+        
+        // Обновляем плейсхолдеры
+        document.getElementById('height').placeholder = t.heightPlaceholder;
+        document.getElementById('weight').placeholder = t.weightPlaceholder;
+        document.getElementById('age').placeholder = t.agePlaceholder;
+        
+        // Обновляем текст для пола
+        document.querySelector('.gender-group').previousElementSibling.textContent = t.gender;
+        document.querySelector('.gender-group label:first-child').textContent = t.male;
+        document.querySelector('.gender-group label:last-child').textContent = t.female;
+        
+        // Обновляем текст для уровня активности
+        document.querySelector('.range-container').previousElementSibling.textContent = t.activityLevel;
+        document.querySelector('.range-container').previousElementSibling.previousElementSibling.textContent = t.selectActivity;
+        
+        // Обновляем кнопку
+        document.querySelector('button[type="submit"]').textContent = t.calculateButton;
+    };
+
+    // Вызываем функцию обновления текста при загрузке страницы
+    updatePageText();
     
     // Функция валидации данных
     const validateInputs = (height, weight, age) => {
@@ -130,6 +275,7 @@
     // Добавляем валидацию при вводе
     const setupValidation = () => {
         const fields = ['height', 'weight', 'age'];
+        const t = translations[lang];
         
         fields.forEach(field => {
             const input = document.getElementById(field);
@@ -143,17 +289,17 @@
                 switch(field) {
                     case 'height':
                         if (value < 100 || value > 230) {
-                            showValidationError(field, 'Рост должен быть от 100 до 230 см');
+                            showValidationError(field, t.validationErrors.height);
                         }
                         break;
                     case 'weight':
                         if (value < 30 || value > 300) {
-                            showValidationError(field, 'Вес должен быть от 30 до 300 кг');
+                            showValidationError(field, t.validationErrors.weight);
                         }
                         break;
                     case 'age':
                         if (value < 14 || value > 120) {
-                            showValidationError(field, 'Возраст должен быть от 14 до 120 лет');
+                            showValidationError(field, t.validationErrors.age);
                         }
                         break;
                 }
@@ -169,42 +315,21 @@
     const activityRange = document.getElementById('activityRange');
     const activityDescription = document.getElementById('activityDescription');
 
-    const activityTexts = {
-      1: {
-        level: "Сидячий образ жизни (минимальная активность)",
-        details: "Вы проводите большую часть дня в сидячем положении и практически не занимаетесь спортом."
-      },
-      2: {
-        level: "Легкая активность (1-3 тренировки в неделю)",
-        details: "Вы немного двигаетесь, ходите пешком или занимаетесь легкими упражнениями несколько раз в неделю."
-      },
-      3: {
-        level: "Умеренная активность (3-5 тренировок в неделю)",
-        details: "Вы тренируетесь несколько раз в неделю, поддерживая хорошую физическую форму."
-      },
-      4: {
-        level: "Высокая активность (6-7 тренировок в неделю)",
-        details: "Вы регулярно занимаетесь спортом, что требует хорошей физической подготовки."
-      },
-      5: {
-        level: "Очень высокая активность (интенсивные тренировки)",
-        details: "У вас интенсивный тренировочный режим, возможно, с несколькими тренировками в день, что требует высокой выносливости."
-      }
-    };
-
     activityRange.addEventListener('input', function() {
-      const activity = activityTexts[this.value];
-      activityDescription.innerHTML = `
-        <div class="activity-level">${activity.level}</div>
-        <div class="activity-details">${activity.details}</div>
-      `;
+        const t = translations[lang];
+        const activity = t.activityLevels[this.value];
+        activityDescription.innerHTML = `
+            <div class="activity-level">${activity.level}</div>
+            <div class="activity-details">${activity.details}</div>
+        `;
     });
 
     // Инициализируем начальное описание
-    const initialActivity = activityTexts[activityRange.value];
+    const t = translations[lang];
+    const initialActivity = t.activityLevels[activityRange.value];
     activityDescription.innerHTML = `
-      <div class="activity-level">${initialActivity.level}</div>
-      <div class="activity-details">${initialActivity.details}</div>
+        <div class="activity-level">${initialActivity.level}</div>
+        <div class="activity-details">${initialActivity.details}</div>
     `;
 
     // Функция для настройки полей ввода
@@ -291,10 +416,11 @@
         const genderRadio = document.querySelector('input[name="gender"]:checked');
         const gender = genderRadio ? genderRadio.value : "";
         const activityLevel = parseInt(activityRange.value);
+        const t = translations[lang];
 
         // Проверка заполнения полей
         if (!height || !weight || !age || !gender) {
-            alert('Пожалуйста, заполните все поля');
+            alert(t.validationErrors.fillAll);
             return;
         }
 
@@ -303,12 +429,12 @@
         if (validationErrors.length > 0) {
             // Показываем ошибки для каждого поля
             validationErrors.forEach(error => {
-                if (error.includes('Рост')) {
-                    showValidationError('height', error);
-                } else if (error.includes('Вес')) {
-                    showValidationError('weight', error);
-                } else if (error.includes('Возраст')) {
-                    showValidationError('age', error);
+                if (error.includes('Рост') || error.includes('Height')) {
+                    showValidationError('height', t.validationErrors.height);
+                } else if (error.includes('Вес') || error.includes('Weight')) {
+                    showValidationError('weight', t.validationErrors.weight);
+                } else if (error.includes('Возраст') || error.includes('Age')) {
+                    showValidationError('age', t.validationErrors.age);
                 }
             });
             
@@ -321,7 +447,7 @@
         }
 
         let bmr;
-        if (gender === 'м') {
+        if (gender === 'м' || gender === 'm') {
             bmr = 10 * weight + 6.25 * height - 5 * age + 5;
         } else {
             bmr = 10 * weight + 6.25 * height - 5 * age - 161;
@@ -344,9 +470,9 @@
         resultDiv.classList.add('visible');
         
         resultDiv.innerHTML = `
-            <h3>Результат:</h3>
-            <p>BMR: <strong>${Math.round(bmr)}</strong> калорий/день</p>
-            <p>TDEE: <strong>${Math.round(tdee)}</strong> калорий/день</p>
+            <h3>${t.result}</h3>
+            <p>BMR: <strong>${Math.round(bmr)}</strong> ${t.caloriesPerDay}</p>
+            <p>TDEE: <strong>${Math.round(tdee)}</strong> ${t.caloriesPerDay}</p>
         `;
 
         // Прокручиваем к результатам
@@ -380,7 +506,7 @@
             }
             
             // Отображаем сообщение об отправке
-            resultDiv.innerHTML += `<p class="sending-status">Отправка данных...</p>`;
+            resultDiv.innerHTML += `<p class="sending-status">${t.sending}</p>`;
             
             // Отправка через fetch с CORS
             fetch('https://calories-bot.duckdns.org:8443/bot/mbr', {
@@ -400,7 +526,7 @@
                     if (isDebugMode) {
                         logToPage("Данные успешно отправлены!", "info");
                     }
-                    resultDiv.innerHTML += `<p class="success-status">✅ Данные успешно отправлены!</p>`;
+                    resultDiv.innerHTML += `<p class="success-status">${t.success}</p>`;
                     
                     // Закрываем окно через небольшую задержку, чтобы пользователь успел увидеть сообщение об успехе
                     setTimeout(() => {
@@ -422,7 +548,7 @@
                     logToPage("Ошибка отправки: " + error.message, "error");
                 }
                 resultDiv.innerHTML += `
-                    <p class="error-status">❌ Ошибка отправки данных: ${error.message}</p>
+                    <p class="error-status">${t.error} ${error.message}</p>
                 `;
                 
                 if (isDebugMode) {
@@ -449,7 +575,7 @@
                 logToPage("Критическая ошибка: " + error.message, "error");
                 
                 resultDiv.innerHTML += `
-                    <p class="error-status">❌ Критическая ошибка: ${error.message}</p>
+                    <p class="error-status">${t.criticalError} ${error.message}</p>
                     <div class="debug-info">
                         <p>URL: https://calories-bot.duckdns.org:8443/bot/mbr</p>
                         <p>Тип ошибки: ${error.name}</p>
@@ -458,7 +584,7 @@
                 `;
             } else {
                 resultDiv.innerHTML += `
-                    <p class="error-status">❌ Произошла ошибка при отправке данных</p>
+                    <p class="error-status">${t.error}</p>
                 `;
             }
         }
