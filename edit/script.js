@@ -74,16 +74,19 @@
       const year = currentDate.getFullYear();
       const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
       
+      const requestBody = {
+        chatId: chatId,
+        date: `${year}-${month}`
+      };
+      console.log('Отправляем запрос:', JSON.stringify(requestBody));
+      
       const response = await fetch('https://calories-bot.duckdns.org:8443/api/calories', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Source-App': 'Calories-Editor'
         },
-        body: JSON.stringify({
-          chatId: chatId,
-          date: `${year}-${month}`
-        })
+        body: JSON.stringify(requestBody)
       });
 
       if (!response.ok) {
@@ -113,17 +116,20 @@
 
     showLoading(true);
     try {
+      const requestBody = {
+        chatId: chatId,
+        date: date,
+        calories: calories
+      };
+      console.log('Отправляем запрос на обновление:', JSON.stringify(requestBody));
+      
       const response = await fetch('https://calories-bot.duckdns.org:8443/api/calories', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Source-App': 'Calories-Editor'
         },
-        body: JSON.stringify({
-          chatId: chatId,
-          date: date,
-          calories: calories
-        })
+        body: JSON.stringify(requestBody)
       });
 
       if (!response.ok) {
