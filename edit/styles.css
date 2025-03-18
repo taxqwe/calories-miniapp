@@ -191,9 +191,9 @@ h1 {
 
 .quick-buttons {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-top: 15px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 12px;
   width: 100%;
 }
 
@@ -201,14 +201,14 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 40px;
-  border-radius: 8px;
+  height: 32px;
+  border-radius: 6px;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 13px;
   cursor: pointer;
   transition: opacity 0.2s, transform 0.1s;
   user-select: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .quick-button:active {
@@ -229,15 +229,15 @@ h1 {
 /* Добавляем стиль для input и улучшаем его внешний вид */
 #caloriesInput {
   width: 100%;
-  padding: 15px;
+  padding: 10px;
   border-radius: 8px;
   border: 2px solid var(--accent-color);
   background-color: var(--dark-bg);
   color: var(--text-color);
-  font-size: 24px;
+  font-size: 20px;
   text-align: center;
   outline: none;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   font-weight: 500;
 }
 
