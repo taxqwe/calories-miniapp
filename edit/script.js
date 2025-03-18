@@ -126,10 +126,9 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Accept': '*/*',
+            'Accept': 'application/json',
             'X-Source-App': 'Calories-Editor',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Access-Control-Allow-Origin': '*'
+            'X-Requested-With': 'XMLHttpRequest'
           },
           mode: 'cors',
           body: JSON.stringify(requestBody)
