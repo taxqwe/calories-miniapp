@@ -156,9 +156,10 @@ h1 {
 
 .day span {
   font-size: calc(var(--base-font-size) * 1.2);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   color: var(--text-color);
   font-weight: 500;
+  line-height: 1;
 }
 
 .day small {
@@ -166,6 +167,7 @@ h1 {
   color: var(--text-light);
   text-align: center;
   word-break: break-word;
+  line-height: 1;
 }
 
 .edit-section {

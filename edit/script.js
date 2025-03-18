@@ -192,7 +192,7 @@
       if (hasData) {
         dayElement.innerHTML = `
           <span>${day}</span>
-          <small>${caloriesData[dateStr]} ккал</small>
+          <small>${caloriesData[dateStr]}ккал</small>
         `;
       } else {
         dayElement.innerHTML = `<span>${day}</span>`;
