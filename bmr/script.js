@@ -546,21 +546,25 @@
         }
 
         try {
-            // Расширенное логирование для отладки (только в режиме отладки)
+            // В режиме отладки только показываем данные
             if (isDebugMode) {
-                logToPage("Подготовка к отправке данных:", "info");
+                logToPage("Данные для отправки:", "info");
                 logToPage("URL: https://calories-bot.duckdns.org:8443/bot/mbr", "info");
                 logToPage("Заголовки: " + JSON.stringify({ 
                     "Content-Type": "application/json",
                     "X-Source-App": "BMR-Calculator"
                 }), "info");
                 logToPage("Данные payload: " + JSON.stringify(payload, null, 2), "info");
+                
+                // Показываем результат без отправки
+                resultDiv.innerHTML += `<p class="debug-status">✅ Режим отладки: данные не отправлены</p>`;
+                return;
             }
             
             // Отображаем сообщение об отправке
             resultDiv.innerHTML += `<p class="sending-status">${t.sending}</p>`;
             
-            // Отправка через fetch с CORS
+            // Отправка через fetch с CORS (только если не режим отладки)
             fetch('https://calories-bot.duckdns.org:8443/bot/mbr', {
                 method: 'POST',
                 headers: {
@@ -571,78 +575,32 @@
                 mode: 'cors'
             })
             .then(response => {
-                if (isDebugMode) {
-                    logToPage("Получен ответ от сервера: " + response.status, "info");
-                }
-                if (response.ok) {
-                    if (isDebugMode) {
-                        logToPage("Данные успешно отправлены!", "info");
-                    }
-                    resultDiv.innerHTML += `<p class="success-status">${t.success}</p>`;
-                    
-                    // Закрываем окно через небольшую задержку
-                    setTimeout(() => {
-                        if (window.Telegram && window.Telegram.WebApp) {
-                            window.Telegram.WebApp.close();
-                        } else {
-                            window.close();
-                        }
-                    }, 1500);
-                    
-                    return response.text();
-                } else {
+                if (!response.ok) {
                     throw new Error("Ошибка HTTP: " + response.status);
                 }
-            })
-            .then(data => {
-                if (data && isDebugMode) {
-                    logToPage("Ответ сервера: " + data, "info");
+                resultDiv.innerHTML += `<p class="success-status">${t.success}</p>`;
+                
+                // Сразу закрываем окно после успешной отправки
+                if (window.Telegram && window.Telegram.WebApp) {
+                    window.Telegram.WebApp.close();
+                } else {
+                    window.close();
                 }
+                
+                return response.text();
             })
             .catch(error => {
-                if (isDebugMode) {
-                    logToPage("Ошибка отправки: " + error.message, "error");
-                }
+                console.error("Ошибка отправки:", error);
                 resultDiv.innerHTML += `
                     <p class="error-status">${t.error} ${error.message}</p>
                 `;
-                
-                if (isDebugMode) {
-                    // Проверка доступности сервера
-                    logToPage("Проверка доступности сервера...", "warning");
-                    return fetch('https://calories-bot.duckdns.org:8443/bot/mbr', {
-                        method: 'HEAD'
-                    })
-                    .then(response => {
-                        logToPage("Сервер доступен, код ответа: " + response.status, "info");
-                    })
-                    .catch(headError => {
-                        logToPage("Сервер недоступен: " + headError.message, "error");
-                        
-                        // Проверка сетевого соединения
-                        logToPage("Проверка сетевого соединения: " + (navigator.onLine ? "онлайн" : "офлайн"), "info");
-                    });
-                }
             });
             
         } catch (error) {
-            if (isDebugMode) {
-                console.error("Критическая ошибка:", error);
-                logToPage("Критическая ошибка: " + error.message, "error");
-                
-                resultDiv.innerHTML += `
-                    <p class="error-status">${t.criticalError} ${error.message}</p>
-                    <div class="debug-info">
-                        <p>URL: https://calories-bot.duckdns.org:8443/bot/mbr</p>
-                        <p>Тип ошибки: ${error.name}</p>
-                        <p>Стек вызовов: ${error.stack || "недоступен"}</p>
-                    </div>
-                `;
-            } else {
-                resultDiv.innerHTML += `
-                    <p class="error-status">${t.error}</p>
-                `;
-            }
+            console.error("Критическая ошибка:", error);
+            resultDiv.innerHTML += `
+                <p class="error-status">${t.error}</p>
+            `;
         }
     });
 })();
