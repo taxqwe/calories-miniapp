@@ -76,11 +76,6 @@
         tg.BackButton.hide();
     }
     
-    // Включаем кнопку Telegram "Главная" (если доступно)
-    if (tg.MainButton) {
-        tg.MainButton.hide();
-    }
-
     // Настраиваем поля ввода для удобства использования на мобильных устройствах
     setupInputFields();
 
@@ -271,171 +266,71 @@
         try {
             // Расширенное логирование для отладки
             logToPage("Подготовка к отправке данных:", "info");
-            logToPage("URL: https://calories-bot.duckdns.org:8443/bmr", "info");
+            logToPage("URL: https://calories-bot.duckdns.org:8443/bot/mbr", "info");
             logToPage("Заголовки: " + JSON.stringify({ 
                 "Content-Type": "application/json",
-                "Host": "calories-bot.duckdns.org"
+                "X-Source-App": "BMR-Calculator"
             }), "info");
             logToPage("Данные payload: " + JSON.stringify(payload, null, 2), "info");
             
             // Отображаем сообщение об отправке
             resultDiv.innerHTML += `<p class="sending-status">Отправка данных...</p>`;
             
-            // Пробуем альтернативный метод - отправка через Telegram WebApp Data
-            logToPage("Используем Telegram WebApp для отправки данных", "warning");
-            
-            // Создаем копию данных для передачи Telegram
-            const telegramData = {
-                bmr: Math.round(bmr),
-                tdee: Math.round(tdee),
-                userInfo: {
-                    height, weight, age, gender, activityLevel
+            // Отправка через fetch с CORS
+            fetch('https://calories-bot.duckdns.org:8443/bot/mbr', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Source-App': 'BMR-Calculator'
+                },
+                body: JSON.stringify(payload),
+                mode: 'cors'
+            })
+            .then(response => {
+                logToPage("Получен ответ от сервера: " + response.status, "info");
+                if (response.ok) {
+                    logToPage("Данные успешно отправлены!", "info");
+                    resultDiv.innerHTML += `<p class="success-status">✅ Данные успешно отправлены!</p>`;
+                    return response.text();
+                } else {
+                    throw new Error("Ошибка HTTP: " + response.status);
                 }
-            };
-            
-            // Устанавливаем данные в Telegram WebApp
-            tg.MainButton.setText('Отправить результаты');
-            tg.MainButton.show();
-            
-            // Альтернативная отправка #1: Используем Telegram WebApp для завершения
-            logToPage("Метод #1: Используем Telegram WebApp MainButton", "info");
-            
-            // При нажатии на кнопку, отправляем обратные данные в Telegram
-            tg.MainButton.onClick(() => {
-                logToPage("Кнопка MainButton нажата, отправляем данные", "info");
-                
-                try {
-                    // Отправляем данные через WebApp
-                    tg.sendData(JSON.stringify(telegramData));
-                    
-                    logToPage("Данные отправлены через Telegram WebApp", "info");
-                    resultDiv.innerHTML += `<p class="success-status">Данные успешно отправлены!</p>`;
-                    
-                    // Закрываем WebApp через 2 секунды
-                    setTimeout(() => {
-                        tg.close();
-                    }, 2000);
-                } catch (sendError) {
-                    logToPage("Ошибка при отправке через Telegram: " + sendError, "error");
-                    
-                    // Альтернативная отправка #2: Используем форму в скрытом iframe
-                    tryIframeMethod();
+            })
+            .then(data => {
+                if (data) {
+                    logToPage("Ответ сервера: " + data, "info");
                 }
-            });
-            
-            // Альтернативная отправка #2: Пробуем через iframe если первый метод не сработает
-            const tryIframeMethod = () => {
-                logToPage("Метод #2: Пробуем отправку через форму в iframe", "warning");
+            })
+            .catch(error => {
+                logToPage("Ошибка отправки: " + error.message, "error");
+                resultDiv.innerHTML += `
+                    <p class="error-status">❌ Ошибка отправки данных: ${error.message}</p>
+                `;
                 
-                // Создаем скрытый iframe
-                const iframe = document.createElement('iframe');
-                iframe.name = 'hidden_iframe';
-                iframe.style.display = 'none';
-                document.body.appendChild(iframe);
-                
-                // Создаем форму
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = 'https://calories-bot.duckdns.org:8443/bmr';
-                form.target = 'hidden_iframe';
-                form.style.display = 'none';
-                
-                // Добавляем данные в форму
-                const dataInput = document.createElement('input');
-                dataInput.type = 'hidden';
-                dataInput.name = 'data';
-                dataInput.value = JSON.stringify(payload);
-                form.appendChild(dataInput);
-                
-                // Добавляем форму в документ и отправляем
-                document.body.appendChild(form);
-                
-                // Логируем попытку отправки
-                logToPage("Отправка формы через iframe...", "info");
-                
-                // Отслеживаем загрузку iframe
-                iframe.onload = function() {
-                    logToPage("Iframe загружен, возможно данные отправлены", "info");
-                    resultDiv.innerHTML += `<p class="success-status">Данные отправлены (iframe метод)!</p>`;
-                };
-                
-                // Отправляем форму
-                form.submit();
-                
-                // Через 5 секунд проверяем статус и удаляем временные элементы
-                setTimeout(() => {
-                    logToPage("Очистка временных элементов iframe", "info");
-                    form.remove();
-                    iframe.remove();
-                }, 5000);
-            };
-            
-            // Если кнопка MainButton недоступна, сразу пробуем метод с iframe
-            if (!tg.MainButton) {
-                logToPage("MainButton недоступна, пробуем отправку через iframe", "warning");
-                tryIframeMethod();
-            }
-            
-        } catch (error) {
-            console.error("Ошибка отправки данных:", error);
-            
-            // Расширенное логирование ошибки
-            logToPage("Ошибка отправки данных: " + error, "error");
-            logToPage("Тип ошибки: " + error.name, "error");
-            logToPage("Сообщение ошибки: " + error.message, "error");
-            logToPage("Стек вызовов: " + (error.stack || "недоступен"), "error");
-            
-            // Проверим доступность сервера через HEAD запрос
-            logToPage("Проверка доступности сервера через HEAD...", "warning");
-            try {
-                fetch("https://calories-bot.duckdns.org:8443/bmr", {
-                    method: "HEAD",
-                    headers: { 
-                        "Host": "calories-bot.duckdns.org"
-                    },
+                // Проверка доступности сервера
+                logToPage("Проверка доступности сервера...", "warning");
+                return fetch('https://calories-bot.duckdns.org:8443/bot/mbr', {
+                    method: 'HEAD'
                 })
                 .then(response => {
-                    logToPage("HEAD запрос успешен: " + response.status, "info");
+                    logToPage("Сервер доступен, код ответа: " + response.status, "info");
                 })
                 .catch(headError => {
-                    logToPage("HEAD запрос не удался: " + headError, "error");
+                    logToPage("Сервер недоступен: " + headError.message, "error");
+                    
+                    // Проверка сетевого соединения
+                    logToPage("Проверка сетевого соединения: " + (navigator.onLine ? "онлайн" : "офлайн"), "info");
                 });
-            } catch (headAttemptError) {
-                logToPage("Не удалось выполнить HEAD запрос: " + headAttemptError, "error");
-            }
+            });
             
-            // Проверим доступность по IP напрямую
-            logToPage("Проверка доступности по IP...", "warning");
-            try {
-                fetch("https://89.110.114.8:8443/bmr", {
-                    method: "HEAD",
-                    headers: { 
-                        "Host": "calories-bot.duckdns.org"
-                    },
-                })
-                .then(response => {
-                    logToPage("HEAD запрос по IP успешен: " + response.status, "info");
-                })
-                .catch(ipHeadError => {
-                    logToPage("HEAD запрос по IP не удался: " + ipHeadError, "error");
-                });
-            } catch (ipAttemptError) {
-                logToPage("Не удалось выполнить HEAD запрос по IP: " + ipAttemptError, "error");
-            }
-            
-            // Проверка наличия сетевого соединения
-            logToPage("Проверка сетевого соединения: " + (navigator.onLine ? "онлайн" : "офлайн"), "info");
-            
-            // Попробуем CORS-проверку с известным публичным API
-            logToPage("Проверка CORS с публичным API...", "warning");
-            fetch("https://jsonplaceholder.typicode.com/todos/1")
-                .then(response => logToPage("Публичный API доступен: " + response.status, "info"))
-                .catch(corsError => logToPage("Публичный API недоступен: " + corsError, "error"));
+        } catch (error) {
+            console.error("Критическая ошибка:", error);
+            logToPage("Критическая ошибка: " + error.message, "error");
             
             resultDiv.innerHTML += `
-                <p class="error-status">Ошибка отправки данных: ${error.message}</p>
+                <p class="error-status">❌ Критическая ошибка: ${error.message}</p>
                 <div class="debug-info">
-                    <p>URL: https://calories-bot.duckdns.org:8443/bmr</p>
+                    <p>URL: https://calories-bot.duckdns.org:8443/bot/mbr</p>
                     <p>Тип ошибки: ${error.name}</p>
                     <p>Стек вызовов: ${error.stack || "недоступен"}</p>
                 </div>
