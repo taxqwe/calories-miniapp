@@ -87,13 +87,22 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Source-App': 'Calories-Editor'
+          'X-Source-App': 'Calories-Editor',
+          'Accept': 'application/json'
         },
         mode: 'cors',
         body: JSON.stringify(requestBody)
       });
 
+      console.log('Получен ответ:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Ошибка ответа сервера:', response.status, errorText);
         throw new Error('Ошибка получения данных');
       }
 
@@ -131,13 +140,22 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Source-App': 'Calories-Editor'
+          'X-Source-App': 'Calories-Editor',
+          'Accept': 'application/json'
         },
         mode: 'cors',
         body: JSON.stringify(requestBody)
       });
 
+      console.log('Получен ответ на обновление:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Ошибка ответа сервера при обновлении:', response.status, errorText);
         throw new Error('Ошибка обновления данных');
       }
 
