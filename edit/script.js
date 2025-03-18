@@ -87,8 +87,8 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Source-App': 'Calories-Editor',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
+          'X-Source-App': 'Calories-Editor'
         },
         mode: 'cors',
         body: JSON.stringify(requestBody)
@@ -142,8 +142,8 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Source-App': 'Calories-Editor',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
+          'X-Source-App': 'Calories-Editor'
         },
         mode: 'cors',
         body: JSON.stringify(requestBody)
