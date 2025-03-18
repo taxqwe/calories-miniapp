@@ -127,8 +127,7 @@
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'X-Source-App': 'Calories-Editor',
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Source-App': 'Calories-Editor'
           },
           mode: 'cors',
           body: JSON.stringify(requestBody)
@@ -143,14 +142,6 @@
         if (!response.ok) {
           const errorText = await response.text();
           console.error('Ошибка ответа сервера при обновлении:', response.status, errorText);
-          // Несмотря на ошибку 406, данные обновляются, продолжаем работу
-          if (response.status === 406) {
-            console.warn('Получена ошибка 406, но данные обновлены успешно');
-            // Обновляем локальные данные
-            caloriesData[date] = calories;
-            renderCalendar();
-            return;
-          }
           throw new Error('Ошибка обновления данных');
         }
 
