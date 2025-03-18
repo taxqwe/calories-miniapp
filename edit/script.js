@@ -145,8 +145,13 @@
           throw new Error('Ошибка обновления данных');
         }
 
-        // Обновляем локальные данные
-        caloriesData[date] = calories;
+        // Если калории = 0, удаляем запись
+        if (calories === 0) {
+          delete caloriesData[date];
+        } else {
+          // Иначе обновляем локальные данные
+          caloriesData[date] = calories;
+        }
         renderCalendar();
       } catch (error) {
         console.error('Ошибка обновления данных:', error);
@@ -266,10 +271,8 @@
       });
 
       document.getElementById('caloriesInput').addEventListener('change', function() {
-        const value = parseInt(this.value);
-        if (!isNaN(value) && value >= 0) {
-          updateCalories(selectedDate, value);
-        }
+        const value = parseInt(this.value) || 0;
+        updateCalories(selectedDate, value);
       });
       
       // Добавляем обработчики для кнопок быстрого изменения
