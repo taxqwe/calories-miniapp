@@ -245,13 +245,13 @@
   function updateCalendarSize() {
     const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     
-    // Вычисляем минимально возможный размер для мобильных устройств
-    const calendarWidth = Math.min(vw - 8, 350); // Делаем еще меньше
-    // Учитываем отступы сетки в 1px
-    const daySize = Math.floor((calendarWidth - 8) / 7); 
+    // Вычисляем минимально возможный размер
+    const calendarWidth = Math.min(vw - 2, 320); // Максимально уменьшаем
+    // Минимальные отступы сетки
+    const daySize = Math.floor((calendarWidth - 6) / 7); 
     
-    // Ещё уменьшаем размер шрифта
-    const fontSize = Math.max(8, Math.min(11, Math.floor(vw / 40)));
+    // Минимальный размер шрифта
+    const fontSize = Math.max(7, Math.min(9, Math.floor(vw / 45)));
     
     // Устанавливаем CSS переменные
     document.documentElement.style.setProperty('--calendar-width', calendarWidth + 'px');
