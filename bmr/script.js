@@ -132,10 +132,14 @@
         document.getElementById('weight').placeholder = t.weightPlaceholder;
         document.getElementById('age').placeholder = t.agePlaceholder;
         
-        // Обновляем текст для пола
+        // Обновляем текст для выбора пола, не затрагивая input
         document.querySelector('.gender-group').previousElementSibling.textContent = t.gender;
-        document.querySelector('.gender-group label:first-child').textContent = t.male;
-        document.querySelector('.gender-group label:last-child').textContent = t.female;
+        const genderLabels = document.querySelectorAll('.gender-group label');
+        if (genderLabels.length >= 2) {
+            // Обновляем текст, не переписывая элемент input
+            genderLabels[0].lastChild.textContent = " " + t.male;
+            genderLabels[1].lastChild.textContent = " " + t.female;
+        }
         
         // Обновляем текст для уровня активности
         document.querySelector('.range-container').previousElementSibling.textContent = t.activityLevel;
