@@ -1,4 +1,30 @@
 (function() {
+    // Проверяем параметр debug в URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDebugMode = urlParams.get('debug') === 'true';
+    
+    // Функция валидации данных
+    const validateInputs = (height, weight, age) => {
+        const errors = [];
+        
+        // Проверка роста (от 100 до 250 см)
+        if (height < 100 || height > 250) {
+            errors.push('Рост должен быть от 100 до 250 см');
+        }
+        
+        // Проверка веса (от 30 до 300 кг)
+        if (weight < 30 || weight > 300) {
+            errors.push('Вес должен быть от 30 до 300 кг');
+        }
+        
+        // Проверка возраста (от 12 до 120 лет)
+        if (age < 12 || age > 120) {
+            errors.push('Возраст должен быть от 12 до 120 лет');
+        }
+        
+        return errors;
+    };
+
     // Создаем контейнер для логов
     const createLogContainer = () => {
         let logContainer = document.getElementById('debug-logs');
@@ -13,6 +39,9 @@
     
     // Функция для логирования в страницу
     const logToPage = (message, type = 'info') => {
+        // Проверяем режим отладки
+        if (!isDebugMode) return;
+        
         // Получаем контейнер для результатов - он всегда видим после расчета
         const resultDiv = document.getElementById('result');
         if (!resultDiv) {
@@ -201,6 +230,14 @@
             return;
         }
 
+        // Валидация данных
+        const validationErrors = validateInputs(height, weight, age);
+        if (validationErrors.length > 0) {
+            const errorMessage = 'Обнаружены ошибки в введенных данных:\n\n' + validationErrors.join('\n');
+            alert(errorMessage);
+            return;
+        }
+
         let bmr;
         if (gender === 'м') {
             bmr = 10 * weight + 6.25 * height - 5 * age + 5;
@@ -233,9 +270,11 @@
         // Прокручиваем к результатам
         resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
         
-        // Добавляем тестовый лог для проверки работы логирования
-        logToPage("Тестовый лог - проверка работы механизма логирования", "info");
-        logToPage("Результаты расчета: BMR=" + Math.round(bmr) + ", TDEE=" + Math.round(tdee), "info");
+        // Добавляем тестовый лог для проверки работы логирования (только в режиме отладки)
+        if (isDebugMode) {
+            logToPage("Тестовый лог - проверка работы механизма логирования", "info");
+            logToPage("Результаты расчета: BMR=" + Math.round(bmr) + ", TDEE=" + Math.round(tdee), "info");
+        }
         
         // Подготовка данных для отправки
         const payload = {
@@ -247,14 +286,16 @@
         };
 
         try {
-            // Расширенное логирование для отладки
-            logToPage("Подготовка к отправке данных:", "info");
-            logToPage("URL: https://calories-bot.duckdns.org:8443/bot/mbr", "info");
-            logToPage("Заголовки: " + JSON.stringify({ 
-                "Content-Type": "application/json",
-                "X-Source-App": "BMR-Calculator"
-            }), "info");
-            logToPage("Данные payload: " + JSON.stringify(payload, null, 2), "info");
+            // Расширенное логирование для отладки (только в режиме отладки)
+            if (isDebugMode) {
+                logToPage("Подготовка к отправке данных:", "info");
+                logToPage("URL: https://calories-bot.duckdns.org:8443/bot/mbr", "info");
+                logToPage("Заголовки: " + JSON.stringify({ 
+                    "Content-Type": "application/json",
+                    "X-Source-App": "BMR-Calculator"
+                }), "info");
+                logToPage("Данные payload: " + JSON.stringify(payload, null, 2), "info");
+            }
             
             // Отображаем сообщение об отправке
             resultDiv.innerHTML += `<p class="sending-status">Отправка данных...</p>`;
@@ -270,9 +311,13 @@
                 mode: 'cors'
             })
             .then(response => {
-                logToPage("Получен ответ от сервера: " + response.status, "info");
+                if (isDebugMode) {
+                    logToPage("Получен ответ от сервера: " + response.status, "info");
+                }
                 if (response.ok) {
-                    logToPage("Данные успешно отправлены!", "info");
+                    if (isDebugMode) {
+                        logToPage("Данные успешно отправлены!", "info");
+                    }
                     resultDiv.innerHTML += `<p class="success-status">✅ Данные успешно отправлены!</p>`;
                     return response.text();
                 } else {
@@ -280,44 +325,54 @@
                 }
             })
             .then(data => {
-                if (data) {
+                if (data && isDebugMode) {
                     logToPage("Ответ сервера: " + data, "info");
                 }
             })
             .catch(error => {
-                logToPage("Ошибка отправки: " + error.message, "error");
+                if (isDebugMode) {
+                    logToPage("Ошибка отправки: " + error.message, "error");
+                }
                 resultDiv.innerHTML += `
                     <p class="error-status">❌ Ошибка отправки данных: ${error.message}</p>
                 `;
                 
-                // Проверка доступности сервера
-                logToPage("Проверка доступности сервера...", "warning");
-                return fetch('https://calories-bot.duckdns.org:8443/bot/mbr', {
-                    method: 'HEAD'
-                })
-                .then(response => {
-                    logToPage("Сервер доступен, код ответа: " + response.status, "info");
-                })
-                .catch(headError => {
-                    logToPage("Сервер недоступен: " + headError.message, "error");
-                    
-                    // Проверка сетевого соединения
-                    logToPage("Проверка сетевого соединения: " + (navigator.onLine ? "онлайн" : "офлайн"), "info");
-                });
+                if (isDebugMode) {
+                    // Проверка доступности сервера
+                    logToPage("Проверка доступности сервера...", "warning");
+                    return fetch('https://calories-bot.duckdns.org:8443/bot/mbr', {
+                        method: 'HEAD'
+                    })
+                    .then(response => {
+                        logToPage("Сервер доступен, код ответа: " + response.status, "info");
+                    })
+                    .catch(headError => {
+                        logToPage("Сервер недоступен: " + headError.message, "error");
+                        
+                        // Проверка сетевого соединения
+                        logToPage("Проверка сетевого соединения: " + (navigator.onLine ? "онлайн" : "офлайн"), "info");
+                    });
+                }
             });
             
         } catch (error) {
-            console.error("Критическая ошибка:", error);
-            logToPage("Критическая ошибка: " + error.message, "error");
-            
-            resultDiv.innerHTML += `
-                <p class="error-status">❌ Критическая ошибка: ${error.message}</p>
-                <div class="debug-info">
-                    <p>URL: https://calories-bot.duckdns.org:8443/bot/mbr</p>
-                    <p>Тип ошибки: ${error.name}</p>
-                    <p>Стек вызовов: ${error.stack || "недоступен"}</p>
-                </div>
-            `;
+            if (isDebugMode) {
+                console.error("Критическая ошибка:", error);
+                logToPage("Критическая ошибка: " + error.message, "error");
+                
+                resultDiv.innerHTML += `
+                    <p class="error-status">❌ Критическая ошибка: ${error.message}</p>
+                    <div class="debug-info">
+                        <p>URL: https://calories-bot.duckdns.org:8443/bot/mbr</p>
+                        <p>Тип ошибки: ${error.name}</p>
+                        <p>Стек вызовов: ${error.stack || "недоступен"}</p>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML += `
+                    <p class="error-status">❌ Произошла ошибка при отправке данных</p>
+                `;
+            }
         }
     });
 })();
