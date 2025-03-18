@@ -233,17 +233,25 @@
 
   function updateCalendarSize() {
     const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-    const vh = Math.min(document.documentElement.clientHeight || 0, window.innerHeight || 0);
     
-    // Вычисляем оптимальный размер календаря
-    const calendarWidth = Math.min(360, vw - 10); // максимум 360px или на 10px меньше ширины экрана
-    const daySize = Math.floor((calendarWidth - 14) / 7); // размер ячейки (14px - отступы сетки)
-    const fontSize = Math.max(11, Math.min(14, Math.floor(daySize / 3))); // размер шрифта от 11px до 14px
+    // Вычисляем оптимальный размер календаря на основе ширины окна
+    const calendarWidth = Math.min(vw - 20, 500); // максимум 500px
+    const daySize = Math.floor((calendarWidth - 14) / 7); // размер ячейки
+    
+    // Адаптируем размер шрифта под размер ячейки
+    const fontSize = Math.max(10, Math.min(14, Math.floor(vw / 30)));
     
     // Устанавливаем CSS переменные
     document.documentElement.style.setProperty('--calendar-width', calendarWidth + 'px');
     document.documentElement.style.setProperty('--day-size', daySize + 'px');
     document.documentElement.style.setProperty('--base-font-size', fontSize + 'px');
+    
+    // Подстраиваем высоту области редактирования
+    if (editSection && editSection.style.display === 'block') {
+      const calendarBottom = calendar.getBoundingClientRect().bottom;
+      const availableHeight = window.innerHeight - calendarBottom - 20;
+      editSection.style.maxHeight = availableHeight + 'px';
+    }
   }
 
   // Вызываем функцию при загрузке и изменении размера окна
