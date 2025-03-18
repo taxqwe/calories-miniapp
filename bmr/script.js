@@ -213,6 +213,9 @@
 
     // Создаем контейнер для логов
     const createLogContainer = () => {
+        // Создаем контейнер для логов только в режиме отладки
+        if (!isDebugMode) return null;
+
         let logContainer = document.getElementById('debug-logs');
         if (!logContainer) {
             logContainer = document.createElement('div');
