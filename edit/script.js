@@ -18,8 +18,6 @@
 
   // Инициализация
   function init() {
-    // Устанавливаем мета-тег viewport для предотвращения масштабирования
-    updateViewport();
     updateCalendarSize();
     try {
       // Получаем chatId
@@ -41,9 +39,6 @@
 
       // Настраиваем обработчики событий
       setupCalendarEventListeners();
-      
-      // Инициализация обработчиков для iOS
-      setupIOSScrollHandlers();
 
       // Загружаем начальные данные
       fetchAndRenderCalendar();
@@ -239,23 +234,16 @@
   function updateCalendarSize() {
     const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     
-    // Вычисляем размер ячеек более адаптивно
-    const containerWidth = Math.min(vw - 30, 480); // контейнер максимум 480px
-    const daySize = Math.floor((containerWidth - 50) / 7); // учитываем отступы и границы
+    // Вычисляем размер ячеек для полной ширины
+    const containerWidth = vw - 20; // с небольшими отступами по краям
+    const daySize = Math.floor((containerWidth - 14) / 7); // учитываем минимальные отступы
     
     // Адаптивный размер шрифта
-    const fontSize = Math.max(9, Math.min(12, Math.floor(daySize / 4)));
+    const fontSize = Math.max(10, Math.min(14, Math.floor(daySize / 3.5)));
     
     // Устанавливаем CSS переменные
     document.documentElement.style.setProperty('--day-size', daySize + 'px');
     document.documentElement.style.setProperty('--base-font-size', fontSize + 'px');
-    
-    // Подстраиваем высоту области редактирования
-    if (editSection && editSection.style.display === 'block') {
-      const calendarBottom = calendar.getBoundingClientRect().bottom;
-      const availableHeight = window.innerHeight - calendarBottom - 20;
-      editSection.style.maxHeight = Math.max(60, availableHeight) + 'px';
-    }
   }
 
   // Вызываем функцию при загрузке и изменении размера окна
@@ -280,38 +268,9 @@
       }
     });
     
-    // Улучшенная обработка фокуса для iOS
+    // Установка курсора в конец поля ввода при фокусе
     document.getElementById('caloriesInput').addEventListener('focus', function() {
-      // Установка курсора в конец поля ввода
       this.setSelectionRange(this.value.length, this.value.length);
-      
-      // Добавляем класс к документу, CSS будет добавлять отступ
-      document.body.classList.add('keyboard-active');
-      
-      // Получаем окончательную высоту контейнера, чтобы оставить место под клавиатурой
-      setTimeout(() => {
-        const containerRect = document.querySelector('.container').getBoundingClientRect();
-        const keyboardHeight = window.innerHeight - (window.visualViewport?.height || window.innerHeight);
-        
-        // Если клавиатура занимает значительную часть экрана
-        if (keyboardHeight > 100) {
-          // Добавляем padding-bottom к контейнеру, чтобы создать пространство для скролла
-          document.querySelector('.container').style.paddingBottom = (keyboardHeight + 150) + 'px';
-          
-          // Скроллим к полю ввода, чтобы оно было видно
-          setTimeout(() => {
-            this.scrollIntoView({behavior: 'smooth', block: 'center'});
-          }, 100);
-        }
-      }, 300);
-    });
-    
-    // При потере фокуса
-    document.getElementById('caloriesInput').addEventListener('blur', function() {
-      // Убираем отступ внизу контейнера
-      document.querySelector('.container').style.paddingBottom = '';
-      // Убираем маркер состояния клавиатуры
-      document.body.classList.remove('keyboard-active');
     });
     
     // Добавляем обработчики для кнопок быстрого изменения
@@ -329,49 +288,6 @@
         updateCalories(selectedDate, newValue);
       });
     });
-  }
-
-  // Функция установки мета-тега viewport
-  function updateViewport() {
-    const viewport = document.querySelector('meta[name=viewport]');
-    if (viewport) {
-      viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-    }
-  }
-  
-  // Настройка обработчиков для iOS
-  function setupIOSScrollHandlers() {
-    // Определение iOS
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    
-    if (isIOS) {
-      console.log('Обнаружено устройство iOS');
-      // Добавляем стиль для body
-      document.body.classList.add('ios-device');
-      
-      // Отслеживаем изменения в размере viewPort (обычно из-за клавиатуры)
-      if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', function() {
-          console.log('Изменение viewPort:', {
-            height: window.visualViewport.height,
-            innerHeight: window.innerHeight,
-            difference: window.innerHeight - window.visualViewport.height
-          });
-          
-          // Если высота изменилась значительно, значит открылась/закрылась клавиатура
-          const keyboardHeight = window.innerHeight - window.visualViewport.height;
-          if (keyboardHeight > 100) {
-            // Клавиатура открыта
-            document.body.classList.add('keyboard-active');
-            document.querySelector('.container').style.paddingBottom = (keyboardHeight + 150) + 'px';
-          } else {
-            // Клавиатура закрыта
-            document.body.classList.remove('keyboard-active');
-            document.querySelector('.container').style.paddingBottom = '';
-          }
-        });
-      }
-    }
   }
 
   // Запускаем приложение
