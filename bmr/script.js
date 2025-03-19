@@ -535,7 +535,8 @@
                 height, weight, age, gender, activityLevel,
                 bmr: Math.round(bmr),
                 tdee: Math.round(tdee)
-            }
+            },
+            initData: window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp.initData : ''
         };
 
         // Добавляем chatId только если он положительное число
@@ -558,6 +559,7 @@
                     "X-Source-App": "BMR-Calculator"
                 }), "info");
                 logToPage("Данные payload: " + JSON.stringify(payload, null, 2), "info");
+                logToPage("initData присутствует: " + (payload.initData ? "Да" : "Нет"), "info");
                 
                 // Показываем результат без отправки
                 resultDiv.innerHTML += `<p class="debug-status">✅ Режим отладки: данные не отправлены</p>`;
