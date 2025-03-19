@@ -561,9 +561,8 @@
                 logToPage("Данные payload: " + JSON.stringify(payload, null, 2), "info");
                 logToPage("initData присутствует: " + (payload.initData ? "Да" : "Нет"), "info");
                 
-                // Показываем результат без отправки
-                resultDiv.innerHTML += `<p class="debug-status">✅ Режим отладки: данные не отправлены</p>`;
-                return;
+                // Добавляем информацию о том, что запрос будет выполнен
+                logToPage("Выполнение запроса...", "info");
             }
             
             // Отображаем сообщение об отправке
@@ -579,10 +578,23 @@
                 body: JSON.stringify(payload),
                 mode: 'cors'
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Ошибка HTTP: " + response.status);
+            .then(async response => {
+                // Всегда читаем ответ для логирования
+                const responseText = await response.text();
+                
+                if (isDebugMode) {
+                    logToPage("Ответ сервера: " + response.status + " " + response.statusText, "info");
+                    logToPage("Тело ответа: " + responseText, "info");
                 }
+                
+                if (!response.ok) {
+                    const errorMsg = "Ошибка HTTP: " + response.status + " - " + response.statusText;
+                    if (isDebugMode) {
+                        logToPage(errorMsg, "error");
+                    }
+                    throw new Error(errorMsg);
+                }
+                
                 resultDiv.innerHTML += `<p class="success-status">${t.success}</p>`;
                 
                 // Сразу закрываем окно после успешной отправки
@@ -592,13 +604,16 @@
                     window.close();
                 }
                 
-                return response.text();
+                return responseText;
             })
             .catch(error => {
                 console.error("Ошибка отправки:", error);
                 resultDiv.innerHTML += `
                     <p class="error-status">${t.error} ${error.message}</p>
                 `;
+                
+                // Добавляем алерт для всех режимов (включая production)
+                alert(`${t.criticalError} ${error.message}`);
             });
             
         } catch (error) {
@@ -606,6 +621,9 @@
             resultDiv.innerHTML += `
                 <p class="error-status">${t.error}</p>
             `;
+            
+            // Добавляем алерт для всех режимов (включая production)
+            alert(`${t.criticalError} ${error.message}`);
         }
     });
 })();
