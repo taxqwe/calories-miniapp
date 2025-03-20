@@ -6,15 +6,98 @@
   <title>BMR Калькулятор</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    .language-switcher {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .info-icon {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 20px;
+      height: 20px;
+      background-color: #000;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 14px;
+      margin-left: 5px;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    
+    .info-tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .info-tooltip .tooltip-text {
+      visibility: hidden;
+      width: 300px;
+      background-color: #333;
+      color: #fff;
+      text-align: left;
+      padding: 10px;
+      border-radius: 6px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    
+    .info-tooltip .tooltip-text::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #333 transparent transparent transparent;
+    }
+    
+    .info-tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h2>Что такое BMR и активность?</h2>
+    <button class="language-switcher" onclick="window.location.href='index_en.html'">English</button>
+    
+    <h2>BMR и PAL калькулятор</h2>
     <p>
-      BMR (Basal Metabolic Rate) — это количество калорий, которое ваш организм сжигает в состоянии покоя за 24 часа. Это базовая потребность организма в энергии для поддержания жизнедеятельности.
+      BMR — базовый обмен веществ, количество калорий для поддержания работы организма в состоянии покоя.
+      <span class="info-tooltip">
+        <span class="info-icon">i</span>
+        <span class="tooltip-text">
+          BMR (Basal Metabolic Rate) — это количество калорий, которое ваш организм сжигает в состоянии покоя за 24 часа для поддержания жизненно важных функций (дыхание, кровообращение, работа мозга и т.д.).
+        </span>
+      </span>
     </p>
     <p>
-      Общее количество калорий рассчитывается с учетом BMR и уровня физической активности. Активные калории — это энергия, затрачиваемая на физическую активность помимо основного обмена веществ. Суммарное значение этих показателей даст более точную оценку ваших ежедневных энергетических потребностей.
+      PAL (или AMR) — калории активности, дополнительная энергия для физической активности.
+      <span class="info-tooltip">
+        <span class="info-icon">i</span>
+        <span class="tooltip-text">
+          PAL (Physical Activity Level) или AMR (Active Metabolic Rate) — это дополнительные калории, которые вы тратите на физическую активность помимо базового обмена веществ. PAL/AMR вместе с BMR дают общую суточную потребность в калориях.
+        </span>
+      </span>
     </p>
     <h3>Внесите свои данные:</h3>
     <form id="bmr-form">

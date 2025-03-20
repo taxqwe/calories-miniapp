@@ -6,15 +6,98 @@
   <title>BMR Calculator</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    .language-switcher {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .info-icon {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 20px;
+      height: 20px;
+      background-color: #000;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 14px;
+      margin-left: 5px;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    
+    .info-tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .info-tooltip .tooltip-text {
+      visibility: hidden;
+      width: 300px;
+      background-color: #333;
+      color: #fff;
+      text-align: left;
+      padding: 10px;
+      border-radius: 6px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    
+    .info-tooltip .tooltip-text::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #333 transparent transparent transparent;
+    }
+    
+    .info-tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h2>What is BMR and activity?</h2>
+    <button class="language-switcher" onclick="window.location.href='index.html'">Русский</button>
+    
+    <h2>BMR and PAL Calculator</h2>
     <p>
-      BMR (Basal Metabolic Rate) is the number of calories your body burns at rest over 24 hours. It's the basic energy requirement your body needs to maintain vital functions.
+      BMR — basal metabolic rate, calories needed to maintain basic body functions at rest.
+      <span class="info-tooltip">
+        <span class="info-icon">i</span>
+        <span class="tooltip-text">
+          BMR (Basal Metabolic Rate) is the number of calories your body burns at rest over 24 hours to maintain vital functions (breathing, circulation, brain function, etc.).
+        </span>
+      </span>
     </p>
     <p>
-      The total calorie requirement is calculated based on your BMR and physical activity level. Active calories are the energy spent on physical activity beyond your basic metabolism. The sum of these values provides a more accurate estimate of your daily energy needs.
+      PAL (or AMR) — active calories, additional energy for physical activity.
+      <span class="info-tooltip">
+        <span class="info-icon">i</span>
+        <span class="tooltip-text">
+          PAL (Physical Activity Level) or AMR (Active Metabolic Rate) are additional calories you spend on physical activity beyond your basal metabolism. PAL/AMR together with BMR give your total daily calorie requirement.
+        </span>
+      </span>
     </p>
     <h3>Enter your data:</h3>
     <form id="bmr-form">

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Тестовая страница BMR</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    .debug-box {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #333;
+      border: 1px solid #555;
+      color: #fff;
+    }
+    .btn {
+      margin: 5px;
+      padding: 8px 15px;
+      background-color: #0088cc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Диагностика языковых настроек</h2>
+    
+    <div class="debug-box">
+      <p>Язык браузера: <span id="browser-lang"></span></p>
+      <p>URL параметр lang: <span id="url-lang"></span></p>
+      <p>Текущий язык: <span id="current-lang"></span></p>
+    </div>
+    
+    <div style="margin-top: 20px;">
+      <button class="btn" onclick="window.location.href='index.html'">Открыть русскую версию</button>
+      <button class="btn" onclick="window.location.href='index_en.html'">Открыть английскую версию</button>
+    </div>
+    
+    <div style="margin-top: 20px;">
+      <h3>Текст на русском</h3>
+      <p>
+        BMR (Basal Metabolic Rate) — это количество калорий, которое ваш организм сжигает в состоянии покоя за 24 часа. Это базовая потребность организма в энергии для поддержания жизнедеятельности.
+      </p>
+      <p>
+        Общее количество калорий рассчитывается с учетом BMR и уровня физической активности. Активные калории — это энергия, затрачиваемая на физическую активность помимо основного обмена веществ. Суммарное значение этих показателей даст более точную оценку ваших ежедневных энергетических потребностей.
+      </p>
+    </div>
+    
+    <div style="margin-top: 20px;">
+      <h3>Text in English</h3>
+      <p>
+        BMR (Basal Metabolic Rate) is the number of calories your body burns at rest over 24 hours. It's the basic energy requirement your body needs to maintain vital functions.
+      </p>
+      <p>
+        The total calorie requirement is calculated based on your BMR and physical activity level. Active calories are the energy spent on physical activity beyond your basic metabolism. The sum of these values provides a more accurate estimate of your daily energy needs.
+      </p>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Определение языка браузера
+      const browserLang = navigator.language || navigator.userLanguage;
+      document.getElementById('browser-lang').textContent = browserLang;
+      
+      // Получение параметра lang из URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const langParam = urlParams.get('lang') || 'не указан';
+      document.getElementById('url-lang').textContent = langParam;
+      
+      // Текущий язык (logica определения языка из script.js)
+      const currentLang = langParam !== 'не указан' ? langParam : 
+                          (browserLang.startsWith('ru') ? 'ru' : 'en');
+      document.getElementById('current-lang').textContent = currentLang;
+    });
+  </script>
+</body>
+</html> 
