@@ -41,54 +41,26 @@
       display: inline-block;
     }
     
+    /* Стиль для Telegram Web App */
     .info-tooltip .tooltip-text {
       visibility: hidden;
-      width: 250px;
-      max-width: 90vw;
-      background-color: #333;
+      width: 280px;
+      max-width: 80vw;
+      background-color: rgba(51, 51, 51, 0.95);
       color: #fff;
       text-align: left;
-      padding: 10px;
-      border-radius: 6px;
-      position: absolute;
-      z-index: 1;
-      bottom: 130%;
-      left: -20px;
+      padding: 12px;
+      border-radius: 8px;
+      position: fixed;
+      z-index: 100;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
       opacity: 0;
-      transition: opacity 0.3s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       font-size: 14px;
-      line-height: 1.4;
-      pointer-events: none;
-    }
-    
-    @media (max-width: 480px) {
-      .info-tooltip .tooltip-text {
-        width: 200px;
-        left: auto;
-        right: -10px;
-        bottom: 135%;
-      }
-      
-      .info-tooltip .tooltip-text::after {
-        left: auto;
-        right: 20px;
-      }
-    }
-    
-    .info-tooltip .tooltip-text::after {
-      content: "";
-      position: absolute;
-      top: 100%;
-      left: 30px;
-      margin-left: -5px;
-      border-width: 5px;
-      border-style: solid;
-      border-color: #333 transparent transparent transparent;
-    }
-    
-    .info-tooltip:hover .tooltip-text {
-      visibility: visible;
-      opacity: 1;
+      line-height: 1.5;
+      transition: opacity 0.2s ease;
     }
     
     .info-tooltip.active .tooltip-text {
@@ -107,17 +79,12 @@
     })();
 
     document.addEventListener('DOMContentLoaded', function() {
-      // Обновляем URL переключателя языка
-      document.querySelector('.language-switcher').addEventListener('click', function(e) {
-        e.preventDefault();
-        window.location.href = 'index_en.html' + window.location.search;
-      });
-      
-      // Обработчик для информационных иконок на мобильных устройствах
+      // Обработчик для информационных иконок
       const infoIcons = document.querySelectorAll('.info-icon');
       infoIcons.forEach(icon => {
         icon.addEventListener('click', function(e) {
           e.preventDefault();
+          e.stopPropagation();
           const tooltip = this.parentNode;
           
           // Закрываем все открытые подсказки
@@ -134,7 +101,7 @@
       
       // Закрываем подсказки при клике вне них
       document.addEventListener('click', function(e) {
-        if (!e.target.closest('.info-tooltip')) {
+        if (!e.target.closest('.info-tooltip') || e.target.classList.contains('tooltip-text')) {
           document.querySelectorAll('.info-tooltip.active').forEach(tip => {
             tip.classList.remove('active');
           });
@@ -145,24 +112,22 @@
 </head>
 <body>
   <div class="container">
-    <button class="language-switcher">English</button>
-    
-    <h2>БМО и КФА калькулятор</h2>
+    <h2>Калькулятор BMR и TDEE</h2>
     <p>
-      БМО — базовый метаболический обмен, количество калорий для поддержания работы организма в состоянии покоя.
+      BMR — базовый обмен веществ (основной обмен).
       <span class="info-tooltip">
         <span class="info-icon">i</span>
         <span class="tooltip-text">
-          БМО (базовый метаболический обмен) или BMR (Basal Metabolic Rate) — это количество калорий, которое ваш организм сжигает в состоянии покоя за 24 часа для поддержания жизненно важных функций.
+          BMR (Basal Metabolic Rate) — количество энергии (в калориях), которое организм тратит, если вы целый день ничего не делаете и просто лежите, поддерживая только базовые функции жизнедеятельности.
         </span>
       </span>
     </p>
     <p>
-      КФА — коэффициент физической активности, учитывающий ежедневные нагрузки.
+      TDEE — общий суточный расход энергии.
       <span class="info-tooltip">
         <span class="info-icon">i</span>
         <span class="tooltip-text">
-          КФА (коэффициент физической активности) или PAL (Physical Activity Level) — это множитель, показывающий, сколько дополнительной энергии требуется для вашей повседневной активности. КФА в сочетании с БМО дают общую суточную потребность в калориях.
+          TDEE (Total Daily Energy Expenditure) — сумма всех видов активности в течение дня: основной обмен (BMR), термический эффект пищи, любая физическая нагрузка (включая спорт), а также активность без явных тренировок.
         </span>
       </span>
     </p>
