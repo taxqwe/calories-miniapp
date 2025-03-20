@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calories Editor</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Calories Editor</h1>
+    
+    <div id="calendar" class="calendar">
+      <div class="calendar-header">
+        <button id="prevMonth">&lt;</button>
+        <h2 id="currentMonth"></h2>
+        <button id="nextMonth">&gt;</button>
+      </div>
+      
+      <div class="weekdays">
+        <div class="weekday">Mo</div>
+        <div class="weekday">Tu</div>
+        <div class="weekday">We</div>
+        <div class="weekday">Th</div>
+        <div class="weekday">Fr</div>
+        <div class="weekday">Sa</div>
+        <div class="weekday">Su</div>
+      </div>
+      
+      <div id="days" class="days"></div>
+    </div>
+
+    <div id="editSection" class="edit-section" style="display: none;">
+      <input 
+        type="number" 
+        id="caloriesInput" 
+        placeholder="Enter calories"
+        min="0"
+        max="10000"
+      >
+      
+      <div class="quick-buttons">
+        <div class="quick-button minus" data-value="-5">-5</div>
+        <div class="quick-button plus" data-value="5">+5</div>
+        <div class="quick-button minus" data-value="-10">-10</div>
+        <div class="quick-button plus" data-value="10">+10</div>
+        
+        <div class="quick-button minus" data-value="-25">-25</div>
+        <div class="quick-button plus" data-value="25">+25</div>
+        <div class="quick-button minus" data-value="-50">-50</div>
+        <div class="quick-button plus" data-value="50">+50</div>
+        
+        <div class="quick-button minus" data-value="-100">-100</div>
+        <div class="quick-button plus" data-value="100">+100</div>
+        <div class="quick-button minus" data-value="-300">-300</div>
+        <div class="quick-button plus" data-value="300">+300</div>
+        
+        <div class="quick-button minus" data-value="-500">-500</div>
+        <div class="quick-button plus" data-value="500">+500</div>
+      </div>
+    </div>
+
+    <div id="loading" class="loading" style="display: none;">
+      <div class="spinner"></div>
+    </div>
+  </div>
+  
+  <script src="script_en.js"></script>
+</body>
+</html> 
