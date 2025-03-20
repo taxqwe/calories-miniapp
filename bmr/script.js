@@ -154,6 +154,7 @@
     };
 
     // Функция для обновления текста на странице
+    /*
     const updatePageText = () => {
         const t = translations[lang];
         
@@ -188,6 +189,7 @@
 
     // Вызываем функцию обновления текста при загрузке страницы
     updatePageText();
+    */
     
     // Функция валидации данных
     const validateInputs = (height, weight, age) => {
@@ -320,7 +322,6 @@
     // Добавляем валидацию при вводе
     const setupValidation = () => {
         const fields = ['height', 'weight', 'age'];
-        const t = translations[lang];
         
         fields.forEach(field => {
             const input = document.getElementById(field);
@@ -334,17 +335,17 @@
                 switch(field) {
                     case 'height':
                         if (value < 100 || value > 230) {
-                            showValidationError(field, t.validationErrors.height);
+                            showValidationError(field, "Рост должен быть от 100 до 230 см");
                         }
                         break;
                     case 'weight':
                         if (value < 30 || value > 300) {
-                            showValidationError(field, t.validationErrors.weight);
+                            showValidationError(field, "Вес должен быть от 30 до 300 кг");
                         }
                         break;
                     case 'age':
                         if (value < 14 || value > 120) {
-                            showValidationError(field, t.validationErrors.age);
+                            showValidationError(field, "Возраст должен быть от 14 до 120 лет");
                         }
                         break;
                 }
@@ -360,9 +361,32 @@
     const activityRange = document.getElementById('activityRange');
     const activityDescription = document.getElementById('activityDescription');
 
+    // Фиксированные описания активности для русской версии
+    const activityLevels = {
+        1: {
+            level: "Сидячий образ жизни (минимальная активность)",
+            details: "Вы проводите большую часть дня в сидячем положении и практически не занимаетесь спортом."
+        },
+        2: {
+            level: "Легкая активность (1-3 тренировок в неделю)",
+            details: "Вы немного двигаетесь, ходите пешком или занимаетесь легкими упражнениями несколько раз в неделю."
+        },
+        3: {
+            level: "Умеренная активность (3-5 тренировок в неделю)",
+            details: "Вы тренируетесь несколько раз в неделю, поддерживая хорошую физическую форму."
+        },
+        4: {
+            level: "Высокая активность (6-7 тренировок в неделю)",
+            details: "Вы регулярно занимаетесь спортом, что требует хорошей физической подготовки."
+        },
+        5: {
+            level: "Очень высокая активность (интенсивные тренировки)",
+            details: "У вас интенсивный тренировочный режим, возможно, с несколькими тренировками в день, что требует высокой выносливости."
+        }
+    };
+
     activityRange.addEventListener('input', function() {
-        const t = translations[lang];
-        const activity = t.activityLevels[this.value];
+        const activity = activityLevels[this.value];
         activityDescription.innerHTML = `
             <div class="activity-level">${activity.level}</div>
             <div class="activity-details">${activity.details}</div>
@@ -370,8 +394,7 @@
     });
 
     // Инициализируем начальное описание
-    const t = translations[lang];
-    const initialActivity = t.activityLevels[activityRange.value];
+    const initialActivity = activityLevels[activityRange.value];
     activityDescription.innerHTML = `
         <div class="activity-level">${initialActivity.level}</div>
         <div class="activity-details">${initialActivity.details}</div>
@@ -461,11 +484,10 @@
         const genderRadio = document.querySelector('input[name="gender"]:checked');
         const gender = genderRadio ? genderRadio.value : "";
         const activityLevel = parseInt(activityRange.value);
-        const t = translations[lang];
 
         // Проверка заполнения полей
         if (!height || !weight || !age || !gender) {
-            alert(t.validationErrors.fillAll);
+            alert("Пожалуйста, заполните все поля");
             return;
         }
 
@@ -475,11 +497,11 @@
             // Показываем ошибки для каждого поля
             validationErrors.forEach(error => {
                 if (error.includes('Рост') || error.includes('Height')) {
-                    showValidationError('height', t.validationErrors.height);
+                    showValidationError('height', "Рост должен быть от 100 до 230 см");
                 } else if (error.includes('Вес') || error.includes('Weight')) {
-                    showValidationError('weight', t.validationErrors.weight);
+                    showValidationError('weight', "Вес должен быть от 30 до 300 кг");
                 } else if (error.includes('Возраст') || error.includes('Age')) {
-                    showValidationError('age', t.validationErrors.age);
+                    showValidationError('age', "Возраст должен быть от 14 до 120 лет");
                 }
             });
             
@@ -515,9 +537,9 @@
         resultDiv.classList.add('visible');
         
         resultDiv.innerHTML = `
-            <h3>${t.result}</h3>
-            <p>BMR: <strong>${Math.round(bmr)}</strong> ${t.caloriesPerDay}</p>
-            <p>TDEE: <strong>${Math.round(tdee)}</strong> ${t.caloriesPerDay}</p>
+            <h3>Результат:</h3>
+            <p>BMR: <strong>${Math.round(bmr)}</strong> калорий/день</p>
+            <p>TDEE: <strong>${Math.round(tdee)}</strong> калорий/день</p>
         `;
 
         // Прокручиваем к результатам
@@ -566,7 +588,7 @@
             }
             
             // Отображаем сообщение об отправке
-            resultDiv.innerHTML += `<p class="sending-status">${t.sending}</p>`;
+            resultDiv.innerHTML += `<p class="sending-status">Отправка данных...</p>`;
             
             // Отправка через fetch с CORS (только если не режим отладки)
             fetch('https://calories-bot.duckdns.org:8443/bot/mbr', {
@@ -595,7 +617,7 @@
                     throw new Error(errorMsg);
                 }
                 
-                resultDiv.innerHTML += `<p class="success-status">${t.success}</p>`;
+                resultDiv.innerHTML += `<p class="success-status">Данные успешно отправлены!</p>`;
                 
                 // Сразу закрываем окно после успешной отправки
                 if (window.Telegram && window.Telegram.WebApp) {
@@ -609,21 +631,21 @@
             .catch(error => {
                 console.error("Ошибка отправки:", error);
                 resultDiv.innerHTML += `
-                    <p class="error-status">${t.error} ${error.message}</p>
+                    <p class="error-status">Ошибка отправки данных: ${error.message}</p>
                 `;
                 
                 // Добавляем алерт для всех режимов (включая production)
-                alert(`${t.criticalError} ${error.message}`);
+                alert(`Критическая ошибка: ${error.message}`);
             });
             
         } catch (error) {
             console.error("Критическая ошибка:", error);
             resultDiv.innerHTML += `
-                <p class="error-status">${t.error}</p>
+                <p class="error-status">Ошибка отправки данных</p>
             `;
             
             // Добавляем алерт для всех режимов (включая production)
-            alert(`${t.criticalError} ${error.message}`);
+            alert(`Критическая ошибка: ${error.message}`);
         }
     });
 })();
