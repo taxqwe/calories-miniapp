@@ -98,14 +98,15 @@
   </style>
   <script>
     // Проверка параметра lang в URL
-    document.addEventListener('DOMContentLoaded', function() {
-      // Переключение языка на основе параметра URL
+    (function() {
       const urlParams = new URLSearchParams(window.location.search);
       const lang = urlParams.get('lang');
       if (lang === 'en') {
         window.location.href = 'index_en.html' + window.location.search;
       }
-      
+    })();
+
+    document.addEventListener('DOMContentLoaded', function() {
       // Установка обработчика для переключателя языка
       document.querySelector('.language-switcher').addEventListener('click', function(e) {
         e.preventDefault();

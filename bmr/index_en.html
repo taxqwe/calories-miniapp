@@ -98,12 +98,20 @@
   </style>
   <script>
     // Check lang parameter in URL
-    document.addEventListener('DOMContentLoaded', function() {
+    (function() {
       const urlParams = new URLSearchParams(window.location.search);
       const lang = urlParams.get('lang');
       if (lang === 'ru') {
         window.location.href = 'index.html' + window.location.search;
       }
+    })();
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Update language switcher URL
+      document.querySelector('.language-switcher').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'index.html' + window.location.search;
+      });
       
       // Handler for information icons on mobile devices
       const infoIcons = document.querySelectorAll('.info-icon');
@@ -137,7 +145,7 @@
 </head>
 <body>
   <div class="container">
-    <button class="language-switcher" onclick="window.location.href='index.html'">Русский</button>
+    <button class="language-switcher">Русский</button>
     
     <h2>BMR and PAL Calculator</h2>
     <p>

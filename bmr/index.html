@@ -98,12 +98,20 @@
   </style>
   <script>
     // Проверка параметра lang в URL
-    document.addEventListener('DOMContentLoaded', function() {
+    (function() {
       const urlParams = new URLSearchParams(window.location.search);
       const lang = urlParams.get('lang');
       if (lang === 'en') {
         window.location.href = 'index_en.html' + window.location.search;
       }
+    })();
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Обновляем URL переключателя языка
+      document.querySelector('.language-switcher').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'index_en.html' + window.location.search;
+      });
       
       // Обработчик для информационных иконок на мобильных устройствах
       const infoIcons = document.querySelectorAll('.info-icon');
@@ -137,7 +145,7 @@
 </head>
 <body>
   <div class="container">
-    <button class="language-switcher" onclick="window.location.href='index_en.html'">English</button>
+    <button class="language-switcher">English</button>
     
     <h2>БМО и КФА калькулятор</h2>
     <p>

@@ -98,14 +98,15 @@
   </style>
   <script>
     // Check lang parameter in URL
-    document.addEventListener('DOMContentLoaded', function() {
-      // Switch language based on URL parameter
+    (function() {
       const urlParams = new URLSearchParams(window.location.search);
       const lang = urlParams.get('lang');
       if (lang === 'ru') {
         window.location.href = 'index.html' + window.location.search;
       }
-      
+    })();
+
+    document.addEventListener('DOMContentLoaded', function() {
       // Set handler for language switcher
       document.querySelector('.language-switcher').addEventListener('click', function(e) {
         e.preventDefault();
