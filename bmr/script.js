@@ -293,11 +293,11 @@
         errorDiv.id = `${field}-error`;
         errorDiv.className = 'validation-error';
         errorDiv.textContent = message;
-        errorDiv.style.cssText = 'color: #dc3545; font-size: 0.8em; margin-top: 5px;';
+        errorDiv.style.cssText = 'color: #ee5253; font-size: 0.8em; margin-top: 5px;';
         
         // Добавляем стили для поля с ошибкой
-        input.style.borderColor = '#dc3545';
-        input.style.backgroundColor = '#fff8f8';
+        input.style.borderColor = '#ee5253';
+        input.style.backgroundColor = '#333333';
         
         // Добавляем сообщение об ошибке после поля
         if (!document.getElementById(`${field}-error`)) {
