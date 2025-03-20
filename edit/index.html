@@ -26,7 +26,7 @@
       align-items: center;
       width: 20px;
       height: 20px;
-      background-color: #000;
+      background-color: rgba(0, 0, 0, 0.6);
       color: #fff;
       border-radius: 50%;
       font-size: 14px;
@@ -42,7 +42,8 @@
     
     .info-tooltip .tooltip-text {
       visibility: hidden;
-      width: 300px;
+      width: 80%;
+      max-width: 300px;
       background-color: #333;
       color: #fff;
       text-align: left;
@@ -51,8 +52,8 @@
       position: absolute;
       z-index: 1;
       bottom: 125%;
-      left: 50%;
-      transform: translateX(-50%);
+      left: 0;
+      transform: translateX(0);
       opacity: 0;
       transition: opacity 0.3s;
       font-size: 14px;
@@ -63,7 +64,7 @@
       content: "";
       position: absolute;
       top: 100%;
-      left: 50%;
+      left: 15px;
       margin-left: -5px;
       border-width: 5px;
       border-style: solid;
@@ -75,6 +76,16 @@
       opacity: 1;
     }
   </style>
+  <script>
+    // Проверка параметра lang в URL
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const lang = urlParams.get('lang');
+      if (lang === 'en') {
+        window.location.href = 'index_en.html' + window.location.search;
+      }
+    });
+  </script>
 </head>
 <body>
   <div class="container">
