@@ -42,8 +42,8 @@
     
     .info-tooltip .tooltip-text {
       visibility: hidden;
-      width: 80%;
-      max-width: 300px;
+      width: 250px;
+      max-width: 90vw;
       background-color: #333;
       color: #fff;
       text-align: left;
@@ -52,19 +52,31 @@
       position: absolute;
       z-index: 1;
       bottom: 125%;
-      left: 0;
-      transform: translateX(0);
+      left: -20px;
       opacity: 0;
       transition: opacity 0.3s;
       font-size: 14px;
       line-height: 1.4;
     }
     
+    @media (max-width: 480px) {
+      .info-tooltip .tooltip-text {
+        width: 200px;
+        left: auto;
+        right: -10px;
+      }
+      
+      .info-tooltip .tooltip-text::after {
+        left: auto;
+        right: 20px;
+      }
+    }
+    
     .info-tooltip .tooltip-text::after {
       content: "";
       position: absolute;
       top: 100%;
-      left: 15px;
+      left: 30px;
       margin-left: -5px;
       border-width: 5px;
       border-style: solid;
@@ -76,27 +88,37 @@
       opacity: 1;
     }
   </style>
+  <script>
+    // Проверка параметра lang в URL
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const lang = urlParams.get('lang');
+      if (lang === 'en') {
+        window.location.href = 'index_en.html' + window.location.search;
+      }
+    });
+  </script>
 </head>
 <body>
   <div class="container">
     <button class="language-switcher" onclick="window.location.href='index_en.html'">English</button>
     
-    <h2>BMR и PAL калькулятор</h2>
+    <h2>БМО и КФА калькулятор</h2>
     <p>
-      BMR — базовый обмен веществ, количество калорий для поддержания работы организма в состоянии покоя.
+      БМО — базовый метаболический обмен, количество калорий для поддержания работы организма в состоянии покоя.
       <span class="info-tooltip">
         <span class="info-icon">i</span>
         <span class="tooltip-text">
-          BMR (Basal Metabolic Rate) — это количество калорий, которое ваш организм сжигает в состоянии покоя за 24 часа для поддержания жизненно важных функций (дыхание, кровообращение, работа мозга и т.д.).
+          БМО (базовый метаболический обмен) или BMR (Basal Metabolic Rate) — это количество калорий, которое ваш организм сжигает в состоянии покоя за 24 часа для поддержания жизненно важных функций.
         </span>
       </span>
     </p>
     <p>
-      PAL (или АУО) — коэффициент активности, учитывающий ежедневные физические нагрузки.
+      КФА — коэффициент физической активности, учитывающий ежедневные нагрузки.
       <span class="info-tooltip">
         <span class="info-icon">i</span>
         <span class="tooltip-text">
-          PAL (Physical Activity Level) или АУО (Активный Уровень Обмена) — это множитель, показывающий, сколько дополнительной энергии требуется для вашей повседневной активности. PAL/АУО в сочетании с BMR дают общую суточную потребность в калориях.
+          КФА (коэффициент физической активности) или PAL (Physical Activity Level) — это множитель, показывающий, сколько дополнительной энергии требуется для вашей повседневной активности. КФА в сочетании с БМО дают общую суточную потребность в калориях.
         </span>
       </span>
     </p>
