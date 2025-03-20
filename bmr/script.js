@@ -538,8 +538,8 @@
         
         resultDiv.innerHTML = `
             <h3>Результат:</h3>
-            <p>BMR: <strong>${Math.round(bmr)}</strong> калорий/день</p>
-            <p>TDEE: <strong>${Math.round(tdee)}</strong> калорий/день</p>
+            <p>BMR: <strong>${Math.round(bmr)}</strong> калорий/день <i style="font-size: 0.8em; color: #0088cc;">i</i></p>
+            <p>TDEE: <strong>${Math.round(tdee)}</strong> калорий/день <i style="font-size: 0.8em; color: #0088cc;">i</i></p>
         `;
 
         // Прокручиваем к результатам
