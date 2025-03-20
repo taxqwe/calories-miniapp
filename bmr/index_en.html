@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>BMR Calculator</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h2>What is BMR and activity?</h2>
+    <p>
+      BMR (Basal Metabolic Rate) is the number of calories your body burns at rest over 24 hours. It's the basic energy requirement your body needs to maintain vital functions.
+    </p>
+    <p>
+      The total calorie requirement is calculated based on your BMR and physical activity level. Active calories are the energy spent on physical activity beyond your basic metabolism. The sum of these values provides a more accurate estimate of your daily energy needs.
+    </p>
+    <h3>Enter your data:</h3>
+    <form id="bmr-form">
+      <div class="form-group">
+        <label for="height">Height (cm)</label>
+        <input type="number" id="height" name="height" placeholder="Example: 175" inputmode="numeric" enterkeyhint="next">
+      </div>
+      <div class="form-group">
+        <label for="weight">Weight (kg)</label>
+        <input type="number" id="weight" name="weight" placeholder="Example: 70" inputmode="numeric" enterkeyhint="next">
+      </div>
+      <div class="form-group">
+        <label for="age">Age (years)</label>
+        <input type="number" id="age" name="age" placeholder="Example: 30" inputmode="numeric" enterkeyhint="done">
+      </div>
+
+      <div class="form-group">
+        <label class="field-label">Gender:</label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" id="gender-male" name="gender" value="m">
+            <label for="gender-male">Male</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="gender-female" name="gender" value="f">
+            <label for="gender-female">Female</label>
+          </div>
+        </div>
+      </div>
+
+      <p>Physical activity level:</p>
+      <label for="activityRange">Select level on the scale:</label>
+      <div class="range-container">
+        <input type="range" id="activityRange" name="activity" min="1" max="5" step="1" value="3">
+        <div class="range-ticks">
+          <div class="tick-container"><span class="tick">1</span></div>
+          <div class="tick-container"><span class="tick">2</span></div>
+          <div class="tick-container"><span class="tick">3</span></div>
+          <div class="tick-container"><span class="tick">4</span></div>
+          <div class="tick-container"><span class="tick">5</span></div>
+        </div>
+      </div>
+      <div id="activityDescription" class="activity-description">
+        <div class="activity-level">Moderate activity (3-5 workouts per week)</div>
+        <div class="activity-details">You exercise several times a week, maintaining good physical condition.</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Calculate and Send</button>
+    </form>
+    <div id="result"></div>
+  </div>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="script_en.js"></script>
+</body>
+</html> 
