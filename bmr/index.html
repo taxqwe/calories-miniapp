@@ -24,8 +24,8 @@
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       background-color: rgba(0, 0, 0, 0.6);
       color: #fff;
       border-radius: 50%;
@@ -33,6 +33,7 @@
       margin-left: 5px;
       cursor: pointer;
       vertical-align: middle;
+      touch-action: manipulation;
     }
     
     .info-tooltip {
@@ -51,12 +52,13 @@
       border-radius: 6px;
       position: absolute;
       z-index: 1;
-      bottom: 125%;
+      bottom: 130%;
       left: -20px;
       opacity: 0;
       transition: opacity 0.3s;
       font-size: 14px;
       line-height: 1.4;
+      pointer-events: none;
     }
     
     @media (max-width: 480px) {
@@ -64,6 +66,7 @@
         width: 200px;
         left: auto;
         right: -10px;
+        bottom: 135%;
       }
       
       .info-tooltip .tooltip-text::after {
@@ -87,6 +90,11 @@
       visibility: visible;
       opacity: 1;
     }
+    
+    .info-tooltip.active .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
   </style>
   <script>
     // Проверка параметра lang в URL
@@ -96,6 +104,34 @@
       if (lang === 'en') {
         window.location.href = 'index_en.html' + window.location.search;
       }
+      
+      // Обработчик для информационных иконок на мобильных устройствах
+      const infoIcons = document.querySelectorAll('.info-icon');
+      infoIcons.forEach(icon => {
+        icon.addEventListener('click', function(e) {
+          e.preventDefault();
+          const tooltip = this.parentNode;
+          
+          // Закрываем все открытые подсказки
+          document.querySelectorAll('.info-tooltip.active').forEach(tip => {
+            if (tip !== tooltip) {
+              tip.classList.remove('active');
+            }
+          });
+          
+          // Переключаем состояние текущей подсказки
+          tooltip.classList.toggle('active');
+        });
+      });
+      
+      // Закрываем подсказки при клике вне них
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.info-tooltip')) {
+          document.querySelectorAll('.info-tooltip.active').forEach(tip => {
+            tip.classList.remove('active');
+          });
+        }
+      });
     });
   </script>
 </head>
