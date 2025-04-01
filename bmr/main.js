@@ -416,16 +416,21 @@ let tg;
     const tdee = bmr * multipliers[activityLevel - 1];
     
     const payload = {
-      chatId: chatId,
-      height: height,
-      weight: weight,
-      age: age,
-      gender: gender,
-      activityLevel: activityLevel,
-      bmr: Math.round(bmr),
-      dailyCalories: Math.round(tdee),
-      initData: tg.initData
+      data: {
+        height: height,
+        weight: weight,
+        age: age,
+        gender: gender,
+        activityLevel: activityLevel,
+        bmr: Math.round(bmr),
+        tdee: Math.round(tdee) // именно tdee, как было раньше
+      },
+      initData: window.Telegram.WebApp.initData
     };
+
+    if (typeof chatId === 'number' && chatId > 0) {
+      payload.data.chatId = chatId;
+    }
     
     resultEl.innerHTML = `<h3>${t.resultTitle}</h3>
       <p>${t.bmrResult} <strong>${Math.round(bmr)}</strong> ${t.kcal}</p>
