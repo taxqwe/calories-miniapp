@@ -288,10 +288,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const tooltipTdeeEl = document.getElementById('tooltip-tdee');
 
   // Состояние
+  const urlParams = new URLSearchParams(window.location.search || '');
+  let isDebugMode = urlParams.get('debug') === 'true';
   let currentDate = new Date();
   let chatId = null;
   let initDataRaw = null;
-  let isDebugMode = urlParams.get('debug') === 'true';
 
   // Функция обновления текста на странице
   function updateText() {
