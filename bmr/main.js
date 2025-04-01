@@ -293,6 +293,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentDate = new Date();
   let chatId = null;
   let initDataRaw = null;
+  const langParam = urlParams.get('lang');
+  const supportedLocales = ["ar", "de", "es", "fr", "hi", "ru", "tr", "uk", "en"];
+  const lang = (langParam && supportedLocales.includes(langParam)) ? langParam : "en";
+
 
   // Функция обновления текста на странице
   function updateText() {
