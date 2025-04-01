@@ -1,13 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Поддерживаемые локали
   const supportedLocales = ["ar", "de", "es", "fr", "hi", "ru", "tr", "uk", "en"];
-  const urlParams = new URLSearchParams(window.location.search);
-  const langParam = urlParams.get('lang');
-  const defaultLang = navigator.language && navigator.language.startsWith('ru') ? "ru" : "en";
-  // Если параметр указан, поддерживается и есть переводы – используем его, иначе дефолт
-  const lang = (langParam && supportedLocales.includes(langParam)) ? langParam : defaultLang;
-
-  // Объект переводов для всех локалей
+  
+  // Объект с переводами для всех локалей
   const translations = {
     en: {
       mainTitle: "BMR and TDEE Calculator",
@@ -300,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Функция обновления текста на странице
   function updateText() {
-    const t = translations[lang];
+    const t = translations[lang] || translations["en"];
     document.title = t.mainTitle;
     mainTitleEl.innerText = t.mainTitle;
     formHeaderEl.innerText = t.formHeader;
@@ -361,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Базовая инициализация
+  // Инициализация приложения
   function init() {
     updateText();
     const tg = window.Telegram.WebApp;
@@ -378,7 +373,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!chatId) {
       throw new Error('Не удалось получить идентификатор пользователя');
     }
-    // Дополнительные обработчики можно добавить здесь, если требуется
   }
 
   // Обработка отправки формы – расчет BMR и ежедневных калорий
@@ -391,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const age = parseFloat(ageEl.value);
     const gender = document.querySelector('input[name="gender"]:checked')?.value;
     const activityLevel = parseInt(activityRangeEl.value, 10);
-    const t = translations[lang];
+    const t = translations[lang] || translations["en"];
     
     if (!height || !weight || !age || !gender) {
       alert(t.validationErrors.fillAll);
