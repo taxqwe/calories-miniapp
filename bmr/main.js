@@ -368,10 +368,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+let tg;
+
   // Инициализация приложения
   function init() {
     updateText();
-    const tg = window.Telegram.WebApp;
+    tg = window.Telegram.WebApp;
     tg.expand();
     initDataRaw = tg.initData;
     if (tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
