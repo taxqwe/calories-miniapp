@@ -1,12 +1,14 @@
-document.addEventListener('DOMContentLoaded', () => {
+(function() {
   // Поддерживаемые локали
   const supportedLocales = ["ar", "de", "es", "fr", "hi", "ru", "tr", "uk", "en"];
   const urlParams = new URLSearchParams(window.location.search);
-  let langParam = urlParams.get('lang');
-  // Если параметр отсутствует или не поддерживается – используем английский
-  let lang = (langParam && supportedLocales.includes(langParam)) ? langParam : "en";
-
-  // Объект с переводами для страницы BMR калькулятора
+  const langParam = urlParams.get('lang');
+  // Дефолтный язык определяем по браузеру: если начинается с 'ru' – русский, иначе английский.
+  const defaultLang = navigator.language && navigator.language.startsWith('ru') ? "ru" : "en";
+  // Если параметр присутствует и поддерживается, используем его, иначе дефолт.
+  const lang = (langParam && supportedLocales.includes(langParam)) ? langParam : defaultLang;
+  
+  // Объект переводов (для примера приведены en и ru, остальные можно добавить аналогично)
   const translations = {
     en: {
       mainTitle: "BMR and TDEE Calculator",
@@ -32,13 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
       tooltipBMR: "BMR (Basal Metabolic Rate) is the number of calories your body burns at rest over 24 hours. It's the basic energy requirement to maintain vital functions.",
       tooltipTDEE: "TDEE (Total Daily Energy Expenditure) is the total number of calories your body uses in a day, including physical activities.",
       validationErrors: { fillAll: "Please fill in all fields" },
-      activityLevels: {
-        1: { title: "Sedentary (minimal activity)", description: "You spend most of your day sitting and rarely exercise." },
-        2: { title: "Light activity (1-3 workouts per week)", description: "You do some light exercise or walking several times a week." },
-        3: { title: "Moderate activity (3-5 workouts per week)", description: "You exercise several times a week, maintaining good physical condition." },
-        4: { title: "High activity (6-7 workouts per week)", description: "You regularly engage in sports, requiring good physical fitness." },
-        5: { title: "Very high activity (intensive training)", description: "You have an intensive training regime, possibly with multiple workouts per day." }
-      },
       sending: "Sending data...",
       success: "✅ Data successfully sent!",
       error: "❌ Error sending data:",
@@ -68,22 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
       tooltipBMR: "BMR (Basal Metabolic Rate) — это количество калорий, которое ваш организм сжигает в состоянии покоя за 24 часа. Это базовая потребность организма в энергии для поддержания жизнедеятельности.",
       tooltipTDEE: "TDEE (Total Daily Energy Expenditure) — это суммарное количество калорий, затрачиваемое организмом за день, включая физическую активность.",
       validationErrors: { fillAll: "Пожалуйста, заполните все поля" },
-      activityLevels: {
-        1: { title: "Сидячий образ жизни (минимальная активность)", description: "Вы проводите большую часть дня в сидячем положении и практически не занимаетесь спортом." },
-        2: { title: "Легкая активность (1-3 тренировок в неделю)", description: "Вы немного двигаетесь, ходите пешком или занимаетесь легкими упражнениями." },
-        3: { title: "Умеренная активность (3-5 тренировок в неделю)", description: "Вы тренируетесь несколько раз в неделю, поддерживая хорошую физическую форму." },
-        4: { title: "Высокая активность (6-7 тренировок в неделю)", description: "Вы регулярно занимаетесь спортом, что требует хорошей физической подготовки." },
-        5: { title: "Очень высокая активность (интенсивные тренировки)", description: "У вас интенсивный тренировочный режим, возможно, с несколькими тренировками в день." }
-      },
       sending: "Отправка данных...",
       success: "✅ Данные успешно отправлены!",
       error: "❌ Ошибка отправки данных:",
       criticalError: "❌ Критическая ошибка:"
     }
-    // Дополнительные локали (ar, de, es, fr, hi, tr, uk) можно добавить аналогично
   };
 
-  // DOM-элементы
+  // DOM-элементы (предполагаем, что index.html уже содержит соответствующие элементы)
   const mainTitleEl = document.getElementById('main-title');
   const descBmrEl = document.getElementById('desc-bmr');
   const descTdeeEl = document.getElementById('desc-tdee');
@@ -100,8 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const activityDescriptionEl = document.getElementById('activityDescription');
   const calculateButtonEl = document.getElementById('calculate-button');
   const resultEl = document.getElementById('result');
-
-  // Для подсказок
   const tooltipBmrEl = document.getElementById('tooltip-bmr');
   const tooltipTdeeEl = document.getElementById('tooltip-tdee');
 
@@ -111,12 +96,13 @@ document.addEventListener('DOMContentLoaded', () => {
   let initDataRaw = null;
   let isDebugMode = urlParams.get('debug') === 'true';
 
-  // Функция обновления текста на странице
+  // Функция обновления текста страницы
   function updateText() {
     const t = translations[lang];
     document.title = t.mainTitle;
     mainTitleEl.innerText = t.mainTitle;
     formHeaderEl.innerText = t.formHeader;
+    // Формируем описания с подсказками
     descBmrEl.innerHTML = t.descBMR + ' <span class="info-tooltip"><span class="info-icon">i</span><span class="tooltip-text" id="tooltip-bmr"></span></span>';
     descTdeeEl.innerHTML = t.descTDEE + ' <span class="info-tooltip"><span class="info-icon">i</span><span class="tooltip-text" id="tooltip-tdee"></span></span>';
     tooltipBmrEl.innerText = t.tooltipBMR;
@@ -137,9 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTooltips();
   }
 
-  // Функция обновления описания уровня активности (можно расширить переводами)
+  // Функция обновления описания активности (можно заменить фиксированными значениями или добавить перевод)
   function updateActivityDescription() {
-    // Здесь оставляем фиксированные строки или добавляем их в объект translations.activityLevels
     const levels = {
       1: { title: "Sedentary (minimal activity)", details: "You spend most of your day sitting and rarely exercise." },
       2: { title: "Light activity (1-3 workouts per week)", details: "You do some light exercise or walking several times a week." },
@@ -153,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="activity-details">${activity.details}</div>`;
   }
 
-  // Функция для установки обработчиков для всплывающих подсказок
+  // Обработка всплывающих подсказок
   function setupTooltips() {
     document.querySelectorAll('.info-icon').forEach(icon => {
       icon.addEventListener('click', function(e) {
@@ -170,14 +155,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.addEventListener('click', function(e) {
       if (!e.target.closest('.info-tooltip')) {
-        document.querySelectorAll('.info-tooltip.active').forEach(tip => {
-          tip.classList.remove('active');
-        });
+        document.querySelectorAll('.info-tooltip.active').forEach(tip => tip.classList.remove('active'));
       }
     });
   }
 
-  // Инициализация приложения (без ожидания)
+  // Базовая инициализация (без ожидания)
   function init() {
     updateText();
     const tg = window.Telegram.WebApp;
@@ -194,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!chatId) {
       throw new Error('Не удалось получить идентификатор пользователя');
     }
-    // Дополнительные обработчики можно добавить здесь, если нужно
+    // Здесь можно добавить дополнительные обработчики, если нужно
   }
 
   // Обработка отправки формы – расчет BMR и ежедневных калорий
@@ -208,6 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gender = document.querySelector('input[name="gender"]:checked')?.value;
     const activityLevel = parseInt(activityRangeEl.value, 10);
     const t = translations[lang];
+    
     if (!height || !weight || !age || !gender) {
       alert(t.validationErrors.fillAll);
       return;
@@ -220,11 +204,11 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       bmr = 10 * weight + 6.25 * height - 5 * age - 161;
     }
-    // Множитель активности
+    // Расчет ежедневных калорий (TDEE)
     const multipliers = [1.2, 1.375, 1.55, 1.725, 1.9];
     const tdee = bmr * multipliers[activityLevel - 1];
     
-    // Формируем payload в ожидаемом формате
+    // Формирование payload в ожидаемом формате
     const payload = {
       chatId: chatId,
       height: height,
@@ -234,14 +218,14 @@ document.addEventListener('DOMContentLoaded', () => {
       activityLevel: activityLevel,
       bmr: Math.round(bmr),
       dailyCalories: Math.round(tdee),
-      initData: window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp.initData : ''
+      initData: tg.initData
     };
     
-    // Вывод результата на страницу (для отладки)
+    // Вывод результата (для отладки)
     resultEl.innerHTML = `<h3>${t.resultTitle}</h3>
       <p>${t.bmrResult} <strong>${Math.round(bmr)}</strong> ${t.kcal}</p>
       <p>${t.dailyCaloriesResult} <strong>${Math.round(tdee)}</strong> ${t.kcal}</p>
-      <p class="sending-status">${t.sending || "Sending data..."}</p>`;
+      <p class="sending-status">${t.sending}</p>`;
     resultEl.classList.add('visible');
     
     try {
@@ -258,16 +242,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!response.ok) {
         throw new Error(`Ошибка HTTP: ${response.status} - ${response.statusText}`);
       }
-      resultEl.innerHTML += `<p class="success-status">${t.success || "Data successfully sent!"}</p>`;
-      window.Telegram.WebApp.close();
+      resultEl.innerHTML += `<p class="success-status">${t.success}</p>`;
+      tg.close();
     } catch (error) {
       console.error("Ошибка отправки:", error);
-      resultEl.innerHTML += `<p class="error-status">${t.error || "Error sending data:"} ${error.message}</p>`;
+      resultEl.innerHTML += `<p class="error-status">${t.error} ${error.message}</p>`;
       alert(`Критическая ошибка: ${error.message}`);
     }
   });
   
-  // Функция для адаптивного обновления размера (например, для форм)
+  // Функция адаптивного обновления размеров
   function updateCalendarSize() {
     const containerWidth = document.querySelector('.container').offsetWidth;
     const daySize = (containerWidth - 10) / 7;
@@ -275,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   window.addEventListener('resize', updateCalendarSize);
   
-  // Запускаем базовую инициализацию
+  // Запуск базовой инициализации
   updateCalendarSize();
   init();
-});
+})();
