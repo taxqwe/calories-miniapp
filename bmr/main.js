@@ -299,29 +299,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Функция обновления текста на странице
   function updateText() {
-    const t = translations[lang] || translations["en"];
-    document.title = t.mainTitle;
-    mainTitleEl.innerText = t.mainTitle;
-    formHeaderEl.innerText = t.formHeader;
-    descBmrEl.innerHTML = t.descBMR + ' <span class="info-tooltip"><span class="info-icon">i</span><span class="tooltip-text" id="tooltip-bmr"></span></span>';
-    descTdeeEl.innerHTML = t.descTDEE + ' <span class="info-tooltip"><span class="info-icon">i</span><span class="tooltip-text" id="tooltip-tdee"></span></span>';
-    tooltipBmrEl.innerText = t.tooltipBMR;
-    tooltipTdeeEl.innerText = t.tooltipTDEE;
-    document.getElementById('label-height').innerText = t.labelHeight;
-    document.getElementById('label-weight').innerText = t.labelWeight;
-    document.getElementById('label-age').innerText = t.labelAge;
-    labelGenderEl.innerText = t.labelGender;
-    labelMaleEl.innerText = t.labelMale;
-    labelFemaleEl.innerText = t.labelFemale;
-    labelActivityEl.innerText = t.labelActivity;
-    selectActivityEl.innerText = t.selectActivity;
-    calculateButtonEl.innerText = t.calculateButton;
-    heightEl.placeholder = t.heightPlaceholder;
-    weightEl.placeholder = t.weightPlaceholder;
-    ageEl.placeholder = t.agePlaceholder;
-    updateActivityDescription();
-    setupTooltips();
-  }
+  const t = translations[lang] || translations["en"];
+  document.title = t.mainTitle;
+  mainTitleEl.innerText = t.mainTitle;
+  formHeaderEl.innerText = t.formHeader;
+  
+  // Создаем динамически содержимое для описания
+  descBmrEl.innerHTML = t.descBMR + ' <span class="info-tooltip"><span class="info-icon">i</span><span class="tooltip-text" id="tooltip-bmr"></span></span>';
+  descTdeeEl.innerHTML = t.descTDEE + ' <span class="info-tooltip"><span class="info-icon">i</span><span class="tooltip-text" id="tooltip-tdee"></span></span>';
+  
+  // Получаем элементы после установки innerHTML
+  const tooltipBmrEl = document.getElementById('tooltip-bmr');
+  const tooltipTdeeEl = document.getElementById('tooltip-tdee');
+  tooltipBmrEl.innerText = t.tooltipBMR;
+  tooltipTdeeEl.innerText = t.tooltipTDEE;
+  
+  document.getElementById('label-height').innerText = t.labelHeight;
+  document.getElementById('label-weight').innerText = t.labelWeight;
+  document.getElementById('label-age').innerText = t.labelAge;
+  labelGenderEl.innerText = t.labelGender;
+  labelMaleEl.innerText = t.labelMale;
+  labelFemaleEl.innerText = t.labelFemale;
+  labelActivityEl.innerText = t.labelActivity;
+  selectActivityEl.innerText = t.selectActivity;
+  calculateButtonEl.innerText = t.calculateButton;
+  heightEl.placeholder = t.heightPlaceholder;
+  weightEl.placeholder = t.weightPlaceholder;
+  ageEl.placeholder = t.agePlaceholder;
+  updateActivityDescription();
+  setupTooltips();
+}
+
 
   // Функция обновления описания активности
   function updateActivityDescription() {
