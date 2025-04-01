@@ -1,14 +1,13 @@
-(function() {
+document.addEventListener('DOMContentLoaded', () => {
   // Поддерживаемые локали
   const supportedLocales = ["ar", "de", "es", "fr", "hi", "ru", "tr", "uk", "en"];
   const urlParams = new URLSearchParams(window.location.search);
   const langParam = urlParams.get('lang');
-  // Дефолтный язык определяем по браузеру: если начинается с 'ru' – русский, иначе английский.
   const defaultLang = navigator.language && navigator.language.startsWith('ru') ? "ru" : "en";
-  // Если параметр присутствует и поддерживается, используем его, иначе дефолт.
-  const lang = (langParam && supportedLocales.includes(langParam)) ? langParam : defaultLang;
-  
-  // Объект переводов (для примера приведены en и ru, остальные можно добавить аналогично)
+  // Если параметр указан, поддерживается и есть переводы – используем его, иначе дефолт
+  const lang = (langParam && supportedLocales.includes(langParam) && translations[langParam]) ? langParam : defaultLang;
+
+  // Объект переводов для всех локалей
   const translations = {
     en: {
       mainTitle: "BMR and TDEE Calculator",
@@ -67,10 +66,213 @@
       success: "✅ Данные успешно отправлены!",
       error: "❌ Ошибка отправки данных:",
       criticalError: "❌ Критическая ошибка:"
+    },
+    ar: {
+      mainTitle: "حساب BMR و TDEE",
+      formHeader: "أدخل بياناتك:",
+      labelHeight: "الطول (سم)",
+      labelWeight: "الوزن (كجم)",
+      labelAge: "العمر (سنة)",
+      labelGender: "الجنس:",
+      labelMale: "ذكر",
+      labelFemale: "أنثى",
+      labelActivity: "مستوى النشاط البدني:",
+      selectActivity: "اختر المستوى على المقياس:",
+      calculateButton: "احسب وأرسل",
+      resultTitle: "النتيجة:",
+      bmrResult: "BMR:",
+      dailyCaloriesResult: "السعرات الحرارية اليومية:",
+      kcal: "سعر حراري/اليوم",
+      heightPlaceholder: "مثال: 175",
+      weightPlaceholder: "مثال: 70",
+      agePlaceholder: "مثال: 30",
+      descBMR: "BMR — معدل الأيض الأساسي.",
+      descTDEE: "TDEE — إجمالي استهلاك الطاقة اليومي.",
+      tooltipBMR: "BMR (Basal Metabolic Rate) هو عدد السعرات الحرارية التي يحرقها جسمك أثناء الراحة على مدار 24 ساعة. إنه الحد الأدنى من الطاقة المطلوبة للحفاظ على الوظائف الحيوية.",
+      tooltipTDEE: "TDEE (Total Daily Energy Expenditure) هو إجمالي السعرات الحرارية التي يستهلكها جسمك في اليوم، بما في ذلك النشاط البدني.",
+      validationErrors: { fillAll: "يرجى ملء جميع الحقول" },
+      sending: "جاري إرسال البيانات...",
+      success: "✅ تم إرسال البيانات بنجاح!",
+      error: "❌ خطأ في إرسال البيانات:",
+      criticalError: "❌ خطأ حرج:"
+    },
+    de: {
+      mainTitle: "BMR- und TDEE-Rechner",
+      formHeader: "Geben Sie Ihre Daten ein:",
+      labelHeight: "Körpergröße (cm)",
+      labelWeight: "Gewicht (kg)",
+      labelAge: "Alter (Jahre)",
+      labelGender: "Geschlecht:",
+      labelMale: "Männlich",
+      labelFemale: "Weiblich",
+      labelActivity: "Körperliches Aktivitätsniveau:",
+      selectActivity: "Wählen Sie den Level auf der Skala:",
+      calculateButton: "Berechnen und Senden",
+      resultTitle: "Ergebnis:",
+      bmrResult: "BMR:",
+      dailyCaloriesResult: "Tägliche Kalorien:",
+      kcal: "kcal/Tag",
+      heightPlaceholder: "Beispiel: 175",
+      weightPlaceholder: "Beispiel: 70",
+      agePlaceholder: "Beispiel: 30",
+      descBMR: "BMR — Grundumsatz.",
+      descTDEE: "TDEE — Gesamtumsatz pro Tag.",
+      tooltipBMR: "Der BMR (Basal Metabolic Rate) ist die Menge an Kalorien, die Ihr Körper in Ruhe über 24 Stunden verbrennt. Dies ist der grundlegende Energiebedarf zur Aufrechterhaltung lebenswichtiger Funktionen.",
+      tooltipTDEE: "Der TDEE (Total Daily Energy Expenditure) ist die Gesamtzahl der Kalorien, die Ihr Körper an einem Tag verbraucht, einschließlich körperlicher Aktivitäten.",
+      validationErrors: { fillAll: "Bitte füllen Sie alle Felder aus" },
+      sending: "Daten werden gesendet...",
+      success: "✅ Daten erfolgreich gesendet!",
+      error: "❌ Fehler beim Senden der Daten:",
+      criticalError: "❌ Kritischer Fehler:"
+    },
+    es: {
+      mainTitle: "Calculadora de BMR y TDEE",
+      formHeader: "Ingrese sus datos:",
+      labelHeight: "Estatura (cm)",
+      labelWeight: "Peso (kg)",
+      labelAge: "Edad (años)",
+      labelGender: "Género:",
+      labelMale: "Hombre",
+      labelFemale: "Mujer",
+      labelActivity: "Nivel de actividad física:",
+      selectActivity: "Seleccione el nivel en la escala:",
+      calculateButton: "Calcular y Enviar",
+      resultTitle: "Resultado:",
+      bmrResult: "BMR:",
+      dailyCaloriesResult: "Calorías diarias:",
+      kcal: "kcal/día",
+      heightPlaceholder: "Ejemplo: 175",
+      weightPlaceholder: "Ejemplo: 70",
+      agePlaceholder: "Ejemplo: 30",
+      descBMR: "BMR — Tasa Metabólica Basal.",
+      descTDEE: "TDEE — Gasto Energético Total Diario.",
+      tooltipBMR: "La BMR (Tasa Metabólica Basal) es la cantidad de calorías que tu cuerpo quema en reposo durante 24 horas. Es el requerimiento básico de energía para mantener las funciones vitales.",
+      tooltipTDEE: "El TDEE (Gasto Energético Total Diario) es la cantidad total de calorías que tu cuerpo usa en un día, incluyendo actividades físicas.",
+      validationErrors: { fillAll: "Por favor, complete todos los campos" },
+      sending: "Enviando datos...",
+      success: "✅ ¡Datos enviados con éxito!",
+      error: "❌ Error al enviar los datos:",
+      criticalError: "❌ Error crítico:"
+    },
+    fr: {
+      mainTitle: "Calculateur de BMR et TDEE",
+      formHeader: "Entrez vos informations :",
+      labelHeight: "Taille (cm)",
+      labelWeight: "Poids (kg)",
+      labelAge: "Âge (ans)",
+      labelGender: "Sexe :",
+      labelMale: "Homme",
+      labelFemale: "Femme",
+      labelActivity: "Niveau d'activité physique :",
+      selectActivity: "Sélectionnez le niveau sur l'échelle :",
+      calculateButton: "Calculer et Envoyer",
+      resultTitle: "Résultat :",
+      bmrResult: "BMR :",
+      dailyCaloriesResult: "Calories quotidiennes :",
+      kcal: "kcal/jour",
+      heightPlaceholder: "Exemple : 175",
+      weightPlaceholder: "Exemple : 70",
+      agePlaceholder: "Exemple : 30",
+      descBMR: "BMR — Taux métabolique de base.",
+      descTDEE: "TDEE — Dépense énergétique quotidienne totale.",
+      tooltipBMR: "Le BMR (Basal Metabolic Rate) est la quantité de calories que votre corps brûle au repos pendant 24 heures. C'est le besoin énergétique de base pour maintenir les fonctions vitales.",
+      tooltipTDEE: "Le TDEE (Total Daily Energy Expenditure) est la quantité totale de calories que votre corps utilise en une journée, y compris les activités physiques.",
+      validationErrors: { fillAll: "Veuillez remplir tous les champs" },
+      sending: "Envoi des données...",
+      success: "✅ Données envoyées avec succès !",
+      error: "❌ Erreur lors de l'envoi des données :",
+      criticalError: "❌ Erreur critique :"
+    },
+    hi: {
+      mainTitle: "BMR और TDEE कैलकुलेटर",
+      formHeader: "अपनी जानकारी दर्ज करें:",
+      labelHeight: "ऊँचाई (सेमी)",
+      labelWeight: "वज़न (किग्रा)",
+      labelAge: "उम्र (साल)",
+      labelGender: "लिंग:",
+      labelMale: "पुरुष",
+      labelFemale: "महिला",
+      labelActivity: "शारीरिक गतिविधि का स्तर:",
+      selectActivity: "स्केल पर स्तर चुनें:",
+      calculateButton: "गणना करें और भेजें",
+      resultTitle: "परिणाम:",
+      bmrResult: "BMR:",
+      dailyCaloriesResult: "दैनिक कैलोरी:",
+      kcal: "कैलोरी/दिन",
+      heightPlaceholder: "उदाहरण: 175",
+      weightPlaceholder: "उदाहरण: 70",
+      agePlaceholder: "उदाहरण: 30",
+      descBMR: "BMR — बेसल मेटाबॉलिक रेट.",
+      descTDEE: "TDEE — कुल दैनिक ऊर्जा व्यय.",
+      tooltipBMR: "BMR (Basal Metabolic Rate) वह कैलोरी की मात्रा है जो आपका शरीर 24 घंटे के आराम में जलाता है। यह महत्वपूर्ण शारीरिक कार्यों को बनाए रखने के लिए आवश्यक मूलभूत ऊर्जा है।",
+      tooltipTDEE: "TDEE (Total Daily Energy Expenditure) वह कुल कैलोरी है जो आपका शरीर एक दिन में उपयोग करता है, जिसमें शारीरिक गतिविधियाँ शामिल हैं।",
+      validationErrors: { fillAll: "कृपया सभी फ़ील्ड भरें" },
+      sending: "डेटा भेजे जा रहे हैं...",
+      success: "✅ डेटा सफलतापूर्वक भेजे गए!",
+      error: "❌ डेटा भेजने में त्रुटि:",
+      criticalError: "❌ गंभीर त्रुटि:"
+    },
+    tr: {
+      mainTitle: "BMR ve TDEE Hesaplayıcı",
+      formHeader: "Verilerinizi girin:",
+      labelHeight: "Boy (cm)",
+      labelWeight: "Kilo (kg)",
+      labelAge: "Yaş (yıl)",
+      labelGender: "Cinsiyet:",
+      labelMale: "Erkek",
+      labelFemale: "Kadın",
+      labelActivity: "Fiziksel Aktivite Seviyesi:",
+      selectActivity: "Ölçekteki seviyeyi seçin:",
+      calculateButton: "Hesapla ve Gönder",
+      resultTitle: "Sonuç:",
+      bmrResult: "BMR:",
+      dailyCaloriesResult: "Günlük Kalori:",
+      kcal: "kalori/gün",
+      heightPlaceholder: "Örneğin: 175",
+      weightPlaceholder: "Örneğin: 70",
+      agePlaceholder: "Örneğin: 30",
+      descBMR: "BMR — Bazal Metabolizma Hızı.",
+      descTDEE: "TDEE — Toplam Günlük Enerji Harcaması.",
+      tooltipBMR: "BMR (Bazal Metabolizma Hızı), vücudunuzun 24 saatlik dinlenme süresince yaktığı kalori miktarıdır. Hayati fonksiyonları sürdürmek için gereken temel enerji ihtiyacıdır.",
+      tooltipTDEE: "TDEE (Toplam Günlük Enerji Harcaması), fiziksel aktiviteler dahil olmak üzere vücudunuzun bir günde kullandığı toplam kalori miktarıdır.",
+      validationErrors: { fillAll: "Lütfen tüm alanları doldurun" },
+      sending: "Veriler gönderiliyor...",
+      success: "✅ Veriler başarıyla gönderildi!",
+      error: "❌ Veriler gönderilirken hata:",
+      criticalError: "❌ Kritik hata:"
+    },
+    uk: {
+      mainTitle: "Калькулятор BMR та TDEE",
+      formHeader: "Введіть ваші дані:",
+      labelHeight: "Зріст (см)",
+      labelWeight: "Вага (кг)",
+      labelAge: "Вік (років)",
+      labelGender: "Стать:",
+      labelMale: "Чоловіча",
+      labelFemale: "Жіноча",
+      labelActivity: "Рівень фізичної активності:",
+      selectActivity: "Оберіть рівень на шкалі:",
+      calculateButton: "Розрахувати і відправити",
+      resultTitle: "Результат:",
+      bmrResult: "BMR:",
+      dailyCaloriesResult: "Денна кількість калорій:",
+      kcal: "ккал/день",
+      heightPlaceholder: "Наприклад: 175",
+      weightPlaceholder: "Наприклад: 70",
+      agePlaceholder: "Наприклад: 30",
+      descBMR: "BMR — базальний метаболічний рівень.",
+      descTDEE: "TDEE — загальні добові витрати енергії.",
+      tooltipBMR: "BMR (Basal Metabolic Rate) — це кількість калорій, які організм спалює в стані спокою за 24 години. Це базова потреба в енергії для підтримання життєво важливих функцій.",
+      tooltipTDEE: "TDEE (Total Daily Energy Expenditure) — це загальна кількість калорій, які організм витрачає за день, враховуючи фізичну активність.",
+      validationErrors: { fillAll: "Будь ласка, заповніть усі поля" },
+      sending: "Відправка даних...",
+      success: "✅ Дані успішно відправлено!",
+      error: "❌ Помилка відправки даних:",
+      criticalError: "❌ Критична помилка:"
     }
   };
 
-  // DOM-элементы (предполагаем, что index.html уже содержит соответствующие элементы)
+  // DOM-элементы
   const mainTitleEl = document.getElementById('main-title');
   const descBmrEl = document.getElementById('desc-bmr');
   const descTdeeEl = document.getElementById('desc-tdee');
@@ -96,13 +298,12 @@
   let initDataRaw = null;
   let isDebugMode = urlParams.get('debug') === 'true';
 
-  // Функция обновления текста страницы
+  // Функция обновления текста на странице
   function updateText() {
     const t = translations[lang];
     document.title = t.mainTitle;
     mainTitleEl.innerText = t.mainTitle;
     formHeaderEl.innerText = t.formHeader;
-    // Формируем описания с подсказками
     descBmrEl.innerHTML = t.descBMR + ' <span class="info-tooltip"><span class="info-icon">i</span><span class="tooltip-text" id="tooltip-bmr"></span></span>';
     descTdeeEl.innerHTML = t.descTDEE + ' <span class="info-tooltip"><span class="info-icon">i</span><span class="tooltip-text" id="tooltip-tdee"></span></span>';
     tooltipBmrEl.innerText = t.tooltipBMR;
@@ -123,7 +324,7 @@
     setupTooltips();
   }
 
-  // Функция обновления описания активности (можно заменить фиксированными значениями или добавить перевод)
+  // Функция обновления описания активности
   function updateActivityDescription() {
     const levels = {
       1: { title: "Sedentary (minimal activity)", details: "You spend most of your day sitting and rarely exercise." },
@@ -160,7 +361,7 @@
     });
   }
 
-  // Базовая инициализация (без ожидания)
+  // Базовая инициализация
   function init() {
     updateText();
     const tg = window.Telegram.WebApp;
@@ -177,7 +378,7 @@
     if (!chatId) {
       throw new Error('Не удалось получить идентификатор пользователя');
     }
-    // Здесь можно добавить дополнительные обработчики, если нужно
+    // Дополнительные обработчики можно добавить здесь, если требуется
   }
 
   // Обработка отправки формы – расчет BMR и ежедневных калорий
@@ -197,18 +398,15 @@
       return;
     }
     
-    // Расчет BMR по формуле Миффлина-Сан Жеора
     let bmr;
     if (gender === 'm' || gender === 'м') {
       bmr = 10 * weight + 6.25 * height - 5 * age + 5;
     } else {
       bmr = 10 * weight + 6.25 * height - 5 * age - 161;
     }
-    // Расчет ежедневных калорий (TDEE)
     const multipliers = [1.2, 1.375, 1.55, 1.725, 1.9];
     const tdee = bmr * multipliers[activityLevel - 1];
     
-    // Формирование payload в ожидаемом формате
     const payload = {
       chatId: chatId,
       height: height,
@@ -221,7 +419,6 @@
       initData: tg.initData
     };
     
-    // Вывод результата (для отладки)
     resultEl.innerHTML = `<h3>${t.resultTitle}</h3>
       <p>${t.bmrResult} <strong>${Math.round(bmr)}</strong> ${t.kcal}</p>
       <p>${t.dailyCaloriesResult} <strong>${Math.round(tdee)}</strong> ${t.kcal}</p>
@@ -251,7 +448,6 @@
     }
   });
   
-  // Функция адаптивного обновления размеров
   function updateCalendarSize() {
     const containerWidth = document.querySelector('.container').offsetWidth;
     const daySize = (containerWidth - 10) / 7;
@@ -259,7 +455,6 @@
   }
   window.addEventListener('resize', updateCalendarSize);
   
-  // Запуск базовой инициализации
   updateCalendarSize();
   init();
-})();
+});
