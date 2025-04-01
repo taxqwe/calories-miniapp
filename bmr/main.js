@@ -362,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
       4: { title: "Alta atividade (6-7 treinos por semana)", details: "Você pratica esportes regularmente, o que exige boa forma física." },
       5: { title: "Muito alta atividade (treino intensivo)", details: "Você segue um regime de treinamento intensivo, possivelmente com várias sessões por dia." }
     }
-};
+  }
 
   // DOM-элементы
   const mainTitleEl = document.getElementById('main-title');
