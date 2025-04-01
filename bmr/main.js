@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const langParam = urlParams.get('lang');
   const defaultLang = navigator.language && navigator.language.startsWith('ru') ? "ru" : "en";
   // Если параметр указан, поддерживается и есть переводы – используем его, иначе дефолт
-  const lang = (langParam && supportedLocales.includes(langParam) && translations[langParam]) ? langParam : defaultLang;
+  const lang = (langParam && supportedLocales.includes(langParam)) ? langParam : defaultLang;
 
   // Объект переводов для всех локалей
   const translations = {
