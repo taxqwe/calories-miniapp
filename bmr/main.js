@@ -281,6 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const labelActivityEl = document.getElementById('label-activity');
   const selectActivityEl = document.getElementById('select-activity');
   const activityRangeEl = document.getElementById('activityRange');
+  activityRangeEl.addEventListener('input', updateActivityDescription);
   const activityDescriptionEl = document.getElementById('activityDescription');
   const calculateButtonEl = document.getElementById('calculate-button');
   const resultEl = document.getElementById('result');
