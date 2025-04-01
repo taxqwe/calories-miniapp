@@ -1,13 +1,12 @@
-(function() {
+document.addEventListener('DOMContentLoaded', () => {
   // Поддерживаемые локали
   const supportedLocales = ["ar", "de", "es", "fr", "hi", "ru", "tr", "uk", "en"];
-  
-  // Получаем параметр lang из URL, если он поддерживается, иначе — английский
   const urlParams = new URLSearchParams(window.location.search);
   let langParam = urlParams.get('lang');
+  // Если параметр отсутствует или не поддерживается – используем английский
   let lang = (langParam && supportedLocales.includes(langParam)) ? langParam : "en";
-  
-  // Объект переводов для страницы BMR калькулятора
+
+  // Объект с переводами для страницы BMR калькулятора
   const translations = {
     en: {
       mainTitle: "BMR and TDEE Calculator",
@@ -39,7 +38,11 @@
         3: { title: "Moderate activity (3-5 workouts per week)", description: "You exercise several times a week, maintaining good physical condition." },
         4: { title: "High activity (6-7 workouts per week)", description: "You regularly engage in sports, requiring good physical fitness." },
         5: { title: "Very high activity (intensive training)", description: "You have an intensive training regime, possibly with multiple workouts per day." }
-      }
+      },
+      sending: "Sending data...",
+      success: "✅ Data successfully sent!",
+      error: "❌ Error sending data:",
+      criticalError: "❌ Critical error:"
     },
     ru: {
       mainTitle: "Калькулятор BMR и TDEE",
@@ -71,10 +74,13 @@
         3: { title: "Умеренная активность (3-5 тренировок в неделю)", description: "Вы тренируетесь несколько раз в неделю, поддерживая хорошую физическую форму." },
         4: { title: "Высокая активность (6-7 тренировок в неделю)", description: "Вы регулярно занимаетесь спортом, что требует хорошей физической подготовки." },
         5: { title: "Очень высокая активность (интенсивные тренировки)", description: "У вас интенсивный тренировочный режим, возможно, с несколькими тренировками в день." }
-      }
-    },
-    // Дополнительные локали (ar, de, es, fr, hi, tr, uk) можно добавить аналогичным образом...
-    // Для краткости здесь приведены только en и ru, остальные добавляются по аналогии.
+      },
+      sending: "Отправка данных...",
+      success: "✅ Данные успешно отправлены!",
+      error: "❌ Ошибка отправки данных:",
+      criticalError: "❌ Критическая ошибка:"
+    }
+    // Дополнительные локали (ar, de, es, fr, hi, tr, uk) можно добавить аналогично
   };
 
   // DOM-элементы
@@ -95,7 +101,7 @@
   const calculateButtonEl = document.getElementById('calculate-button');
   const resultEl = document.getElementById('result');
 
-  // Перевод для всплывающих подсказок (используем в блоке описания)
+  // Для подсказок
   const tooltipBmrEl = document.getElementById('tooltip-bmr');
   const tooltipTdeeEl = document.getElementById('tooltip-tdee');
 
@@ -103,7 +109,6 @@
   let currentDate = new Date();
   let chatId = null;
   let initDataRaw = null;
-  let caloriesData = {}; // не используется для BMR калькулятора, но может быть в дальнейшем
   let isDebugMode = urlParams.get('debug') === 'true';
 
   // Функция обновления текста на странице
@@ -128,14 +133,13 @@
     heightEl.placeholder = t.heightPlaceholder;
     weightEl.placeholder = t.weightPlaceholder;
     ageEl.placeholder = t.agePlaceholder;
-    // Обновляем описание уровня активности – здесь можно использовать фиксированные описания, если их не переводим
     updateActivityDescription();
     setupTooltips();
   }
 
-  // Обновление описания активности (здесь можно оставить фиксированные строки)
+  // Функция обновления описания уровня активности (можно расширить переводами)
   function updateActivityDescription() {
-    // Пример: оставляем без перевода, или можно добавить перевод в объект translations.activityLevels
+    // Здесь оставляем фиксированные строки или добавляем их в объект translations.activityLevels
     const levels = {
       1: { title: "Sedentary (minimal activity)", details: "You spend most of your day sitting and rarely exercise." },
       2: { title: "Light activity (1-3 workouts per week)", details: "You do some light exercise or walking several times a week." },
@@ -149,7 +153,7 @@
       <div class="activity-details">${activity.details}</div>`;
   }
 
-  // Обработка всплывающих подсказок
+  // Функция для установки обработчиков для всплывающих подсказок
   function setupTooltips() {
     document.querySelectorAll('.info-icon').forEach(icon => {
       icon.addEventListener('click', function(e) {
@@ -173,7 +177,7 @@
     });
   }
 
-  // Инициализация приложения без дополнительного ожидания
+  // Инициализация приложения (без ожидания)
   function init() {
     updateText();
     const tg = window.Telegram.WebApp;
@@ -190,7 +194,7 @@
     if (!chatId) {
       throw new Error('Не удалось получить идентификатор пользователя');
     }
-    // Здесь можно выполнять дополнительные действия, если необходимо
+    // Дополнительные обработчики можно добавить здесь, если нужно
   }
 
   // Обработка отправки формы – расчет BMR и ежедневных калорий
@@ -203,7 +207,6 @@
     const age = parseFloat(ageEl.value);
     const gender = document.querySelector('input[name="gender"]:checked')?.value;
     const activityLevel = parseInt(activityRangeEl.value, 10);
-    
     const t = translations[lang];
     if (!height || !weight || !age || !gender) {
       alert(t.validationErrors.fillAll);
@@ -219,8 +222,9 @@
     }
     // Множитель активности
     const multipliers = [1.2, 1.375, 1.55, 1.725, 1.9];
-    const tdee = bmr * multipliers[activityLevel - 1]; // это общие калории
-    // Формируем payload согласно исходной рабочей версии
+    const tdee = bmr * multipliers[activityLevel - 1];
+    
+    // Формируем payload в ожидаемом формате
     const payload = {
       chatId: chatId,
       height: height,
@@ -233,13 +237,12 @@
       initData: window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp.initData : ''
     };
     
-    // Вывод результата на страницу (можно оставить для отладки)
-    const resultDiv = document.getElementById('result');
-    resultDiv.innerHTML = `<h3>${t.resultTitle}</h3>
+    // Вывод результата на страницу (для отладки)
+    resultEl.innerHTML = `<h3>${t.resultTitle}</h3>
       <p>${t.bmrResult} <strong>${Math.round(bmr)}</strong> ${t.kcal}</p>
       <p>${t.dailyCaloriesResult} <strong>${Math.round(tdee)}</strong> ${t.kcal}</p>
       <p class="sending-status">${t.sending || "Sending data..."}</p>`;
-    resultDiv.classList.add('visible');
+    resultEl.classList.add('visible');
     
     try {
       const response = await fetch('https://calories-bot.duckdns.org:8443/bot/mbr', {
@@ -251,23 +254,20 @@
         body: JSON.stringify(payload),
         mode: 'cors'
       });
-      
       const responseText = await response.text();
       if (!response.ok) {
         throw new Error(`Ошибка HTTP: ${response.status} - ${response.statusText}`);
       }
-      
-      resultDiv.innerHTML += `<p class="success-status">${t.success || "Data successfully sent!"}</p>`;
-      // Закрываем окно приложения, если нужно
+      resultEl.innerHTML += `<p class="success-status">${t.success || "Data successfully sent!"}</p>`;
       window.Telegram.WebApp.close();
     } catch (error) {
       console.error("Ошибка отправки:", error);
-      resultDiv.innerHTML += `<p class="error-status">${t.error || "Error sending data:"} ${error.message}</p>`;
+      resultEl.innerHTML += `<p class="error-status">${t.error || "Error sending data:"} ${error.message}</p>`;
       alert(`Критическая ошибка: ${error.message}`);
     }
   });
   
-  // Адаптивное обновление размера (например, для календаря, если потребуется)
+  // Функция для адаптивного обновления размера (например, для форм)
   function updateCalendarSize() {
     const containerWidth = document.querySelector('.container').offsetWidth;
     const daySize = (containerWidth - 10) / 7;
@@ -275,6 +275,7 @@
   }
   window.addEventListener('resize', updateCalendarSize);
   
-  // Запуск базовой инициализации
+  // Запускаем базовую инициализацию
+  updateCalendarSize();
   init();
-})();
+});
