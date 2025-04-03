@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FAQ - Calories Bot</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Подключаем Telegram WebApp API -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    /* Дополнительные стили для отображения ответов сразу */
+    .faq-item .question {
+      cursor: default;
+    }
+    .faq-item .toggle-icon {
+      display: none;
+    }
+    .faq-item .answer {
+      max-height: none !important;
+      padding: 20px;
+      margin-bottom: 10px;
+    }
+    .additional-info {
+      text-align: center;
+      font-style: italic;
+      color: #555;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="title">FAQ</h1>
+    <div id="faq-content"></div>
+  </div>
+  
+  <script>
+    // Функция для преобразования Markdown (***текст***) в <strong>текст</strong>
+    function formatMarkdown(text) {
+      return text.replace(/\*\*\*(.*?)\*\*\*/g, '<strong>$1</strong>');
+    }
+
+    // Локализованный контент для 10 языков, с note_title для перевода заголовка примечания.
+    const localizedContent = {
+      ru: {
+        note_title: "Важно помнить:",
+        questions: [
+          {
+            question: "Как начать использовать бота?",
+            answer: "Просто отправьте боту одно из следующего:<br>• ***фото*** вашей еды (с описанием или без)<br>• ***описание*** блюда<br>• количество калорий числом (например, 150)"
+          },
+          {
+            question: "Как использовать все возможности бота по максимуму?",
+            answer: "Для максимально эффективного использования бота:<br>• Добавляйте подробные описания к фотографиям для улучшения точности распознавания.<br>• Регулярно отправляйте данные о приёмах пищи для точного отслеживания.<br>• Используйте дополнительные команды для настройки уведомлений и просмотра статистики."
+          }
+        ],
+        important_note: "Калории — это лишь один из показателей питания. Бот не является медицинским инструментом, и его рекомендации носят информационный характер. Все решения, связанные с питанием и здоровьем, принимаются на ваш риск.",
+        additional_info: "Раздел дополняется"
+      },
+      en: {
+        note_title: "Important:",
+        questions: [
+          {
+            question: "How do I start using the bot?",
+            answer: "Simply send the bot one of the following:<br>• a ***photo*** of your food (with or without description)<br>• a ***description*** of the dish<br>• a number representing calories (e.g., 150)"
+          },
+          {
+            question: "How to use all bot features to the maximum?",
+            answer: "For optimal use of the bot:<br>• Add detailed descriptions to food photos for improved recognition accuracy.<br>• Regularly send your meal data for accurate tracking.<br>• Use additional commands to set up notifications and view statistics."
+          }
+        ],
+        important_note: "Calories are just one indicator of your nutrition. The bot is not a medical tool, and its recommendations are for informational purposes only. All decisions regarding your diet and health are made at your own risk.",
+        additional_info: "This section is being supplemented"
+      },
+      de: {
+        note_title: "Wichtig:",
+        questions: [
+          {
+            question: "Wie fange ich an, den Bot zu nutzen?",
+            answer: "Senden Sie dem Bot einfach eines der folgenden:<br>• ein ***Foto*** Ihres Essens (mit oder ohne Beschreibung)<br>• eine ***Beschreibung*** des Gerichts<br>• eine Kalorienzahl (z.B. 150)"
+          },
+          {
+            question: "Wie nutze ich alle Bot-Funktionen optimal?",
+            answer: "Für die effektivste Nutzung des Bots:<br>• Fügen Sie Beschreibungen zu Essensfotos hinzu, um die Erkennungsgenauigkeit zu verbessern.<br>• Richten Sie Erinnerungszeiten für regelmäßige Dateneingabe ein.<br>• Nutzen Sie zusätzliche Befehle für Benachrichtigungen und den Zugriff auf Statistiken."
+          }
+        ],
+        important_note: "Kalorien sind nur ein Indikator, der Ihre Ernährung widerspiegelt. Der Bot ist kein medizinisches Werkzeug, und seine Empfehlungen dienen nur zu Informationszwecken. Alle Entscheidungen bezüglich Ernährung und Gesundheit treffen Sie auf eigene Gefahr.",
+        additional_info: "Abschnitt wird ergänzt"
+      },
+      es: {
+        note_title: "Importante:",
+        questions: [
+          {
+            question: "¿Cómo empiezo a usar el bot?",
+            answer: "Simplemente envía al bot uno de los siguientes:<br>• una ***foto*** de tu comida (con o sin descripción)<br>• una ***descripción*** del plato<br>• un número de calorías (ej. 150)"
+          },
+          {
+            question: "¿Cómo aprovechar al máximo todas las funciones del bot?",
+            answer: "Para el uso más efectivo del bot:<br>• Añade descripciones detalladas a las fotos de comida para mejorar la precisión del reconocimiento.<br>• Envía tus datos de comida de forma regular para un seguimiento preciso.<br>• Utiliza comandos adicionales para configurar notificaciones y ver estadísticas."
+          }
+        ],
+        important_note: "Las calorías son solo un indicador que refleja tu nutrición. El bot no es una herramienta médica, y sus recomendaciones son únicamente para fines informativos. Todas las decisiones sobre tu dieta y salud se toman bajo tu propio riesgo.",
+        additional_info: "Esta sección se está complementando"
+      },
+      fr: {
+        note_title: "Important:",
+        questions: [
+          {
+            question: "Comment commencer à utiliser le bot ?",
+            answer: "Envoyez simplement au bot l'un des éléments suivants :<br>• une ***photo*** de votre nourriture (avec ou sans description)<br>• une ***description*** du plat<br>• un nombre de calories (ex. 150)"
+          },
+          {
+            question: "Comment utiliser toutes les fonctionnalités du bot au maximum ?",
+            answer: "Pour une utilisation optimale du bot :<br>• Ajoutez des descriptions détaillées aux photos pour améliorer la précision de la reconnaissance.<br>• Envoyez régulièrement vos données de repas pour un suivi précis.<br>• Utilisez les commandes supplémentaires pour configurer les notifications et consulter les statistiques."
+          }
+        ],
+        important_note: "Les calories ne sont qu'un indicateur de votre nutrition. Le bot n'est pas un outil médical, et ses recommandations sont fournies à titre informatif seulement. Toutes les décisions concernant votre alimentation et votre santé sont prises à vos risques et périls.",
+        additional_info: "Cette section est en cours de complétion"
+      },
+      hi: {
+        note_title: "महत्वपूर्ण:",
+        questions: [
+          {
+            question: "बॉट का उपयोग कैसे शुरू करें?",
+            answer: "बस बॉट को निम्नलिखित में से एक भेजें:<br>• एक ***फोटो*** (विवरण के साथ या बिना) आपके भोजन की<br>• ***विवरण*** भोजन का<br>• कैलोरी की संख्या (उदाहरण: 150)"
+          },
+          {
+            question: "बॉट की सभी सुविधाओं का अधिकतम उपयोग कैसे करें?",
+            answer: "बॉट का अधिकतम उपयोग करने के लिए:<br>• भोजन की तस्वीरों में विस्तृत विवरण जोड़ें जिससे पहचान में सुधार हो सके।<br>• नियमित रूप से भोजन का डेटा भेजें ताकि ट्रैकिंग सही हो सके।<br>• अतिरिक्त कमांड्स का उपयोग करें ताकि नोटिफिकेशन्स और स्टैटिस्टिक्स सेट हो सकें।"
+          }
+        ],
+        important_note: "कैलोरी आपके पोषण का केवल एक संकेतक है। बॉट कोई चिकित्सा उपकरण नहीं है, और इसकी सिफारिशें केवल जानकारी के लिए हैं। अपने आहार और स्वास्थ्य से संबंधित सभी निर्णय आपके अपने जोखिम पर किए जाते हैं।",
+        additional_info: "यह अनुभाग अद्यतन किया जा रहा है"
+      },
+      pt: {
+        note_title: "Importante:",
+        questions: [
+          {
+            question: "Como começar a usar o bot?",
+            answer: "Simplesmente envie ao bot um dos seguintes:<br>• uma ***foto*** da sua comida (com ou sem descrição)<br>• uma ***descrição*** do prato<br>• um número de calorias (ex.: 150)"
+          },
+          {
+            question: "Como usar todas as funcionalidades do bot ao máximo?",
+            answer: "Para usar o bot de forma ideal:<br>• Adicione descrições detalhadas às fotos de comida para melhorar a precisão do reconhecimento.<br>• Envie os dados das suas refeições regularmente para um rastreamento preciso.<br>• Utilize comandos adicionais para configurar notificações e visualizar estatísticas."
+          }
+        ],
+        important_note: "As calorias são apenas um indicador da sua nutrição. O bot não é uma ferramenta médica e suas recomendações são apenas para fins informativos. Todas as decisões relativas à sua dieta e saúde são de sua responsabilidade.",
+        additional_info: "Esta seção está sendo complementada"
+      },
+      tr: {
+        note_title: "Önemli:",
+        questions: [
+          {
+            question: "Botu kullanmaya nasıl başlarım?",
+            answer: "Bota aşağıdakilerden birini gönderin:<br>• yemeğinizin bir ***fotoğrafı*** (açıklamalı veya açıklamasız)<br>• yemeğin ***açıklaması***<br>• kalori sayısı (örn. 150)"
+          },
+          {
+            question: "Botun tüm özelliklerini en iyi şekilde nasıl kullanabilirim?",
+            answer: "Botu en etkili şekilde kullanmak için:<br>• Yemek fotoğraflarına detaylı açıklamalar ekleyin, böylece tanıma doğruluğu artar.<br>• Düzenli veri girişi yaparak yemeğinizi doğru takip edin.<br>• Ek komutları kullanarak bildirimleri ve istatistikleri görüntüleyin."
+          }
+        ],
+        important_note: "Kaloriler, beslenmenizin sadece bir göstergesidir. Bot tıbbi bir araç değildir ve önerileri yalnızca bilgilendirme amaçlıdır. Diyetiniz ve sağlığınızla ilgili tüm kararlar sizin sorumluluğunuzdadır.",
+        additional_info: "Bölüm tamamlanıyor"
+      },
+      uk: {
+        note_title: "Важливо пам’ятати:",
+        questions: [
+          {
+            question: "Як почати використовувати бота?",
+            answer: "Просто надішліть боту одне з наступного:<br>• ***фото*** вашої їжі (з описом або без)<br>• ***опис*** страви<br>• кількість калорій числом (наприклад, 150)"
+          },
+          {
+            question: "Як використовувати всі можливості бота максимально?",
+            answer: "Для максимально ефективного використання бота:<br>• Надсилайте фотографії з детальним описом для підвищення точності розпізнавання.<br>• Регулярно додавайте дані про прийоми їжі для точного відстеження.<br>• Використовуйте додаткові команди для налаштування сповіщень та перегляду статистики."
+          }
+        ],
+        important_note: "Калорії – це лише один із показників вашого харчування. Бот не є медичним інструментом, і його рекомендації надаються виключно в інформаційних цілях. Усі рішення щодо вашого раціону та здоров'я приймаються на ваш ризик.",
+        additional_info: "Розділ доповнюється"
+      },
+      ar: {
+        note_title: "هام:",
+        questions: [
+          {
+            question: "كيف أبدأ استخدام البوت؟",
+            answer: "ببساطة، أرسل إلى البوت أحد التالي:<br>• ***صورة*** لطعامك (مع أو بدون وصف)<br>• ***وصف*** للطبق<br>• رقم يمثل كمية السعرات (مثال: 150)"
+          },
+          {
+            question: "كيف تستخدم كل إمكانيات البوت على أكمل وجه؟",
+            answer: "للاستخدام الأمثل للبوت:<br>• أرسل صور الطعام مع وصف دقيق لتحسين دقة التعرف.<br>• قم بإرسال بيانات وجباتك بانتظام لمتابعة دقيقة.<br>• استخدم الأوامر الإضافية لضبط الإشعارات وعرض الإحصائيات."
+          }
+        ],
+        important_note: "السعرات الحرارية ليست سوى مؤشر واحد يعكس تغذيتك. البوت ليس أداة طبية، وتوصياته هي لأغراض إعلامية فقط. جميع القرارات المتعلقة بنظامك الغذائي وصحتك تقع على عاتقك.",
+        additional_info: "هذا القسم قيد التوسيع"
+      }
+    };
+
+    function loadLocalizedContent() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const lang = urlParams.get('lang') || 'en';
+      const content = localizedContent[lang] || localizedContent['en'];
+      const faqContent = document.getElementById('faq-content');
+      
+      // Очищаем контент
+      faqContent.innerHTML = '';
+      
+      // Добавляем важное примечание с локализованным заголовком
+      const noteDiv = document.createElement('div');
+      noteDiv.className = 'important-note';
+      noteDiv.innerHTML = `<h3>${formatMarkdown(content.note_title)}</h3><p>${formatMarkdown(content.important_note)}</p>`;
+      faqContent.appendChild(noteDiv);
+      
+      // Добавляем FAQ-пункты (оставлены только два вопроса)
+      content.questions.forEach((item) => {
+        const faqItem = document.createElement('div');
+        faqItem.className = 'faq-item';
+        faqItem.innerHTML = `
+          <div class="question">
+            <h3>${formatMarkdown(item.question)}</h3>
+          </div>
+          <div class="answer active">
+            <p>${formatMarkdown(item.answer)}</p>
+          </div>
+        `;
+        faqContent.appendChild(faqItem);
+      });
+      
+      // Добавляем текст о том, что раздел дополняется
+      const additionalDiv = document.createElement('div');
+      additionalDiv.className = 'additional-info';
+      additionalDiv.textContent = content.additional_info;
+      faqContent.appendChild(additionalDiv);
+    }
+    
+    document.addEventListener('DOMContentLoaded', loadLocalizedContent);
+  </script>
+</body>
+</html>
