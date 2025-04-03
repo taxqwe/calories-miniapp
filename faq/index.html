@@ -8,7 +8,7 @@
   <!-- Подключаем Telegram WebApp API -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    /* Дополнительные стили для отображения ответов сразу */
+    /* Дополнительные стили для ответов, чтобы они всегда были видны */
     .faq-item .question {
       cursor: default;
     }
@@ -20,11 +20,33 @@
       padding: 20px;
       margin-bottom: 10px;
     }
+    /* Дополнительный блок для текста, что раздел дополняется */
     .additional-info {
       text-align: center;
       font-style: italic;
       color: #555;
       margin-top: 30px;
+      padding: 10px;
+    }
+    /* Улучшение адаптивности для мобильных устройств */
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      h1 {
+        font-size: 22px;
+      }
+      .faq-item .question h3 {
+        font-size: 16px;
+      }
+      .faq-item .answer p {
+        font-size: 14px;
+      }
+      .important-note, .additional-info {
+        font-size: 14px;
+      }
     }
   </style>
 </head>
@@ -35,12 +57,14 @@
   </div>
   
   <script>
-    // Функция для преобразования Markdown (***текст***) в <strong>текст</strong>
+    // Функция для преобразования Markdown (***текст***) в HTML-теги <strong>
     function formatMarkdown(text) {
       return text.replace(/\*\*\*(.*?)\*\*\*/g, '<strong>$1</strong>');
     }
 
-    // Локализованный контент для 10 языков, с note_title для перевода заголовка примечания.
+    // Локализованный контент для 10 языков.
+    // Удалён раздел "Что такое бот Calories?" — остаются два вопроса.
+    // Добавлены свойства: note_title и additional_info.
     const localizedContent = {
       ru: {
         note_title: "Важно помнить:",
