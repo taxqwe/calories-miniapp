@@ -19,8 +19,10 @@
 
   // Получаем доступ к переводам
   const translations = window.translations || {};
-  const currentLang = window.currentLang || 'ru';
+  const currentLang = window.currentLang || 'en';
   const t = translations[currentLang] || {};
+  
+  console.log('Current language set to:', currentLang);
 
   // Инициализация
   function init() {
