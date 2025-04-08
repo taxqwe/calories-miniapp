@@ -27,6 +27,10 @@
   const t = translations[currentLang] || {};
   
   console.log('Current language set to:', currentLang);
+  console.log('Window translations available:', Object.keys(window.translations || {}));
+  console.log('Translation data for current lang:', t);
+  console.log('Month names available:', t.monthNames);
+  console.log('Cal unit:', t.cal);
 
   // Инициализация
   function init() {
@@ -184,8 +188,24 @@
     // Обновляем заголовок месяца с учетом названий месяцев из переводов
     const monthIndex = currentDate.getMonth();
     const year = currentDate.getFullYear();
-    currentMonthElement.textContent = (t.monthNames ? 
-      t.monthNames[monthIndex] : currentDate.toLocaleString('en', { month: 'long' })) + ' ' + year;
+    
+    // Форматируем месяц и год с учетом локали
+    let monthYearText = '';
+    if (t.monthNames && t.monthNames.length > monthIndex) {
+      // Если есть перевод для месяца в локализации
+      if (currentLang === 'ar') {
+        // Для арабского языка порядок: год месяц
+        monthYearText = `${year} ${t.monthNames[monthIndex]}`;
+      } else {
+        // Для остальных языков: месяц год
+        monthYearText = `${t.monthNames[monthIndex]} ${year}`;
+      }
+    } else {
+      // Резервный вариант - английская локализация
+      monthYearText = `${currentDate.toLocaleString('en', { month: 'long' })} ${year}`;
+    }
+    
+    currentMonthElement.textContent = monthYearText;
 
     // Получаем количество дней в месяце и день недели первого числа
     const month = currentDate.getMonth();

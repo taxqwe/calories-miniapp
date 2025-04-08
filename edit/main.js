@@ -1,159 +1,159 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // Поддерживаемые локали
-  const supportedLocales = ["ar", "de", "es", "fr", "hi", "ru", "tr", "uk", "en", "pt"];
-  
-  const translations = {
-    en: {
-      mainTitle: "Calories Editor",
-      tooltipMain: "Edit consumed calories by day. Select a date on the calendar and enter or adjust the number of calories using the quick edit buttons.",
-      caloriesPlaceholder: "Enter calories",
-      monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-      weekdays: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-      cal: "cal",
-      loading: "Loading...",
-      error: {
-        init: "App initialization error",
-        load: "Failed to load data",
-        update: "Failed to update data"
-      }
-    },
-    ru: {
-      mainTitle: "Редактирование калорий",
-      tooltipMain: "Редактирование потребленных калорий по дням. Выберите дату в календаре и введите или скорректируйте количество калорий с помощью кнопок быстрого изменения.",
-      caloriesPlaceholder: "Введите калории",
-      monthNames: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
-      weekdays: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
-      cal: "ккал",
-      loading: "Загрузка...",
-      error: {
-        init: "Ошибка инициализации приложения",
-        load: "Не удалось загрузить данные",
-        update: "Не удалось обновить данные"
-      }
-    },
-    de: {
-      mainTitle: "Kalorien-Editor",
-      tooltipMain: "Bearbeiten Sie verbrauchte Kalorien nach Tag. Wählen Sie ein Datum im Kalender und geben Sie die Kalorien ein oder passen Sie sie mit den Schnellbearbeitungsschaltflächen an.",
-      caloriesPlaceholder: "Kalorien eingeben",
-      monthNames: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
-      weekdays: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
-      cal: "kcal",
-      loading: "Wird geladen...",
-      error: {
-        init: "Fehler bei der App-Initialisierung",
-        load: "Daten konnten nicht geladen werden",
-        update: "Daten konnten nicht aktualisiert werden"
-      }
-    },
-    es: {
-      mainTitle: "Editor de Calorías",
-      tooltipMain: "Edite las calorías consumidas por día. Seleccione una fecha en el calendario e ingrese o ajuste la cantidad de calorías utilizando los botones de edición rápida.",
-      caloriesPlaceholder: "Ingrese calorías",
-      monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-      weekdays: ["Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"],
-      cal: "cal",
-      loading: "Cargando...",
-      error: {
-        init: "Error de inicialización de la aplicación",
-        load: "No se pudieron cargar los datos",
-        update: "No se pudieron actualizar los datos"
-      }
-    },
-    fr: {
-      mainTitle: "Éditeur de Calories",
-      tooltipMain: "Modifiez les calories consommées par jour. Sélectionnez une date dans le calendrier et entrez ou ajustez le nombre de calories à l'aide des boutons d'édition rapide.",
-      caloriesPlaceholder: "Entrez les calories",
-      monthNames: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
-      weekdays: ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"],
-      cal: "cal",
-      loading: "Chargement...",
-      error: {
-        init: "Erreur d'initialisation de l'application",
-        load: "Échec du chargement des données",
-        update: "Échec de la mise à jour des données"
-      }
-    },
-    hi: {
-      mainTitle: "कैलोरी संपादक",
-      tooltipMain: "दिन के अनुसार खाई गई कैलोरी का संपादन करें। कैलेंडर में एक तारीख चुनें और त्वरित संपादन बटनों का उपयोग करके कैलोरी की संख्या दर्ज करें या समायोजित करें।",
-      caloriesPlaceholder: "कैलोरी दर्ज करें",
-      monthNames: ["जनवरी", "फरवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"],
-      weekdays: ["सो", "मं", "बु", "गु", "शु", "श", "र"],
-      cal: "कैलोरी",
-      loading: "लोड हो रहा है...",
-      error: {
-        init: "एप्लिकेशन शुरू करने में त्रुटि",
-        load: "डेटा लोड करने में विफल",
-        update: "डेटा अपडेट करने में विफल"
-      }
-    },
-    tr: {
-      mainTitle: "Kalori Düzenleyici",
-      tooltipMain: "Günlük tüketilen kalorileri düzenleyin. Takvimde bir tarih seçin ve hızlı düzenleme düğmelerini kullanarak kalori miktarını girin veya ayarlayın.",
-      caloriesPlaceholder: "Kalori girin",
-      monthNames: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
-      weekdays: ["Pt", "Sa", "Ça", "Pe", "Cu", "Ct", "Pz"],
-      cal: "kal",
-      loading: "Yükleniyor...",
-      error: {
-        init: "Uygulama başlatma hatası",
-        load: "Veriler yüklenemedi",
-        update: "Veriler güncellenemedi"
-      }
-    },
-    uk: {
-      mainTitle: "Редагування калорій",
-      tooltipMain: "Редагуйте спожиті калорії за день. Виберіть дату в календарі та введіть або відкоригуйте кількість калорій за допомогою кнопок швидкого редагування.",
-      caloriesPlaceholder: "Введіть калорії",
-      monthNames: ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"],
-      weekdays: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"],
-      cal: "ккал",
-      loading: "Завантаження...",
-      error: {
-        init: "Помилка ініціалізації програми",
-        load: "Не вдалося завантажити дані",
-        update: "Не вдалося оновити дані"
-      }
-    },
-    ar: {
-      mainTitle: "محرر السعرات الحرارية",
-      tooltipMain: "تحرير السعرات الحرارية المستهلكة يوميًا. حدد تاريخًا في التقويم وأدخل أو عدل عدد السعرات الحرارية باستخدام أزرار التحرير السريع.",
-      caloriesPlaceholder: "أدخل السعرات الحرارية",
-      monthNames: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"],
-      weekdays: ["إث", "ثل", "أر", "خم", "جم", "سب", "أح"],
-      cal: "سعرة",
-      loading: "جاري التحميل...",
-      error: {
-        init: "خطأ في تهيئة التطبيق",
-        load: "فشل في تحميل البيانات",
-        update: "فشل في تحديث البيانات"
-      }
-    },
-    pt: {
-      mainTitle: "Editor de Calorias",
-      tooltipMain: "Edite as calorias consumidas por dia. Selecione uma data no calendário e insira ou ajuste o número de calorias usando os botões de edição rápida.",
-      caloriesPlaceholder: "Insira as calorias",
-      monthNames: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
-      weekdays: ["Sg", "Tr", "Qr", "Qt", "Sx", "Sb", "Dm"],
-      cal: "cal",
-      loading: "Carregando...",
-      error: {
-        init: "Erro de inicialização do aplicativo",
-        load: "Falha ao carregar dados",
-        update: "Falha ao atualizar dados"
-      }
+// Поддерживаемые локали
+const supportedLocales = ["ar", "de", "es", "fr", "hi", "ru", "tr", "uk", "en", "pt"];
+
+const translations = {
+  en: {
+    mainTitle: "Calories Editor",
+    tooltipMain: "Edit consumed calories by day. Select a date on the calendar and enter or adjust the number of calories using the quick edit buttons.",
+    caloriesPlaceholder: "Enter calories",
+    monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    weekdays: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+    cal: "cal",
+    loading: "Loading...",
+    error: {
+      init: "App initialization error",
+      load: "Failed to load data",
+      update: "Failed to update data"
     }
-  };
+  },
+  ru: {
+    mainTitle: "Редактирование калорий",
+    tooltipMain: "Редактирование потребленных калорий по дням. Выберите дату в календаре и введите или скорректируйте количество калорий с помощью кнопок быстрого изменения.",
+    caloriesPlaceholder: "Введите калории",
+    monthNames: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+    weekdays: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
+    cal: "ккал",
+    loading: "Загрузка...",
+    error: {
+      init: "Ошибка инициализации приложения",
+      load: "Не удалось загрузить данные",
+      update: "Не удалось обновить данные"
+    }
+  },
+  de: {
+    mainTitle: "Kalorien-Editor",
+    tooltipMain: "Bearbeiten Sie verbrauchte Kalorien nach Tag. Wählen Sie ein Datum im Kalender und geben Sie die Kalorien ein oder passen Sie sie mit den Schnellbearbeitungsschaltflächen an.",
+    caloriesPlaceholder: "Kalorien eingeben",
+    monthNames: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+    weekdays: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
+    cal: "kcal",
+    loading: "Wird geladen...",
+    error: {
+      init: "Fehler bei der App-Initialisierung",
+      load: "Daten konnten nicht geladen werden",
+      update: "Daten konnten nicht aktualisiert werden"
+    }
+  },
+  es: {
+    mainTitle: "Editor de Calorías",
+    tooltipMain: "Edite las calorías consumidas por día. Seleccione una fecha en el calendario e ingrese o ajuste la cantidad de calorías utilizando los botones de edición rápida.",
+    caloriesPlaceholder: "Ingrese calorías",
+    monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+    weekdays: ["Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"],
+    cal: "cal",
+    loading: "Cargando...",
+    error: {
+      init: "Error de inicialización de la aplicación",
+      load: "No se pudieron cargar los datos",
+      update: "No se pudieron actualizar los datos"
+    }
+  },
+  fr: {
+    mainTitle: "Éditeur de Calories",
+    tooltipMain: "Modifiez les calories consommées par jour. Sélectionnez une date dans le calendrier et entrez ou ajustez le nombre de calories à l'aide des boutons d'édition rapide.",
+    caloriesPlaceholder: "Entrez les calories",
+    monthNames: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+    weekdays: ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"],
+    cal: "cal",
+    loading: "Chargement...",
+    error: {
+      init: "Erreur d'initialisation de l'application",
+      load: "Échec du chargement des données",
+      update: "Échec de la mise à jour des données"
+    }
+  },
+  hi: {
+    mainTitle: "कैलोरी संपादक",
+    tooltipMain: "दिन के अनुसार खाई गई कैलोरी का संपादन करें। कैलेंडर में एक तारीख चुनें और त्वरित संपादन बटनों का उपयोग करके कैलोरी की संख्या दर्ज करें या समायोजित करें।",
+    caloriesPlaceholder: "कैलोरी दर्ज करें",
+    monthNames: ["जनवरी", "फरवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"],
+    weekdays: ["सो", "मं", "बु", "गु", "शु", "श", "र"],
+    cal: "कैलोरी",
+    loading: "लोड हो रहा है...",
+    error: {
+      init: "एप्लिकेशन शुरू करने में त्रुटि",
+      load: "डेटा लोड करने में विफल",
+      update: "डेटा अपडेट करने में विफल"
+    }
+  },
+  tr: {
+    mainTitle: "Kalori Düzenleyici",
+    tooltipMain: "Günlük tüketilen kalorileri düzenleyin. Takvimde bir tarih seçin ve hızlı düzenleme düğmelerini kullanarak kalori miktarını girin veya ayarlayın.",
+    caloriesPlaceholder: "Kalori girin",
+    monthNames: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+    weekdays: ["Pt", "Sa", "Ça", "Pe", "Cu", "Ct", "Pz"],
+    cal: "kal",
+    loading: "Yükleniyor...",
+    error: {
+      init: "Uygulama başlatma hatası",
+      load: "Veriler yüklenemedi",
+      update: "Veriler güncellenemedi"
+    }
+  },
+  uk: {
+    mainTitle: "Редагування калорій",
+    tooltipMain: "Редагуйте спожиті калорії за день. Виберіть дату в календарі та введіть або відкоригуйте кількість калорій за допомогою кнопок швидкого редагування.",
+    caloriesPlaceholder: "Введіть калорії",
+    monthNames: ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"],
+    weekdays: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"],
+    cal: "ккал",
+    loading: "Завантаження...",
+    error: {
+      init: "Помилка ініціалізації програми",
+      load: "Не вдалося завантажити дані",
+      update: "Не вдалося оновити дані"
+    }
+  },
+  ar: {
+    mainTitle: "محرر السعرات الحرارية",
+    tooltipMain: "تحرير السعرات الحرارية المستهلكة يوميًا. حدد تاريخًا في التقويم وأدخل أو عدل عدد السعرات الحرارية باستخدام أزرار التحرير السريع.",
+    caloriesPlaceholder: "أدخل السعرات الحرارية",
+    monthNames: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"],
+    weekdays: ["إث", "ثل", "أر", "خم", "جم", "سب", "أح"],
+    cal: "سعرة",
+    loading: "جاري التحميل...",
+    error: {
+      init: "خطأ في تهيئة التطبيق",
+      load: "فشل في تحميل البيانات",
+      update: "فشل في تحديث البيانات"
+    }
+  },
+  pt: {
+    mainTitle: "Editor de Calorias",
+    tooltipMain: "Edite as calorias consumidas por dia. Selecione uma data no calendário e insira ou ajuste o número de calorias usando os botões de edição rápida.",
+    caloriesPlaceholder: "Insira as calorias",
+    monthNames: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+    weekdays: ["Sg", "Tr", "Qr", "Qt", "Sx", "Sb", "Dm"],
+    cal: "cal",
+    loading: "Carregando...",
+    error: {
+      init: "Erro de inicialização do aplicativo",
+      load: "Falha ao carregar dados",
+      update: "Falha ao atualizar dados"
+    }
+  }
+};
 
-  // Получаем параметр языка из URL
-  const urlParams = new URLSearchParams(window.location.search || '');
-  const langParam = urlParams.get('lang');
-  const lang = (langParam && supportedLocales.includes(langParam)) ? langParam : "en";
+// Получаем параметр языка из URL
+const urlParams = new URLSearchParams(window.location.search || '');
+const langParam = urlParams.get('lang');
+const lang = (langParam && supportedLocales.includes(langParam)) ? langParam : "en";
 
-  // Глобальное хранение переводов для доступа из других скриптов
-  window.translations = translations;
-  window.currentLang = lang;
+// Глобальное хранение переводов для доступа из других скриптов
+window.translations = translations;
+window.currentLang = lang;
 
+document.addEventListener('DOMContentLoaded', () => {
   // Функция обновления текста на странице
   function updateText() {
     const t = translations[lang] || translations["en"];
