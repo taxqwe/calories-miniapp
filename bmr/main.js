@@ -26,7 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — Total Daily Energy Expenditure.",
       tooltipBMR: "BMR (Basal Metabolic Rate) is the number of calories your body burns at rest over 24 hours. It's the basic energy requirement to maintain vital functions.",
       tooltipTDEE: "TDEE (Total Daily Energy Expenditure) is the total number of calories your body uses in a day, including physical activities.",
-      validationErrors: { fillAll: "Please fill in all fields" },
+      validationErrors: { 
+        fillAll: "Please fill in all fields",
+        heightRange: "The height must be between 100 and 250 cm",
+        weightRange: "The weight must be between 30 and 300 kg",
+        ageRange: "The age must be between 14 and 120 years"
+      },
       sending: "Sending data...",
       success: "✅ Data successfully sent!",
       error: "❌ Error sending data:",
@@ -62,7 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — общий дневной расход энергии.",
       tooltipBMR: "BMR (Basal Metabolic Rate) — это количество калорий, которое ваш организм сжигает в состоянии покоя за 24 часа. Это базовая потребность организма в энергии для поддержания жизнедеятельности.",
       tooltipTDEE: "TDEE (Total Daily Energy Expenditure) — это суммарное количество калорий, затрачиваемое организмом за день, включая физическую активность.",
-      validationErrors: { fillAll: "Пожалуйста, заполните все поля" },
+      validationErrors: { 
+        fillAll: "Пожалуйста, заполните все поля",
+        heightRange: "Рост должен быть от 100 до 250 см",
+        weightRange: "Вес должен быть от 30 до 300 кг",
+        ageRange: "Возраст должен быть от 14 до 120 лет"
+      },
       sending: "Отправка данных...",
       success: "✅ Данные успешно отправлены!",
       error: "❌ Ошибка отправки данных:",
@@ -98,7 +108,12 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — إجمالي استهلاك الطاقة اليومي.",
       tooltipBMR: "BMR (Basal Metabolic Rate) هو عدد السعرات الحرارية التي يحرقها جسمك أثناء الراحة على مدار 24 ساعة. إنه الحد الأدنى من الطاقة المطلوبة للحفاظ على الوظائف الحيوية.",
       tooltipTDEE: "TDEE (Total Daily Energy Expenditure) هو إجمالي السعرات الحرارية التي يستهلكها جسمك في اليوم، بما في ذلك النشاط البدني.",
-      validationErrors: { fillAll: "يرجى ملء جميع الحقول" },
+      validationErrors: { 
+        fillAll: "يرجى ملء جميع الحقول",
+        heightRange: "الطول يجب أن يكون بين 100 و 250 سم",
+        weightRange: "الوزن يجب أن يكون بين 30 و 300 كجم",
+        ageRange: "يجب أن يكون العمر بين 14 و 120 عامًا"
+      },
       sending: "جاري إرسال البيانات...",
       success: "✅ تم إرسال البيانات بنجاح!",
       error: "❌ خطأ في إرسال البيانات:",
@@ -134,7 +149,12 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — Gesamtumsatz pro Tag.",
       tooltipBMR: "Der BMR (Basal Metabolic Rate) ist die Menge an Kalorien, die Ihr Körper in Ruhe über 24 Stunden verbrennt. Dies ist der grundlegende Energiebedarf zur Aufrechterhaltung lebenswichtiger Funktionen.",
       tooltipTDEE: "Der TDEE (Total Daily Energy Expenditure) ist die Gesamtzahl der Kalorien, die Ihr Körper an einem Tag verbraucht, einschließlich körperlicher Aktivitäten.",
-      validationErrors: { fillAll: "Bitte füllen Sie alle Felder aus" },
+      validationErrors: { 
+        fillAll: "Bitte füllen Sie alle Felder aus",
+        heightRange: "Die Körpergröße muss zwischen 100 und 250 cm liegen",
+        weightRange: "Das Gewicht muss zwischen 30 und 300 kg liegen",
+        ageRange: "Das Alter muss zwischen 14 und 120 Jahren liegen"
+      },
       sending: "Daten werden gesendet...",
       success: "✅ Daten erfolgreich gesendet!",
       error: "❌ Fehler beim Senden der Daten:",
@@ -170,7 +190,12 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — Gasto Energético Total Diario.",
       tooltipBMR: "La BMR (Tasa Metabólica Basal) es la cantidad de calorías que tu cuerpo quema en reposo durante 24 horas. Es el requerimiento básico de energía para mantener las funciones vitales.",
       tooltipTDEE: "El TDEE (Gasto Energético Total Diario) es la cantidad total de calorías que tu cuerpo usa en un día, incluyendo actividades físicas.",
-      validationErrors: { fillAll: "Por favor, complete todos los campos" },
+      validationErrors: { 
+        fillAll: "Por favor, complete todos los campos",
+        heightRange: "La altura debe estar entre 100 y 250 cm",
+        weightRange: "El peso debe estar entre 30 y 300 kg",
+        ageRange: "La edad debe estar entre 14 y 120 años"
+      },
       sending: "Enviando datos...",
       success: "✅ ¡Datos enviados con éxito!",
       error: "❌ Error al enviar los datos:",
@@ -206,7 +231,12 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — Dépense énergétique quotidienne totale.",
       tooltipBMR: "Le BMR (Basal Metabolic Rate) est la quantité de calories que votre corps brûle au repos pendant 24 heures. C'est le besoin énergétique de base pour maintenir les fonctions vitales.",
       tooltipTDEE: "Le TDEE (Total Daily Energy Expenditure) est la quantité totale de calories que votre corps utilise en une journée, y compris les activités physiques.",
-      validationErrors: { fillAll: "Veuillez remplir tous les champs" },
+      validationErrors: { 
+        fillAll: "Veuillez remplir tous les champs",
+        heightRange: "La taille doit être entre 100 et 250 cm",
+        weightRange: "Le poids doit être entre 30 et 300 kg",
+        ageRange: "L'âge doit être entre 14 et 120 ans"
+      },
       sending: "Envoi des données...",
       success: "✅ Données envoyées avec succès !",
       error: "❌ Erreur lors de l'envoi des données :",
@@ -242,7 +272,12 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — कुल दैनिक ऊर्जा व्यय.",
       tooltipBMR: "BMR (Basal Metabolic Rate) वह कैलोरी की मात्रा है जो आपका शरीर 24 घंटे के आराम में जलाता है। यह महत्वपूर्ण शारीरिक कार्यों को बनाए रखने के लिए आवश्यक मूलभूत ऊर्जा है।",
       tooltipTDEE: "TDEE (Total Daily Energy Expenditure) वह कुल कैलोरी है जो आपका शरीर एक दिन में उपयोग करता है, जिसमें शारीरिक गतिविधियाँ शामिल हैं।",
-      validationErrors: { fillAll: "कृपया सभी फ़ील्ड भरें" },
+      validationErrors: { 
+        fillAll: "कृपया सभी फ़ील्ड भरें",
+        heightRange: "ऊँचाई 100 से 250 सेमी के बीच होनी चाहिए",
+        weightRange: "वज़न 30 से 300 किग्रा के बीच होना चाहिए",
+        ageRange: "उम्र 14 से 120 वर्षों के बीच होनी चाहिए"
+      },
       sending: "डेटा भेजे जा रहे हैं...",
       success: "✅ डेटा सफलतापूर्वक भेजे गए!",
       error: "❌ डेटा भेजने में त्रुटि:",
@@ -278,7 +313,12 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — Toplam Günlük Enerji Harcaması.",
       tooltipBMR: "BMR (Bazal Metabolizma Hızı), vücudunuzun 24 saatlik dinlenme süresince yaktığı kalori miktarıdır. Hayati fonksiyonları sürdürmek için gereken temel enerji ihtiyacıdır.",
       tooltipTDEE: "TDEE (Toplam Günlük Enerji Harcaması), fiziksel aktiviteler dahil olmak üzere vücudunuzun bir günde kullandığı toplam kalori miktarıdır.",
-      validationErrors: { fillAll: "Lütfen tüm alanları doldurun" },
+      validationErrors: { 
+        fillAll: "Lütfen tüm alanları doldurun",
+        heightRange: "Boy 100 ile 250 cm arasında olmalı",
+        weightRange: "Kilo 30 ile 300 kg arasında olmalı",
+        ageRange: "Yaş 14 ile 120 yaş arasında olmalı"
+      },
       sending: "Veriler gönderiliyor...",
       success: "✅ Veriler başarıyla gönderildi!",
       error: "❌ Veriler gönderilirken hata:",
@@ -314,7 +354,12 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — загальні добові витрати енергії.",
       tooltipBMR: "BMR (Basal Metabolic Rate) — це кількість калорій, які організм спалює в стані спокою за 24 години. Це базова потреба в енергії для підтримання життєво важливих функцій.",
       tooltipTDEE: "TDEE (Total Daily Energy Expenditure) — це загальна кількість калорій, які організм витрачає за день, враховуючи фізичну активність.",
-      validationErrors: { fillAll: "Будь ласка, заповніть усі поля" },
+      validationErrors: { 
+        fillAll: "Будь ласка, заповніть усі поля",
+        heightRange: "Зріст повинен бути від 100 до 250 см",
+        weightRange: "Вага повинна бути від 30 до 300 кг",
+        ageRange: "Вік повинен бути від 14 до 120 років"
+      },
       sending: "Відправка даних...",
       success: "✅ Дані успішно відправлено!",
       error: "❌ Помилка відправки даних:",
@@ -350,7 +395,12 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — Despesa Energética Total Diária.",
       tooltipBMR: "BMR (Taxa Metabólica Basal) é o número de calorias que seu corpo queima em repouso durante 24 horas. É o requisito energético básico para manter as funções vitais.",
       tooltipTDEE: "TDEE (Despesa Energética Total Diária) é o total de calorias que seu corpo utiliza em um dia, incluindo atividades físicas.",
-      validationErrors: { fillAll: "Por favor, preencha todos os campos" },
+      validationErrors: { 
+        fillAll: "Por favor, preencha todos os campos",
+        heightRange: "A altura deve estar entre 100 e 250 cm",
+        weightRange: "O peso deve estar entre 30 e 300 kg",
+        ageRange: "A idade deve estar entre 14 e 120 anos"
+      },
       sending: "Enviando dados...",
       success: "✅ Dados enviados com sucesso!",
       error: "❌ Erro ao enviar dados:",
@@ -395,6 +445,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const langParam = urlParams.get('lang');
   const lang = (langParam && supportedLocales.includes(langParam)) ? langParam : "en";
 
+  // Диапазоны валидации
+  const validationRanges = {
+    height: { min: 100, max: 250 },
+    weight: { min: 30, max: 300 },
+    age: { min: 14, max: 120 }
+  };
 
   // Функция обновления текста на странице
   function updateText() {
@@ -501,8 +557,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const activityLevel = parseInt(activityRangeEl.value, 10);
     const t = translations[lang] || translations["en"];
     
+    // Очистка предыдущих ошибок
+    heightEl.classList.remove('error');
+    weightEl.classList.remove('error');
+    ageEl.classList.remove('error');
+    
+    // Удаляем предыдущие сообщения об ошибках
+    document.querySelectorAll('.error-message').forEach(el => el.remove());
+    
+    let hasErrors = false;
+    
+    // Проверка заполнения полей
     if (!height || !weight || !age || !gender) {
       alert(t.validationErrors.fillAll);
+      return;
+    }
+    
+    // Валидация диапазонов значений
+    if (height < validationRanges.height.min || height > validationRanges.height.max) {
+      displayError(heightEl, t.validationErrors.heightRange);
+      hasErrors = true;
+    }
+    
+    if (weight < validationRanges.weight.min || weight > validationRanges.weight.max) {
+      displayError(weightEl, t.validationErrors.weightRange);
+      hasErrors = true;
+    }
+    
+    if (age < validationRanges.age.min || age > validationRanges.age.max) {
+      displayError(ageEl, t.validationErrors.ageRange);
+      hasErrors = true;
+    }
+    
+    if (hasErrors) {
       return;
     }
     
@@ -566,6 +653,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const daySize = (containerWidth - 10) / 7;
     document.documentElement.style.setProperty('--day-size', `${daySize}px`);
   }
+  
+  // Функция для отображения ошибки под полем ввода
+  function displayError(inputElement, message) {
+    inputElement.classList.add('error');
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    inputElement.parentNode.appendChild(errorDiv);
+  }
+  
   window.addEventListener('resize', updateCalendarSize);
   
   updateCalendarSize();

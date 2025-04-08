@@ -1,23 +1,48 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Редактирование калорий</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Calories Editor</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="styles.css">
   <style>
-    .language-switcher {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background-color: #333;
-      color: #fff;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
+    :root {
+      --day-size: 40px;
+      --base-font-size: 14px;
+    }
+
+    @keyframes spinner {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--tg-theme-button-color, #50A8EB);
+      animation: spinner 1s ease-in-out infinite;
+    }
+
+    .keyboard-open .calendar {
+      transform: scale(0.7);
+      transform-origin: top center;
+      transition: transform 0.3s ease;
     }
     
     .info-icon {
@@ -70,16 +95,8 @@
       opacity: 1;
     }
   </style>
-  <script>
-    // Проверка параметра lang в URL
-    (function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const lang = urlParams.get('lang');
-      if (lang === 'en') {
-        window.location.href = 'index_en.html' + window.location.search;
-      }
-    })();
 
+  <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Обработчик для информационных иконок
       const infoIcons = document.querySelectorAll('.info-icon');
@@ -114,11 +131,11 @@
 </head>
 <body>
   <div class="container">
-    <h1>Редактирование калорий
+    <h1>Calories Editor
       <span class="info-tooltip">
         <span class="info-icon">i</span>
         <span class="tooltip-text">
-          Редактирование потребленных калорий по дням. Выберите дату в календаре и введите или скорректируйте количество калорий с помощью кнопок быстрого изменения.
+          Edit consumed calories by day. Select a date on the calendar and enter or adjust the number of calories using the quick edit buttons.
         </span>
       </span>
     </h1>
@@ -131,13 +148,13 @@
       </div>
       
       <div class="weekdays">
-        <div class="weekday">Пн</div>
-        <div class="weekday">Вт</div>
-        <div class="weekday">Ср</div>
-        <div class="weekday">Чт</div>
-        <div class="weekday">Пт</div>
-        <div class="weekday">Сб</div>
-        <div class="weekday">Вс</div>
+        <div class="weekday">Mo</div>
+        <div class="weekday">Tu</div>
+        <div class="weekday">We</div>
+        <div class="weekday">Th</div>
+        <div class="weekday">Fr</div>
+        <div class="weekday">Sa</div>
+        <div class="weekday">Su</div>
       </div>
       
       <div id="days" class="days"></div>
@@ -147,7 +164,7 @@
       <input 
         type="number" 
         id="caloriesInput" 
-        placeholder="Введите калории"
+        placeholder="Enter calories"
         min="0"
         max="10000"
       >
@@ -178,6 +195,7 @@
     </div>
   </div>
   
+  <script src="main.js"></script>
   <script src="script.js"></script>
 </body>
 </html> 

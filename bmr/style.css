@@ -200,6 +200,19 @@ form button:hover {
   background-color: #006da1;
 }
 
+/* Стили для ошибок валидации */
+input.error {
+  border: 1px solid #ff4d4d !important;
+  background-color: rgba(255, 77, 77, 0.1) !important;
+}
+
+.error-message {
+  color: #ff4d4d;
+  font-size: 12px;
+  margin-top: -5px;
+  margin-bottom: 10px;
+}
+
 /* Адаптивные корректировки для мобильных */
 @media (max-height: 600px) {
   .container {
