@@ -345,10 +345,7 @@ window.addEventListener('resize', () => {
   originalWindowHeight = window.innerHeight;
 });
 }
-
-
   
-
   // Запускаем приложение
   init();
 })(); 
