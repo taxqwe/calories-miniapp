@@ -181,7 +181,7 @@
     const monthIndex = currentDate.getMonth();
     const year = currentDate.getFullYear();
     currentMonthElement.textContent = (t.monthNames ? 
-      t.monthNames[monthIndex] : currentDate.toLocaleString('ru', { month: 'long' })) + ' ' + year;
+      t.monthNames[monthIndex] : currentDate.toLocaleString('en', { month: 'long' })) + ' ' + year;
 
     // Получаем количество дней в месяце и день недели первого числа
     const month = currentDate.getMonth();
@@ -214,7 +214,7 @@
       if (hasData) {
         dayElement.innerHTML = `
           <span>${day}</span>
-          <small>${caloriesData[dateStr]}<br>${t.cal || 'ккал'}</small>
+          <small>${caloriesData[dateStr]}<br>${t.cal || 'cal'}</small>
         `;
       } else {
         dayElement.innerHTML = `<span>${day}</span>`;
