@@ -13,13 +13,11 @@
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
-
     .stats-container {
       padding: 16px;
       max-width: 500px;
       margin: 0 auto;
     }
-
     .period-selector {
       display: flex;
       background: var(--dark-bg);
@@ -27,7 +25,6 @@
       overflow: hidden;
       margin-bottom: 20px;
     }
-
     .period-button {
       flex: 1;
       padding: 8px;
@@ -39,38 +36,33 @@
       transition: background-color 0.2s;
       font-size: 13px;
     }
-
     .period-button.active {
       background: var(--accent-color);
       color: white;
     }
-
     .stats-card {
       background: var(--dark-bg);
       border-radius: 8px;
       padding: 16px;
       margin-bottom: 16px;
     }
-
     .stats-value {
       font-size: 32px;
       font-weight: bold;
       color: var(--text-color);
       margin: 8px 0;
     }
-
     .stats-label {
       color: var(--text-light);
       font-size: 14px;
     }
-
     .stats-chart-container {
       position: relative;
       margin: 20px 0;
       height: 200px;
       padding-left: 32px;
+      overflow: visible;
     }
-
     .chart-grid {
       position: absolute;
       top: 0;
@@ -82,14 +74,12 @@
       justify-content: space-between;
       pointer-events: none;
     }
-
     .grid-line {
       width: 100%;
       height: 1px;
       background: var(--border-color);
       opacity: 0.2;
     }
-
     .grid-value {
       position: absolute;
       right: calc(100% + 8px);
@@ -99,7 +89,16 @@
       min-width: 24px;
       text-align: right;
     }
-
+    /* Контейнер для трендов создается динамически */
+    .trend-container {
+      position: absolute;
+      top: 0;
+      left: 32px;
+      right: 0;
+      bottom: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
     .stats-chart {
       width: 100%;
       height: 100%;
@@ -107,9 +106,8 @@
       align-items: flex-end;
       gap: 1px;
       position: relative;
-      z-index: 2;
+      z-index: 3;
     }
-
     .chart-bar {
       flex: 1;
       background: var(--accent-color);
@@ -118,41 +116,67 @@
       transition: all 0.3s ease;
       opacity: 0.9;
     }
-
     .chart-bar.empty {
       background: var(--border-color);
       opacity: 0.3;
     }
-
     .trend-active .chart-bar:not(.empty) {
       background: var(--border-color);
       opacity: 0.3;
     }
-
+    /* Тренд-линии */
     .trend-line {
       position: absolute;
-      left: 32px;
+      left: 0;
       right: 0;
       height: 2px;
-      background: #FF6422;
-      z-index: 1;
+      pointer-events: none;
       opacity: 0;
       transition: opacity 0.3s ease;
     }
-
+    .trend-line.average-line {
+      background: #FF6422;
+    }
+    .trend-line.bmr-line {
+      background: #4CAF50;
+    }
+    .trend-line.tdee-line {
+      background: #2196F3;
+    }
+    /* Подписи трендов */
     .trend-value {
       position: absolute;
-      right: 0;
-      top: 0;
-      transform: translateY(-100%);
-      color: #FF6422;
-      font-size: 11px;
-      padding: 0 4px;
+      z-index: 4;
       white-space: nowrap;
+      pointer-events: none;
+      font-size: 11px;
+      padding: 2px 4px;
       background: var(--dark-bg);
-      z-index: 3;
+      border-radius: 4px;
     }
-
+    /* Подпись для средней (оранжевой) линии – выравнивание по правому краю */
+    .trend-value.average-value {
+      right: 0;
+      left: auto;
+      transform: translateY(-120%);
+      color: #FF6422;
+    }
+    /* Подписи для линий BMR и TDEE – выравнивание по левому краю */
+    .trend-value.bmr-value,
+    .trend-value.tdee-value {
+      left: 0;
+      right: auto;
+      transform: translateY(-120%);
+    }
+    .trend-value.bmr-value {
+      color: #4CAF50;
+    }
+    .trend-value.tdee-value {
+      color: #2196F3;
+    }
+    .trend-active .trend-line {
+      opacity: 1;
+    }
     .trend-button {
       display: flex;
       justify-content: center;
@@ -168,16 +192,13 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-
     .trend-button.active {
       background: #FF6422;
       color: white;
     }
-
     .trend-button:active {
       opacity: 0.7;
     }
-
     .chart-labels {
       display: flex;
       justify-content: space-between;
@@ -187,50 +208,14 @@
       padding-left: 32px;
       gap: 1px;
     }
-
     .chart-labels span {
       text-align: center;
       flex: 1;
       font-variant-numeric: tabular-nums;
     }
-
-    /* Стили для месячного периода */
-    .chart-labels[data-period="month"] {
-      display: flex;
-      flex-wrap: nowrap;
-    }
-
-    .chart-labels[data-period="month"] span {
-      flex: 1;
-      min-width: 0;
-      padding: 0;
-    }
-
-    /* Стили для 6-месячного периода */
-    .chart-labels[data-period="6month"] {
-      display: flex;
-      flex-wrap: nowrap;
-      gap: 0;
-      margin-top: 8px;
-      font-size: 11px;
-      color: var(--text-light);
-    }
-
-    .chart-labels[data-period="6month"] span {
-      flex: 4;
-      text-align: left;
-      white-space: nowrap;
-      min-width: 0;
-    }
-
-    .chart-labels[data-period="6month"] span:not(:empty) {
-      padding-left: 2px;
-    }
-
     .stats-collections {
       margin-top: 16px;
     }
-
     .collection-card {
       display: flex;
       flex-direction: column;
@@ -240,74 +225,61 @@
       border-radius: 8px;
       color: var(--text-color);
     }
-
     .collection-header {
       display: flex;
       align-items: center;
       margin-bottom: 12px;
     }
-
     .collection-icon {
       width: 24px;
       height: 24px;
       margin-right: 8px;
       color: #FF6422;
     }
-
     .collection-title {
       color: #FF6422;
       font-weight: 500;
     }
-
     .collection-text {
       font-size: 15px;
       line-height: 1.4;
       margin-bottom: 16px;
     }
-
     .collection-period {
       margin-top: 8px;
     }
-
     .period-value {
       font-size: 32px;
       font-weight: 500;
       margin-bottom: 4px;
     }
-
     .period-value span {
       font-size: 15px;
       color: var(--text-light);
       margin-left: 4px;
     }
-
     .period-bar {
       height: 32px;
       border-radius: 6px;
       margin-bottom: 8px;
     }
-
     .period-bar.current {
       background: #FF6422;
     }
-
     .period-bar.previous {
       background: var(--border-color);
       opacity: 0.3;
     }
-
     .period-label {
       font-size: 15px;
       color: var(--text-light);
     }
-
     .section-title {
       font-size: 20px;
       font-weight: 600;
       margin: 24px 0 16px;
       color: var(--text-color);
     }
-
     .mini-chart-container {
       display: grid;
       grid-template-columns: auto 1fr;
@@ -315,7 +287,6 @@
       gap: 8px;
       height: 120px;
     }
-
     .mini-chart-label {
       grid-column: 1;
       grid-row: 1;
@@ -323,7 +294,6 @@
       color: var(--text-light);
       line-height: 1.2;
     }
-
     .mini-chart-value {
       grid-column: 1;
       grid-row: 2;
@@ -331,27 +301,23 @@
       font-weight: 500;
       align-self: center;
     }
-
     .mini-chart-value span {
       font-size: 13px;
       color: var(--text-light);
       margin-left: 4px;
     }
-
     .mini-chart {
       grid-column: 2;
       grid-row: 1 / span 3;
       position: relative;
       height: 100%;
     }
-
     .mini-chart-bars {
       display: flex;
       align-items: flex-end;
       gap: 2px;
       height: calc(100% - 20px);
     }
-
     .mini-chart-bar {
       flex: 1;
       background: var(--border-color);
@@ -359,7 +325,6 @@
       border-radius: 2px 2px 0 0;
       opacity: 0.3;
     }
-
     .mini-chart-trend {
       position: absolute;
       left: 0;
@@ -367,7 +332,6 @@
       height: 2px;
       background: #FF6422;
     }
-
     .mini-chart-labels {
       height: 20px;
       display: grid;
@@ -377,7 +341,6 @@
       font-size: 11px;
       margin-top: 4px;
     }
-
     .mini-chart-labels span {
       text-align: center;
     }
@@ -391,13 +354,11 @@
       <button class="period-button" data-period="6month">6 МЕС</button>
       <button class="period-button" data-period="year">ГОД</button>
     </div>
-
     <div class="stats-card">
       <div class="stats-label">В СРЕДНЕМ ЗА ДЕНЬ</div>
       <div class="stats-value">389 ккал</div>
       <div class="stats-label">9 март — 9 апр. 2025г.</div>
     </div>
-
     <div class="stats-card">
       <div class="stats-chart-container">
         <div class="chart-grid">
@@ -406,24 +367,19 @@
           <div class="grid-line"><span class="grid-value">250</span></div>
           <div class="grid-line"><span class="grid-value">0</span></div>
         </div>
-        <div class="trend-line">
-          <span class="trend-value">334 ккал</span>
-        </div>
+        <!-- Контейнер для тренд-линий создаётся динамически -->
         <div class="stats-chart">
-          <!-- Здесь будут динамически добавляться столбцы графика -->
+          <!-- Столбцы графика добавляются динамически -->
         </div>
       </div>
       <div class="chart-labels" data-period="month">
-        <!-- Здесь будут динамически добавляться подписи -->
+        <!-- Подписи оси X добавляются динамически -->
       </div>
     </div>
-
     <button class="trend-button">Тренд</button>
-
     <div class="stats-collections"></div>
   </div>
-
   <script src="script.js"></script>
   <script src="collections.js"></script>
 </body>
-</html> 
+</html>
