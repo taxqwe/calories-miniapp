@@ -7,28 +7,22 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="../edit/styles.css">
   <style>
+    body {
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
     .stats-container {
       padding: 16px;
       max-width: 500px;
       margin: 0 auto;
     }
 
-    .stats-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-
-    .stats-header h1 {
-      margin: 0;
-      font-size: 24px;
-      color: var(--text-color);
-    }
-
     .period-selector {
       display: flex;
-      background: var(--light-bg);
+      background: var(--dark-bg);
       border-radius: 8px;
       overflow: hidden;
       margin-bottom: 20px;
@@ -43,6 +37,7 @@
       color: var(--text-color);
       cursor: pointer;
       transition: background-color 0.2s;
+      font-size: 13px;
     }
 
     .period-button.active {
@@ -51,7 +46,7 @@
     }
 
     .stats-card {
-      background: var(--light-bg);
+      background: var(--dark-bg);
       border-radius: 8px;
       padding: 16px;
       margin-bottom: 16px;
@@ -69,13 +64,50 @@
       font-size: 14px;
     }
 
+    .stats-chart-container {
+      position: relative;
+      margin: 20px 0;
+      height: 200px;
+      padding-left: 32px;
+    }
+
+    .chart-grid {
+      position: absolute;
+      top: 0;
+      left: 32px;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .grid-line {
+      width: 100%;
+      height: 1px;
+      background: var(--border-color);
+      opacity: 0.2;
+    }
+
+    .grid-value {
+      position: absolute;
+      right: calc(100% + 8px);
+      font-size: 11px;
+      color: var(--text-light);
+      transform: translateY(-50%);
+      min-width: 24px;
+      text-align: right;
+    }
+
     .stats-chart {
       width: 100%;
-      height: 200px;
-      margin: 20px 0;
+      height: 100%;
       display: flex;
       align-items: flex-end;
-      gap: 2px;
+      gap: 1px;
+      position: relative;
+      z-index: 2;
     }
 
     .chart-bar {
@@ -83,11 +115,67 @@
       background: var(--accent-color);
       min-height: 4px;
       border-radius: 4px 4px 0 0;
-      transition: height 0.3s ease;
+      transition: all 0.3s ease;
+      opacity: 0.9;
     }
 
     .chart-bar.empty {
       background: var(--border-color);
+      opacity: 0.3;
+    }
+
+    .trend-active .chart-bar:not(.empty) {
+      background: var(--border-color);
+      opacity: 0.3;
+    }
+
+    .trend-line {
+      position: absolute;
+      left: 32px;
+      right: 0;
+      height: 2px;
+      background: #FF6422;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .trend-value {
+      position: absolute;
+      right: 0;
+      top: 0;
+      transform: translateY(-100%);
+      color: #FF6422;
+      font-size: 11px;
+      padding: 0 4px;
+      white-space: nowrap;
+      background: var(--dark-bg);
+      z-index: 3;
+    }
+
+    .trend-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding: 16px;
+      margin-top: 16px;
+      background: var(--dark-bg);
+      border: none;
+      border-radius: 8px;
+      color: var(--text-color);
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .trend-button.active {
+      background: #FF6422;
+      color: white;
+    }
+
+    .trend-button:active {
+      opacity: 0.7;
     }
 
     .chart-labels {
@@ -95,20 +183,209 @@
       justify-content: space-between;
       margin-top: 8px;
       color: var(--text-light);
-      font-size: 12px;
+      font-size: 11px;
+      padding-left: 32px;
+      gap: 1px;
+    }
+
+    .chart-labels span {
+      text-align: center;
+      flex: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Стили для месячного периода */
+    .chart-labels[data-period="month"] {
+      display: flex;
+      flex-wrap: nowrap;
+    }
+
+    .chart-labels[data-period="month"] span {
+      flex: 1;
+      min-width: 0;
+      padding: 0;
+    }
+
+    /* Стили для 6-месячного периода */
+    .chart-labels[data-period="6month"] {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 0;
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    .chart-labels[data-period="6month"] span {
+      flex: 4;
+      text-align: left;
+      white-space: nowrap;
+      min-width: 0;
+    }
+
+    .chart-labels[data-period="6month"] span:not(:empty) {
+      padding-left: 2px;
+    }
+
+    .stats-collections {
+      margin-top: 16px;
+    }
+
+    .collection-card {
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      margin-bottom: 8px;
+      background: var(--dark-bg);
+      border-radius: 8px;
+      color: var(--text-color);
+    }
+
+    .collection-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .collection-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+      color: #FF6422;
+    }
+
+    .collection-title {
+      color: #FF6422;
+      font-weight: 500;
+    }
+
+    .collection-text {
+      font-size: 15px;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+
+    .collection-period {
+      margin-top: 8px;
+    }
+
+    .period-value {
+      font-size: 32px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .period-value span {
+      font-size: 15px;
+      color: var(--text-light);
+      margin-left: 4px;
+    }
+
+    .period-bar {
+      height: 32px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    .period-bar.current {
+      background: #FF6422;
+    }
+
+    .period-bar.previous {
+      background: var(--border-color);
+      opacity: 0.3;
+    }
+
+    .period-label {
+      font-size: 15px;
+      color: var(--text-light);
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 24px 0 16px;
+      color: var(--text-color);
+    }
+
+    .mini-chart-container {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      grid-template-rows: auto 1fr auto;
+      gap: 8px;
+      height: 120px;
+    }
+
+    .mini-chart-label {
+      grid-column: 1;
+      grid-row: 1;
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.2;
+    }
+
+    .mini-chart-value {
+      grid-column: 1;
+      grid-row: 2;
+      font-size: 24px;
+      font-weight: 500;
+      align-self: center;
+    }
+
+    .mini-chart-value span {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-left: 4px;
+    }
+
+    .mini-chart {
+      grid-column: 2;
+      grid-row: 1 / span 3;
+      position: relative;
+      height: 100%;
+    }
+
+    .mini-chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: calc(100% - 20px);
+    }
+
+    .mini-chart-bar {
+      flex: 1;
+      background: var(--border-color);
+      min-height: 4px;
+      border-radius: 2px 2px 0 0;
+      opacity: 0.3;
+    }
+
+    .mini-chart-trend {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #FF6422;
+    }
+
+    .mini-chart-labels {
+      height: 20px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      color: var(--text-light);
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .mini-chart-labels span {
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <div class="stats-container">
-    <div class="stats-header">
-      <a href="../edit/" class="back-button">← Обзор</a>
-      <h1>Энергия активности</h1>
-      <div style="width: 24px"></div>
-    </div>
-
     <div class="period-selector">
-      <button class="period-button" data-period="day">ДН</button>
       <button class="period-button active" data-period="week">НЕД</button>
       <button class="period-button" data-period="month">МЕС</button>
       <button class="period-button" data-period="6month">6 МЕС</button>
@@ -116,25 +393,37 @@
     </div>
 
     <div class="stats-card">
-      <div class="stats-label">В СРЕДНЕМ</div>
-      <div class="stats-value">325 ккал</div>
-      <div class="stats-label">10 марта — 9 апр. 2025г.</div>
+      <div class="stats-label">В СРЕДНЕМ ЗА ДЕНЬ</div>
+      <div class="stats-value">389 ккал</div>
+      <div class="stats-label">9 март — 9 апр. 2025г.</div>
     </div>
 
     <div class="stats-card">
-      <div class="stats-chart">
-        <!-- Здесь будут динамически добавляться столбцы графика -->
+      <div class="stats-chart-container">
+        <div class="chart-grid">
+          <div class="grid-line"><span class="grid-value">750</span></div>
+          <div class="grid-line"><span class="grid-value">500</span></div>
+          <div class="grid-line"><span class="grid-value">250</span></div>
+          <div class="grid-line"><span class="grid-value">0</span></div>
+        </div>
+        <div class="trend-line">
+          <span class="trend-value">334 ккал</span>
+        </div>
+        <div class="stats-chart">
+          <!-- Здесь будут динамически добавляться столбцы графика -->
+        </div>
       </div>
-      <div class="chart-labels">
-        <span>10</span>
-        <span>17</span>
-        <span>24</span>
-        <span>31</span>
-        <span>7</span>
+      <div class="chart-labels" data-period="month">
+        <!-- Здесь будут динамически добавляться подписи -->
       </div>
     </div>
+
+    <button class="trend-button">Тренд</button>
+
+    <div class="stats-collections"></div>
   </div>
 
   <script src="script.js"></script>
+  <script src="collections.js"></script>
 </body>
 </html> 
