@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Статистика калорий</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="../edit/styles.css">
+  <style>
+    .stats-container {
+      padding: 16px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .stats-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .stats-header h1 {
+      margin: 0;
+      font-size: 24px;
+      color: var(--text-color);
+    }
+
+    .period-selector {
+      display: flex;
+      background: var(--light-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .period-button {
+      flex: 1;
+      padding: 8px;
+      text-align: center;
+      background: transparent;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .period-button.active {
+      background: var(--accent-color);
+      color: white;
+    }
+
+    .stats-card {
+      background: var(--light-bg);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .stats-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--text-color);
+      margin: 8px 0;
+    }
+
+    .stats-label {
+      color: var(--text-light);
+      font-size: 14px;
+    }
+
+    .stats-chart {
+      width: 100%;
+      height: 200px;
+      margin: 20px 0;
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .chart-bar {
+      flex: 1;
+      background: var(--accent-color);
+      min-height: 4px;
+      border-radius: 4px 4px 0 0;
+      transition: height 0.3s ease;
+    }
+
+    .chart-bar.empty {
+      background: var(--border-color);
+    }
+
+    .chart-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      color: var(--text-light);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="stats-container">
+    <div class="stats-header">
+      <a href="../edit/" class="back-button">← Обзор</a>
+      <h1>Энергия активности</h1>
+      <div style="width: 24px"></div>
+    </div>
+
+    <div class="period-selector">
+      <button class="period-button" data-period="day">ДН</button>
+      <button class="period-button active" data-period="week">НЕД</button>
+      <button class="period-button" data-period="month">МЕС</button>
+      <button class="period-button" data-period="6month">6 МЕС</button>
+      <button class="period-button" data-period="year">ГОД</button>
+    </div>
+
+    <div class="stats-card">
+      <div class="stats-label">В СРЕДНЕМ</div>
+      <div class="stats-value">325 ккал</div>
+      <div class="stats-label">10 марта — 9 апр. 2025г.</div>
+    </div>
+
+    <div class="stats-card">
+      <div class="stats-chart">
+        <!-- Здесь будут динамически добавляться столбцы графика -->
+      </div>
+      <div class="chart-labels">
+        <span>10</span>
+        <span>17</span>
+        <span>24</span>
+        <span>31</span>
+        <span>7</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html> 
