@@ -30,8 +30,78 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return data;
   }
+  
+  // Получение реальных данных с сервера
+  async function fetchUserStats() {
+    try {
+      const initData = tg.initData;
+      
+      const response = await fetch('https://calories-bot.duckdns.org:8443/api/stats', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-Source-App': 'Calories-Stats'
+        },
+        mode: 'cors',
+        body: JSON.stringify({ initData: initData })
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Ошибка ответа сервера:', response.status, errorText);
+        throw new Error('Ошибка получения данных');
+      }
+      
+      const responseData = await response.json();
+      console.log('Получены данные от сервера:', responseData);
+      
+      // Преобразуем данные из Map<String, Int> в массив объектов {date, calories}
+      const caloriesMap = responseData.calories;
+      const tdee = responseData.tdee;
+      
+      const formattedData = [];
+      // Рассчитываем даты за последние 730 дней для полного набора данных
+      let startDate = new Date();
+      startDate.setDate(startDate.getDate() - 729);
+      
+      for (let i = 0; i < 730; i++) {
+        const currentDate = new Date(startDate);
+        currentDate.setDate(startDate.getDate() + i);
+        
+        // Форматируем дату в формат yyyy-MM-dd для поиска в полученных данных
+        const dateKey = currentDate.toISOString().split('T')[0];
+        const calories = caloriesMap[dateKey] || 0;
+        
+        formattedData.push({ date: currentDate, calories: calories });
+      }
+      
+      window.allData = formattedData;
+      
+      // Если TDEE известен, используем его, иначе оставляем значение по умолчанию
+      if (tdee) {
+        window.userTDEE = tdee;
+      }
+      
+      // Обновляем график после получения данных
+      updateChart(currentPeriod);
+      
+      return true;
+    } catch (error) {
+      console.error('Ошибка при получении данных:', error);
+      // В случае ошибки используем моковые данные
+      window.allData = generateMockData(730);
+      updateChart(currentPeriod);
+      return false;
+    }
+  }
+  
+  // Инициализируем данные моковыми на случай ошибки
   window.allData = generateMockData(730);
+  window.userTDEE = 2200; // Значение по умолчанию
 
+  // Загружаем реальные данные
+  fetchUserStats();
 
   // Функция для получения данных за неделю (последние 7 дней)
   function getWeekData() {
@@ -81,7 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.getMonthData = getMonthData;
   window.getSixMonthData = getSixMonthData;
   window.getYearData = getYearData;
-
 
   let currentPeriod = 'week';
   const periodButtons = document.querySelectorAll('.period-button');
@@ -233,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
       data = getYearData();
     }
 
-    const TDEE = 2200; // константное значение TDEE
+    const TDEE = window.userTDEE || 2200; // используем TDEE из реальных данных или дефолтное значение
     const maxValue = Math.max(...data, TDEE);
     const labels = getLabelsForPeriod(period, data.length);
     const chartContainerElem = document.querySelector('.stats-chart');
