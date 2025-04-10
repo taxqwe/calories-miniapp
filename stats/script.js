@@ -7,12 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Применяем цветовую схему от Telegram
   // Замените на свои цвета, пример:
   document.documentElement.style.setProperty('--text-color', '#ffffff');
-  document.documentElement.style.setProperty('--bg-color', '#000000');
+  document.documentElement.style.setProperty('--bg-color', '#1c1c1e');
   document.documentElement.style.setProperty('--text-light', '#999999');
   document.documentElement.style.setProperty('--accent-color', '#2196F3'); // "наш" синий
-  document.documentElement.style.setProperty('--dark-bg', '#1a1a1a');
-  document.documentElement.style.setProperty('--border-color', '#333333');
+  document.documentElement.style.setProperty('--dark-bg', '#2c2c2e');
+  document.documentElement.style.setProperty('--border-color', '#5e5e5e');
   document.documentElement.style.setProperty('--our-blue', '#2196F3'); // "наш" синий
+  document.documentElement.style.setProperty('--chart-secondary', '#48484a');
 
 
   // Названия месяцев
