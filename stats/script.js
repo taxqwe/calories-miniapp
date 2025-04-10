@@ -9,9 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.documentElement.style.setProperty('--text-color', '#ffffff');
   document.documentElement.style.setProperty('--bg-color', '#000000');
   document.documentElement.style.setProperty('--text-light', '#999999');
-  document.documentElement.style.setProperty('--accent-color', '#50A8EB'); // "наш" синий
+  document.documentElement.style.setProperty('--accent-color', '#2196F3'); // "наш" синий
   document.documentElement.style.setProperty('--dark-bg', '#1a1a1a');
   document.documentElement.style.setProperty('--border-color', '#333333');
+  document.documentElement.style.setProperty('--our-blue', '#2196F3'); // "наш" синий
 
 
   // Названия месяцев
