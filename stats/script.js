@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
   async function fetchUserStats() {
     try {
       const initData = tg.initData;
+      // Получаем userId из initDataUnsafe
+      const userId = tg.initDataUnsafe?.user?.id;
       
       const response = await fetch('https://calories-bot.duckdns.org:8443/api/stats', {
         method: 'POST',
@@ -44,7 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
           'X-Source-App': 'Calories-Stats'
         },
         mode: 'cors',
-        body: JSON.stringify({ initData: initData })
+        body: JSON.stringify({ 
+          initData: initData,
+          userId: userId
+        })
       });
       
       if (!response.ok) {
