@@ -17,39 +17,71 @@ document.addEventListener('DOMContentLoaded', () => {
   const shortMonths = ['Я', 'Ф', 'М', 'А', 'М', 'И', 'И', 'А', 'С', 'О', 'Н', 'Д'];
 
   // Моковые данные с параметрами bmr и tdee
-  function generateMockData(count, maxValue) {
+  function generateMockData(count) {
     const data = [];
+    // Стартовая дата – (count-1) дней назад (так, чтобы последний элемент соответствовал сегодня)
+    let startDate = new Date();
+    startDate.setDate(startDate.getDate() - (count - 1));
     for (let i = 0; i < count; i++) {
-      if (Math.random() > 0.8) {
-        data.push(0);
-      } else {
-        data.push(Math.floor(Math.random() * 2200) + 800);
-      }
+      const currentDate = new Date(startDate);
+      currentDate.setDate(startDate.getDate() + i);
+      const calories = Math.random() > 0.8 ? 0 : Math.floor(Math.random() * 2200) + 800;
+      data.push({ date: currentDate, calories: calories });
     }
     return data;
   }
-  window.mockData = {
-    'week': {
-      data: generateMockData(7, 3000),
-      bmr: 1500,
-      tdee: 2200
-    },
-    'month': {
-      data: generateMockData(30, 3000),
-      bmr: 1500,
-      tdee: 2200
-    },
-    '6month': {
-      data: generateMockData(24, 3000),
-      bmr: 1500,
-      tdee: 2200
-    },
-    'year': {
-      data: generateMockData(12, 3000),
-      bmr: 1500,
-      tdee: 2200
+  window.allData = generateMockData(730);
+
+
+  // Функция для получения данных за неделю (последние 7 дней)
+  function getWeekData() {
+    return window.allData.slice(-7);  // возвращаем массив объектов
+  }
+
+  // Функция для получения данных за месяц (последние 30 дней)
+  function getMonthData() {
+    return window.allData.slice(-30);
+  }
+
+  // Функция для получения данных за 6 месяцев (последние 180 дней),
+  // группируя по неделям (7-дневные группы) – возвращает массив чисел
+  function getSixMonthData() {
+    const rawData = window.allData.slice(-180);
+    const aggregated = [];
+    for (let i = 0; i < rawData.length; i += 7) {
+      const group = rawData.slice(i, i + 7);
+      const nonEmpty = group.filter(item => item.calories > 0).map(item => item.calories);
+      const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b, 0) / nonEmpty.length) : 0;
+      aggregated.push(avg);
     }
-  };
+    return aggregated;
+  }
+
+  // Функция для получения данных за год (последние 365 дней),
+  // группируя по месяцам – возвращает массив чисел
+  function getYearData() {
+    const rawData = window.allData.slice(-365);
+    const groups = {};
+    rawData.forEach(item => {
+      const m = item.date.getMonth();
+      if (!groups[m]) groups[m] = [];
+      groups[m].push(item.calories);
+    });
+    const aggregated = [];
+    for (let m = 0; m < 12; m++) {
+      const group = groups[m] || [];
+      const nonEmpty = group.filter(v => v > 0);
+      const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b, 0) / nonEmpty.length) : 0;
+      aggregated.push(avg);
+    }
+    return aggregated;
+  }
+
+  window.getWeekData = getWeekData;
+  window.getMonthData = getMonthData;
+  window.getSixMonthData = getSixMonthData;
+  window.getYearData = getYearData;
+
 
   let currentPeriod = 'week';
   const periodButtons = document.querySelectorAll('.period-button');
@@ -93,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function formatPeriodDate(period) {
     const now = new Date();
     let start;
-    switch(period) {
+    switch (period) {
       case 'week':
         start = new Date(now);
         start.setDate(now.getDate() - 7);
@@ -115,9 +147,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function getLabelsForPeriod(period) {
     const now = new Date();
-    switch(period) {
+    switch (period) {
       case 'week':
-        return Array.from({length: 7}, (_, i) => {
+        return Array.from({ length: 7 }, (_, i) => {
           const date = new Date(now);
           date.setDate(now.getDate() - (6 - i));
           return date.getDate().toString();
@@ -154,44 +186,51 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateChart(period) {
-    const periodData = window.mockData[period];
-    const data = periodData.data;
-    const maxValue = Math.max(...data, periodData.bmr, periodData.tdee);
-    const labels = getLabelsForPeriod(period);
+    let data;
+    if (period === 'week') {
+      data = getWeekData().map(item => item.calories); // преобразуем объекты в числа
+    } else if (period === 'month') {
+      data = getMonthData().map(item => item.calories);
+    } else if (period === '6month') {
+      data = getSixMonthData(); // уже числа
+    } else if (period === 'year') {
+      data = getYearData();
+    }
+
+    const TDEE = 2200; // константное значение TDEE
+    const maxValue = Math.max(...data, TDEE);
+    const labels = getLabelsForPeriod(period, data.length);
     const chartContainerElem = document.querySelector('.stats-chart');
     chartContainerElem.innerHTML = '';
-    
-    data.forEach((value, index) => {
+
+    data.forEach(value => {
       const bar = document.createElement('div');
       bar.className = 'chart-bar' + (value === 0 ? ' empty' : '');
       const height = value === 0 ? 4 : (value / maxValue * 100);
       bar.style.height = `${height}%`;
-      if (period === '6month' && index % 4 === 0 && index > 0) {
-        bar.style.marginLeft = '8px';
-      }
+      // Больше не добавляем marginLeft – столбцы идут непрерывно
       chartContainerElem.appendChild(bar);
     });
-    
+
     const labelsContainer = document.querySelector('.chart-labels');
     labelsContainer.setAttribute('data-period', period);
     labelsContainer.innerHTML = labels.map(label => `<span>${label || ''}</span>`).join('');
-    
+
     const nonEmptyDays = data.filter(value => value > 0);
-    const average = nonEmptyDays.length > 0 ? Math.round(nonEmptyDays.reduce((a, b) => a + b, 0) / nonEmptyDays.length) : 0;
+    const average = nonEmptyDays.length ? Math.round(nonEmptyDays.reduce((a, b) => a + b, 0) / nonEmptyDays.length) : 0;
     document.querySelector('.stats-value').textContent = `${average} ккал`;
     document.querySelector('.stats-label:last-child').textContent = formatPeriodDate(period);
-    
+
     const gridStep = Math.ceil(maxValue / 3 / 100) * 100;
     const gridValues = document.querySelectorAll('.grid-value');
     gridValues[0].textContent = (gridStep * 3).toString();
     gridValues[1].textContent = (gridStep * 2).toString();
     gridValues[2].textContent = gridStep.toString();
     gridValues[3].textContent = '0';
-    
-    // Обновляем линию тренда для среднего
+
     averageLine.style.bottom = `${(average / maxValue * 100)}%`;
     averageValue.textContent = `${average} ккал`;
-    
+
     updateTrendVisibility();
   }
 

@@ -16,12 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const height = value === 0 ? 4 : (value / Math.max(...data) * 100);
       return `<div class="mini-chart-bar" style="height: ${height}%"></div>`;
     }).join('');
-    
+
     const currentPeriod = document.querySelector('.period-button.active').dataset.period;
     let labels;
-    
+
     // Определяем метки для разных периодов (так же как в createTdeeMiniChart)
-    switch(currentPeriod) {
+    switch (currentPeriod) {
       case 'week':
         labels = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
         break;
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
       default:
         labels = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
     }
-  
+
     return `
       <div class="mini-chart-container">
         <div class="mini-chart-label">Средн.<br>Килокалории</div>
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
   }
-  
+
   function createTdeeMiniChart(data, tdee) {
     const maxValue = Math.max(...data, tdee);
     const bars = data.map(value => {
@@ -60,12 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const excessClass = value > tdee ? ' excess' : '';
       return `<div class="mini-chart-bar${excessClass}" style="height: ${height}%"></div>`;
     }).join('');
-    
+
     const currentPeriod = document.querySelector('.period-button.active').dataset.period;
     let labels;
-    
+
     // Определяем метки для разных периодов
-    switch(currentPeriod) {
+    switch (currentPeriod) {
       case 'week':
         labels = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
         break;
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
       default:
         labels = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
     }
-  
+
     return `
       <div class="mini-chart-container">
         <div class="mini-chart-label">TDEE<br>Порог</div>
@@ -96,12 +96,12 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
   }
-  
+
   function createComparisonBlock(text, currentValue, previousValue, currentLabel, previousLabel, title) {
     const maxValue = Math.max(currentValue, previousValue);
     const currentBarWidth = (currentValue / maxValue * 100).toFixed(1);
     const previousBarWidth = (previousValue / maxValue * 100).toFixed(1);
-  
+
     return `
       <div class="collection-card">
         <div class="collection-header">
@@ -122,90 +122,88 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
   }
-  
-  function updateCollections(data, tdee) {
-    collectionsContainer.innerHTML = '';
-    const nonEmptyDays = data.filter(value => value > 0);
-    const average = nonEmptyDays.length > 0 ? Math.round(nonEmptyDays.reduce((a, b) => a + b, 0) / nonEmptyDays.length) : 0;
-    
-    // Получаем текущий период из активной кнопки
-    const currentPeriod = document.querySelector('.period-button.active').dataset.period;
-    
-    // Определяем тексты и заголовки в зависимости от периода
-    let periodTitle, periodText, unitName;
-    switch(currentPeriod) {
-      case 'week':
-        periodTitle = 'Средние калории за неделю';
-        periodText = `В среднем за последние 7 дней Вы потребляли по ${formatNumber(average)} ккал в день.`;
-        unitName = 'дней';
-        break;
-      case 'month':
-        periodTitle = 'Средние калории за месяц';
-        periodText = `В среднем за последние 30 дней Вы потребляли по ${formatNumber(average)} ккал в день.`;
-        unitName = 'дней';
-        break;
-      case '6month':
-        periodTitle = 'Средние калории за полгода';
-        periodText = `В среднем за последние 6 месяцев Вы потребляли по ${formatNumber(average)} ккал в день.`;
-        unitName = 'недель';
-        break;
-      case 'year':
-        periodTitle = 'Средние калории за год';
-        periodText = `В среднем за последний год Вы потребляли по ${formatNumber(average)} ккал в день.`;
-        unitName = 'месяцев';
-        break;
-    }
-  
-    // Основной блок с мини-графиком
-    let html = `
-      <div class="collection-card">
-        <div class="collection-header">
-          ${createFireIcon()}
-          <span class="collection-title">${periodTitle}</span>
-        </div>
-        <div class="collection-text">${periodText}</div>
-        ${createMiniChart(data, average)}
+
+  // Функция для построения статического блока (последние 7 дней)
+  function buildStaticBlock(calorieValues) {
+    const nonEmpty = calorieValues.filter(v => v > 0);
+    const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b, 0) / nonEmpty.length) : 0;
+    return `
+    <div class="collection-card">
+      <div class="collection-header">
+        ${createFireIcon()}
+        <span class="collection-title">Средние калории (последние 7 дней)</span>
       </div>
-    `;
-    
-    // Карточка "Калории активности" (раньше "Превышение TDEE") теперь идет второй
-    const countDaysAboveTDEE = data.filter(value => value > tdee).length;
-    html += `
-      <div class="collection-card">
-        <div class="collection-header">
-          ${createFireIcon()}
-          <span class="collection-title">Калории активности</span>
-        </div>
-        <div class="collection-text">
-          За выбранный период, из ${data.length} ${unitName}, в <strong>${countDaysAboveTDEE}</strong> ${unitName} среднее потребление калорий превышало TDEE (${tdee} ккал).
-        </div>
-        ${createTdeeMiniChart(data, tdee)}
+      <div class="collection-text">
+        В среднем за последние 7 дней (без учёта дней с 0 ккал) Вы потребляли по ${formatNumber(avg)} ккал в день.
       </div>
-    `;
-    
-    // Блоки сравнения теперь идут после блока калорий активности
-    html += `
-      ${createComparisonBlock(
-        "В этом месяце среднее потребление калорий снизилось по сравнению с прошлым месяцем.",
-        313,
-        344,
-        "Апрель",
-        "Март",
-        "Сравнение калорий за месяц"
-      )}
-      ${createComparisonBlock(
-        "В этом году среднее потребление калорий меньше, чем в прошлом году.",
-        313,
-        362,
-        "2025",
-        "2024",
-        "Сравнение калорий за год"
-      )}
-    `;
-  
-    collectionsContainer.innerHTML = html;
+      ${createMiniChart(calorieValues, avg)}
+    </div>
+  `;
   }
-  
+
+  // Функция для построения блока "Калории активности"
+  function buildActiveBlock(calorieValues, tdee, unitName) {
+    const countAbove = calorieValues.filter(v => v > tdee).length;
+    return `
+    <div class="collection-card">
+      <div class="collection-header">
+        ${createFireIcon()}
+        <span class="collection-title">Калории активности</span>
+      </div>
+      <div class="collection-text">
+        За выбранный период, из ${calorieValues.length} ${unitName}, в <strong>${countAbove}</strong> ${unitName} среднее потребление калорий превышало TDEE (${tdee} ккал).
+      </div>
+      ${createTdeeMiniChart(calorieValues, tdee)}
+    </div>
+  `;
+  }
+
+  // Функция для построения блока сравнения за месяц
+  function buildMonthComparisonBlock() {
+    return createComparisonBlock(
+      "В этом месяце среднее потребление калорий снизилось по сравнению с прошлым месяцем.",
+      313,
+      344,
+      "Апрель",
+      "Март",
+      "Сравнение калорий за месяц"
+    );
+  }
+
+  // Функция для построения блока сравнения за год
+  function buildYearComparisonBlock() {
+    return createComparisonBlock(
+      "В этом году среднее потребление калорий меньше, чем в прошлом году.",
+      313,
+      362,
+      "2025",
+      "2024",
+      "Сравнение калорий за год"
+    );
+  }
+
+  // Основная функция обновления инфо-блоков, объединяющая результаты всех блоков
+  function updateCollections(data, tdee) {
+    // data – массив объектов вида { date, calories }
+    // Преобразуем в массив числовых значений
+    const calorieValues = (data[0] && data[0].calories !== undefined) ? data.map(item => item.calories) : data;
+
+
+    // Определяем единицу измерения в зависимости от периода
+    const currentPeriod = document.querySelector('.period-button.active')?.dataset.period || 'week';
+    let unitName = 'дней';
+    if (currentPeriod === '6month') unitName = 'недель';
+    if (currentPeriod === 'year') unitName = 'месяцев';
+
+    const staticBlock = buildStaticBlock(calorieValues);
+    const activeBlock = buildActiveBlock(calorieValues, tdee, unitName);
+    const monthComparison = buildMonthComparisonBlock();
+    const yearComparison = buildYearComparisonBlock();
+
+    collectionsContainer.innerHTML = staticBlock + activeBlock + monthComparison + yearComparison;
+  }
+
+
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.type === 'childList' && mutation.target.classList.contains('stats-chart')) {
@@ -215,7 +213,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-  
+
   observer.observe(document.querySelector('.stats-chart'), { childList: true });
-  updateCollections(window.mockData['week'].data, window.mockData['week'].tdee);
+  updateCollections(getWeekData(), 2200);
+
 });
