@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
   }
-  
 
   function createTdeeMiniChart(data, tdee) {
     const maxValue = Math.max(...data, tdee);
@@ -159,27 +158,92 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Функция для построения блока сравнения за месяц
   function buildMonthComparisonBlock() {
+    const now = new Date();
+    const currentMonth = now.getMonth(); // 0 = январь, 11 = декабрь
+    const currentYear = now.getFullYear();
+    
+    // Фильтруем данные для текущего календарного месяца
+    const currentMonthData = window.allData.filter(item => {
+      const d = item.date;
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    });
+    
+    // Определяем предыдущий месяц и год
+    let prevMonth, prevYear;
+    if (currentMonth === 0) {
+      prevMonth = 11;
+      prevYear = currentYear - 1;
+    } else {
+      prevMonth = currentMonth - 1;
+      prevYear = currentYear;
+    }
+    
+    // Фильтруем данные для предыдущего календарного месяца
+    const prevMonthData = window.allData.filter(item => {
+      const d = item.date;
+      return d.getMonth() === prevMonth && d.getFullYear() === prevYear;
+    });
+    
+    // Рассчитываем среднее значение за текущий месяц (игнорируя нулевые дни)
+    const currentValues = currentMonthData
+      .filter(item => item.calories > 0)
+      .map(item => item.calories);
+    const currentAvg = currentValues.length ? Math.round(currentValues.reduce((a, b) => a + b, 0) / currentValues.length) : 0;
+    
+    // Рассчитываем среднее значение за предыдущий месяц (игнорируя нулевые дни)
+    const prevValues = prevMonthData
+      .filter(item => item.calories > 0)
+      .map(item => item.calories);
+    const prevAvg = prevValues.length ? Math.round(prevValues.reduce((a, b) => a + b, 0) / prevValues.length) : 0;
+    
+    // Получаем подписи для месяцев, используя toLocaleDateString.
+    // Например, полностью: "апрель" или "март". Если нужно коротко, можно потом взять первые буквы.
+    const currentMonthLabel = now.toLocaleDateString('ru-RU', { month: 'long' });
+    const prevDate = new Date(currentYear, currentMonth - 1, 1);
+    const prevMonthLabel = prevDate.toLocaleDateString('ru-RU', { month: 'long' });
+    
+    // Приводим первую букву к верхнему регистру (например, "Апрель")
+    const formattedCurrentLabel = currentMonthLabel.charAt(0).toUpperCase() + currentMonthLabel.slice(1);
+    const formattedPrevLabel = prevMonthLabel.charAt(0).toUpperCase() + prevMonthLabel.slice(1);
+    
     return createComparisonBlock(
       "В этом месяце среднее потребление калорий снизилось по сравнению с прошлым месяцем.",
-      313,
-      344,
-      "Апрель",
-      "Март",
+      currentAvg,
+      prevAvg,
+      formattedCurrentLabel,
+      formattedPrevLabel,
       "Сравнение калорий за месяц"
     );
   }
+  
 
-  // Функция для построения блока сравнения за год
   function buildYearComparisonBlock() {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const previousYear = currentYear - 1;
+    
+    // Фильтруем данные по годам
+    const currentYearData = window.allData.filter(item => item.date.getFullYear() === currentYear);
+    const previousYearData = window.allData.filter(item => item.date.getFullYear() === previousYear);
+    
+    // Вычисляем среднее за текущий год (игнорируя нулевые значения)
+    const currentValues = currentYearData.filter(item => item.calories > 0).map(item => item.calories);
+    const currentAvg = currentValues.length ? Math.round(currentValues.reduce((a, b) => a + b, 0) / currentValues.length) : 0;
+    
+    // Вычисляем среднее за предыдущий год
+    const previousValues = previousYearData.filter(item => item.calories > 0).map(item => item.calories);
+    const previousAvg = previousValues.length ? Math.round(previousValues.reduce((a, b) => a + b, 0) / previousValues.length) : 0;
+    
     return createComparisonBlock(
       "В этом году среднее потребление калорий меньше, чем в прошлом году.",
-      313,
-      362,
-      "2025",
-      "2024",
+      currentAvg,
+      previousAvg,
+      String(currentYear),
+      String(previousYear),
       "Сравнение калорий за год"
     );
   }
+  
 
   // Основная функция обновления инфо-блоков, объединяющая результаты всех блоков
   function updateCollections(data, tdee) {
