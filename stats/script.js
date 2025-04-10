@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
   trendContainer.className = 'trend-container';
   statsChartContainer.appendChild(trendContainer);
 
-  // Средняя линия (average) – оранжевая, подпись по правому краю
+  // Создаем только линию для среднего (average) – оранжевая, подпись по правому краю
   const averageLine = document.createElement('div');
   averageLine.className = 'trend-line average-line';
   const averageValue = document.createElement('span');
@@ -79,31 +79,13 @@ document.addEventListener('DOMContentLoaded', () => {
   averageLine.appendChild(averageValue);
   trendContainer.appendChild(averageLine);
 
-  // BMR линия – зелёная, подпись по левому краю
-  const bmrLine = document.createElement('div');
-  bmrLine.className = 'trend-line bmr-line';
-  const bmrValue = document.createElement('span');
-  bmrValue.className = 'trend-value bmr-value';
-  bmrLine.appendChild(bmrValue);
-  trendContainer.appendChild(bmrLine);
-
-  // TDEE линия – синяя, подпись по левому краю
-  const tdeeLine = document.createElement('div');
-  tdeeLine.className = 'trend-line tdee-line';
-  const tdeeValue = document.createElement('span');
-  tdeeValue.className = 'trend-value tdee-value';
-  tdeeLine.appendChild(tdeeValue);
-  trendContainer.appendChild(tdeeLine);
-
   trendButton.addEventListener('click', () => {
     isTrendVisible = !isTrendVisible;
     updateTrendVisibility();
   });
 
   function updateTrendVisibility() {
-    [averageLine, bmrLine, tdeeLine].forEach(line => {
-      line.style.opacity = isTrendVisible ? '1' : '0';
-    });
+    averageLine.style.opacity = isTrendVisible ? '1' : '0';
     statsChartContainer.classList.toggle('trend-active', isTrendVisible);
     trendButton.classList.toggle('active', isTrendVisible);
   }
@@ -206,18 +188,9 @@ document.addEventListener('DOMContentLoaded', () => {
     gridValues[2].textContent = gridStep.toString();
     gridValues[3].textContent = '0';
     
-    // Обновляем линии тренда:
-    // Средняя линия
+    // Обновляем линию тренда для среднего
     averageLine.style.bottom = `${(average / maxValue * 100)}%`;
     averageValue.textContent = `${average} ккал`;
-    
-    // BMR линия
-    bmrLine.style.bottom = `${(periodData.bmr / maxValue * 100)}%`;
-    bmrValue.textContent = `BMR: ${periodData.bmr} ккал`;
-    
-    // TDEE линия
-    tdeeLine.style.bottom = `${(periodData.tdee / maxValue * 100)}%`;
-    tdeeValue.textContent = `TDEE: ${periodData.tdee} ккал`;
     
     updateTrendVisibility();
   }

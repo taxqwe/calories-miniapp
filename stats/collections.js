@@ -16,6 +16,27 @@ document.addEventListener('DOMContentLoaded', () => {
       const height = value === 0 ? 4 : (value / Math.max(...data) * 100);
       return `<div class="mini-chart-bar" style="height: ${height}%"></div>`;
     }).join('');
+    
+    const currentPeriod = document.querySelector('.period-button.active').dataset.period;
+    let labels;
+    
+    // Определяем метки для разных периодов (так же как в createTdeeMiniChart)
+    switch(currentPeriod) {
+      case 'week':
+        labels = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
+        break;
+      case 'month':
+        labels = '<span>1</span><span>8</span><span>15</span><span>22</span><span>29</span><span></span><span></span>';
+        break;
+      case '6month':
+        labels = '<span>Н</span><span>Д</span><span>Я</span><span>Ф</span><span>М</span><span>А</span><span></span>';
+        break;
+      case 'year':
+        labels = '<span>Я</span><span>Ф</span><span>М</span><span>А</span><span>М</span><span>И</span><span>И</span>';
+        break;
+      default:
+        labels = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
+    }
   
     return `
       <div class="mini-chart-container">
@@ -25,7 +46,51 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="mini-chart-trend" style="bottom: ${(average / Math.max(...data) * 100)}%"></div>
           <div class="mini-chart-bars">${bars}</div>
           <div class="mini-chart-labels">
-            <span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>
+            ${labels}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
+  function createTdeeMiniChart(data, tdee) {
+    const maxValue = Math.max(...data, tdee);
+    const bars = data.map(value => {
+      const height = value === 0 ? 4 : (value / maxValue * 100);
+      const excessClass = value > tdee ? ' excess' : '';
+      return `<div class="mini-chart-bar${excessClass}" style="height: ${height}%"></div>`;
+    }).join('');
+    
+    const currentPeriod = document.querySelector('.period-button.active').dataset.period;
+    let labels;
+    
+    // Определяем метки для разных периодов
+    switch(currentPeriod) {
+      case 'week':
+        labels = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
+        break;
+      case 'month':
+        labels = '<span>1</span><span>8</span><span>15</span><span>22</span><span>29</span><span></span><span></span>';
+        break;
+      case '6month':
+        labels = '<span>Н</span><span>Д</span><span>Я</span><span>Ф</span><span>М</span><span>А</span><span></span>';
+        break;
+      case 'year':
+        labels = '<span>Я</span><span>Ф</span><span>М</span><span>А</span><span>М</span><span>И</span><span>И</span>';
+        break;
+      default:
+        labels = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
+    }
+  
+    return `
+      <div class="mini-chart-container">
+        <div class="mini-chart-label">TDEE<br>Порог</div>
+        <div class="mini-chart-value">${formatNumber(tdee)}<span>ккал</span></div>
+        <div class="mini-chart">
+          <div class="mini-chart-trend" style="bottom: ${(tdee / maxValue * 100)}%"></div>
+          <div class="mini-chart-bars">${bars}</div>
+          <div class="mini-chart-labels">
+            ${labels}
           </div>
         </div>
       </div>
@@ -58,20 +123,68 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
   
-  function updateCollections(data) {
+  function updateCollections(data, tdee) {
     collectionsContainer.innerHTML = '';
     const nonEmptyDays = data.filter(value => value > 0);
-    const average = Math.round(nonEmptyDays.reduce((a, b) => a + b, 0) / nonEmptyDays.length);
+    const average = nonEmptyDays.length > 0 ? Math.round(nonEmptyDays.reduce((a, b) => a + b, 0) / nonEmptyDays.length) : 0;
+    
+    // Получаем текущий период из активной кнопки
+    const currentPeriod = document.querySelector('.period-button.active').dataset.period;
+    
+    // Определяем тексты и заголовки в зависимости от периода
+    let periodTitle, periodText, unitName;
+    switch(currentPeriod) {
+      case 'week':
+        periodTitle = 'Средние калории за неделю';
+        periodText = `В среднем за последние 7 дней Вы потребляли по ${formatNumber(average)} ккал в день.`;
+        unitName = 'дней';
+        break;
+      case 'month':
+        periodTitle = 'Средние калории за месяц';
+        periodText = `В среднем за последние 30 дней Вы потребляли по ${formatNumber(average)} ккал в день.`;
+        unitName = 'дней';
+        break;
+      case '6month':
+        periodTitle = 'Средние калории за полгода';
+        periodText = `В среднем за последние 6 месяцев Вы потребляли по ${formatNumber(average)} ккал в день.`;
+        unitName = 'недель';
+        break;
+      case 'year':
+        periodTitle = 'Средние калории за год';
+        periodText = `В среднем за последний год Вы потребляли по ${formatNumber(average)} ккал в день.`;
+        unitName = 'месяцев';
+        break;
+    }
   
-    const html = `
+    // Основной блок с мини-графиком
+    let html = `
       <div class="collection-card">
         <div class="collection-header">
           ${createFireIcon()}
-          <span class="collection-title">Средние калории за неделю</span>
+          <span class="collection-title">${periodTitle}</span>
         </div>
-        <div class="collection-text">В среднем за последние 7 дней Вы потребляли по ${formatNumber(average)} ккал в день.</div>
+        <div class="collection-text">${periodText}</div>
         ${createMiniChart(data, average)}
       </div>
+    `;
+    
+    // Карточка "Калории активности" (раньше "Превышение TDEE") теперь идет второй
+    const countDaysAboveTDEE = data.filter(value => value > tdee).length;
+    html += `
+      <div class="collection-card">
+        <div class="collection-header">
+          ${createFireIcon()}
+          <span class="collection-title">Калории активности</span>
+        </div>
+        <div class="collection-text">
+          За выбранный период, из ${data.length} ${unitName}, в <strong>${countDaysAboveTDEE}</strong> ${unitName} среднее потребление калорий превышало TDEE (${tdee} ккал).
+        </div>
+        ${createTdeeMiniChart(data, tdee)}
+      </div>
+    `;
+    
+    // Блоки сравнения теперь идут после блока калорий активности
+    html += `
       ${createComparisonBlock(
         "В этом месяце среднее потребление калорий снизилось по сравнению с прошлым месяцем.",
         313,
@@ -97,11 +210,12 @@ document.addEventListener('DOMContentLoaded', () => {
     mutations.forEach((mutation) => {
       if (mutation.type === 'childList' && mutation.target.classList.contains('stats-chart')) {
         const currentPeriod = document.querySelector('.period-button.active').dataset.period;
-        updateCollections(window.mockData[currentPeriod].data);
+        const periodData = window.mockData[currentPeriod];
+        updateCollections(periodData.data, periodData.tdee);
       }
     });
   });
   
   observer.observe(document.querySelector('.stats-chart'), { childList: true });
-  updateCollections(window.mockData['week'].data);
+  updateCollections(window.mockData['week'].data, window.mockData['week'].tdee);
 });

@@ -89,7 +89,7 @@
       min-width: 24px;
       text-align: right;
     }
-    /* Контейнер для трендов создается динамически */
+    /* Контейнер для тренд-линий – создается динамически */
     .trend-container {
       position: absolute;
       top: 0;
@@ -124,7 +124,7 @@
       background: var(--border-color);
       opacity: 0.3;
     }
-    /* Тренд-линии */
+    /* Тренд-линия для среднего значения */
     .trend-line {
       position: absolute;
       left: 0;
@@ -137,13 +137,7 @@
     .trend-line.average-line {
       background: #FF6422;
     }
-    .trend-line.bmr-line {
-      background: #4CAF50;
-    }
-    .trend-line.tdee-line {
-      background: #2196F3;
-    }
-    /* Подписи трендов */
+    /* Подпись тренда для среднего значения – выравнивание по правому краю */
     .trend-value {
       position: absolute;
       z-index: 4;
@@ -154,14 +148,13 @@
       background: var(--dark-bg);
       border-radius: 4px;
     }
-    /* Подпись для средней (оранжевой) линии – выравнивание по правому краю */
     .trend-value.average-value {
       right: 0;
       left: auto;
       transform: translateY(-120%);
       color: #FF6422;
     }
-    /* Подписи для линий BMR и TDEE – выравнивание по левому краю */
+    /* Если бы оставались линии BMR/TDEE, то здесь их подписи (но они не используются на верхнем графике) */
     .trend-value.bmr-value,
     .trend-value.tdee-value {
       left: 0;
@@ -325,6 +318,10 @@
       border-radius: 2px 2px 0 0;
       opacity: 0.3;
     }
+    .mini-chart-bar.excess {
+      background: #2196F3;
+      opacity: 1;
+    }
     .mini-chart-trend {
       position: absolute;
       left: 0;
@@ -367,7 +364,7 @@
           <div class="grid-line"><span class="grid-value">250</span></div>
           <div class="grid-line"><span class="grid-value">0</span></div>
         </div>
-        <!-- Контейнер для тренд-линий создаётся динамически -->
+        <!-- Контейнер для тренд-линии создается динамически в script.js -->
         <div class="stats-chart">
           <!-- Столбцы графика добавляются динамически -->
         </div>
