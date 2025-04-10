@@ -180,8 +180,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         return labels;
       }
-      case 'year':
-        return shortMonths;
+      case 'year': {
+        const rawData = window.allData.slice(-365);
+        if (!rawData.length) return [];
+        
+        // Берём ПОСЛЕДНЮЮ дату (конец периода)
+        const endDate = rawData[rawData.length - 1].date; 
+        
+        let labels = [];
+        for (let i = 11; i >= 0; i--) {
+          const d = new Date(endDate.getFullYear(), endDate.getMonth() - i, 1);
+          // Используем, например, короткое название "апр."
+          const monthName = d.toLocaleDateString('ru-RU', { month: 'narrow' });
+          labels.push(monthName);
+        }
+        
+        // Получили массив в обратном порядке (от самого старого к самому новому).
+        // Если хотим, чтобы метки шли слева-направо по времени, разворачиваем массив:
+        
+        return labels;
+      }      
     }
   }
 
