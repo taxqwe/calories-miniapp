@@ -11,6 +11,43 @@ document.addEventListener('DOMContentLoaded', () => {
   document.documentElement.style.setProperty('--accent-color', tg.themeParams.button_color || '#50A8EB');
   document.documentElement.style.setProperty('--dark-bg', tg.themeParams.secondary_bg_color || '#242f3d');
   document.documentElement.style.setProperty('--border-color', tg.themeParams.hint_color || '#999999');
+  
+  // Корректировка для темной темы на iOS
+  const applyIOSDarkThemeStyles = () => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isDarkTheme = tg.themeParams.bg_color && tg.themeParams.bg_color.match(/#(00|0[0-9]|1[0-9])[0-9a-f]{4}/i);
+    
+    if (isIOS && isDarkTheme) {
+      // Добавляем стили для улучшения контраста на темных темах iOS
+      document.head.insertAdjacentHTML('beforeend', `
+        <style>
+          .trend-button {
+            background-color: rgba(70, 70, 70, 0.9) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          }
+          
+          .stats-card, .period-selector, .collection-card {
+            background-color: rgba(50, 50, 50, 0.9) !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+          }
+          
+          .trend-value {
+            background-color: rgba(60, 60, 60, 0.95) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          }
+          
+          /* Улучшаем видимость в темном режиме */
+          body {
+            background-color: rgba(0, 0, 0, 0.9) !important;
+          }
+        </style>
+      `);
+      console.log('Применены стили для iOS темной темы');
+    }
+  };
+  
+  // Вызываем сразу после загрузки
+  applyIOSDarkThemeStyles();
 
   // Названия месяцев
   const months = ['янв.', 'февр.', 'март', 'апр.', 'май', 'июнь', 'июль', 'авг.', 'сент.', 'окт.', 'нояб.', 'дек.'];
