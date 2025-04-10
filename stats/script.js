@@ -145,6 +145,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Функция, возвращающая массив дат – начало каждой 7-дневной группы для 6 месяцев
+  function getSixMonthIntervals() {
+    const rawData = window.allData.slice(-180); // последние 180 дней
+    const intervals = [];
+    for (let i = 0; i < rawData.length; i += 7) {
+      intervals.push(rawData[i].date); // берем дату первого дня группы
+    }
+    return intervals;
+  }
+  window.getSixMonthIntervals = getSixMonthIntervals;
+
+
   function getLabelsForPeriod(period) {
     const now = new Date();
     switch (period) {
@@ -172,21 +184,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return labels;
       }
       case '6month': {
-        const labels = new Array(24).fill('');
-        const monthLabels = ['нояб.', 'дек.', 'янв.', 'февр.', 'март', 'апр.'];
-        monthLabels.forEach((month, i) => {
-          const position = i * 4;
-          labels[position] = month;
-        });
+        const intervals = getSixMonthIntervals(); // массив дат начала каждой недели
+        const labels = [];
+        for (let i = 0; i < intervals.length; i++) {
+          // Если это первая группа или месяц изменился по сравнению с предыдущей группой,
+          // то подпишем данную группу коротким названием месяца.
+          if (i === 0 || intervals[i].getMonth() !== intervals[i - 1].getMonth()) {
+            const monthName = intervals[i].toLocaleDateString('ru-RU', { month: 'short' });
+            labels.push(monthName);
+          } else {
+            labels.push('');
+          }
+        }
         return labels;
       }
       case 'year': {
         const rawData = window.allData.slice(-365);
         if (!rawData.length) return [];
-        
+
         // Берём ПОСЛЕДНЮЮ дату (конец периода)
-        const endDate = rawData[rawData.length - 1].date; 
-        
+        const endDate = rawData[rawData.length - 1].date;
+
         let labels = [];
         for (let i = 11; i >= 0; i--) {
           const d = new Date(endDate.getFullYear(), endDate.getMonth() - i, 1);
@@ -194,12 +212,12 @@ document.addEventListener('DOMContentLoaded', () => {
           const monthName = d.toLocaleDateString('ru-RU', { month: 'narrow' });
           labels.push(monthName);
         }
-        
+
         // Получили массив в обратном порядке (от самого старого к самому новому).
         // Если хотим, чтобы метки шли слева-направо по времени, разворачиваем массив:
-        
+
         return labels;
-      }      
+      }
     }
   }
 
