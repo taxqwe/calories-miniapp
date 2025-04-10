@@ -19,16 +19,58 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
 
     let labelsHtml;
+    const currentPeriod = document.querySelector('.period-button.active')?.dataset.period || 'week';
+    
     if (originalData && originalData.length === calorieArray.length) {
-      labelsHtml = originalData.map(obj => {
-        // Используем toLocaleDateString для получения сокращенного названия дня недели
-        let shortDay = obj.date.toLocaleDateString('ru-RU', { weekday: 'short' });
-        // Приводим первую букву к верхнему регистру
-        shortDay = shortDay.charAt(0).toUpperCase() + shortDay.slice(1);
-        return `<span>${shortDay}</span>`;
-      }).join('');
+      if (currentPeriod === 'week') {
+        // Для недели отображаем короткие названия дней недели
+        labelsHtml = originalData.map(obj => {
+          let shortDay = obj.date.toLocaleDateString('ru-RU', { weekday: 'short' });
+          shortDay = shortDay.charAt(0).toUpperCase() + shortDay.slice(1);
+          return `<span>${shortDay}</span>`;
+        }).join('');
+      } else if (currentPeriod === 'month') {
+        // Для месяца покажем только числа для некоторых дней
+        labelsHtml = originalData.map((obj, index) => {
+          if (index % 5 === 0) {
+            return `<span>${obj.date.getDate()}</span>`;
+          }
+          return `<span></span>`;
+        }).join('');
+      } else if (currentPeriod === '6month') {
+        // Для 6 месяцев покажем короткие названия месяцев
+        labelsHtml = originalData.map((obj, index) => {
+          if (index === 0 || (index > 0 && obj.date.getMonth() !== originalData[index - 1].date.getMonth())) {
+            const shortMonth = obj.date.toLocaleDateString('ru-RU', { month: 'short' });
+            return `<span>${shortMonth}</span>`;
+          }
+          return `<span></span>`;
+        }).join('');
+      } else if (currentPeriod === 'year') {
+        // Для года покажем короткие названия месяцев
+        labelsHtml = originalData.map(obj => {
+          const shortMonth = obj.date.toLocaleDateString('ru-RU', { month: 'narrow' });
+          return `<span>${shortMonth}</span>`;
+        }).join('');
+      }
     } else {
-      labelsHtml = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
+      // Если нет оригинальных данных с датами, используем статические метки в зависимости от периода
+      switch (currentPeriod) {
+        case 'week':
+          labelsHtml = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
+          break;
+        case 'month':
+          labelsHtml = '<span>1</span><span>8</span><span>15</span><span>22</span><span>29</span><span></span><span></span>';
+          break;
+        case '6month':
+          labelsHtml = '<span>Н</span><span>Д</span><span>Я</span><span>Ф</span><span>М</span><span>А</span><span>М</span>';
+          break;
+        case 'year':
+          labelsHtml = '<span>Я</span><span>Ф</span><span>М</span><span>А</span><span>М</span><span>И</span><span>И</span>';
+          break;
+        default:
+          labelsHtml = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
+      }
     }
 
     return `
@@ -118,10 +160,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Функция для построения статического блока (последние 7 дней)
   function buildStaticBlock(data) {
+    // Всегда используем данные за последние 7 дней
+    const weekData = getWeekData();
     // Преобразуем в массив числовых значений
-    const numericValues = data.map(item => item.calories);
+    const numericValues = weekData.map(item => item.calories);
     const nonEmpty = numericValues.filter(v => v > 0);
     const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b, 0) / nonEmpty.length) : 0;
+    
+    // Для статического блока всегда используем текст для недельного периода
+    const periodText = `В среднем за последние 7 дней (без учёта дней с 0 ккал) Вы потребляли по ${formatNumber(avg)} ккал в день.`;
+    
     return `
       <div class="collection-card">
         <div class="collection-header">
@@ -129,11 +177,22 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="collection-title">Средние калории (последние 7 дней)</span>
         </div>
         <div class="collection-text">
-          В среднем за последние 7 дней (без учёта дней с 0 ккал) Вы потребляли по ${formatNumber(avg)} ккал в день.
+          ${periodText}
         </div>
-        ${createMiniChart(numericValues, avg, data)}
+        ${createMiniChart(numericValues, avg, weekData)}
       </div>
     `;
+  }
+
+  // Вспомогательная функция для получения названия периода
+  function getPeriodTitle(period) {
+    switch(period) {
+      case 'week': return 'последние 7 дней';
+      case 'month': return 'последний месяц';
+      case '6month': return 'последние 6 месяцев';
+      case 'year': return 'последний год';
+      default: return 'последние 7 дней';
+    }
   }
 
   // Функция для построения блока "Калории активности"
@@ -141,6 +200,42 @@ document.addEventListener('DOMContentLoaded', () => {
     // data – массив объектов; преобразуем в массив чисел
     const numericValues = data.map(item => item.calories);
     const countAbove = numericValues.filter(v => v > tdee).length;
+    
+    // Определяем текущий период
+    const currentPeriod = document.querySelector('.period-button.active').dataset.period;
+    
+    // Выбираем подходящий текст и данные для миниграфика в зависимости от периода
+    let chartData = numericValues;
+    let average = 0;
+    
+    switch(currentPeriod) {
+      case 'week':
+        // Для недели показываем ежедневные данные (как сейчас)
+        average = numericValues.filter(v => v > 0).length ? 
+                  Math.round(numericValues.filter(v => v > 0).reduce((a, b) => a + b, 0) / numericValues.filter(v => v > 0).length) : 0;
+        break;
+        
+      case 'month':
+        // Для месяца показываем ежедневные данные, но расчет среднего без учета дней с 0
+        average = numericValues.filter(v => v > 0).length ? 
+                  Math.round(numericValues.filter(v => v > 0).reduce((a, b) => a + b, 0) / numericValues.filter(v => v > 0).length) : 0;
+        break;
+        
+      case '6month':
+        // Для 6 месяцев группируем по неделям
+        average = numericValues.filter(v => v > 0).length ? 
+                  Math.round(numericValues.filter(v => v > 0).reduce((a, b) => a + b, 0) / numericValues.filter(v => v > 0).length) : 0;
+        // В данном случае numericValues это уже средние значения за недели
+        break;
+        
+      case 'year':
+        // Для года группируем по месяцам
+        average = numericValues.filter(v => v > 0).length ? 
+                  Math.round(numericValues.filter(v => v > 0).reduce((a, b) => a + b, 0) / numericValues.filter(v => v > 0).length) : 0;
+        // В данном случае numericValues это уже средние значения за месяцы
+        break;
+    }
+    
     return `
       <div class="collection-card">
         <div class="collection-header">
@@ -154,7 +249,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
   }
-
 
   // Функция для построения блока сравнения за месяц
   function buildMonthComparisonBlock() {
@@ -202,8 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-
-
   function buildYearComparisonBlock() {
     const now = new Date();
     const currentYear = now.getFullYear();
@@ -236,9 +328,8 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-
-
   // Основная функция обновления инфо-блоков, объединяющая результаты всех блоков
+  // Теперь эта функция лишь инициализирует все блоки при загрузке и обновляет только блок активности при переключении вкладок
   function updateCollections(data, tdee) {
     // data – массив объектов вида { date, calories }
     // Преобразуем данные в массив числовых значений для блоков, которым нужны только числа
@@ -249,27 +340,34 @@ document.addEventListener('DOMContentLoaded', () => {
     let unitName = 'дней';
     if (currentPeriod === '6month') unitName = 'недель';
     if (currentPeriod === 'year') unitName = 'месяцев';
-
-    const staticBlock = buildStaticBlock(data);
+    
+    // Получаем блок "Калории активности", если он уже существует
+    const activeBlockElement = document.querySelector('.active-calories-block');
+    
+    // Создаем только блок активности
     const activeBlock = buildActiveBlock(data, tdee, unitName);
-    const monthComparison = buildMonthComparisonBlock();
-    const yearComparison = buildYearComparisonBlock();
 
-    collectionsContainer.innerHTML = staticBlock + activeBlock + monthComparison + yearComparison;
+    if (activeBlockElement) {
+      // Если блок активности уже существует, просто заменяем его содержимое
+      activeBlockElement.outerHTML = activeBlock;
+    } else {
+      // При первом вызове создаем все блоки
+      const staticBlockHtml = buildStaticBlock(getWeekData());
+      const monthComparison = buildMonthComparisonBlock();
+      const yearComparison = buildYearComparisonBlock();
+      
+      collectionsContainer.innerHTML = staticBlockHtml + activeBlock + monthComparison + yearComparison;
+      
+      // Добавляем классы для идентификации блоков
+      const blocks = collectionsContainer.querySelectorAll('.collection-card');
+      if (blocks.length >= 1) blocks[0].classList.add('static-calories-block');
+      if (blocks.length >= 2) blocks[1].classList.add('active-calories-block');
+    }
   }
+  
+  // Экспортируем функцию updateCollections в глобальную область видимости
+  window.updateCollections = updateCollections;
 
-
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.type === 'childList' && mutation.target.classList.contains('stats-chart')) {
-        const currentPeriod = document.querySelector('.period-button.active').dataset.period;
-        const periodData = window.mockData[currentPeriod];
-        updateCollections(periodData.data, periodData.tdee);
-      }
-    });
-  });
-
-  observer.observe(document.querySelector('.stats-chart'), { childList: true });
-  updateCollections(getWeekData(), 2200);
-
+  // Не вызываем здесь инициализацию, а перенесем ее в script.js
+  // updateCollections(getWeekData(), 2200);
 });

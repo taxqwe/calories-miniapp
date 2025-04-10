@@ -268,7 +268,65 @@ document.addEventListener('DOMContentLoaded', () => {
     averageValue.textContent = `${average} ккал`;
 
     updateTrendVisibility();
+    
+    // Обновляем блоки коллекций в зависимости от выбранного периода
+    let rawData;
+    if (period === 'week') {
+      rawData = getWeekData();
+    } else if (period === 'month') {
+      rawData = getMonthData();
+    } else if (period === '6month') {
+      // Для 6 месяцев нам нужны не просто числа, а объекты с датами
+      rawData = window.allData.slice(-180);
+      // Группируем по неделям для блока активности
+      const weekData = [];
+      for (let i = 0; i < rawData.length; i += 7) {
+        const group = rawData.slice(i, i + 7);
+        const nonEmpty = group.filter(item => item.calories > 0);
+        const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b.calories, 0) / nonEmpty.length) : 0;
+        // Берем первую дату из группы как ключевую для недели
+        if (group.length > 0) {
+          weekData.push({ date: group[0].date, calories: avg });
+        }
+      }
+      rawData = weekData;
+    } else if (period === 'year') {
+      // Для года нам нужны объекты с датами, сгруппированные по месяцам
+      rawData = window.allData.slice(-365);
+      const groups = {};
+      rawData.forEach(item => {
+        const m = item.date.getMonth();
+        if (!groups[m]) groups[m] = [];
+        groups[m].push(item);
+      });
+      const monthData = [];
+      for (let m = 0; m < 12; m++) {
+        const group = groups[m] || [];
+        const nonEmpty = group.filter(item => item.calories > 0);
+        const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b.calories, 0) / nonEmpty.length) : 0;
+        // Используем первое число месяца для даты
+        if (group.length > 0) {
+          const dateKey = new Date(group[0].date.getFullYear(), m, 1);
+          monthData.push({ date: dateKey, calories: avg });
+        } else {
+          // Если нет данных за месяц, используем текущий год
+          const currentYear = new Date().getFullYear();
+          monthData.push({ date: new Date(currentYear, m, 1), calories: 0 });
+        }
+      }
+      rawData = monthData;
+    }
+    
+    // Проверяем, доступна ли функция updateCollections
+    if (typeof window.updateCollections === 'function') {
+      window.updateCollections(rawData, TDEE);
+    }
   }
 
   updateChart(currentPeriod);
+  
+  // Инициализируем блоки коллекций после того, как все функции доступны
+  if (typeof window.updateCollections === 'function') {
+    window.updateCollections(getWeekData(), 2200);
+  }
 });
