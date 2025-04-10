@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const initData = tg.initData;
       
       const response = await fetch('https://calories-bot.duckdns.org:8443/api/stats', {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
