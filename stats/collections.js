@@ -11,47 +11,41 @@ document.addEventListener('DOMContentLoaded', () => {
     </svg>`;
   }
 
-  function createMiniChart(data, average) {
-    const bars = data.map(value => {
-      const height = value === 0 ? 4 : (value / Math.max(...data) * 100);
+  function createMiniChart(calorieArray, average, originalData = null) {
+    const maxVal = Math.max(...calorieArray);
+    const barsHtml = calorieArray.map(value => {
+      const height = value === 0 ? 4 : (value / maxVal * 100);
       return `<div class="mini-chart-bar" style="height: ${height}%"></div>`;
     }).join('');
-
-    const currentPeriod = document.querySelector('.period-button.active').dataset.period;
-    let labels;
-
-    // Определяем метки для разных периодов (так же как в createTdeeMiniChart)
-    switch (currentPeriod) {
-      case 'week':
-        labels = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
-        break;
-      case 'month':
-        labels = '<span>1</span><span>8</span><span>15</span><span>22</span><span>29</span><span></span><span></span>';
-        break;
-      case '6month':
-        labels = '<span>Н</span><span>Д</span><span>Я</span><span>Ф</span><span>М</span><span>А</span><span></span>';
-        break;
-      case 'year':
-        labels = '<span>Я</span><span>Ф</span><span>М</span><span>А</span><span>М</span><span>И</span><span>И</span>';
-        break;
-      default:
-        labels = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
+  
+    let labelsHtml;
+    if (originalData && originalData.length === calorieArray.length) {
+      labelsHtml = originalData.map(obj => {
+        // Используем toLocaleDateString для получения сокращенного названия дня недели
+        let shortDay = obj.date.toLocaleDateString('ru-RU', { weekday: 'short' });
+        // Приводим первую букву к верхнему регистру
+        shortDay = shortDay.charAt(0).toUpperCase() + shortDay.slice(1);
+        return `<span>${shortDay}</span>`;
+      }).join('');
+    } else {
+      labelsHtml = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
     }
-
+  
     return `
       <div class="mini-chart-container">
         <div class="mini-chart-label">Средн.<br>Килокалории</div>
         <div class="mini-chart-value">${formatNumber(average)}<span>ккал</span></div>
         <div class="mini-chart">
-          <div class="mini-chart-trend" style="bottom: ${(average / Math.max(...data) * 100)}%"></div>
-          <div class="mini-chart-bars">${bars}</div>
+          <div class="mini-chart-trend" style="bottom: ${maxVal ? (average / maxVal * 100) : 0}%"></div>
+          <div class="mini-chart-bars">${barsHtml}</div>
           <div class="mini-chart-labels">
-            ${labels}
+            ${labelsHtml}
           </div>
         </div>
       </div>
     `;
   }
+  
 
   function createTdeeMiniChart(data, tdee) {
     const maxValue = Math.max(...data, tdee);
@@ -124,39 +118,44 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Функция для построения статического блока (последние 7 дней)
-  function buildStaticBlock(calorieValues) {
-    const nonEmpty = calorieValues.filter(v => v > 0);
+  function buildStaticBlock(data) {
+    // Преобразуем в массив числовых значений
+    const numericValues = data.map(item => item.calories);
+    const nonEmpty = numericValues.filter(v => v > 0);
     const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b, 0) / nonEmpty.length) : 0;
     return `
-    <div class="collection-card">
-      <div class="collection-header">
-        ${createFireIcon()}
-        <span class="collection-title">Средние калории (последние 7 дней)</span>
+      <div class="collection-card">
+        <div class="collection-header">
+          ${createFireIcon()}
+          <span class="collection-title">Средние калории (последние 7 дней)</span>
+        </div>
+        <div class="collection-text">
+          В среднем за последние 7 дней (без учёта дней с 0 ккал) Вы потребляли по ${formatNumber(avg)} ккал в день.
+        </div>
+        ${createMiniChart(numericValues, avg, data)}
       </div>
-      <div class="collection-text">
-        В среднем за последние 7 дней (без учёта дней с 0 ккал) Вы потребляли по ${formatNumber(avg)} ккал в день.
-      </div>
-      ${createMiniChart(calorieValues, avg)}
-    </div>
-  `;
+    `;
   }
 
   // Функция для построения блока "Калории активности"
-  function buildActiveBlock(calorieValues, tdee, unitName) {
-    const countAbove = calorieValues.filter(v => v > tdee).length;
+  function buildActiveBlock(data, tdee, unitName) {
+    // data – массив объектов; преобразуем в массив чисел
+    const numericValues = data.map(item => item.calories);
+    const countAbove = numericValues.filter(v => v > tdee).length;
     return `
-    <div class="collection-card">
-      <div class="collection-header">
-        ${createFireIcon()}
-        <span class="collection-title">Калории активности</span>
+      <div class="collection-card">
+        <div class="collection-header">
+          ${createFireIcon()}
+          <span class="collection-title">Калории активности</span>
+        </div>
+        <div class="collection-text">
+          За выбранный период, из ${numericValues.length} ${unitName}, в <strong>${countAbove}</strong> ${unitName} среднее потребление калорий превышало TDEE (${tdee} ккал).
+        </div>
+        ${createTdeeMiniChart(numericValues, tdee)}
       </div>
-      <div class="collection-text">
-        За выбранный период, из ${calorieValues.length} ${unitName}, в <strong>${countAbove}</strong> ${unitName} среднее потребление калорий превышало TDEE (${tdee} ккал).
-      </div>
-      ${createTdeeMiniChart(calorieValues, tdee)}
-    </div>
-  `;
+    `;
   }
+  
 
   // Функция для построения блока сравнения за месяц
   function buildMonthComparisonBlock() {
@@ -185,21 +184,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // Основная функция обновления инфо-блоков, объединяющая результаты всех блоков
   function updateCollections(data, tdee) {
     // data – массив объектов вида { date, calories }
-    // Преобразуем в массив числовых значений
-    const calorieValues = (data[0] && data[0].calories !== undefined) ? data.map(item => item.calories) : data;
-
-
+    // Преобразуем данные в массив числовых значений для блоков, которым нужны только числа
+    const numericValues = data.map(item => item.calories);
+    
     // Определяем единицу измерения в зависимости от периода
     const currentPeriod = document.querySelector('.period-button.active')?.dataset.period || 'week';
     let unitName = 'дней';
     if (currentPeriod === '6month') unitName = 'недель';
     if (currentPeriod === 'year') unitName = 'месяцев';
-
-    const staticBlock = buildStaticBlock(calorieValues);
-    const activeBlock = buildActiveBlock(calorieValues, tdee, unitName);
+  
+    const staticBlock = buildStaticBlock(data);
+    const activeBlock = buildActiveBlock(data, tdee, unitName);
     const monthComparison = buildMonthComparisonBlock();
     const yearComparison = buildYearComparisonBlock();
-
+  
     collectionsContainer.innerHTML = staticBlock + activeBlock + monthComparison + yearComparison;
   }
 
