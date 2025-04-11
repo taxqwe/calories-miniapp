@@ -369,40 +369,29 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       rawData = weekData;
     } else if (period === 'year') {
-      // Предположим, что сегодня 11 апреля 2025 (Date(2025, 3, 11))
-      // Это просто пример, чтобы понять, как всё смещается.
+      const now = new Date(); // апрель 2025
+      // вместо (год-1, тот же месяц), берем (год-1, месяц+1), чтобы сдвинуться
+      // 1 мая 2024 => тогда через 12 шагов i=11 получим 1 апреля 2025
+      const startDate = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+      // т.е. 1 мая 2024
 
-      const now = new Date();
-      // Определяем начальный месяц: 11 месяцев назад от текущего (чтобы в сумме было 12 месяцев)
-      const startDate = new Date(now.getFullYear(), now.getMonth() - 11, 1);
-
-      // Фильтруем данные, оставляя только те, что попадают в последние 12 месяцев
-      // то есть от startDate и дальше
       const rawYearData = window.allData.filter(item => item.date >= startDate);
 
-      // Создаем итоговый массив для 12 месяцев
       const monthData = [];
-
-      // Шаг за шагом идём по каждому месяцу — всего 12 раз.
       for (let i = 0; i < 12; i++) {
-        // Вычисляем дату для i-го месяца, начиная со startDate
         const currentMonthDate = new Date(
           startDate.getFullYear(),
           startDate.getMonth() + i,
           1
         );
-        // Выбираем записи, относящиеся к этому (год+месяц)
         const group = rawYearData.filter(item =>
           item.date.getFullYear() === currentMonthDate.getFullYear() &&
           item.date.getMonth() === currentMonthDate.getMonth()
         );
 
-        // Рассчитываем среднее по дням этого месяца (исключаем нулевые дни)
         const nonEmpty = group.filter(item => item.calories > 0);
         const avg = nonEmpty.length
-          ? Math.round(
-            nonEmpty.reduce((sum, item) => sum + item.calories, 0) / nonEmpty.length
-          )
+          ? Math.round(nonEmpty.reduce((sum, item) => sum + item.calories, 0) / nonEmpty.length)
           : 0;
 
         monthData.push({ date: currentMonthDate, calories: avg });
