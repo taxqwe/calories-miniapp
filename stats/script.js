@@ -311,9 +311,14 @@ document.addEventListener('DOMContentLoaded', () => {
       data = getYearData();
     }
 
+
     const TDEE = window.userTDEE || 2200; // используем TDEE из реальных данных или дефолтное значение
     const maxValue = Math.max(...data, TDEE);
     const labels = getLabelsForPeriod(period, data.length);
+    // Разворачиваем метки, чтобы они соответствовали развернутым данным
+    if (period == 'year') { // для года метки уже в правильном порядке
+      labels.reverse();
+    }
     const chartContainerElem = document.querySelector('.stats-chart');
     chartContainerElem.innerHTML = '';
 
