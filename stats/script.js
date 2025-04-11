@@ -139,20 +139,51 @@ document.addEventListener('DOMContentLoaded', () => {
   // Функция для получения данных за год (последние 365 дней),
   // группируя по месяцам – возвращает массив чисел
   function getYearData() {
-    const rawData = window.allData.slice(-365);
+    const now = new Date();
+    
+    // Создаем дату начала первого полного месяца год назад
+    // Если сейчас апрель 2025, то нам нужны данные с мая 2024
+    const startDate = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+    
+    // Фильтруем данные, оставляя только те, что после startDate
+    const filteredData = window.allData.filter(item => item.date >= startDate);
+    
+    // Создаем объект для группировки по месяцам
     const groups = {};
-    rawData.forEach(item => {
+    
+    // Заполняем группы для всех 12 месяцев (некоторые могут остаться пустыми)
+    for (let i = 0; i < 12; i++) {
+      const currentMonth = (startDate.getMonth() + i) % 12;
+      const currentYear = startDate.getFullYear() + Math.floor((startDate.getMonth() + i) / 12);
+      const monthKey = `${currentYear}-${currentMonth}`;
+      groups[monthKey] = [];
+    }
+    
+    // Распределяем данные по соответствующим месяцам
+    filteredData.forEach(item => {
       const m = item.date.getMonth();
-      if (!groups[m]) groups[m] = [];
-      groups[m].push(item.calories);
+      const y = item.date.getFullYear();
+      const monthKey = `${y}-${m}`;
+      if (groups[monthKey]) {
+        groups[monthKey].push(item.calories);
+      }
     });
+    
+    // Преобразуем группы в массив средних значений
     const aggregated = [];
-    for (let m = 0; m < 12; m++) {
-      const group = groups[m] || [];
+    
+    // Проходим по всем месяцам от startDate
+    for (let i = 0; i < 12; i++) {
+      const currentMonth = (startDate.getMonth() + i) % 12;
+      const currentYear = startDate.getFullYear() + Math.floor((startDate.getMonth() + i) / 12);
+      const monthKey = `${currentYear}-${currentMonth}`;
+      
+      const group = groups[monthKey] || [];
       const nonEmpty = group.filter(v => v > 0);
       const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b, 0) / nonEmpty.length) : 0;
       aggregated.push(avg);
     }
+    
     return aggregated;
   }
 
@@ -282,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Берём ПОСЛЕДНЮЮ дату (конец периода)
         const endDate = rawData[rawData.length - 1].date;
-
+        
         let labels = [];
         for (let i = 11; i >= 0; i--) {
           const d = new Date(endDate.getFullYear(), endDate.getMonth() - i, 1);
@@ -293,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Получили массив в обратном порядке (от самого старого к самому новому).
         // Если хотим, чтобы метки шли слева-направо по времени, разворачиваем массив:
-
+        
         return labels;
       }
     }
