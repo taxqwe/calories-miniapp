@@ -311,12 +311,27 @@ document.addEventListener('DOMContentLoaded', () => {
       return createEmptyDataCard("Сравнение калорий за месяц");
     }
 
+    // Определяем сообщение для блока сравнения
+    let comparisonText;
+    
+    if (!prevAvg) {
+      comparisonText = "Показатели за предыдущий месяц появятся, когда будет достаточно информации.";
+    } else {
+      // Проверяем на близкие значения (разница менее 5%)
+      const difference = Math.abs(currentAvg - prevAvg);
+      const percentDifference = (difference / prevAvg) * 100;
+      
+      if (percentDifference < 5) {
+        comparisonText = `Среднее потребление калорий за день в текущем месяце практически идентично предыдущему.`;
+      } else if (currentAvg >= prevAvg) {
+        comparisonText = "За текущий календарный месяц среднее потребление калорий выше, чем в предыдущем месяце.";
+      } else {
+        comparisonText = "За текущий календарный месяц среднее потребление калорий ниже, чем в предыдущем месяце.";
+      }
+    }
+
     return createComparisonBlock(
-      prevAvg 
-        ? (currentAvg >= prevAvg
-            ? "За текущий календарный месяц среднее потребление калорий выше или равно прошлому месяцу." 
-            : "За текущий календарный месяц среднее потребление калорий ниже, чем в предыдущем месяце.")
-        : "Показатели за предыдущий месяц появятся, когда будет достаточно информации.",
+      comparisonText,
       currentAvg,
       prevAvg,
       formattedCurrentLabel,
@@ -344,12 +359,27 @@ document.addEventListener('DOMContentLoaded', () => {
       return createEmptyDataCard("Сравнение калорий за год");
     }
 
+    // Определяем сообщение для блока сравнения
+    let comparisonText;
+    
+    if (!previousAvg) {
+      comparisonText = "Показатели за предыдущий год появятся, когда будет достаточно информации.";
+    } else {
+      // Проверяем на близкие значения (разница менее 5%)
+      const difference = Math.abs(currentAvg - previousAvg);
+      const percentDifference = (difference / previousAvg) * 100;
+      
+      if (percentDifference < 5) {
+        comparisonText = `Среднее потребление калорий за день в текущем году практически идентично предыдущему.`;
+      } else if (currentAvg >= previousAvg) {
+        comparisonText = "За текущий календарный год среднее потребление калорий за день выше, чем в предыдущем году.";
+      } else {
+        comparisonText = "За текущий календарный год среднее потребление калорий за день ниже, чем в предыдущем году.";
+      }
+    }
+
     return createComparisonBlock(
-      previousAvg 
-        ? (currentAvg >= previousAvg
-            ? "В этом году среднее потребление калорий выше или равно прошлому году." 
-            : "В этом году среднее потребление калорий меньше, чем в прошлом году.")
-        : "Показатели за предыдущий год появятся, когда будет достаточно информации.",
+      comparisonText,
       currentAvg,
       previousAvg,
       String(currentYear),
