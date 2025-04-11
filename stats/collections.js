@@ -64,8 +64,28 @@ document.addEventListener('DOMContentLoaded', () => {
         labels = '<span>Н</span><span>Д</span><span>Я</span><span>Ф</span><span>М</span><span>А</span><span></span>';
         break;
       case 'year':
-        labels = '<span>Я</span><span>Ф</span><span>М</span><span>А</span><span>М</span><span>И</span><span>И</span>';
-        break;
+          const now = new Date();
+          const labelsArray = [];
+
+          // формируем массив из последних 12 месяцев
+          for (let i = 11; i >= 0; i--) {
+            const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const monthName = monthDate.toLocaleDateString('ru-RU', { month: 'short' }); // янв., февр. и т.д.
+            labelsArray.push(monthName);
+          }
+
+          // подписываем начиная с последнего месяца, затем каждый второй месяц
+          labels = labelsArray.map((label, idx) => {
+            // считаем от последнего месяца назад: (11 - idx)
+            // подписываем последний месяц и затем через один месяц назад
+            if ((labelsArray.length - 1 - idx) % 2 === 0) {
+              return `<span>${label}</span>`;
+            } else {
+              return `<span></span>`;
+            }
+          }).join('');
+          
+          break;
       default:
         labels = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
     }
@@ -77,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="mini-chart">
           <div class="mini-chart-trend" style="bottom: ${(tdee / maxValue * 100)}%"></div>
           <div class="mini-chart-bars">${bars}</div>
-          <div class="mini-chart-labels">
+          <div class="mini-chart-labels" style="grid-template-columns: repeat(${data.length}, 1fr);">
             ${labels}
           </div>
         </div>
