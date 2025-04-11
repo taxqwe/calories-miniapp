@@ -126,9 +126,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function createComparisonBlock(text, currentValue, previousValue, currentLabel, previousLabel, title) {
-    const maxValue = Math.max(currentValue, previousValue);
-    const currentBarWidth = (currentValue / maxValue * 100).toFixed(1);
-    const previousBarWidth = (previousValue / maxValue * 100).toFixed(1);
+    const hasPrevData = previousValue !== null && previousValue !== 0;
+    const hasCurrentData = currentValue !== null && currentValue !== 0;
+
+    // При отсутствии данных берем 1, чтобы получить вычислимую ширину
+    const safeCurrentValue = hasCurrentData ? currentValue : 1;
+    const safePreviousValue = hasPrevData ? previousValue : 1;
+
+    const maxValue = Math.max(safeCurrentValue, safePreviousValue);
+
+    // Вычисляем процент без учета минимума
+    const currentBarRaw = safeCurrentValue / maxValue * 100;
+    const previousBarRaw = safePreviousValue / maxValue * 100;
+
+    // Минимальный процент (значение можно подогнать под дизайн)
+    const MIN_BAR_PERCENT = 30;
+
+    // Если данные есть – используем вычисленный процент, но не меньше MIN_BAR_PERCENT,
+    // если данных нет, то просто возьмем MIN_BAR_PERCENT для отображения полоски
+    const displayedCurrentBarWidth = hasCurrentData
+      ? (currentBarRaw < MIN_BAR_PERCENT ? MIN_BAR_PERCENT : currentBarRaw).toFixed(1)
+      : MIN_BAR_PERCENT;
+    const displayedPreviousBarWidth = hasPrevData
+      ? (previousBarRaw < MIN_BAR_PERCENT ? MIN_BAR_PERCENT : previousBarRaw).toFixed(1)
+      : MIN_BAR_PERCENT;
 
     return `
       <div class="collection-card">
@@ -137,15 +158,25 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="collection-title">${title}</span>
         </div>
         <div class="collection-text">${text}</div>
+
         <div class="collection-period">
-          <div class="period-value">${formatNumber(currentValue)}<span>ккал в день</span></div>
-          <div class="period-bar current" style="width: ${currentBarWidth}%"><span class="period-bar-label">${currentLabel}</span></div>
-          <div class="period-label"></div>
+          <div class="period-value">
+            ${hasCurrentData ? formatNumber(currentValue) : 'Нет данных'}
+            <span>${hasCurrentData ? 'ккал в день' : ''}</span>
+          </div>
+          <div class="period-bar current" style="width: ${displayedCurrentBarWidth}%">
+            <span class="period-bar-label">${currentLabel}</span>
+          </div>
         </div>
+
         <div class="collection-period">
-          <div class="period-value">${formatNumber(previousValue)}<span>ккал в день</span></div>
-          <div class="period-bar previous" style="width: ${previousBarWidth}%"><span class="period-bar-label">${previousLabel}</span></div>
-          <div class="period-label"></div>
+          <div class="period-value">
+            ${hasPrevData ? formatNumber(previousValue) : 'Нет данных'}
+            <span>${hasPrevData ? 'ккал в день' : ''}</span>
+          </div>
+          <div class="period-bar previous" style="width: ${displayedPreviousBarWidth}%">
+            <span class="period-bar-label">${previousLabel}</span>
+          </div>
         </div>
       </div>
     `;
@@ -247,13 +278,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function buildMonthComparisonBlock() {
     const now = new Date();
     const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth();  // 0 = январь, 11 = декабрь
+    const currentMonth = now.getMonth();
 
-    // Границы для текущего месяца
     const currentStart = new Date(currentYear, currentMonth, 1);
     const currentEnd = new Date(currentYear, currentMonth + 1, 1);
 
-    // Границы для предыдущего месяца
     let prevYear = currentYear, prevMonth = currentMonth - 1;
     if (prevMonth < 0) {
       prevMonth = 11;
@@ -262,25 +291,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevStart = new Date(prevYear, prevMonth, 1);
     const prevEnd = new Date(prevYear, prevMonth + 1, 1);
 
-    // Отбираем данные, попадающие в диапазон (>= start и < end)
-    const currentMonthData = window.allData.filter(item => item.date >= currentStart && item.date < currentEnd);
-    const prevMonthData = window.allData.filter(item => item.date >= prevStart && item.date < prevEnd);
+    const currentMonthData = window.allData.filter(item => item.date >= currentStart && item.date < currentEnd && item.calories > 0);
+    const prevMonthData = window.allData.filter(item => item.date >= prevStart && item.date < prevEnd && item.calories > 0);
 
-    // Рассчитываем среднее (игнорируя дни с 0 ккал)
-    const currentValues = currentMonthData.filter(item => item.calories > 0).map(item => item.calories);
-    const prevValues = prevMonthData.filter(item => item.calories > 0).map(item => item.calories);
-    const currentAvg = currentValues.length ? Math.round(currentValues.reduce((a, b) => a + b, 0) / currentValues.length) : 0;
-    const prevAvg = prevValues.length ? Math.round(prevValues.reduce((a, b) => a + b, 0) / prevValues.length) : 0;
+    const currentAvg = currentMonthData.length
+      ? Math.round(currentMonthData.reduce((a, b) => a + b.calories, 0) / currentMonthData.length)
+      : null;
+    const prevAvg = prevMonthData.length
+      ? Math.round(prevMonthData.reduce((a, b) => a + b.calories, 0) / prevMonthData.length)
+      : null;
 
-    // Получаем подписи для месяцев, используя полное название месяца
     const currentMonthLabel = currentStart.toLocaleDateString('ru-RU', { month: 'long' });
     const prevMonthLabel = prevStart.toLocaleDateString('ru-RU', { month: 'long' });
-    // Приводим первую букву к верхнему регистру
+
     const formattedCurrentLabel = currentMonthLabel.charAt(0).toUpperCase() + currentMonthLabel.slice(1);
     const formattedPrevLabel = prevMonthLabel.charAt(0).toUpperCase() + prevMonthLabel.slice(1);
 
+    if (!currentAvg && !prevAvg) {
+      return createEmptyDataCard("Сравнение калорий за месяц");
+    }
+
     return createComparisonBlock(
-      "За текущий календарный месяц среднее потребление калорий по дням ниже, чем в предыдущем месяце.",
+      prevAvg 
+        ? (currentAvg >= prevAvg
+            ? "За текущий календарный месяц среднее потребление калорий выше или равно прошлому месяцу." 
+            : "За текущий календарный месяц среднее потребление калорий ниже, чем в предыдущем месяце.")
+        : "Показатели за предыдущий месяц появятся, когда будет достаточно информации.",
       currentAvg,
       prevAvg,
       formattedCurrentLabel,
@@ -294,32 +330,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentYear = now.getFullYear();
     const previousYear = currentYear - 1;
 
-    // Фильтруем данные для текущего года
-    const currentYearData = window.allData.filter(item => item.date.getFullYear() === currentYear);
-    // Фильтруем данные для предыдущего года
-    const previousYearData = window.allData.filter(item => item.date.getFullYear() === previousYear);
+    const currentYearData = window.allData.filter(item => item.date.getFullYear() === currentYear && item.calories > 0);
+    const previousYearData = window.allData.filter(item => item.date.getFullYear() === previousYear && item.calories > 0);
 
-    // Вычисляем среднее значение за текущий год (игнорируя дни с 0 калориями)
-    const currentValues = currentYearData.filter(item => item.calories > 0).map(item => item.calories);
-    const currentAvg = currentValues.length ? Math.round(currentValues.reduce((sum, v) => sum + v, 0) / currentValues.length) : 0;
+    const currentAvg = currentYearData.length
+      ? Math.round(currentYearData.reduce((sum, v) => sum + v.calories, 0) / currentYearData.length)
+      : null;
+    const previousAvg = previousYearData.length
+      ? Math.round(previousYearData.reduce((sum, v) => sum + v.calories, 0) / previousYearData.length)
+      : null;
 
-    // Вычисляем среднее значение за предыдущий год
-    const previousValues = previousYearData.filter(item => item.calories > 0).map(item => item.calories);
-    const previousAvg = previousValues.length ? Math.round(previousValues.reduce((sum, v) => sum + v, 0) / previousValues.length) : 0;
-
-    // Для календарного разделения используем сами года как метки
-    const currentYearLabel = String(currentYear);
-    const previousYearLabel = String(previousYear);
+    if (!currentAvg && !previousAvg) {
+      return createEmptyDataCard("Сравнение калорий за год");
+    }
 
     return createComparisonBlock(
-      "В этом году среднее потребление калорий меньше, чем в прошлом году.",
+      previousAvg 
+        ? (currentAvg >= previousAvg
+            ? "В этом году среднее потребление калорий выше или равно прошлому году." 
+            : "В этом году среднее потребление калорий меньше, чем в прошлом году.")
+        : "Показатели за предыдущий год появятся, когда будет достаточно информации.",
       currentAvg,
       previousAvg,
-      currentYearLabel,
-      previousYearLabel,
+      String(currentYear),
+      String(previousYear),
       "Сравнение калорий за год"
     );
   }
+
+
+  // Функция для создания карточки при отсутствии данных
+  function createEmptyDataCard(title) {
+    return `
+      <div class="collection-card empty-data">
+        <div class="collection-header">
+          📅<span class="collection-title">${title}</span>
+        </div>
+        <div class="collection-text">
+          Показатели появятся, когда будет достаточно информации за данный период.
+        </div>
+      </div>
+    `;
+  }
+
 
   // Основная функция обновления инфо-блоков, объединяющая результаты всех блоков
   // Теперь эта функция лишь инициализирует все блоки при загрузке и обновляет только блок активности при переключении вкладок
