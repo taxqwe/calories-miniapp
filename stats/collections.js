@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return `
       <div class="mini-chart-container">
-        <div class="mini-chart-label">TDEE<br>Порог</div>
+        <div class="mini-chart-label">TDEE Порог</div>
         <div class="mini-chart-value">${formatNumber(tdee)}<span>ккал</span></div>
         <div class="mini-chart">
           <div class="mini-chart-trend" style="bottom: ${(tdee / maxValue * 100)}%"></div>
@@ -146,13 +146,13 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="collection-text">${text}</div>
         <div class="collection-period">
           <div class="period-value">${formatNumber(currentValue)}<span>ккал в день</span></div>
-          <div class="period-bar current" style="width: ${currentBarWidth}%"></div>
-          <div class="period-label">${currentLabel}</div>
+          <div class="period-bar current" style="width: ${currentBarWidth}%"><span class="period-bar-label">${currentLabel}</span></div>
+          <div class="period-label"></div>
         </div>
         <div class="collection-period">
           <div class="period-value">${formatNumber(previousValue)}<span>ккал в день</span></div>
-          <div class="period-bar previous" style="width: ${previousBarWidth}%"></div>
-          <div class="period-label">${previousLabel}</div>
+          <div class="period-bar previous" style="width: ${previousBarWidth}%"><span class="period-bar-label">${previousLabel}</span></div>
+          <div class="period-label"></div>
         </div>
       </div>
     `;
