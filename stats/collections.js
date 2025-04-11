@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const currentPeriod = document.querySelector('.period-button.active').dataset.period;
     let labels;
+    let labelsArray = [];
 
     // Определяем метки для разных периодов
     switch (currentPeriod) {
@@ -61,11 +62,30 @@ document.addEventListener('DOMContentLoaded', () => {
         labels = '<span>1</span><span>8</span><span>15</span><span>22</span><span>29</span><span></span><span></span>';
         break;
       case '6month':
-        labels = '<span>Н</span><span>Д</span><span>Я</span><span>Ф</span><span>М</span><span>А</span><span></span>';
+        const intervals = window.getSixMonthIntervals(); // даты начала недель (у вас уже есть функция)
+        labelsArray = [];
+
+        // Отслеживаем предыдущий месяц, чтобы подписывать только смену месяца
+        let lastMonth = null;
+
+        intervals.forEach((date, idx) => {
+          const month = date.getMonth();
+          const monthName = date.toLocaleDateString('ru-RU', { month: 'short' });
+
+          // Подписываем только если месяц изменился или это первый месяц
+          if (month !== lastMonth) {
+            labelsArray.push(`<span>${monthName}</span>`);
+            lastMonth = month;
+          } else {
+            labelsArray.push('<span></span>'); // пустая подпись, чтобы сохранить сетку
+          }
+        });
+
+        labels = labelsArray.join('');
         break;
       case 'year':
           const now = new Date();
-          const labelsArray = [];
+          labelsArray = [];
 
           // формируем массив из последних 12 месяцев
           for (let i = 11; i >= 0; i--) {
