@@ -76,36 +76,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (currentPeriod === 'week' || currentPeriod === 'month') {
           // Для дня форматируем дату: 9 апр. 2025
-          formattedDate = dateObj.toLocaleDateString('ru-RU', { 
-            day: 'numeric', 
-            month: 'short', 
-            year: 'numeric' 
-          });
+          formattedDate = formatShortDate(dateObj);
         } else if (currentPeriod === '6month') {
           // Для недели вычисляем интервал: начальная дата + 6 дней
-          const startDate = new Date(dateObj);
-          const endDate = new Date(dateObj);
-          endDate.setDate(startDate.getDate() + 6);
-          
-          if (startDate.getMonth() === endDate.getMonth()) {
-            // Если даты в одном месяце: 17-23 марта 2025 г.
-            formattedDate = `${startDate.getDate()}-${endDate.getDate()} ${
-              startDate.toLocaleDateString('ru-RU', { month: 'long' })
-            } ${startDate.getFullYear()} г.`;
-          } else {
-            // Если в разных месяцах: 31 янв. - 6 марта 2025 г.
-            formattedDate = `${startDate.getDate()} ${
-              startDate.toLocaleDateString('ru-RU', { month: 'short' })
-            } - ${endDate.getDate()} ${
-              endDate.toLocaleDateString('ru-RU', { month: 'short' })
-            } ${endDate.getFullYear()} г.`;
-          }
+          formattedDate = formatWeekInterval(dateObj);
         } else if (currentPeriod === 'year') {
           // Для месяца: янв. 2025
-          formattedDate = dateObj.toLocaleDateString('ru-RU', { 
-            month: 'short', 
-            year: 'numeric' 
-          });
+          formattedDate = formatMonthYear(dateObj);
         }
         
         statsLabelElem.textContent = formattedDate;

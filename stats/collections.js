@@ -1,10 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const collectionsContainer = document.querySelector('.stats-collections');
 
-  function formatNumber(num) {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  }
-
   function createFireIcon() {
     return `<svg class="collection-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M13.5,0.67s0.74,2.65,0.74,4.8c0,2.06-1.35,3.73-3.41,3.73c-2.07,0-3.63-1.67-3.63-3.73l0.03-0.36 C5.21,7.51,4,10.62,4,14c0,4.42,3.58,8,8,8s8-3.58,8-8C20,8.61,17.41,3.8,13.5,0.67z M12,20c-3.31,0-6-2.69-6-6 c0-1.53,0.3-3.04,0.86-4.43c1.01,1.01,2.41,1.63,3.97,1.63c2.66,0,4.75-1.83,5.28-4.43C17.34,8.97,18,11.44,18,14 C18,17.31,15.31,20,12,20z" fill="currentColor"/>
@@ -137,8 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
   }
-
-
 
   function createComparisonBlock(text, currentValue, previousValue, currentLabel, previousLabel, title) {
     const hasPrevData = previousValue !== null && previousValue !== 0;
@@ -403,7 +397,6 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-
   // Функция для создания карточки при отсутствии данных
   function createEmptyDataCard(title) {
     return `
@@ -417,7 +410,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
   }
-
 
   // Основная функция обновления инфо-блоков, объединяющая результаты всех блоков
   // Теперь эта функция лишь инициализирует все блоки при загрузке и обновляет только блок активности при переключении вкладок

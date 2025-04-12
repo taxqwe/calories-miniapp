@@ -66,62 +66,76 @@ document.addEventListener('DOMContentLoaded', () => {
       // Получаем userId из initDataUnsafe
       const userId = tg.initDataUnsafe?.user?.id;
 
-      const response = await fetch('https://calories-bot.duckdns.org:8443/api/stats', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-Source-App': 'Calories-Stats'
-        },
-        mode: 'cors',
-        body: JSON.stringify({
-          initData: initData,
-          userId: userId
-        })
-      });
+      // Проверяем, есть ли доступ к серверу
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // Таймаут 5 секунд
+      
+      try {
+        const response = await fetch('https://calories-bot.duckdns.org:8443/api/stats', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Source-App': 'Calories-Stats'
+          },
+          mode: 'cors',
+          signal: controller.signal,
+          body: JSON.stringify({
+            initData: initData,
+            userId: userId
+          })
+        });
+        
+        clearTimeout(timeoutId);
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Ошибка ответа сервера:', response.status, errorText);
-        throw new Error('Ошибка получения данных');
+        if (!response.ok) {
+          console.log('Сервер вернул ошибку:', response.status);
+          throw new Error(`Сервер вернул статус ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Получены данные от сервера:', responseData);
+
+        // Преобразуем данные из Map<String, Int> в массив объектов {date, calories}
+        const caloriesMap = responseData.calories;
+        const tdee = responseData.tdee;
+
+        const formattedData = [];
+        // Рассчитываем даты за последние 730 дней для полного набора данных
+        let startDate = new Date();
+        startDate.setDate(startDate.getDate() - 729);
+
+        for (let i = 0; i < 730; i++) {
+          const currentDate = new Date(startDate);
+          currentDate.setDate(startDate.getDate() + i);
+
+          // Форматируем дату в формат yyyy-MM-dd для поиска в полученных данных
+          const dateKey = currentDate.toISOString().split('T')[0];
+          const calories = caloriesMap[dateKey] || 0;
+
+          formattedData.push({ date: currentDate, calories: calories });
+        }
+
+        window.allData = formattedData;
+
+        // Если TDEE известен, используем его, иначе оставляем значение по умолчанию
+        if (tdee) {
+          window.userTDEE = tdee;
+        }
+
+        // Обновляем график после получения данных
+        updateChart(currentPeriod);
+
+        return true;
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        // Тихо обрабатываем ошибку fetch и используем моковые данные
+        console.log('Не удалось получить данные с сервера, используем моковые данные');
+        throw new Error('Сервер недоступен');
       }
-
-      const responseData = await response.json();
-      console.log('Получены данные от сервера:', responseData);
-
-      // Преобразуем данные из Map<String, Int> в массив объектов {date, calories}
-      const caloriesMap = responseData.calories;
-      const tdee = responseData.tdee;
-
-      const formattedData = [];
-      // Рассчитываем даты за последние 730 дней для полного набора данных
-      let startDate = new Date();
-      startDate.setDate(startDate.getDate() - 729);
-
-      for (let i = 0; i < 730; i++) {
-        const currentDate = new Date(startDate);
-        currentDate.setDate(startDate.getDate() + i);
-
-        // Форматируем дату в формат yyyy-MM-dd для поиска в полученных данных
-        const dateKey = currentDate.toISOString().split('T')[0];
-        const calories = caloriesMap[dateKey] || 0;
-
-        formattedData.push({ date: currentDate, calories: calories });
-      }
-
-      window.allData = formattedData;
-
-      // Если TDEE известен, используем его, иначе оставляем значение по умолчанию
-      if (tdee) {
-        window.userTDEE = tdee;
-      }
-
-      // Обновляем график после получения данных
-      updateChart(currentPeriod);
-
-      return true;
     } catch (error) {
-      console.error('Ошибка при получении данных:', error);
+      // Не выводим весь объект ошибки в консоль, чтобы не пугать пользователя
+      console.log('Используем моковые данные для отображения статистики');
       // В случае ошибки используем моковые данные
       window.allData = generateMockData(730);
       updateChart(currentPeriod);
@@ -255,28 +269,6 @@ document.addEventListener('DOMContentLoaded', () => {
     trendButton.classList.toggle('active', isTrendVisible);
   }
 
-  function formatPeriodDate(period) {
-    const now = new Date();
-    let start;
-    switch (period) {
-      case 'week':
-        start = new Date(now);
-        start.setDate(now.getDate() - 7);
-        return `${start.getDate()} ${months[start.getMonth()]} — ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}г.`;
-      case 'month':
-        start = new Date(now);
-        start.setDate(now.getDate() - 30);
-        return `${start.getDate()} ${months[start.getMonth()]} — ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}г.`;
-      case '6month':
-        start = new Date(now);
-        start.setMonth(now.getMonth() - 6);
-        return `14 окт. ${start.getFullYear()} — 13 апр. ${now.getFullYear()}г.`;
-      case 'year':
-        start = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
-        return `${months[start.getMonth()]} ${start.getFullYear()} — ${months[now.getMonth()]} ${now.getFullYear()}г.`;
-    }
-  }
-
   // Функция, возвращающая массив дат – начало каждой 7-дневной группы для 6 месяцев
   function getSixMonthIntervals() {
     const rawData = window.allData.slice(-180); // последние 180 дней
@@ -287,7 +279,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return intervals;
   }
   window.getSixMonthIntervals = getSixMonthIntervals;
-
 
   function getLabelsForPeriod(period) {
     const now = new Date();
@@ -349,7 +340,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
   }
-
 
   function updateChart(period) {
     let data;
