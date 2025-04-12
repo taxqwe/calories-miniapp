@@ -404,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (e.type === 'mousedown' && e.button !== 0) return;
           pressTimer = setTimeout(() => {
             // Пустая функция - не вызываем showInfo
-          }, 250); // Уменьшаем задержку с 500 до 250 мс
+          }, 100); 
         }
   
         function cancelPress() {
