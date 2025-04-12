@@ -42,70 +42,83 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function createTdeeMiniChart(data, tdee) {
+    // data – массив чисел
     const maxValue = Math.max(...data, tdee);
     const bars = data.map(value => {
       const height = value === 0 ? 4 : (value / maxValue * 100);
       const excessClass = value > tdee ? ' excess' : '';
       return `<div class="mini-chart-bar${excessClass}" style="height: ${height}%"></div>`;
     }).join('');
-
+    
     const currentPeriod = document.querySelector('.period-button.active').dataset.period;
-    let labels;
-    let labelsArray = [];
-
-    // Определяем метки для разных периодов
+    let labels = '';
+    
     switch (currentPeriod) {
       case 'week':
-        labels = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
+        {
+          // Для недели получаем оригинальные данные с датами
+          const weekData = window.getWeekData(); // вернёт массив объектов { date, calories }
+          labels = weekData.map(item => {
+            const date = new Date(item.date);
+            let shortDay = date.toLocaleDateString('ru-RU', { weekday: 'short' });
+            // Делаем первую букву заглавной
+            shortDay = shortDay.charAt(0).toUpperCase() + shortDay.slice(1);
+            return `<span>${shortDay}</span>`;
+          }).join('');
+        }
         break;
       case 'month':
-        labels = '<span>1</span><span>8</span><span>15</span><span>22</span><span>29</span><span></span><span></span>';
-        break;
-      case '6month':
-        const intervals = window.getSixMonthIntervals(); // даты начала недель (у вас уже есть функция)
-        labelsArray = [];
-
-        // Отслеживаем предыдущий месяц, чтобы подписывать только смену месяца
-        let lastMonth = null;
-
-        intervals.forEach((date, idx) => {
-          const month = date.getMonth();
-          const monthName = date.toLocaleDateString('ru-RU', { month: 'short' });
-
-          // Подписываем только если месяц изменился или это первый месяц
-          if (month !== lastMonth) {
-            labelsArray.push(`<span>${monthName}</span>`);
-            lastMonth = month;
-          } else {
-            labelsArray.push('<span></span>'); // пустая подпись, чтобы сохранить сетку
+      {
+        // Получаем оригинальные данные за месяц (30 дней)
+        const monthData = window.getMonthData(); // массив объектов { date, calories }
+        // Создаем массив длины 30 с пустыми span-элементами
+        const labelsArray = monthData.map(() => '<span></span>');
+        // Для каждого дня проверяем, является ли он понедельником (getDay() === 1)
+        monthData.forEach((item, index) => {
+          const date = new Date(item.date);
+          if (date.getDay() === 1) { // понедельник
+            const day = date.getDate();
+            labelsArray[index] = `<span>${day}</span>`;
           }
         });
-
+        // Объединяем массив в одну строку
         labels = labelsArray.join('');
+      }
+      break;
+      case '6month':
+        {
+          const intervals = window.getSixMonthIntervals(); // массив дат начала каждой недели
+          let lastMonth = null;
+          labels = intervals.map(date => {
+            const month = date.getMonth();
+            const monthName = date.toLocaleDateString('ru-RU', { month: 'short' });
+            if (lastMonth === null || month !== lastMonth) {
+              lastMonth = month;
+              return `<span>${monthName}</span>`;
+            } else {
+              return `<span></span>`;
+            }
+          }).join('');
+        }
         break;
       case 'year':
+        {
           const now = new Date();
-          labelsArray = [];
-
-          // формируем массив из последних 12 месяцев
+          let labelsArray = [];
           for (let i = 11; i >= 0; i--) {
             const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
-            const monthName = monthDate.toLocaleDateString('ru-RU', { month: 'short' }); // янв., февр. и т.д.
+            const monthName = monthDate.toLocaleDateString('ru-RU', { month: 'short' });
             labelsArray.push(monthName);
           }
-
-          // подписываем начиная с последнего месяца, затем каждый второй месяц
           labels = labelsArray.map((label, idx) => {
-            // считаем от последнего месяца назад: (11 - idx)
-            // подписываем последний месяц и затем через один месяц назад
             if ((labelsArray.length - 1 - idx) % 2 === 0) {
               return `<span>${label}</span>`;
             } else {
               return `<span></span>`;
             }
           }).join('');
-          
-          break;
+        }
+        break;
       default:
         labels = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
     }
@@ -124,6 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
   }
+
+
 
   function createComparisonBlock(text, currentValue, previousValue, currentLabel, previousLabel, title) {
     const hasPrevData = previousValue !== null && previousValue !== 0;

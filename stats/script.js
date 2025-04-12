@@ -276,18 +276,15 @@ document.addEventListener('DOMContentLoaded', () => {
           return date.getDate().toString();
         });
       case 'month': {
-        const labels = new Array(30).fill('');
-        const start = new Date(now);
-        start.setDate(now.getDate() - 29);
-        const dates = [11, 18, 25, 1, 8];
-        dates.forEach(date => {
-          const index = labels.findIndex((_, i) => {
-            const currentDate = new Date(start);
-            currentDate.setDate(start.getDate() + i);
-            return currentDate.getDate() === date;
-          });
-          if (index !== -1) {
-            labels[index] = date.toString();
+        // Получаем данные за последний месяц (30 дней)
+        const monthData = window.getMonthData(); // массив объектов { date, calories }
+        // Инициализируем массив подписей длиной 30 с пустыми значениями
+        const labels = new Array(monthData.length).fill('');
+        // Для каждого дня, если дата — понедельник (getDay() === 1), записываем номер дня
+        monthData.forEach((item, index) => {
+          const date = new Date(item.date);
+          if (date.getDay() === 1) { // понедельник
+            labels[index] = date.getDate().toString();
           }
         });
         return labels;
@@ -296,8 +293,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const intervals = getSixMonthIntervals(); // массив дат начала каждой недели
         const labels = [];
         for (let i = 0; i < intervals.length; i++) {
-          // Если это первая группа или месяц изменился по сравнению с предыдущей группой,
-          // то подпишем данную группу коротким названием месяца.
+          // Если это первая группа или месяц изменился по сравнению с предыдущей группы,
+          // подпишем данную группу коротким названием месяца
           if (i === 0 || intervals[i].getMonth() !== intervals[i - 1].getMonth()) {
             const monthName = intervals[i].toLocaleDateString('ru-RU', { month: 'short' });
             labels.push(monthName);
@@ -311,24 +308,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const rawData = window.allData.slice(-365);
         if (!rawData.length) return [];
 
-        // Берём ПОСЛЕДНЮЮ дату (конец периода)
+        // Берем последнюю дату (конец периода)
         const endDate = rawData[rawData.length - 1].date;
-        
-        let labels = [];
+        const labels = [];
         for (let i = 11; i >= 0; i--) {
           const d = new Date(endDate.getFullYear(), endDate.getMonth() - i, 1);
-          // Используем, например, короткое название "апр."
           const monthName = d.toLocaleDateString('ru-RU', { month: 'narrow' });
           labels.push(monthName);
         }
-
-        // Получили массив в обратном порядке (от самого старого к самому новому).
-        // Если хотим, чтобы метки шли слева-направо по времени, разворачиваем массив:
-        
         return labels;
       }
+      default:
+        return Array.from({ length: 7 }, (_, i) => {
+          const date = new Date(now);
+          date.setDate(now.getDate() - (6 - i));
+          return date.getDate().toString();
+        });
     }
   }
+
 
   function updateChart(period) {
     let data;
