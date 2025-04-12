@@ -4,17 +4,41 @@ document.addEventListener('DOMContentLoaded', () => {
   tg.ready();
   tg.expand();
 
-  // Применяем цветовую схему от Telegram
-  // Замените на свои цвета, пример:
-  document.documentElement.style.setProperty('--text-color', '#ffffff');
-  document.documentElement.style.setProperty('--bg-color', '#1c1c1e');
-  document.documentElement.style.setProperty('--text-light', '#999999');
-  document.documentElement.style.setProperty('--accent-color', '#2196F3'); // "наш" синий
-  document.documentElement.style.setProperty('--dark-bg', '#2c2c2e');
+  // Получаем параметры темы Telegram (если заданы)
+  const theme = tg.themeParams || {};
+
+  // Устанавливаем системные переменные, беря значения из параметров темы Telegram,
+  // если они доступны, или используя значения по умолчанию для тёмного стиля.
+  document.documentElement.style.setProperty('--text-color', theme.text_color || '#ffffff');
+  document.documentElement.style.setProperty('--text-light', theme.hint_color || '#999999');
+
+  // Сохраняем наши акцентные цвета:
+  // Наш синий
+  document.documentElement.style.setProperty('--accent-color', '#2196F3');
+  document.documentElement.style.setProperty('--our-blue', '#2196F3');
+  // Наш оранжевый, введём новую переменную для оранжевого акцента:
+  document.documentElement.style.setProperty('--orange-accent', '#FF6422');
+
+  // Остальные переменные оставляем без изменений:
   document.documentElement.style.setProperty('--border-color', '#5e5e5e');
-  document.documentElement.style.setProperty('--our-blue', '#2196F3'); // "наш" синий
   document.documentElement.style.setProperty('--chart-secondary', '#48484a');
 
+  // Различаем общие и внутренние фоны в зависимости от цветовой схемы Telegram:
+  if (tg.colorScheme === 'dark') {
+    // Для тёмной темы фон элементов делаем отличным от общего фона
+    document.documentElement.style.setProperty('--card-bg', '#2c2c2e');
+    document.documentElement.style.setProperty('--bg-color', '#1c1c1e');
+    // Для полоски предыдущего периода задаём цвет, который будет хорошо виден на тёмном фоне
+    document.documentElement.style.setProperty('--prev-bar-color', 'rgba(255, 255, 255, 0.3)');
+  } else {
+    // В светлой теме фон элементов можно сделать отличным от основного фона
+    document.documentElement.style.setProperty('--card-bg', theme.secondary_bg_color || '#f0f0f0');
+    // Для полоски предыдущего периода выбираем более тёмное значение, чтобы оно было видно на светлом фоне
+    document.documentElement.style.setProperty('--prev-bar-color', 'rgba(0, 0, 0, 0.3)');
+  }
+
+  // Для совместимости указываем значение для --dark-bg, но лучше вместо него использовать --card-bg
+  document.documentElement.style.setProperty('--dark-bg', document.documentElement.style.getPropertyValue('--card-bg'));
 
   // Названия месяцев
   const months = ['янв.', 'февр.', 'март', 'апр.', 'май', 'июнь', 'июль', 'авг.', 'сент.', 'окт.', 'нояб.', 'дек.'];

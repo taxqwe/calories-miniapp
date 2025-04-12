@@ -24,7 +24,7 @@
     }
     .period-selector {
       display: flex;
-      background: var(--dark-bg);
+      background: var(--card-bg);
       border-radius: 8px;
       overflow: hidden;
       margin-bottom: 20px;
@@ -45,7 +45,7 @@
       color: white;
     }
     .stats-card {
-      background: var(--dark-bg);
+      background: var(--card-bg);
       border-radius: 8px;
       padding: 16px;
       margin-bottom: 16px;
@@ -140,7 +140,7 @@
       transition: opacity 0.3s ease;
     }
     .trend-line.average-line {
-      background: #FF6422;
+      background: var(--orange-accent);
     }
     /* Подпись тренда для среднего значения – выравнивание по правому краю */
     .trend-value {
@@ -150,14 +150,14 @@
       pointer-events: none;
       font-size: 11px;
       padding: 2px 4px;
-      background: var(--dark-bg);
+      background: var(--card-bg);
       border-radius: 4px;
     }
     .trend-value.average-value {
       right: 0;
       left: auto;
       transform: translateY(-120%);
-      color: #FF6422;
+      color: var(--orange-accent);
     }
     /* Если бы оставались линии BMR/TDEE, то здесь их подписи (но они не используются на верхнем графике) */
     .trend-value.bmr-value,
@@ -182,7 +182,7 @@
       width: 100%;
       padding: 16px;
       margin-top: 16px;
-      background: var(--dark-bg);
+      background: var(--card-bg);
       border: none;
       border-radius: 8px;
       color: var(--text-color);
@@ -191,7 +191,7 @@
       transition: all 0.3s ease;
     }
     .trend-button.active {
-      background: #FF6422;
+      background: var(--orange-accent);
       color: white;
     }
     .trend-button:active {
@@ -219,7 +219,7 @@
       flex-direction: column;
       padding: 16px;
       margin-bottom: 8px;
-      background: var(--dark-bg);
+      background: var(--card-bg);
       border-radius: 8px;
       color: var(--text-color);
     }
@@ -232,10 +232,10 @@
       width: 24px;
       height: 24px;
       margin-right: 8px;
-      color: #FF6422;
+      color: var(--orange-accent);
     }
     .collection-title {
-      color: #FF6422;
+      color: var(--orange-accent);
       font-weight: 500;
     }
     .collection-text {
@@ -264,10 +264,10 @@
       overflow: hidden;
     }
     .period-bar.current {
-      background: #FF6422;
+      background: var(--orange-accent);
     }
     .period-bar.previous {
-      background: rgba(153, 153, 153, 0.2);
+      background: var(--prev-bar-color);
     }
     .period-label {
       font-size: 15px;
@@ -335,7 +335,7 @@
       left: -40px;
       right: 0;
       height: 4px;
-      background: #FF6422;
+      background: var(--orange-accent);
     }
     .mini-chart-labels {
       height: 20px;
@@ -361,7 +361,7 @@
       white-space: nowrap;
     }
     .collection-card.empty-data {
-      background: var(--dark-bg);
+      background: var(--card-bg);
       border-radius: 8px;
       padding: 16px;
       margin-bottom: 8px;
@@ -375,7 +375,7 @@
     }
 
     .collection-card.empty-data .collection-title {
-      color: #FF6422;
+      color: var(--orange-accent);
     }
 
     .collection-card.empty-data .collection-text {
