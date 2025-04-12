@@ -447,12 +447,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const monthComparison = buildMonthComparisonBlock();
       const yearComparison = buildYearComparisonBlock();
 
-      collectionsContainer.innerHTML = staticBlockHtml + activeBlock + monthComparison + yearComparison;
+      // Меняем порядок блоков, помещая блок активности первым
+      collectionsContainer.innerHTML = activeBlock + staticBlockHtml + monthComparison + yearComparison;
 
       // Добавляем классы для идентификации блоков
       const blocks = collectionsContainer.querySelectorAll('.collection-card');
-      if (blocks.length >= 1) blocks[0].classList.add('static-calories-block');
-      if (blocks.length >= 2) blocks[1].classList.add('active-calories-block');
+      if (blocks.length >= 1) blocks[0].classList.add('active-calories-block');
+      if (blocks.length >= 2) blocks[1].classList.add('static-calories-block');
     }
   }
 

@@ -17,6 +17,10 @@
       padding: 16px;
       max-width: 500px;
       margin: 0 auto;
+      -webkit-user-select: none;  /* Отключает выделение текста на Safari/iOS */
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
     .period-selector {
       display: flex;
@@ -416,6 +420,7 @@
     <div class="stats-collections"></div>
   </div>
   <script src="collections.js"></script>
+  <script src="vertical-line.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

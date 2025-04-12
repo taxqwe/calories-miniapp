@@ -248,8 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
         start.setMonth(now.getMonth() - 6);
         return `14 окт. ${start.getFullYear()} — 13 апр. ${now.getFullYear()}г.`;
       case 'year':
-        start = new Date(now);
-        start.setFullYear(now.getFullYear() - 1);
+        start = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
         return `${months[start.getMonth()]} ${start.getFullYear()} — ${months[now.getMonth()]} ${now.getFullYear()}г.`;
     }
   }
@@ -345,16 +344,71 @@ document.addEventListener('DOMContentLoaded', () => {
     const labels = getLabelsForPeriod(period, data.length);
     
     const chartContainerElem = document.querySelector('.stats-chart');
-    chartContainerElem.innerHTML = '';
-
-    data.forEach(value => {
-      const bar = document.createElement('div');
-      bar.className = 'chart-bar' + (value === 0 ? ' empty' : '');
-      const height = value === 0 ? 4 : (value / maxValue * 100);
-      bar.style.height = `${height}%`;
-      // Больше не добавляем marginLeft – столбцы идут непрерывно
-      chartContainerElem.appendChild(bar);
-    });
+    if (chartContainerElem) {
+      chartContainerElem.innerHTML = '';
+  
+      data.forEach((value, index) => {
+        const bar = document.createElement('div');
+        bar.className = 'chart-bar' + (value === 0 ? ' empty' : '');
+        const height = value === 0 ? 4 : (value / maxValue * 100);
+        bar.style.height = `${height}%`;
+        
+        // Добавляем атрибут с информацией о калориях для столбца
+        bar.setAttribute('data-calories', value);
+        // Для разных периодов добавляем дополнительную информацию
+        if (period === 'week' || period === 'month') {
+          // Для недели и месяца - это калории за день
+          bar.setAttribute('data-type', 'day');
+          // Добавляем дату для каждого столбца
+          const dateObj = period === 'week' ? 
+            getWeekData()[index].date : 
+            getMonthData()[index].date;
+          bar.setAttribute('data-date', dateObj.toISOString());
+        } else if (period === '6month') {
+          // Для 6 месяцев - это средние калории за неделю
+          bar.setAttribute('data-type', 'week');
+          // Получаем дату начала недели
+          const rawData = window.allData.slice(-180);
+          const weekIndex = Math.floor(index * 7);
+          if (weekIndex < rawData.length) {
+            bar.setAttribute('data-date', rawData[weekIndex].date.toISOString());
+          }
+        } else if (period === 'year') {
+          // Для года - это средние калории за месяц
+          bar.setAttribute('data-type', 'month');
+          // Вычисляем дату начала месяца
+          const now = new Date();
+          const startDate = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+          const monthDate = new Date(startDate.getFullYear(), startDate.getMonth() + index, 1);
+          bar.setAttribute('data-date', monthDate.toISOString());
+        }
+        
+        // Остальной код функции startPress и cancelPress
+        let pressTimer;
+  
+        function startPress(e) {
+          if (e.type === 'mousedown' && e.button !== 0) return;
+          pressTimer = setTimeout(() => {
+            // Пустая функция - не вызываем showInfo
+          }, 500);
+        }
+  
+        function cancelPress() {
+          clearTimeout(pressTimer);
+          // Пустая функция - не вызываем hideInfo
+        }
+  
+        bar.addEventListener('touchstart', startPress);
+        bar.addEventListener('touchend', cancelPress);
+        bar.addEventListener('touchmove', cancelPress);
+  
+        bar.addEventListener('mousedown', startPress);
+        bar.addEventListener('mouseup', cancelPress);
+        bar.addEventListener('mouseleave', cancelPress);
+  
+        chartContainerElem.appendChild(bar);
+      });
+    }
 
     const labelsContainer = document.querySelector('.chart-labels');
     labelsContainer.setAttribute('data-period', period);
@@ -366,14 +420,20 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.stats-label:last-child').textContent = formatPeriodDate(period);
 
     const gridStep = Math.ceil(maxValue / 3 / 100) * 100;
+    const gridMax = gridStep * 3; // Максимальное значение шкалы графика
     const gridValues = document.querySelectorAll('.grid-value');
-    gridValues[0].textContent = (gridStep * 3).toString();
+    gridValues[0].textContent = gridMax.toString();
     gridValues[1].textContent = (gridStep * 2).toString();
     gridValues[2].textContent = gridStep.toString();
     gridValues[3].textContent = '0';
 
-    averageLine.style.bottom = `${(average / maxValue * 100)}%`;
-    averageValue.textContent = `${average} ккал`;
+    if (averageLine) {
+      averageLine.style.bottom = `${(average / gridMax * 100)}%`; // Используем gridMax вместо maxValue
+    }
+    
+    if (averageValue) {
+      averageValue.textContent = `${average} ккал`;
+    }
 
     updateTrendVisibility();
 
