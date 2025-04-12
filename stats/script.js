@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (e.type === 'mousedown' && e.button !== 0) return;
           pressTimer = setTimeout(() => {
             // Пустая функция - не вызываем showInfo
-          }, 500);
+          }, 250); // Уменьшаем задержку с 500 до 250 мс
         }
   
         function cancelPress() {

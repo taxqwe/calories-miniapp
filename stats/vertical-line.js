@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
       longPressTimer = setTimeout(() => {
         isLongPressActive = true;
         updateVerticalLineAt(event.target);
-      }, 500); // Задержка для длинного нажатия
+      }, 250); // Уменьшаем задержку для длинного нажатия с 500 до 250 мс
     }
   });
 
@@ -168,6 +168,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+
+  // Блокируем вертикальный скроллинг при активном длительном нажатии
+  document.addEventListener('touchmove', function(event) {
+    if (isLongPressActive) {
+      event.preventDefault(); // Предотвращаем скроллинг
+    }
+  }, { passive: false }); // Важно указать passive: false для возможности вызова preventDefault()
 
   // Сбрасываем состояние при отпускании или отмене нажатия
   document.addEventListener('pointerup', clearLongPress);
