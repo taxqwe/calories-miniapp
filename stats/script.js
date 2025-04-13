@@ -24,25 +24,21 @@ document.addEventListener('DOMContentLoaded', () => {
   document.documentElement.style.setProperty('--chart-secondary', '#48484a');
 
   // Различаем общие и внутренние фоны в зависимости от цветовой схемы Telegram:
-  if (tg.colorScheme === 'dark') {
+  if (tg.colorScheme === 'light' && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+    // В светлой теме фон элементов можно сделать отличным от основного фона
+    document.documentElement.style.setProperty('--card-bg', theme.secondary_bg_color || '#f0f0f0');
+    // Для полоски предыдущего периода выбираем более тёмное значение, чтобы оно было видно на светлом фоне
+    document.documentElement.style.setProperty('--prev-bar-color', 'rgba(0, 0, 0, 0.3)');
+  } else {
     // Для тёмной темы фон элементов делаем отличным от общего фона
     document.documentElement.style.setProperty('--card-bg', '#2c2c2e');
     document.documentElement.style.setProperty('--bg-color', '#1c1c1e');
     // Для полоски предыдущего периода задаём цвет, который будет хорошо виден на тёмном фоне
     document.documentElement.style.setProperty('--prev-bar-color', 'rgba(255, 255, 255, 0.3)');
-  } else {
-    // В светлой теме фон элементов можно сделать отличным от основного фона
-    document.documentElement.style.setProperty('--card-bg', theme.secondary_bg_color || '#f0f0f0');
-    // Для полоски предыдущего периода выбираем более тёмное значение, чтобы оно было видно на светлом фоне
-    document.documentElement.style.setProperty('--prev-bar-color', 'rgba(0, 0, 0, 0.3)');
   }
 
   // Для совместимости указываем значение для --dark-bg, но лучше вместо него использовать --card-bg
   document.documentElement.style.setProperty('--dark-bg', document.documentElement.style.getPropertyValue('--card-bg'));
-
-  // Названия месяцев
-  const months = ['янв.', 'февр.', 'март', 'апр.', 'май', 'июнь', 'июль', 'авг.', 'сент.', 'окт.', 'нояб.', 'дек.'];
-  const shortMonths = ['Я', 'Ф', 'М', 'А', 'М', 'И', 'И', 'А', 'С', 'О', 'Н', 'Д'];
 
   // Моковые данные с параметрами bmr и tdee
   function generateMockData(count) {

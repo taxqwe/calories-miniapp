@@ -44,24 +44,23 @@ function formatMonthYear(date) {
 function formatPeriodDate(period) {
   const now = new Date();
   let start;
-  const months = ['янв.', 'февр.', 'март', 'апр.', 'май', 'июнь', 'июль', 'авг.', 'сент.', 'окт.', 'нояб.', 'дек.'];
   
   switch (period) {
     case 'week':
       start = new Date(now);
       start.setDate(now.getDate() - 7);
-      return `${start.getDate()} ${months[start.getMonth()]} — ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}г.`;
+      return `${start.getDate()} ${start.toLocaleDateString('ru-RU', { month: 'short' })} — ${now.getDate()} ${now.toLocaleDateString('ru-RU', { month: 'short' })} ${now.getFullYear()}г.`;
     case 'month':
       start = new Date(now);
       start.setDate(now.getDate() - 30);
-      return `${start.getDate()} ${months[start.getMonth()]} — ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}г.`;
+      return `${start.getDate()} ${start.toLocaleDateString('ru-RU', { month: 'short' })} — ${now.getDate()} ${now.toLocaleDateString('ru-RU', { month: 'short' })} ${now.getFullYear()}г.`;
     case '6month':
       start = new Date(now);
       start.setMonth(now.getMonth() - 6);
-      return `14 окт. ${start.getFullYear()} — 13 апр. ${now.getFullYear()}г.`;
+      return `14 ${start.toLocaleDateString('ru-RU', { month: 'short' })} ${start.getFullYear()} — 13 ${now.toLocaleDateString('ru-RU', { month: 'short' })} ${now.getFullYear()}г.`;
     case 'year':
       start = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
-      return `${months[start.getMonth()]} ${start.getFullYear()} — ${months[now.getMonth()]} ${now.getFullYear()}г.`;
+      return `${start.toLocaleDateString('ru-RU', { month: 'short' })} ${start.getFullYear()} — ${now.toLocaleDateString('ru-RU', { month: 'short' })} ${now.getFullYear()}г.`;
   }
 }
 
