@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="mini-chart-label">${window.localization.averageLabel}</div>
         <div class="mini-chart-value">${formatNumber(average)}<span>${window.localization.kilocalories}</span></div>
         <div class="mini-chart">
-          <div class="mini-chart-trend" style="bottom: ${maxVal ? (average / maxVal * 100) : 0}%"></div>
+          <div class="mini-chart-trend" style="bottom: ${maxVal === 0 ? 20 : (20 + (average / maxVal * 80))}%"></div>
           <div class="mini-chart-bars">${barsHtml}</div>
           <div class="mini-chart-labels">
             ${labelsHtml}
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="mini-chart-label">${window.localization.tdeeThreshold}</div>
         <div class="mini-chart-value">${formatNumber(tdee)}<span>${window.localization.kilocalories}</span></div>
         <div class="mini-chart">
-          <div class="mini-chart-trend" style="bottom: ${(tdee / maxValue * 100)}%"></div>
+          <div class="mini-chart-trend" style="bottom: ${maxValue === 0 ? 4 : (4 + (tdee / maxValue * 96))}%"></div>
           <div class="mini-chart-bars">${bars}</div>
           <div class="mini-chart-labels" style="grid-template-columns: repeat(${data.length}, 1fr);">
             ${labels}

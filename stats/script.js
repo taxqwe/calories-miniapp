@@ -434,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const nonEmptyDays = data.filter(value => value > 0);
     const average = nonEmptyDays.length ? Math.round(nonEmptyDays.reduce((a, b) => a + b, 0) / nonEmptyDays.length) : 0;
-    document.querySelector('.stats-value').textContent = `${average} ${window.localization.kilocalories}`;
+    document.querySelector('.stats-value').textContent = `${parseInt(average).toLocaleString(window.localization.getLocale())} ${window.localization.kilocalories}`;
     document.querySelector('.stats-label:last-child').textContent = formatPeriodDate(period);
 
     const gridStep = Math.ceil(maxValue / 3 / 100) * 100;

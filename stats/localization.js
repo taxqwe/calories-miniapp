@@ -52,10 +52,10 @@
       tdeeThreshold: "TDEE Threshold",
       
       titleStaticCalories: "Average Calories (Last 7 Days)",
-      textStaticCalories: "On average over the last 7 days (excluding days with 0 kcal) you consumed {value} kcal per day.",
+      textStaticCalories: "On average over the last 7 days you consumed {value} kcal per day.",
       
       titleActiveCalories: "Active Calories",
-      textActiveCalories: "For the selected period, out of {countAndUnit}, in {aboveAndUnit} your average calorie intake exceeded TDEE ({tdee} kcal).",
+      textActiveCalories: "During the selected period, out of {countAndUnit}, the average calorie consumption exceeded the TDEE ({tdee} kcal) by {aboveAndUnit}.",
       
       titleMonthComparison: "Monthly Calorie Comparison",
       titleYearComparison: "Yearly Calorie Comparison",
