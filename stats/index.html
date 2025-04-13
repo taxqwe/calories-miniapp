@@ -390,13 +390,13 @@
 <body>
   <div class="stats-container">
     <div class="period-selector">
-      <button class="period-button active" data-period="week">НЕД</button>
-      <button class="period-button" data-period="month">МЕС</button>
-      <button class="period-button" data-period="6month">6 МЕС</button>
-      <button class="period-button" data-period="year">ГОД</button>
+      <button class="period-button active" data-period="week" id="period-week"></button>
+      <button class="period-button" data-period="month" id="period-month"></button>
+      <button class="period-button" data-period="6month" id="period-6month"></button>
+      <button class="period-button" data-period="year" id="period-year"></button>
     </div>
     <div class="stats-card">
-      <div class="stats-label">В СРЕДНЕМ ЗА ДЕНЬ</div>
+      <div class="stats-label" id="daily-average-label"></div>
       <div class="stats-value">389 ккал</div>
       <div class="stats-label">9 март — 9 апр. 2025г.</div>
     </div>
@@ -417,7 +417,7 @@
         <!-- Подписи оси X добавляются динамически -->
       </div>
     </div>
-    <button class="trend-button">Тренд</button>
+    <button class="trend-button" id="trend-button"></button>
     <div class="stats-collections"></div>
   </div>
   <script src="localization.js"></script>

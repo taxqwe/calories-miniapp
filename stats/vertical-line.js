@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (statsValueElem) {
         // Форматируем значение: разделитель тысяч
-        statsValueElem.textContent = `${parseInt(calories).toLocaleString('ru-RU')} ккал`;
+        statsValueElem.textContent = `${parseInt(calories).toLocaleString(window.localization.getLocale())} ккал`;
       }
       
       if (statsLabelElem) {

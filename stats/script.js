@@ -4,6 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
   tg.ready();
   tg.expand();
 
+  // Инициализация текстов из локализации
+  document.getElementById('period-week').textContent = window.localization.periodButtonWeek;
+  document.getElementById('period-month').textContent = window.localization.periodButtonMonth;
+  document.getElementById('period-6month').textContent = window.localization.periodButtonSixMonth;
+  document.getElementById('period-year').textContent = window.localization.periodButtonYear;
+  document.getElementById('daily-average-label').textContent = window.localization.dailyAverageLabel;
+  document.getElementById('trend-button').textContent = window.localization.trendButton;
+
   // Получаем параметры темы Telegram (если заданы)
   const theme = tg.themeParams || {};
 
@@ -306,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
           // Если это первая группа или месяц изменился по сравнению с предыдущей группы,
           // подпишем данную группу коротким названием месяца
           if (i === 0 || intervals[i].getMonth() !== intervals[i - 1].getMonth()) {
-            const monthName = intervals[i].toLocaleDateString('ru-RU', { month: 'short' });
+            const monthName = intervals[i].toLocaleDateString(window.localization.getLocale(), { month: 'short' });
             labels.push(monthName);
           } else {
             labels.push('');
@@ -323,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const labels = [];
         for (let i = 11; i >= 0; i--) {
           const d = new Date(endDate.getFullYear(), endDate.getMonth() - i, 1);
-          const monthName = d.toLocaleDateString('ru-RU', { month: 'narrow' });
+          const monthName = d.toLocaleDateString(window.localization.getLocale(), { month: 'narrow' });
           labels.push(monthName);
         }
         return labels;
@@ -426,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const nonEmptyDays = data.filter(value => value > 0);
     const average = nonEmptyDays.length ? Math.round(nonEmptyDays.reduce((a, b) => a + b, 0) / nonEmptyDays.length) : 0;
-    document.querySelector('.stats-value').textContent = `${average} ккал`;
+    document.querySelector('.stats-value').textContent = `${average} ${window.localization.kilocalories}`;
     document.querySelector('.stats-label:last-child').textContent = formatPeriodDate(period);
 
     const gridStep = Math.ceil(maxValue / 3 / 100) * 100;
@@ -442,7 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     if (averageValue) {
-      averageValue.textContent = `${average} ккал`;
+      averageValue.textContent = `${average} ${window.localization.kilocalories}`;
     }
 
     updateTrendVisibility();

@@ -17,15 +17,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let labelsHtml;
     // Для недели отображаем короткие названия дней недели
     labelsHtml = originalData.map(obj => {
-      let shortDay = obj.date.toLocaleDateString('ru-RU', { weekday: 'short' });
+      let shortDay = obj.date.toLocaleDateString(window.localization.getLocale(), { weekday: 'short' });
       shortDay = shortDay.charAt(0).toUpperCase() + shortDay.slice(1);
       return `<span>${shortDay}</span>`;
     }).join('');
 
     return `
       <div class="mini-chart-container">
-        <div class="mini-chart-label">Средн.<br>Килокалории</div>
-        <div class="mini-chart-value">${formatNumber(average)}<span>ккал</span></div>
+        <div class="mini-chart-label">${window.localization.averageLabel}</div>
+        <div class="mini-chart-value">${formatNumber(average)}<span>${window.localization.kilocalories}</span></div>
         <div class="mini-chart">
           <div class="mini-chart-trend" style="bottom: ${maxVal ? (average / maxVal * 100) : 0}%"></div>
           <div class="mini-chart-bars">${barsHtml}</div>
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const weekData = window.getWeekData(); // вернёт массив объектов { date, calories }
           labels = weekData.map(item => {
             const date = new Date(item.date);
-            let shortDay = date.toLocaleDateString('ru-RU', { weekday: 'short' });
+            let shortDay = date.toLocaleDateString(window.localization.getLocale(), { weekday: 'short' });
             // Делаем первую букву заглавной
             shortDay = shortDay.charAt(0).toUpperCase() + shortDay.slice(1);
             return `<span>${shortDay}</span>`;
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
           let lastMonth = null;
           labels = intervals.map(date => {
             const month = date.getMonth();
-            const monthName = date.toLocaleDateString('ru-RU', { month: 'short' });
+            const monthName = date.toLocaleDateString(window.localization.getLocale(), { month: 'short' });
             if (lastMonth === null || month !== lastMonth) {
               lastMonth = month;
               return `<span>${monthName}</span>`;
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
           let labelsArray = [];
           for (let i = 11; i >= 0; i--) {
             const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
-            const monthName = monthDate.toLocaleDateString('ru-RU', { month: 'short' });
+            const monthName = monthDate.toLocaleDateString(window.localization.getLocale(), { month: 'short' });
             labelsArray.push(monthName);
           }
           labels = labelsArray.map((label, idx) => {
@@ -121,8 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return `
       <div class="mini-chart-container">
-        <div class="mini-chart-label">TDEE Порог</div>
-        <div class="mini-chart-value">${formatNumber(tdee)}<span>ккал</span></div>
+        <div class="mini-chart-label">${window.localization.tdeeThreshold}</div>
+        <div class="mini-chart-value">${formatNumber(tdee)}<span>${window.localization.kilocalories}</span></div>
         <div class="mini-chart">
           <div class="mini-chart-trend" style="bottom: ${(tdee / maxValue * 100)}%"></div>
           <div class="mini-chart-bars">${bars}</div>
@@ -170,8 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="collection-period">
           <div class="period-value">
-            ${hasCurrentData ? formatNumber(currentValue) : 'Нет данных'}
-            <span>${hasCurrentData ? 'ккал в день' : ''}</span>
+            ${hasCurrentData ? formatNumber(currentValue) : window.localization.noData}
+            <span>${hasCurrentData ? window.localization.dailyKcalLabel : ''}</span>
           </div>
           <div class="period-bar current" style="width: ${displayedCurrentBarWidth}%">
             <span class="period-bar-label">${currentLabel}</span>
@@ -180,8 +180,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="collection-period">
           <div class="period-value">
-            ${hasPrevData ? formatNumber(previousValue) : 'Нет данных'}
-            <span>${hasPrevData ? 'ккал в день' : ''}</span>
+            ${hasPrevData ? formatNumber(previousValue) : window.localization.noData}
+            <span>${hasPrevData ? window.localization.dailyKcalLabel : ''}</span>
           </div>
           <div class="period-bar previous" style="width: ${displayedPreviousBarWidth}%">
             <span class="period-bar-label">${previousLabel}</span>
@@ -201,13 +201,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b, 0) / nonEmpty.length) : 0;
 
     // Для статического блока всегда используем текст для недельного периода
-    const periodText = `В среднем за последние 7 дней (без учёта дней с 0 ккал) Вы потребляли по ${formatNumber(avg)} ккал в день.`;
+    const periodText = window.localization.textStaticCalories.replace("{value}", formatNumber(avg));
 
     return `
       <div class="collection-card">
         <div class="collection-header">
           ${createFireIcon()}
-          <span class="collection-title">Средние калории (последние 7 дней)</span>
+          <span class="collection-title">${window.localization.titleStaticCalories}</span>
         </div>
         <div class="collection-text">
           ${periodText}
@@ -220,16 +220,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Вспомогательная функция для получения названия периода
   function getPeriodTitle(period) {
     switch (period) {
-      case 'week': return 'последние 7 дней';
-      case 'month': return 'последний месяц';
-      case '6month': return 'последние 6 месяцев';
-      case 'year': return 'последний год';
-      default: return 'последние 7 дней';
+      case 'week': return window.localization.periodButtonWeek.toLowerCase();
+      case 'month': return window.localization.periodButtonMonth.toLowerCase();
+      case '6month': return window.localization.periodButtonSixMonth.toLowerCase();
+      case 'year': return window.localization.periodButtonYear.toLowerCase();
+      default: return window.localization.periodButtonWeek.toLowerCase();
     }
   }
 
   // Функция для построения блока "Калории активности"
-  function buildActiveBlock(data, tdee, unitName) {
+  function buildActiveBlock(data, tdee) {
     // data – массив объектов; преобразуем в массив чисел
     const numericValues = data.map(item => item.calories);
     const countAbove = numericValues.filter(v => v > tdee).length;
@@ -240,6 +240,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // Выбираем подходящий текст и данные для миниграфика в зависимости от периода
     let chartData = numericValues;
     let average = 0;
+
+    // Получаем правильную форму слова в зависимости от периода и числа
+    let countAndUnit, aboveAndUnit;
+    
+    switch (currentPeriod) {
+      case 'week':
+      case 'month':
+        // Для недели и месяца используем "день/дня/дней"
+        countAndUnit = `${numericValues.length} ${window.localization.pluralizeDays(numericValues.length)}`;
+        aboveAndUnit = `${countAbove} ${window.localization.pluralizeDays(countAbove)}`;
+        break;
+      case '6month':
+        // Для 6 месяцев используем "неделя/недели/недель"
+        countAndUnit = `${numericValues.length} ${window.localization.pluralizeWeeks(numericValues.length)}`;
+        aboveAndUnit = `${countAbove} ${window.localization.pluralizeWeeks(countAbove)}`;
+        break;
+      case 'year':
+        // Для года используем "месяц/месяца/месяцев"
+        countAndUnit = `${numericValues.length} ${window.localization.pluralizeMonths(numericValues.length)}`;
+        aboveAndUnit = `${countAbove} ${window.localization.pluralizeMonths(countAbove)}`;
+        break;
+    }
 
     switch (currentPeriod) {
       case 'week':
@@ -273,10 +295,13 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="collection-card">
         <div class="collection-header">
           ${createFireIcon()}
-          <span class="collection-title">Калории активности</span>
+          <span class="collection-title">${window.localization.titleActiveCalories}</span>
         </div>
         <div class="collection-text">
-          За выбранный период, из ${numericValues.length} ${unitName}, в <strong>${countAbove}</strong> ${unitName} среднее потребление калорий превышало TDEE (${tdee} ккал).
+          ${window.localization.textActiveCalories
+            .replace("{countAndUnit}", countAndUnit)
+            .replace("{aboveAndUnit}", aboveAndUnit)
+            .replace("{tdee}", tdee)}
         </div>
         ${createTdeeMiniChart(numericValues, tdee)}
       </div>
@@ -310,32 +335,32 @@ document.addEventListener('DOMContentLoaded', () => {
       ? Math.round(prevMonthData.reduce((a, b) => a + b.calories, 0) / prevMonthData.length)
       : null;
 
-    const currentMonthLabel = currentStart.toLocaleDateString('ru-RU', { month: 'long' });
-    const prevMonthLabel = prevStart.toLocaleDateString('ru-RU', { month: 'long' });
+    const currentMonthLabel = currentStart.toLocaleDateString(window.localization.getLocale(), { month: 'long' });
+    const prevMonthLabel = prevStart.toLocaleDateString(window.localization.getLocale(), { month: 'long' });
 
     const formattedCurrentLabel = currentMonthLabel.charAt(0).toUpperCase() + currentMonthLabel.slice(1);
     const formattedPrevLabel = prevMonthLabel.charAt(0).toUpperCase() + prevMonthLabel.slice(1);
 
     if (!currentAvg && !prevAvg) {
-      return createEmptyDataCard("Сравнение калорий за месяц");
+      return createEmptyDataCard(window.localization.titleMonthComparison);
     }
 
     // Определяем сообщение для блока сравнения
     let comparisonText;
     
     if (!prevAvg) {
-      comparisonText = "Показатели за предыдущий месяц появятся, когда будет достаточно информации.";
+      comparisonText = window.localization.textNoPrevMonthData;
     } else {
       // Проверяем на близкие значения (разница менее 5%)
       const difference = Math.abs(currentAvg - prevAvg);
       const percentDifference = (difference / prevAvg) * 100;
       
       if (percentDifference < 5) {
-        comparisonText = `Среднее потребление калорий за день в текущем месяце практически идентично предыдущему.`;
+        comparisonText = window.localization.textMonthComparisonIdentical;
       } else if (currentAvg >= prevAvg) {
-        comparisonText = "За текущий календарный месяц среднее потребление калорий выше, чем в предыдущем месяце.";
+        comparisonText = window.localization.textMonthComparisonHigher;
       } else {
-        comparisonText = "За текущий календарный месяц среднее потребление калорий ниже, чем в предыдущем месяце.";
+        comparisonText = window.localization.textMonthComparisonLower;
       }
     }
 
@@ -345,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
       prevAvg,
       formattedCurrentLabel,
       formattedPrevLabel,
-      "Сравнение калорий за месяц"
+      window.localization.titleMonthComparison
     );
   }
 
@@ -365,25 +390,25 @@ document.addEventListener('DOMContentLoaded', () => {
       : null;
 
     if (!currentAvg && !previousAvg) {
-      return createEmptyDataCard("Сравнение калорий за год");
+      return createEmptyDataCard(window.localization.titleYearComparison);
     }
 
     // Определяем сообщение для блока сравнения
     let comparisonText;
     
     if (!previousAvg) {
-      comparisonText = "Показатели за предыдущий год появятся, когда будет достаточно информации.";
+      comparisonText = window.localization.textNoPrevYearData;
     } else {
       // Проверяем на близкие значения (разница менее 5%)
       const difference = Math.abs(currentAvg - previousAvg);
       const percentDifference = (difference / previousAvg) * 100;
       
       if (percentDifference < 5) {
-        comparisonText = `Среднее потребление калорий за день в текущем году практически идентично предыдущему.`;
+        comparisonText = window.localization.textYearComparisonIdentical;
       } else if (currentAvg >= previousAvg) {
-        comparisonText = "За текущий календарный год среднее потребление калорий за день выше, чем в предыдущем году.";
+        comparisonText = window.localization.textYearComparisonHigher;
       } else {
-        comparisonText = "За текущий календарный год среднее потребление калорий за день ниже, чем в предыдущем году.";
+        comparisonText = window.localization.textYearComparisonLower;
       }
     }
 
@@ -391,9 +416,9 @@ document.addEventListener('DOMContentLoaded', () => {
       comparisonText,
       currentAvg,
       previousAvg,
-      String(currentYear),
-      String(previousYear),
-      "Сравнение калорий за год"
+      currentYear.toString(),
+      previousYear.toString(),
+      window.localization.titleYearComparison
     );
   }
 
@@ -402,11 +427,9 @@ document.addEventListener('DOMContentLoaded', () => {
     return `
       <div class="collection-card empty-data">
         <div class="collection-header">
-          📅<span class="collection-title">${title}</span>
+          <span class="collection-title">${title}</span>
         </div>
-        <div class="collection-text">
-          Показатели появятся, когда будет достаточно информации за данный период.
-        </div>
+        <div class="collection-text">${window.localization.noData}</div>
       </div>
     `;
   }
@@ -418,17 +441,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Преобразуем данные в массив числовых значений для блоков, которым нужны только числа
     const numericValues = data.map(item => item.calories);
 
-    // Определяем единицу измерения в зависимости от периода
+    // Определяем текущий период
     const currentPeriod = document.querySelector('.period-button.active')?.dataset.period || 'week';
-    let unitName = 'дней';
-    if (currentPeriod === '6month') unitName = 'недель';
-    if (currentPeriod === 'year') unitName = 'месяцев';
 
     // Получаем блок "Калории активности", если он уже существует
     const activeBlockElement = document.querySelector('.active-calories-block');
 
     // Создаем только блок активности
-    const activeBlock = buildActiveBlock(data, tdee, unitName);
+    const activeBlock = buildActiveBlock(data, tdee);
 
     if (activeBlockElement) {
       // Если блок активности уже существует, просто заменяем его содержимое
