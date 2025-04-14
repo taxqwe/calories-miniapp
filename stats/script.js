@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Параметр loading используется для показа спиннера, если он не равен "false"
   const showLoadingOverlay = urlParams.get('loading') !== 'false';
 
+  // Задаем значение текущего периода до вызова updateChart
+  let currentPeriod = 'week';
+
   // Если включён режим debug, сразу подставляем мок данные,
   // иначе инициализируем window.allData пустым массивом.
   if (debugMode) {
@@ -173,14 +176,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (error) {
       // Не выводим весь объект ошибки в консоль, чтобы не пугать пользователя
-      console.log('Используем моковые данные для отображения статистики');
+      console.log('Ошибка загрузки данных с сервера:', error);
       
-      // В случае ошибки используем моковые данные только если мы не в режиме отладки
-      // или если данные еще не установлены (массив пуст)
-      if (!debugMode || window.allData.length === 0) {
-        window.allData = generateMockData(730);
-        window.userTDEE = 2200;
-      }
+      // Не подставляем моковые данные в обычном режиме (debug=false)
+      // Оставляем массив пустым или тем, что был ранее установлен
       
       updateChart(currentPeriod);
       
@@ -216,8 +215,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Загружаем реальные данные
-  fetchUserStats();
+  // Вызов запроса к бекенду выполняется только если debugMode === false
+  if (!debugMode) {
+    fetchUserStats();
+  } else {
+    try {
+      updateChart(currentPeriod);
+    } catch (e) {
+      console.error('Ошибка при построении графика в debug-режиме:', e);
+    }
+    if (showLoadingOverlay) {
+      // В режиме отладки спиннер крутится 3 секунды
+      setTimeout(() => {
+        hideLoadingOverlay();
+      }, 3000);
+    }
+  }
 
   // Функция для получения данных за неделю (последние 7 дней)
   function getWeekData() {
@@ -299,7 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.getSixMonthData = getSixMonthData;
   window.getYearData = getYearData;
 
-  let currentPeriod = 'week';
   const periodButtons = document.querySelectorAll('.period-button');
   periodButtons.forEach(button => {
     button.addEventListener('click', () => {
