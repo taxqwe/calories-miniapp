@@ -520,6 +520,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Инициализируем блоки коллекций после того, как все функции доступны
   if (typeof window.updateCollections === 'function') {
-    window.updateCollections(getWeekData(), 2200);
+    window.updateCollections(getWeekData(), window.userTDEE);
   }
 });

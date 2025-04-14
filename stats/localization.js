@@ -22,27 +22,28 @@
       textStaticCalories: "В среднем за последние 7 дней Вы потребляли по {value} ккал в день.",
       
       titleActiveCalories: "Калории активности",
-      textActiveCalories: "За выбранный период, из {countAndUnit}, среднее потребление калорий превышало TDEE ({tdee} ккал) {aboveAndUnit}.",
+      textActiveCalories: "За {countAndUnit} вы превышали рассчетное значение TDEE ({tdee} ккал) {aboveAndUnit}.",
       
       titleMonthComparison: "Сравнение калорий за месяц",
       titleYearComparison: "Сравнение калорий за год",
       
-      textNoPrevMonthData: "Показатели за предыдущий месяц появятся, когда будет достаточно информации.",
-      textMonthComparisonIdentical: "Среднее потребление калорий за день в текущем месяце практически идентично предыдущему.",
-      textMonthComparisonHigher: "За текущий календарный месяц среднее потребление калорий выше, чем в предыдущем месяце.",
-      textMonthComparisonLower: "За текущий календарный месяц среднее потребление калорий ниже, чем в предыдущем месяце.",
+      textNoPrevMonthData: "Данных за прошлый месяц нет для сравнения.",
+      textMonthComparisonIdentical: "В этом и прошлом месяце вы потребляли примерно одинаковое количество калорий.",
+      textMonthComparisonHigher: "В этом месяце вы в среднем потребляете больше калорий, чем в прошлом.",
+      textMonthComparisonLower: "В этом месяце вы в среднем потребляете меньше калорий, чем в прошлом.",
       
-      textNoPrevYearData: "Показатели за предыдущий год появятся, когда будет достаточно информации.",
-      textYearComparisonIdentical: "Среднее потребление калорий за день в текущем году практически идентично предыдущему.",
-      textYearComparisonHigher: "За текущий календарный год среднее потребление калорий за день выше, чем в предыдущем году.",
-      textYearComparisonLower: "За текущий календарный год среднее потребление калорий за день ниже, чем в предыдущем году.",
+      textNoPrevYearData: "Данных за прошлый год нет для сравнения.",
+      textYearComparisonIdentical: "В этом и прошлом году вы потребляли примерно одинаковое количество калорий.",
+      textYearComparisonHigher: "В этом году вы в среднем потребляете больше калорий, чем в прошлом.",
+      textYearComparisonLower: "В этом году вы в среднем потребляете меньше калорий, чем в прошлом.",
       
       dailyAverageLabel: "В СРЕДНЕМ ЗА ДЕНЬ",
       trendButton: "Тренд",
       periodButtonWeek: "НЕД",
       periodButtonMonth: "МЕС",
       periodButtonSixMonth: "6 МЕС",
-      periodButtonYear: "ГОД"
+      periodButtonYear: "ГОД",
+      textActiveCaloriesNoTDEE: "Установите свой TDEE в настройках, чтобы увидеть сравнение потребленных калорий с вашей нормой."
     },
     en: {
       averageLabel: "Avg.<br>Calories",
@@ -55,27 +56,28 @@
       textStaticCalories: "On average over the last 7 days you consumed {value} kcal per day.",
       
       titleActiveCalories: "Active Calories",
-      textActiveCalories: "During the selected period, out of {countAndUnit}, the average calorie consumption exceeded the TDEE ({tdee} kcal) by {aboveAndUnit}.",
+      textActiveCalories: "For {countAndUnit}, you exceeded your estimated TDEE ({tdee} kcal) {aboveAndUnit}.",
       
       titleMonthComparison: "Monthly Calorie Comparison",
       titleYearComparison: "Yearly Calorie Comparison",
       
-      textNoPrevMonthData: "Data for the previous month will appear when sufficient information is available.",
-      textMonthComparisonIdentical: "The average daily calorie consumption this month is almost identical to the previous month.",
-      textMonthComparisonHigher: "For the current month, the average calorie intake is higher than the previous month.",
-      textMonthComparisonLower: "For the current month, the average calorie intake is lower than the previous month.",
+      textNoPrevMonthData: "No data for last month to compare.",
+      textMonthComparisonIdentical: "This month and last month, you consumed roughly the same amount of calories.",
+      textMonthComparisonHigher: "This month, you are consuming more calories on average than last month.",
+      textMonthComparisonLower: "This month, you are consuming fewer calories on average than last month.",
       
-      textNoPrevYearData: "Data for the previous year will appear when sufficient information is available.",
-      textYearComparisonIdentical: "The average daily calorie consumption this year is almost identical to the previous year.",
-      textYearComparisonHigher: "For the current year, the average calorie intake is higher than the previous year.",
-      textYearComparisonLower: "For the current year, the average calorie intake is lower than the previous year.",
+      textNoPrevYearData: "No data for last year to compare.",
+      textYearComparisonIdentical: "This year and last year, you consumed roughly the same amount of calories.",
+      textYearComparisonHigher: "This year, you are consuming more calories on average than last year.",
+      textYearComparisonLower: "This year, you are consuming fewer calories on average than last year.",
       
       dailyAverageLabel: "AVERAGE PER DAY",
       trendButton: "Trend",
       periodButtonWeek: "WEEK",
       periodButtonMonth: "MONTH",
       periodButtonSixMonth: "6 MONTHS",
-      periodButtonYear: "YEAR"
+      periodButtonYear: "YEAR",
+      textActiveCaloriesNoTDEE: "Set your TDEE in settings to see how your calorie intake compares to your norm."
     }
     // Дополнительные локализации можно добавить сюда.
   };

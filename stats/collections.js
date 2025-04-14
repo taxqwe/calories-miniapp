@@ -39,16 +39,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function createTdeeMiniChart(data, tdee) {
     // data – массив чисел
-    const maxValue = Math.max(...data, tdee);
+    const hasValidTdee = tdee && tdee > 0;
+    const maxValue = hasValidTdee ? Math.max(...data, tdee) : Math.max(...data);
+    const safeMaxValue = maxValue === 0 ? 1 : maxValue; // Предотвращаем деление на ноль
+
     const bars = data.map(value => {
-      const height = value === 0 ? 4 : (value / maxValue * 100);
-      const excessClass = value > tdee ? ' excess' : '';
+      const height = value === 0 ? 4 : (value / safeMaxValue * 100);
+      // Добавляем класс excess только если TDEE валидный и значение его превышает
+      const excessClass = hasValidTdee && value > tdee ? ' excess' : '';
       return `<div class="mini-chart-bar${excessClass}" style="height: ${height}%"></div>`;
     }).join('');
-    
+
     const currentPeriod = document.querySelector('.period-button.active').dataset.period;
     let labels = '';
-    
+
     switch (currentPeriod) {
       case 'week':
         {
@@ -116,15 +120,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         break;
       default:
-        labels = '<span>Ч</span><span>П</span><span>С</span><span>В</span><span>П</span><span>В</span><span>С</span>';
+        // Default case shouldn't normally happen with period buttons, but provide a fallback
+        labels = data.map(() => `<span></span>`).join('');
     }
+
+    // Отображаем TDEE линию и значения только если TDEE валидный
+    const tdeeLabelHtml = hasValidTdee ? `
+      <div class="mini-chart-label">${window.localization.tdeeThreshold}</div>
+      <div class="mini-chart-value">${formatNumber(tdee)}<span>${window.localization.kilocalories}</span></div>
+    ` : `
+      <div class="mini-chart-label"></div>
+      <div class="mini-chart-value"></div>
+    `; // Пустые дивы для сохранения структуры
+    const tdeeTrendHtml = hasValidTdee ? `
+      <div class="mini-chart-trend" style="bottom: ${safeMaxValue === 0 ? 4 : (4 + (tdee / safeMaxValue * 96))}%"></div>
+    ` : '';
 
     return `
       <div class="mini-chart-container">
-        <div class="mini-chart-label">${window.localization.tdeeThreshold}</div>
-        <div class="mini-chart-value">${formatNumber(tdee)}<span>${window.localization.kilocalories}</span></div>
+        ${tdeeLabelHtml}
         <div class="mini-chart">
-          <div class="mini-chart-trend" style="bottom: ${maxValue === 0 ? 4 : (4 + (tdee / maxValue * 96))}%"></div>
+          ${tdeeTrendHtml}
           <div class="mini-chart-bars">${bars}</div>
           <div class="mini-chart-labels" style="grid-template-columns: repeat(${data.length}, 1fr);">
             ${labels}
@@ -232,76 +248,59 @@ document.addEventListener('DOMContentLoaded', () => {
   function buildActiveBlock(data, tdee) {
     // data – массив объектов; преобразуем в массив чисел
     const numericValues = data.map(item => item.calories);
-    const countAbove = numericValues.filter(v => v > tdee).length;
+    const hasValidTdee = tdee && tdee > 0;
+    const countAbove = hasValidTdee ? numericValues.filter(v => v > tdee).length : 0;
 
     // Определяем текущий период
     const currentPeriod = document.querySelector('.period-button.active').dataset.period;
 
     // Выбираем подходящий текст и данные для миниграфика в зависимости от периода
     let chartData = numericValues;
-    let average = 0;
+    let average = 0; // Average calculation remains the same, based on non-zero entries
+
+    const nonZeroValues = numericValues.filter(v => v > 0);
+    average = nonZeroValues.length ? Math.round(nonZeroValues.reduce((a, b) => a + b, 0) / nonZeroValues.length) : 0;
 
     // Получаем правильную форму слова в зависимости от периода и числа
-    let countAndUnit, aboveAndUnit;
-    
-    switch (currentPeriod) {
-      case 'week':
-      case 'month':
-        // Для недели и месяца используем "день/дня/дней"
-        countAndUnit = `${numericValues.length} ${window.localization.pluralizeDays(numericValues.length)}`;
-        aboveAndUnit = `${countAbove} ${window.localization.pluralizeDays(countAbove)}`;
-        break;
-      case '6month':
-        // Для 6 месяцев используем "неделя/недели/недель"
-        countAndUnit = `${numericValues.length} ${window.localization.pluralizeWeeks(numericValues.length)}`;
-        aboveAndUnit = `${countAbove} ${window.localization.pluralizeWeeks(countAbove)}`;
-        break;
-      case 'year':
-        // Для года используем "месяц/месяца/месяцев"
-        countAndUnit = `${numericValues.length} ${window.localization.pluralizeMonths(numericValues.length)}`;
-        aboveAndUnit = `${countAbove} ${window.localization.pluralizeMonths(countAbove)}`;
-        break;
-    }
+    let countAndUnit = '', aboveAndUnit = '';
+    let blockText = '';
 
-    switch (currentPeriod) {
-      case 'week':
-        // Для недели показываем ежедневные данные (как сейчас)
-        average = numericValues.filter(v => v > 0).length ?
-          Math.round(numericValues.filter(v => v > 0).reduce((a, b) => a + b, 0) / numericValues.filter(v => v > 0).length) : 0;
-        break;
-
-      case 'month':
-        // Для месяца показываем ежедневные данные, но расчет среднего без учета дней с 0
-        average = numericValues.filter(v => v > 0).length ?
-          Math.round(numericValues.filter(v => v > 0).reduce((a, b) => a + b, 0) / numericValues.filter(v => v > 0).length) : 0;
-        break;
-
-      case '6month':
-        // Для 6 месяцев группируем по неделям
-        average = numericValues.filter(v => v > 0).length ?
-          Math.round(numericValues.filter(v => v > 0).reduce((a, b) => a + b, 0) / numericValues.filter(v => v > 0).length) : 0;
-        // В данном случае numericValues это уже средние значения за недели
-        break;
-
-      case 'year':
-        // Для года группируем по месяцам
-        average = numericValues.filter(v => v > 0).length ?
-          Math.round(numericValues.filter(v => v > 0).reduce((a, b) => a + b, 0) / numericValues.filter(v => v > 0).length) : 0;
-        // В данном случае numericValues это уже средние значения за месяцы
-        break;
+    if (hasValidTdee) {
+      switch (currentPeriod) {
+        case 'week':
+        case 'month':
+          // Для недели и месяца используем "день/дня/дней"
+          countAndUnit = `${numericValues.length} ${window.localization.pluralizeDays(numericValues.length)}`;
+          aboveAndUnit = `${countAbove} ${window.localization.pluralizeDays(countAbove)}`;
+          break;
+        case '6month':
+          // Для 6 месяцев используем "неделя/недели/недель"
+          countAndUnit = `${numericValues.length} ${window.localization.pluralizeWeeks(numericValues.length)}`;
+          aboveAndUnit = `${countAbove} ${window.localization.pluralizeWeeks(countAbove)}`;
+          break;
+        case 'year':
+          // Для года используем "месяц/месяца/месяцев"
+          countAndUnit = `${numericValues.length} ${window.localization.pluralizeMonths(numericValues.length)}`;
+          aboveAndUnit = `${countAbove} ${window.localization.pluralizeMonths(countAbove)}`;
+          break;
+      }
+      blockText = window.localization.textActiveCalories
+        .replace("{countAndUnit}", countAndUnit)
+        .replace("{aboveAndUnit}", aboveAndUnit)
+        .replace("{tdee}", formatNumber(tdee)); // Используем форматированный TDEE
+    } else {
+      // Если TDEE невалидный, используем другой текст
+      blockText = window.localization.textActiveCaloriesNoTDEE;
     }
 
     return `
-      <div class="collection-card">
+      <div class="collection-card active-calories-block">
         <div class="collection-header">
           ${createFireIcon()}
           <span class="collection-title">${window.localization.titleActiveCalories}</span>
         </div>
         <div class="collection-text">
-          ${window.localization.textActiveCalories
-            .replace("{countAndUnit}", countAndUnit)
-            .replace("{aboveAndUnit}", aboveAndUnit)
-            .replace("{tdee}", tdee)}
+          ${blockText}
         </div>
         ${createTdeeMiniChart(numericValues, tdee)}
       </div>
@@ -437,36 +436,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // Основная функция обновления инфо-блоков, объединяющая результаты всех блоков
   // Теперь эта функция лишь инициализирует все блоки при загрузке и обновляет только блок активности при переключении вкладок
   function updateCollections(data, tdee) {
-    // data – массив объектов вида { date, calories }
-    // Преобразуем данные в массив числовых значений для блоков, которым нужны только числа
-    const numericValues = data.map(item => item.calories);
+    // Всегда создаем все блоки заново при каждом вызове
+    const activeBlockHtml = buildActiveBlock(data, tdee);
+    const staticBlockHtml = buildStaticBlock(getWeekData());
+    const monthComparisonHtml = buildMonthComparisonBlock();
+    const yearComparisonHtml = buildYearComparisonBlock();
 
-    // Определяем текущий период
-    const currentPeriod = document.querySelector('.period-button.active')?.dataset.period || 'week';
+    // Собираем HTML для всех блоков
+    collectionsContainer.innerHTML = activeBlockHtml + staticBlockHtml + monthComparisonHtml + yearComparisonHtml;
 
-    // Получаем блок "Калории активности", если он уже существует
-    const activeBlockElement = document.querySelector('.active-calories-block');
-
-    // Создаем только блок активности
-    const activeBlock = buildActiveBlock(data, tdee);
-
-    if (activeBlockElement) {
-      // Если блок активности уже существует, просто заменяем его содержимое
-      activeBlockElement.outerHTML = activeBlock;
-    } else {
-      // При первом вызове создаем все блоки
-      const staticBlockHtml = buildStaticBlock(getWeekData());
-      const monthComparison = buildMonthComparisonBlock();
-      const yearComparison = buildYearComparisonBlock();
-
-      // Меняем порядок блоков, помещая блок активности первым
-      collectionsContainer.innerHTML = activeBlock + staticBlockHtml + monthComparison + yearComparison;
-
-      // Добавляем классы для идентификации блоков
-      const blocks = collectionsContainer.querySelectorAll('.collection-card');
-      if (blocks.length >= 1) blocks[0].classList.add('active-calories-block');
-      if (blocks.length >= 2) blocks[1].classList.add('static-calories-block');
-    }
+    // Добавляем классы для идентификации блоков
+    const blocks = collectionsContainer.querySelectorAll('.collection-card');
+    if (blocks.length >= 2) blocks[1].classList.add('static-calories-block');
+    if (blocks.length >= 3) blocks[2].classList.add('month-comparison-block');
+    if (blocks.length >= 4) blocks[3].classList.add('year-comparison-block');
   }
 
   // Экспортируем функцию updateCollections в глобальную область видимости
