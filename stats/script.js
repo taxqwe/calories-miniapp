@@ -189,11 +189,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const overlay = document.getElementById("loading-overlay");
         if (overlay) {
           overlay.innerHTML = `
-            <div id="loading-spinner">
-              <div class="spinner"></div>
-              <div class="spinner-text">${window.localization.loadingError}</div>
+            <div class="error-container" style="text-align: center; padding: 20px;">
+              <div class="error-text" style="color: #ffffff; font-size: 16px; margin-bottom: 16px;">
+                ${window.localization.loadingError}
+              </div>
+              <button class="retry-button" style="padding: 8px 16px; font-size: 16px; border: none; border-radius: 4px; background-color: #FF6422; color: #ffffff; cursor: pointer;">
+                ${window.localization.retryButton}
+              </button>
             </div>
           `;
+          overlay.querySelector('.retry-button').addEventListener('click', () => {
+            // Сначала возвращаем оверлею состояние загрузки
+            overlay.innerHTML = `
+              <div id="loading-spinner">
+                <div class="spinner"></div>
+                <div class="spinner-text">${window.localization.loading}</div>
+              </div>
+            `;
+            // Повторный запуск запроса
+            fetchUserStats();
+          });
         }
       }
       

@@ -47,7 +47,8 @@
       
       // Новые ключи для спиннера и ошибки
       loading: "Загрузка...",
-      loadingError: "Ошибка загрузки данных"
+      loadingError: "Ошибка загрузки данных",
+      retryButton: "Попробовать ещё раз"
     },
     en: {
       averageLabel: "Avg.<br>Calories",
@@ -85,7 +86,8 @@
       
       // Новые ключи для спиннера и ошибки
       loading: "Loading...",
-      loadingError: "Error loading data"
+      loadingError: "Error loading data",
+      retryButton: "Try again"
     }
     // Дополнительные локализации можно добавить сюда.
   };
