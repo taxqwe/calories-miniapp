@@ -96,15 +96,9 @@
   // Сохраним текущий язык для дальнейшей обработки
   window.localization._lang = lang;
 
-  // Функция для маппинга языка на полную локаль для Date API
+  // Функция для получения локали для Intl.NumberFormat и date.toLocaleString
   window.localization.getLocale = function() {
-    switch(window.localization._lang) {
-      case 'ru': return 'ru-RU';
-      case 'en': return 'en-US';
-      // Добавляйте дополнительные случаи по мере необходимости:
-      // case 'es': return 'es-ES';
-      default: return window.localization._lang;
-    }
+    return window.localization._lang || 'en';
   };
 
   /**

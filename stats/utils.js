@@ -3,12 +3,14 @@
  */
 
 /**
- * Форматирует число, добавляя пробелы в качестве разделителей разрядов
+ * Форматирует число, используя Intl.NumberFormat для корректного форматирования по локали
  * @param {number} num Исходное число
- * @returns {string} Отформатированная строка с разделителями
+ * @returns {string} Отформатированная строка с разделителями в соответствии с локалью
  */
 function formatNumber(num) {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return new Intl.NumberFormat(window.localization.getLocale(), { 
+    maximumFractionDigits: 0 
+  }).format(num);
 }
 
 /**
