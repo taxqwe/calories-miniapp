@@ -101,6 +101,14 @@ document.addEventListener('DOMContentLoaded', () => {
     return data;
   }
 
+  // Функция для получения локальной строки-ключа в формате "YYYY-MM-DD"
+  function getLocalDateKey(date) {
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    return `${year}-${month}-${day}`;
+  }
+
   // Получение реальных данных с сервера
   async function fetchUserStats() {
     try {
@@ -148,8 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const currentDate = new Date(startDate);
           currentDate.setDate(startDate.getDate() + i);
 
-          // Форматируем дату в формат yyyy-MM-dd для поиска в полученных данных
-          const dateKey = currentDate.toISOString().split('T')[0];
+          // Форматируем дату в локальном формате
+          const dateKey = getLocalDateKey(currentDate);
           const calories = caloriesMap[dateKey] || 0;
 
           formattedData.push({ date: currentDate, calories: calories });
@@ -373,7 +381,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return Array.from({ length: 7 }, (_, i) => {
           const date = new Date(now);
           date.setDate(now.getDate() - (6 - i));
-          return date.getDate().toString();
+          // Получаем сокращенное название дня недели
+          let shortDay = date.toLocaleDateString(window.localization.getLocale(), { weekday: 'short' });
+          // Делаем первую букву заглавной
+          shortDay = shortDay.charAt(0).toUpperCase() + shortDay.slice(1);
+          return shortDay;
         });
       case 'month': {
         // Получаем данные за последний месяц (30 дней)
