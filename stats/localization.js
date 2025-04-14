@@ -12,17 +12,17 @@
   // Объект локализаций для разных языков
   const localizations = {
     ru: {
-      averageLabel: "Средн.<br>Килокалории",
+      averageLabel: "СРЕДН.",
       kilocalories: "ккал",
       noData: "Нет данных",
-      dailyKcalLabel: "ккал в день",
-      tdeeThreshold: "TDEE Порог",
+      dailyKcalLabel: "ккал/день",
+      tdeeThreshold: "TDEE",
       
-      titleStaticCalories: "Средние калории (последние 7 дней)",
-      textStaticCalories: "В среднем за последние 7 дней Вы потребляли по {value} ккал в день.",
+      titleStaticCalories: "Калории (7 дней)",
+      textStaticCalories: "За 7 дней среднее потребление калорий составило {value} ккал в день.",
       
       titleActiveCalories: "Калории активности",
-      textActiveCalories: "За {countAndUnit} вы превышали рассчетное значение TDEE ({tdee} ккал) {aboveAndUnit}.",
+      textActiveCalories: "За {countAndUnit} вы превысили расчетную норму TDEE ({tdee} ккал) {aboveAndUnit}.",
       
       titleMonthComparison: "Сравнение калорий за месяц",
       titleYearComparison: "Сравнение калорий за год",
@@ -43,17 +43,21 @@
       periodButtonMonth: "МЕС",
       periodButtonSixMonth: "6 МЕС",
       periodButtonYear: "ГОД",
-      textActiveCaloriesNoTDEE: "Установите свой TDEE в настройках, чтобы увидеть сравнение потребленных калорий с вашей нормой."
+      textActiveCaloriesNoTDEE: "Установите свой TDEE в настройках, чтобы увидеть сравнение потребленных калорий с вашей нормой.",
+      
+      // Новые ключи для спиннера и ошибки
+      loading: "Загрузка...",
+      loadingError: "Ошибка загрузки данных"
     },
     en: {
-      averageLabel: "Avg.<br>Calories",
+      averageLabel: "AVG.",
       kilocalories: "kcal",
       noData: "No data",
       dailyKcalLabel: "kcal/day",
-      tdeeThreshold: "TDEE Threshold",
+      tdeeThreshold: "TDEE",
       
-      titleStaticCalories: "Average Calories (Last 7 Days)",
-      textStaticCalories: "On average over the last 7 days you consumed {value} kcal per day.",
+      titleStaticCalories: "Calories (7 days)",
+      textStaticCalories: "For the past 7 days, the average calorie consumption was {value} kcal per day.",
       
       titleActiveCalories: "Active Calories",
       textActiveCalories: "For {countAndUnit}, you exceeded your estimated TDEE ({tdee} kcal) {aboveAndUnit}.",
@@ -77,7 +81,11 @@
       periodButtonMonth: "MONTH",
       periodButtonSixMonth: "6 MONTHS",
       periodButtonYear: "YEAR",
-      textActiveCaloriesNoTDEE: "Set your TDEE in settings to see how your calorie intake compares to your norm."
+      textActiveCaloriesNoTDEE: "Set your TDEE in settings to see how your calorie intake compares to your norm.",
+      
+      // Новые ключи для спиннера и ошибки
+      loading: "Loading...",
+      loadingError: "Error loading data"
     }
     // Дополнительные локализации можно добавить сюда.
   };

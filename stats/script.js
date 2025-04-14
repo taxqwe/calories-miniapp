@@ -12,24 +12,39 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('daily-average-label').textContent = window.localization.dailyAverageLabel;
   document.getElementById('trend-button').textContent = window.localization.trendButton;
 
-  // Проверяем URL-параметр "loading". Если его значение не равно "false", показываем спиннер.
-  const queryParams = new URLSearchParams(window.location.search);
-  const showLoadingSpinner = queryParams.get('loading') !== 'false';
-  if (showLoadingSpinner) {
-    const spinner = document.createElement("div");
-    spinner.id = "loading-spinner";
-    spinner.innerHTML = `
-      <div class="spinner"></div>
-      <div class="spinner-text">Загрузка...</div>
-    `;
-    // Добавляем спиннер в контейнер
-    document.querySelector('.stats-container').appendChild(spinner);
+  // Читаем параметры URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const debugMode = urlParams.get('debug') === 'true';
+  // Параметр loading используется для показа спиннера, если он не равен "false"
+  const showLoadingOverlay = urlParams.get('loading') !== 'false';
+
+  // Если включён режим debug, сразу подставляем мок данные,
+  // иначе инициализируем window.allData пустым массивом.
+  if (debugMode) {
+    window.allData = generateMockData(730);
+    window.userTDEE = 2200; // Значение по умолчанию
+  } else {
+    window.allData = [];
+    window.userTDEE = 0; // Начальное значение
   }
 
-  // Функция для скрытия спиннера
-  function hideLoadingSpinner() {
-    const spinner = document.getElementById("loading-spinner");
-    if (spinner) spinner.remove();
+  // Если нужно показать индикатор загрузки, создаём затемнённый оверлей
+  if (showLoadingOverlay) {
+    const overlay = document.createElement("div");
+    overlay.id = "loading-overlay";
+    overlay.innerHTML = `
+      <div id="loading-spinner">
+        <div class="spinner"></div>
+        <div class="spinner-text">${window.localization.loading}</div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+  }
+
+  // Функция для скрытия оверлея загрузки
+  function hideLoadingOverlay() {
+    const overlay = document.getElementById("loading-overlay");
+    if (overlay) overlay.remove();
   }
 
   // Получаем параметры темы Telegram (если заданы)
@@ -90,9 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // Получаем userId из initDataUnsafe
       const userId = tg.initDataUnsafe?.user?.id;
 
-      // Проверяем, есть ли доступ к серверу
+      // Создаем контроллер для возможности отмены запроса
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // Таймаут 5 секунд
       
       try {
         const response = await fetch('https://calories-bot.duckdns.org:8443/api/stats', {
@@ -109,8 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
             userId: userId
           })
         });
-        
-        clearTimeout(timeoutId);
 
         if (!response.ok) {
           console.log('Сервер вернул ошибку:', response.status);
@@ -151,11 +163,10 @@ document.addEventListener('DOMContentLoaded', () => {
         updateChart(currentPeriod);
         
         // Скрываем спиннер после успешной загрузки данных
-        if (showLoadingSpinner) hideLoadingSpinner();
+        if (showLoadingOverlay) hideLoadingOverlay();
 
         return true;
       } catch (fetchError) {
-        clearTimeout(timeoutId);
         // Тихо обрабатываем ошибку fetch и используем моковые данные
         console.log('Не удалось получить данные с сервера, используем моковые данные');
         throw new Error('Сервер недоступен');
@@ -163,20 +174,32 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (error) {
       // Не выводим весь объект ошибки в консоль, чтобы не пугать пользователя
       console.log('Используем моковые данные для отображения статистики');
-      // В случае ошибки используем моковые данные
-      window.allData = generateMockData(730);
+      
+      // В случае ошибки используем моковые данные только если мы не в режиме отладки
+      // или если данные еще не установлены (массив пуст)
+      if (!debugMode || window.allData.length === 0) {
+        window.allData = generateMockData(730);
+        window.userTDEE = 2200;
+      }
+      
       updateChart(currentPeriod);
       
-      // Скрываем спиннер в случае ошибки
-      if (showLoadingSpinner) hideLoadingSpinner();
+      // Вместо скрытия оверлея - показываем сообщение об ошибке
+      if (showLoadingOverlay) {
+        const overlay = document.getElementById("loading-overlay");
+        if (overlay) {
+          overlay.innerHTML = `
+            <div id="loading-spinner">
+              <div class="spinner"></div>
+              <div class="spinner-text">${window.localization.loadingError}</div>
+            </div>
+          `;
+        }
+      }
       
       return false;
     }
   }
-
-  // Инициализируем данные моковыми на случай ошибки
-  window.allData = generateMockData(730);
-  window.userTDEE = 2200; // Значение по умолчанию
 
   // Загружаем реальные данные
   fetchUserStats();
@@ -312,6 +335,11 @@ document.addEventListener('DOMContentLoaded', () => {
   window.getSixMonthIntervals = getSixMonthIntervals;
 
   function getLabelsForPeriod(period) {
+    // Если нет данных, возвращаем пустой массив
+    if (!window.allData || window.allData.length === 0) {
+      return [];
+    }
+    
     const now = new Date();
     switch (period) {
       case 'week':
@@ -373,26 +401,35 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateChart(period) {
-    let data;
-    if (period === 'week') {
-      data = getWeekData().map(item => item.calories); // преобразуем объекты в числа
-    } else if (period === 'month') {
-      data = getMonthData().map(item => item.calories);
-    } else if (period === '6month') {
-      data = getSixMonthData(); // уже числа
-    } else if (period === 'year') {
-      data = getYearData();
+    let data = [];
+    
+    // Если данные еще не загружены, используем пустой массив
+    if (window.allData && window.allData.length > 0) {
+      if (period === 'week') {
+        data = getWeekData().map(item => item.calories); // преобразуем объекты в числа
+      } else if (period === 'month') {
+        data = getMonthData().map(item => item.calories);
+      } else if (period === '6month') {
+        data = getSixMonthData(); // уже числа
+      } else if (period === 'year') {
+        data = getYearData();
+      }
     }
 
-    const TDEE = window.userTDEE || 2200; // используем TDEE из реальных данных или дефолтное значение
-    const maxValue = Math.max(...data, TDEE);
+    const TDEE = window.userTDEE || 0; // используем TDEE из реальных данных или 0
+    // Если нет данных или все нули, используем минимальное значение для графика
+    const maxValue = data.length > 0 ? Math.max(...data, TDEE, 100) : 100; // минимум 100 для пустого графика
     const labels = getLabelsForPeriod(period, data.length);
     
     const chartContainerElem = document.querySelector('.stats-chart');
     if (chartContainerElem) {
       chartContainerElem.innerHTML = '';
   
-      data.forEach((value, index) => {
+      // Если данных нет, создаем пустые столбцы
+      const dataLength = data.length || 7; // по умолчанию 7 для недели
+      
+      for (let i = 0; i < dataLength; i++) {
+        const value = data[i] || 0;
         const bar = document.createElement('div');
         bar.className = 'chart-bar' + (value === 0 ? ' empty' : '');
         const height = value === 0 ? 4 : (value / maxValue * 100);
@@ -400,32 +437,41 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Добавляем атрибут с информацией о калориях для столбца
         bar.setAttribute('data-calories', value);
+        
         // Для разных периодов добавляем дополнительную информацию
         if (period === 'week' || period === 'month') {
           // Для недели и месяца - это калории за день
           bar.setAttribute('data-type', 'day');
-          // Добавляем дату для каждого столбца
-          const dateObj = period === 'week' ? 
-            getWeekData()[index].date : 
-            getMonthData()[index].date;
-          bar.setAttribute('data-date', dateObj.toISOString());
+          // Добавляем дату для каждого столбца если она есть
+          if (window.allData && window.allData.length > 0) {
+            const dateObj = period === 'week' ? 
+              getWeekData()[i]?.date : 
+              getMonthData()[i]?.date;
+            if (dateObj) {
+              bar.setAttribute('data-date', dateObj.toISOString());
+            }
+          }
         } else if (period === '6month') {
           // Для 6 месяцев - это средние калории за неделю
           bar.setAttribute('data-type', 'week');
-          // Получаем дату начала недели
-          const rawData = window.allData.slice(-180);
-          const weekIndex = Math.floor(index * 7);
-          if (weekIndex < rawData.length) {
-            bar.setAttribute('data-date', rawData[weekIndex].date.toISOString());
+          // Получаем дату начала недели если она есть
+          if (window.allData && window.allData.length > 0) {
+            const rawData = window.allData.slice(-180);
+            const weekIndex = Math.floor(i * 7);
+            if (weekIndex < rawData.length) {
+              bar.setAttribute('data-date', rawData[weekIndex].date.toISOString());
+            }
           }
         } else if (period === 'year') {
           // Для года - это средние калории за месяц
           bar.setAttribute('data-type', 'month');
           // Вычисляем дату начала месяца
-          const now = new Date();
-          const startDate = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
-          const monthDate = new Date(startDate.getFullYear(), startDate.getMonth() + index, 1);
-          bar.setAttribute('data-date', monthDate.toISOString());
+          if (window.allData && window.allData.length > 0) {
+            const now = new Date();
+            const startDate = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+            const monthDate = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
+            bar.setAttribute('data-date', monthDate.toISOString());
+          }
         }
         
         // Остальной код функции startPress и cancelPress
@@ -452,20 +498,22 @@ document.addEventListener('DOMContentLoaded', () => {
         bar.addEventListener('mouseleave', cancelPress);
   
         chartContainerElem.appendChild(bar);
-      });
+      }
     }
 
     const labelsContainer = document.querySelector('.chart-labels');
     labelsContainer.setAttribute('data-period', period);
     labelsContainer.innerHTML = labels.map(label => `<span>${label || ''}</span>`).join('');
 
+    // Рассчитываем среднее значение только для ненулевых дней
     const nonEmptyDays = data.filter(value => value > 0);
     const average = nonEmptyDays.length ? Math.round(nonEmptyDays.reduce((a, b) => a + b, 0) / nonEmptyDays.length) : 0;
     document.querySelector('.stats-value').textContent = `${parseInt(average).toLocaleString(window.localization.getLocale())} ${window.localization.kilocalories}`;
     document.querySelector('.stats-label:last-child').textContent = formatPeriodDate(period);
 
-    const gridStep = Math.ceil(maxValue / 3 / 100) * 100;
-    const gridMax = gridStep * 3; // Максимальное значение шкалы графика
+    // Шкала графика - используем минимум 300 для пустого графика
+    const gridMax = data.length > 0 ? Math.ceil(maxValue / 3 / 100) * 100 * 3 : 300; 
+    const gridStep = gridMax / 3;
     const gridValues = document.querySelectorAll('.grid-value');
     gridValues[0].textContent = gridMax.toString();
     gridValues[1].textContent = (gridStep * 2).toString();
@@ -473,7 +521,9 @@ document.addEventListener('DOMContentLoaded', () => {
     gridValues[3].textContent = '0';
 
     if (averageLine) {
-      averageLine.style.bottom = `${(average / gridMax * 100)}%`; // Используем gridMax вместо maxValue
+      // Используем процент от gridMax, но не меньше 1%
+      const percent = average > 0 ? Math.max((average / gridMax * 100), 1) : 0;
+      averageLine.style.bottom = `${percent}%`;
     }
     
     if (averageValue) {
@@ -483,59 +533,62 @@ document.addEventListener('DOMContentLoaded', () => {
     updateTrendVisibility();
 
     // Обновляем блоки коллекций в зависимости от выбранного периода
-    let rawData;
-    if (period === 'week') {
-      rawData = getWeekData();
-    } else if (period === 'month') {
-      rawData = getMonthData();
-    } else if (period === '6month') {
-      // Для 6 месяцев нам нужны не просто числа, а объекты с датами
-      rawData = window.allData.slice(-180);
-      // Группируем по неделям для блока активности
-      const weekData = [];
-      for (let i = 0; i < rawData.length; i += 7) {
-        const group = rawData.slice(i, i + 7);
-        const nonEmpty = group.filter(item => item.calories > 0);
-        const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b.calories, 0) / nonEmpty.length) : 0;
-        // Берем первую дату из группы как ключевую для недели
-        if (group.length > 0) {
-          weekData.push({ date: group[0].date, calories: avg });
+    let rawData = [];
+    
+    // Если данные загружены, формируем данные для соответствующего периода
+    if (window.allData && window.allData.length > 0) {
+      if (period === 'week') {
+        rawData = getWeekData();
+      } else if (period === 'month') {
+        rawData = getMonthData();
+      } else if (period === '6month') {
+        // Для 6 месяцев нам нужны не просто числа, а объекты с датами
+        rawData = window.allData.slice(-180);
+        // Группируем по неделям для блока активности
+        const weekData = [];
+        for (let i = 0; i < rawData.length; i += 7) {
+          const group = rawData.slice(i, i + 7);
+          const nonEmpty = group.filter(item => item.calories > 0);
+          const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b.calories, 0) / nonEmpty.length) : 0;
+          // Берем первую дату из группы как ключевую для недели
+          if (group.length > 0) {
+            weekData.push({ date: group[0].date, calories: avg });
+          }
         }
+        rawData = weekData;
+      } else if (period === 'year') {
+        const now = new Date(); // апрель 2025
+        // вместо (год-1, тот же месяц), берем (год-1, месяц+1), чтобы сдвинуться
+        // 1 мая 2024 => тогда через 12 шагов i=11 получим 1 апреля 2025
+        const startDate = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+        // т.е. 1 мая 2024
+
+        const rawYearData = window.allData.filter(item => item.date >= startDate);
+
+        const monthData = [];
+        for (let i = 0; i < 12; i++) {
+          const currentMonthDate = new Date(
+            startDate.getFullYear(),
+            startDate.getMonth() + i,
+            1
+          );
+          const group = rawYearData.filter(item =>
+            item.date.getFullYear() === currentMonthDate.getFullYear() &&
+            item.date.getMonth() === currentMonthDate.getMonth()
+          );
+
+          const nonEmpty = group.filter(item => item.calories > 0);
+          const avg = nonEmpty.length
+            ? Math.round(nonEmpty.reduce((sum, item) => sum + item.calories, 0) / nonEmpty.length)
+            : 0;
+
+          monthData.push({ date: currentMonthDate, calories: avg });
+        }
+
+        // Присваиваем результат в rawData, чтобы дальше его рисовать
+        rawData = monthData;
       }
-      rawData = weekData;
-    } else if (period === 'year') {
-      const now = new Date(); // апрель 2025
-      // вместо (год-1, тот же месяц), берем (год-1, месяц+1), чтобы сдвинуться
-      // 1 мая 2024 => тогда через 12 шагов i=11 получим 1 апреля 2025
-      const startDate = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
-      // т.е. 1 мая 2024
-
-      const rawYearData = window.allData.filter(item => item.date >= startDate);
-
-      const monthData = [];
-      for (let i = 0; i < 12; i++) {
-        const currentMonthDate = new Date(
-          startDate.getFullYear(),
-          startDate.getMonth() + i,
-          1
-        );
-        const group = rawYearData.filter(item =>
-          item.date.getFullYear() === currentMonthDate.getFullYear() &&
-          item.date.getMonth() === currentMonthDate.getMonth()
-        );
-
-        const nonEmpty = group.filter(item => item.calories > 0);
-        const avg = nonEmpty.length
-          ? Math.round(nonEmpty.reduce((sum, item) => sum + item.calories, 0) / nonEmpty.length)
-          : 0;
-
-        monthData.push({ date: currentMonthDate, calories: avg });
-      }
-
-      // Присваиваем результат в rawData, чтобы дальше его рисовать
-      rawData = monthData;
     }
-
 
     // Проверяем, доступна ли функция updateCollections
     if (typeof window.updateCollections === 'function') {
@@ -543,10 +596,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Не вызываем инициализацию блоков коллекций отдельно,
+  // так как она выполняется внутри updateChart
+  
+  // Вызываем функцию построения графика, которая также обновит блоки коллекций
   updateChart(currentPeriod);
-
-  // Инициализируем блоки коллекций после того, как все функции доступны
-  if (typeof window.updateCollections === 'function') {
-    window.updateCollections(getWeekData(), window.userTDEE);
-  }
 });
