@@ -12,27 +12,27 @@
   // Объект локализаций для разных языков
   const localizations = {
     ru: {
-      averageLabel: "Средн.<br>Килокалории",
+      averageLabel: "Среднее<br>за день",
       kilocalories: "ккал",
       noData: "Нет данных",
       dailyKcalLabel: "ккал в день",
-      tdeeThreshold: "TDEE Порог",
+      tdeeThreshold: "TDEE",
       
-      titleStaticCalories: "Средние калории (последние 7 дней)",
-      textStaticCalories: "В среднем за последние 7 дней Вы потребляли по {value} ккал в день.",
+      titleStaticCalories: "За последние 7 дней",
+      textStaticCalories: "В среднем за последние 7 дней Вы потребляли {value} ккал в день.",
       
       titleActiveCalories: "Калории активности",
-      textActiveCalories: "За {countAndUnit} вы превышали рассчетное значение TDEE ({tdee} ккал) {aboveAndUnit}.",
+      textActiveCalories: "За {countAndUnit} вы превышали рассчетное значение общего ежедневного расхода энергии ({tdee} ккал) {aboveAndUnit}.",
       
-      titleMonthComparison: "Сравнение калорий за месяц",
-      titleYearComparison: "Сравнение калорий за год",
+      titleMonthComparison: "Сравнение за месяц",
+      titleYearComparison: "Сравнение за год",
       
-      textNoPrevMonthData: "Данных за прошлый месяц нет для сравнения.",
-      textMonthComparisonIdentical: "В этом и прошлом месяце вы потребляли примерно одинаковое количество калорий.",
-      textMonthComparisonHigher: "В этом месяце вы в среднем потребляете больше калорий, чем в прошлом.",
-      textMonthComparisonLower: "В этом месяце вы в среднем потребляете меньше калорий, чем в прошлом.",
+      textNoPrevMonthData: "Нет данных для сравнения.",
+      textMonthComparisonIdentical: "В этом и прошлом месяце Вы потребляли примерно одинаковое количество калорий.",
+      textMonthComparisonHigher: "В этом месяце Вы в среднем потребляете больше калорий, чем в прошлом.",
+      textMonthComparisonLower: "В этом месяце Вы в среднем потребляете меньше калорий, чем в прошлом.",
       
-      textNoPrevYearData: "Данных за прошлый год нет для сравнения.",
+      textNoPrevYearData: "Нет данных для сравнения.",
       textYearComparisonIdentical: "В этом и прошлом году вы потребляли примерно одинаковое количество калорий.",
       textYearComparisonHigher: "В этом году вы в среднем потребляете больше калорий, чем в прошлом.",
       textYearComparisonLower: "В этом году вы в среднем потребляете меньше калорий, чем в прошлом.",
@@ -43,35 +43,35 @@
       periodButtonMonth: "МЕС",
       periodButtonSixMonth: "6 МЕС",
       periodButtonYear: "ГОД",
-      textActiveCaloriesNoTDEE: "Установите свой TDEE в настройках, чтобы увидеть сравнение потребленных калорий с вашей нормой.",
+      textActiveCaloriesNoTDEE: "Чтобы увидеть сравнение потреблённых калорий со значением общего ежедневного расхода энергии, проведите его расчёт: вернитесь к боту и выберите «Метаболизм» в меню /calories.",
       
       // Новые ключи для спиннера и ошибки
       loading: "Загрузка...",
-      loadingError: "Ошибка загрузки данных",
+      loadingError: "Ошибка при загрузке данных",
       retryButton: "Попробовать ещё раз"
     },
     en: {
-      averageLabel: "Avg.<br>Calories",
+      averageLabel: "Average<br>per day",
       kilocalories: "kcal",
       noData: "No data",
       dailyKcalLabel: "kcal/day",
-      tdeeThreshold: "TDEE Threshold",
+      tdeeThreshold: "TDEE",
       
-      titleStaticCalories: "Average Calories (Last 7 Days)",
-      textStaticCalories: "On average over the last 7 days you consumed {value} kcal per day.",
+      titleStaticCalories: "Last 7 days",
+      textStaticCalories: "On average over the last 7 days, you consumed {value} kcal per day.",
       
-      titleActiveCalories: "Active Calories",
-      textActiveCalories: "For {countAndUnit}, you exceeded your estimated TDEE ({tdee} kcal) {aboveAndUnit}.",
+      titleActiveCalories: "Activity Calories",
+      textActiveCalories: "Over the course of {countAndUnit}, you exceeded your total daily energy expenditure ({tdee} kcal) {aboveAndUnit}.",
       
-      titleMonthComparison: "Monthly Calorie Comparison",
-      titleYearComparison: "Yearly Calorie Comparison",
+      titleMonthComparison: "Monthly comparison",
+      titleYearComparison: "Yearly comparison",
       
-      textNoPrevMonthData: "No data for last month to compare.",
+      textNoPrevMonthData: "No data for comparison.",
       textMonthComparisonIdentical: "This month and last month, you consumed roughly the same amount of calories.",
       textMonthComparisonHigher: "This month, you are consuming more calories on average than last month.",
       textMonthComparisonLower: "This month, you are consuming fewer calories on average than last month.",
       
-      textNoPrevYearData: "No data for last year to compare.",
+      textNoPrevYearData: "No data for comparison.",
       textYearComparisonIdentical: "This year and last year, you consumed roughly the same amount of calories.",
       textYearComparisonHigher: "This year, you are consuming more calories on average than last year.",
       textYearComparisonLower: "This year, you are consuming fewer calories on average than last year.",
@@ -82,14 +82,325 @@
       periodButtonMonth: "MONTH",
       periodButtonSixMonth: "6 MONTHS",
       periodButtonYear: "YEAR",
-      textActiveCaloriesNoTDEE: "Set your TDEE in settings to see how your calorie intake compares to your norm.",
       
-      // Новые ключи для спиннера и ошибки
+      textActiveCaloriesNoTDEE: "To see how your calorie intake compares to your total daily energy expenditure, please calculate it first: return to the bot and select “Metabolism” in the /calories menu.",
+      
+      // New keys for spinner and error
       loading: "Loading...",
       loadingError: "Error loading data",
       retryButton: "Try again"
+    },
+    ar: {
+      averageLabel: "متوسط<br>في اليوم",
+      kilocalories: "سعرة حرارية",
+      noData: "لا توجد بيانات",
+      dailyKcalLabel: "سعرة/اليوم",
+      tdeeThreshold: "TDEE",
+      
+      titleStaticCalories: "آخر 7 أيام",
+      textStaticCalories: "في المتوسط، خلال الأيام السبعة الماضية، استهلكت {value} سعرة حرارية في اليوم.",
+      
+      titleActiveCalories: "سعرات النشاط",
+      textActiveCalories: "خلال {countAndUnit} تجاوزت إجمالي المصروف اليومي للطاقة ({tdee} سعرة حرارية) بمقدار {aboveAndUnit}.",
+      
+      titleMonthComparison: "المقارنة الشهرية",
+      titleYearComparison: "المقارنة السنوية",
+      
+      textNoPrevMonthData: "لا توجد بيانات للمقارنة.",
+      textMonthComparisonIdentical: "هذا الشهر والشهر الماضي، استهلكت تقريبًا نفس القدر من السعرات الحرارية.",
+      textMonthComparisonHigher: "هذا الشهر، تستهلك في المتوسط سعرات حرارية أكثر من الشهر الماضي.",
+      textMonthComparisonLower: "هذا الشهر، تستهلك في المتوسط سعرات حرارية أقل من الشهر الماضي.",
+      
+      textNoPrevYearData: "لا توجد بيانات للمقارنة.",
+      textYearComparisonIdentical: "هذا العام والعام الماضي، استهلكت تقريبًا نفس القدر من السعرات الحرارية.",
+      textYearComparisonHigher: "هذا العام، تستهلك في المتوسط سعرات حرارية أكثر من العام الماضي.",
+      textYearComparisonLower: "هذا العام، تستهلك في المتوسط سعرات حرارية أقل من العام الماضي.",
+      
+      dailyAverageLabel: "المتوسط اليومي",
+      trendButton: "المنحنى",
+      periodButtonWeek: "أسبوع",
+      periodButtonMonth: "شهر",
+      periodButtonSixMonth: "6 أشهر",
+      periodButtonYear: "سنة",
+      textActiveCaloriesNoTDEE: "لمعرفة مقارنة استهلاكك للسعرات الحرارية بإجمالي المصروف اليومي للطاقة، يرجى حسابه أولاً: ارجع إلى البوت واختر \"التمثيل الغذائي\" في قائمة /calories.",
+      
+      loading: "جارٍ التحميل...",
+      loadingError: "خطأ في تحميل البيانات",
+      retryButton: "حاول مرة أخرى"
+    },
+
+    de: {
+      averageLabel: "Durchschnitt<br>pro Tag",
+      kilocalories: "kcal",
+      noData: "Keine Daten",
+      dailyKcalLabel: "kcal/Tag",
+      tdeeThreshold: "TDEE",
+      
+      titleStaticCalories: "Letzte 7 Tage",
+      textStaticCalories: "In den letzten 7 Tagen haben Sie durchschnittlich {value} kcal pro Tag konsumiert.",
+      
+      titleActiveCalories: "Aktive Kalorien",
+      textActiveCalories: "Innerhalb von {countAndUnit} haben Sie Ihren gesamten täglichen Energieverbrauch ({tdee} kcal) um {aboveAndUnit} überschritten.",
+      
+      titleMonthComparison: "Monatlicher Vergleich",
+      titleYearComparison: "Jährlicher Vergleich",
+      
+      textNoPrevMonthData: "Keine Daten zum Vergleich.",
+      textMonthComparisonIdentical: "Diesen und letzten Monat haben Sie ungefähr die gleiche Menge an Kalorien konsumiert.",
+      textMonthComparisonHigher: "Diesen Monat konsumieren Sie im Durchschnitt mehr Kalorien als letzten Monat.",
+      textMonthComparisonLower: "Diesen Monat konsumieren Sie im Durchschnitt weniger Kalorien als letzten Monat.",
+      
+      textNoPrevYearData: "Keine Daten zum Vergleich.",
+      textYearComparisonIdentical: "Dieses und letztes Jahr haben Sie ungefähr die gleiche Menge an Kalorien konsumiert.",
+      textYearComparisonHigher: "Dieses Jahr konsumieren Sie im Durchschnitt mehr Kalorien als letztes Jahr.",
+      textYearComparisonLower: "Dieses Jahr konsumieren Sie im Durchschnitt weniger Kalorien als letztes Jahr.",
+      
+      dailyAverageLabel: "DURCHSCHNITT PRO TAG",
+      trendButton: "Trend",
+      periodButtonWeek: "WOCHE",
+      periodButtonMonth: "MONAT",
+      periodButtonSixMonth: "6 MONATE",
+      periodButtonYear: "JAHR",
+      textActiveCaloriesNoTDEE: "Um Ihren Kalorienverbrauch mit Ihrem gesamten täglichen Energieverbrauch zu vergleichen, berechnen Sie diesen bitte zuerst: Kehren Sie zum Bot zurück und wählen Sie „Stoffwechsel“ im /calories-Menü.",
+      
+      loading: "Laden...",
+      loadingError: "Fehler beim Laden der Daten",
+      retryButton: "Erneut versuchen"
+    },
+
+    es: {
+      averageLabel: "Promedio<br>por día",
+      kilocalories: "kcal",
+      noData: "No hay datos",
+      dailyKcalLabel: "kcal/día",
+      tdeeThreshold: "TDEE",
+      
+      titleStaticCalories: "Últimos 7 días",
+      textStaticCalories: "En promedio, durante los últimos 7 días, consumiste {value} kcal por día.",
+      
+      titleActiveCalories: "Calorías de actividad",
+      textActiveCalories: "Durante {countAndUnit}, superaste tu gasto energético diario total ({tdee} kcal) en {aboveAndUnit}.",
+      
+      titleMonthComparison: "Comparación mensual",
+      titleYearComparison: "Comparación anual",
+      
+      textNoPrevMonthData: "No hay datos para comparar.",
+      textMonthComparisonIdentical: "Este mes y el mes pasado consumiste aproximadamente la misma cantidad de calorías.",
+      textMonthComparisonHigher: "Este mes consumes más calorías en promedio que el mes pasado.",
+      textMonthComparisonLower: "Este mes consumes menos calorías en promedio que el mes pasado.",
+      
+      textNoPrevYearData: "No hay datos para comparar.",
+      textYearComparisonIdentical: "Este año y el año pasado consumiste aproximadamente la misma cantidad de calorías.",
+      textYearComparisonHigher: "Este año consumes más calorías en promedio que el año pasado.",
+      textYearComparisonLower: "Este año consumes menos calorías en promedio que el año pasado.",
+      
+      dailyAverageLabel: "PROMEDIO POR DÍA",
+      trendButton: "Tendencia",
+      periodButtonWeek: "SEM",
+      periodButtonMonth: "MES",
+      periodButtonSixMonth: "6 MESES",
+      periodButtonYear: "AÑO",
+      textActiveCaloriesNoTDEE: "Para ver cómo se compara tu ingesta de calorías con tu gasto energético diario total, primero debes calcularlo: regresa al bot y selecciona \"Metabolismo\" en el menú /calories.",
+      
+      loading: "Cargando...",
+      loadingError: "Error al cargar datos",
+      retryButton: "Intentar de nuevo"
+    },
+
+    fr: {
+      averageLabel: "Moyenne<br>par jour",
+      kilocalories: "kcal",
+      noData: "Pas de données",
+      dailyKcalLabel: "kcal/jour",
+      tdeeThreshold: "TDEE",
+      
+      titleStaticCalories: "7 derniers jours",
+      textStaticCalories: "En moyenne, au cours des 7 derniers jours, vous avez consommé {value} kcal par jour.",
+      
+      titleActiveCalories: "Calories d'activité",
+      textActiveCalories: "Pendant {countAndUnit}, vous avez dépassé votre dépense énergétique quotidienne totale ({tdee} kcal) de {aboveAndUnit}.",
+      
+      titleMonthComparison: "Comparaison mensuelle",
+      titleYearComparison: "Comparaison annuelle",
+      
+      textNoPrevMonthData: "Aucune donnée pour comparer.",
+      textMonthComparisonIdentical: "Ce mois-ci et le mois dernier, vous avez consommé à peu près la même quantité de calories.",
+      textMonthComparisonHigher: "Ce mois-ci, vous consommez plus de calories en moyenne que le mois dernier.",
+      textMonthComparisonLower: "Ce mois-ci, vous consommez moins de calories en moyenne que le mois dernier.",
+      
+      textNoPrevYearData: "Aucune donnée pour comparer.",
+      textYearComparisonIdentical: "Cette année et l'année dernière, vous avez consommé à peu près la même quantité de calories.",
+      textYearComparisonHigher: "Cette année, vous consommez plus de calories en moyenne que l'année dernière.",
+      textYearComparisonLower: "Cette année, vous consommez moins de calories en moyenne que l'année dernière.",
+      
+      dailyAverageLabel: "MOYENNE PAR JOUR",
+      trendButton: "Tendance",
+      periodButtonWeek: "SEM",
+      periodButtonMonth: "MOIS",
+      periodButtonSixMonth: "6 MOIS",
+      periodButtonYear: "AN",
+      textActiveCaloriesNoTDEE: "Pour voir comment votre consommation de calories se compare à votre dépense énergétique quotidienne totale, veuillez d'abord la calculer : retournez sur le bot et sélectionnez « Métabolisme » dans le menu /calories.",
+      
+      loading: "Chargement...",
+      loadingError: "Erreur de chargement des données",
+      retryButton: "Réessayer"
+    },
+
+    hi: {
+      averageLabel: "औसत<br>प्रति दिन",
+      kilocalories: "कैलोरी",
+      noData: "कोई डेटा नहीं",
+      dailyKcalLabel: "कैलोरी/दिन",
+      tdeeThreshold: "TDEE",
+      
+      titleStaticCalories: "पिछले 7 दिन",
+      textStaticCalories: "पिछले 7 दिनों में औसतन, आपने {value} कैलोरी प्रति दिन उपभोग की हैं।",
+      
+      titleActiveCalories: "सक्रिय कैलोरी",
+      textActiveCalories: "{countAndUnit} के दौरान, आपने अपने कुल दैनिक ऊर्जा व्यय ({tdee} कैलोरी) को {aboveAndUnit} से पार कर लिया।",
+      
+      titleMonthComparison: "मासिक तुलना",
+      titleYearComparison: "वार्षिक तुलना",
+      
+      textNoPrevMonthData: "तुलना के लिए कोई डेटा नहीं है।",
+      textMonthComparisonIdentical: "इस महीने और पिछले महीने, आपने लगभग समान मात्रा में कैलोरी का सेवन किया।",
+      textMonthComparisonHigher: "इस महीने, आप पिछले महीने की तुलना में औसतन अधिक कैलोरी का सेवन कर रहे हैं।",
+      textMonthComparisonLower: "इस महीने, आप पिछले महीने की तुलना में औसतन कम कैलोरी का सेवन कर रहे हैं।",
+      
+      textNoPrevYearData: "तुलना के लिए कोई डेटा नहीं है।",
+      textYearComparisonIdentical: "इस वर्ष और पिछले वर्ष, आपने लगभग समान मात्रा में कैलोरी का सेवन किया।",
+      textYearComparisonHigher: "इस वर्ष, आप पिछले वर्ष की तुलना में औसतन अधिक कैलोरी का सेवन कर रहे हैं।",
+      textYearComparisonLower: "इस वर्ष, आप पिछले वर्ष की तुलना में औसतन कम कैलोरी का सेवन कर रहे हैं।",
+      
+      dailyAverageLabel: "प्रति दिन औसत",
+      trendButton: "रुझान",
+      periodButtonWeek: "सप्ताह",
+      periodButtonMonth: "महीना",
+      periodButtonSixMonth: "6 महीने",
+      periodButtonYear: "साल",
+      textActiveCaloriesNoTDEE: "यह देखने के लिए कि आपकी कैलोरी की खपत आपके कुल दैनिक ऊर्जा व्यय की तुलना में कैसी है, पहले इसका आकलन करें: बॉट पर वापस जाएँ और /calories मेनू में \"मेटाबॉलिज़्म\" चुनें।",
+      
+      loading: "लोड हो रहा है...",
+      loadingError: "डेटा लोड करते समय त्रुटि",
+      retryButton: "पुनः प्रयास करें"
+    },
+
+    pt: {
+      averageLabel: "Média<br>por dia",
+      kilocalories: "kcal",
+      noData: "Nenhum dado",
+      dailyKcalLabel: "kcal/dia",
+      tdeeThreshold: "TDEE",
+      
+      titleStaticCalories: "Últimos 7 dias",
+      textStaticCalories: "Em média, nos últimos 7 dias, você consumiu {value} kcal por dia.",
+      
+      titleActiveCalories: "Calorias de atividade",
+      textActiveCalories: "Durante {countAndUnit}, você excedeu seu gasto energético diário total ({tdee} kcal) em {aboveAndUnit}.",
+      
+      titleMonthComparison: "Comparação mensal",
+      titleYearComparison: "Comparação anual",
+      
+      textNoPrevMonthData: "Nenhum dado para comparar.",
+      textMonthComparisonIdentical: "Neste mês e no mês passado, você consumiu aproximadamente a mesma quantidade de calorias.",
+      textMonthComparisonHigher: "Neste mês, você está consumindo mais calorias em média do que no mês passado.",
+      textMonthComparisonLower: "Neste mês, você está consumindo menos calorias em média do que no mês passado.",
+      
+      textNoPrevYearData: "Nenhum dado para comparar.",
+      textYearComparisonIdentical: "Neste ano e no ano passado, você consumiu aproximadamente a mesma quantidade de calorias.",
+      textYearComparisonHigher: "Neste ano, você está consumindo mais calorias em média do que no ano passado.",
+      textYearComparisonLower: "Neste ano, você está consumindo menos calorias em média do que no ano passado.",
+      
+      dailyAverageLabel: "MÉDIA POR DIA",
+      trendButton: "Tendência",
+      periodButtonWeek: "SEM",
+      periodButtonMonth: "MÊS",
+      periodButtonSixMonth: "6 MESES",
+      periodButtonYear: "ANO",
+      textActiveCaloriesNoTDEE: "Para ver como sua ingestão de calorias se compara ao seu gasto energético diário total, calcule-o primeiro: volte ao bot e selecione \"Metabolismo\" no menu /calories.",
+      
+      loading: "Carregando...",
+      loadingError: "Erro ao carregar os dados",
+      retryButton: "Tentar novamente"
+    },
+
+    tr: {
+      averageLabel: "Günlük<br>ortalama",
+      kilocalories: "kcal",
+      noData: "Veri yok",
+      dailyKcalLabel: "kcal/gün",
+      tdeeThreshold: "TDEE",
+      
+      titleStaticCalories: "Son 7 gün",
+      textStaticCalories: "Son 7 günde ortalama olarak günde {value} kcal tükettiniz.",
+      
+      titleActiveCalories: "Aktif Kaloriler",
+      textActiveCalories: "{countAndUnit} süresince, toplam günlük enerji harcamanızı ({tdee} kcal) {aboveAndUnit} aşmış bulunuyorsunuz.",
+      
+      titleMonthComparison: "Aylık karşılaştırma",
+      titleYearComparison: "Yıllık karşılaştırma",
+      
+      textNoPrevMonthData: "Karşılaştırma için veri yok.",
+      textMonthComparisonIdentical: "Bu ay ve geçen ay yaklaşık olarak aynı miktarda kalori tükettiniz.",
+      textMonthComparisonHigher: "Bu ay, geçen aya göre ortalama daha fazla kalori tüketiyorsunuz.",
+      textMonthComparisonLower: "Bu ay, geçen aya göre ortalama daha az kalori tüketiyorsunuz.",
+      
+      textNoPrevYearData: "Karşılaştırma için veri yok.",
+      textYearComparisonIdentical: "Bu yıl ve geçen yıl yaklaşık olarak aynı miktarda kalori tükettiniz.",
+      textYearComparisonHigher: "Bu yıl, geçen yıla göre ortalama daha fazla kalori tüketiyorsunuz.",
+      textYearComparisonLower: "Bu yıl, geçen yıla göre ortalama daha az kalori tüketiyorsunuz.",
+      
+      dailyAverageLabel: "GÜNLÜK ORTALAMA",
+      trendButton: "Eğilim",
+      periodButtonWeek: "HAFTA",
+      periodButtonMonth: "AY",
+      periodButtonSixMonth: "6 AY",
+      periodButtonYear: "YIL",
+      textActiveCaloriesNoTDEE: "Kalori alımınızın toplam günlük enerji harcamanızla nasıl karşılaştırıldığını görmek için önce bunu hesaplayın: bota geri dönün ve /calories menüsünden \"Metabolizma\" seçin.",
+      
+      loading: "Yükleniyor...",
+      loadingError: "Veriler yüklenirken hata oluştu",
+      retryButton: "Tekrar dene"
+    },
+
+    uk: {
+      averageLabel: "Середнє<br>за день",
+      kilocalories: "ккал",
+      noData: "Немає даних",
+      dailyKcalLabel: "ккал/день",
+      tdeeThreshold: "TDEE",
+      
+      titleStaticCalories: "Останні 7 днів",
+      textStaticCalories: "У середньому за останні 7 днів Ви споживали {value} ккал на день.",
+      
+      titleActiveCalories: "Калорії активності",
+      textActiveCalories: "За {countAndUnit} Ви перевищували загальний добовий енергетичний витрат ({tdee} ккал) на {aboveAndUnit}.",
+      
+      titleMonthComparison: "Місячне порівняння",
+      titleYearComparison: "Річне порівняння",
+      
+      textNoPrevMonthData: "Немає даних для порівняння.",
+      textMonthComparisonIdentical: "Цього і минулого місяця Ви споживали приблизно однакову кількість калорій.",
+      textMonthComparisonHigher: "Цього місяця Ви споживаєте в середньому більше калорій, ніж минулого.",
+      textMonthComparisonLower: "Цього місяця Ви споживаєте в середньому менше калорій, ніж минулого.",
+      
+      textNoPrevYearData: "Немає даних для порівняння.",
+      textYearComparisonIdentical: "Цього і минулого року Ви споживали приблизно однакову кількість калорій.",
+      textYearComparisonHigher: "Цього року Ви споживаєте в середньому більше калорій, ніж минулого року.",
+      textYearComparisonLower: "Цього року Ви споживаєте в середньому менше калорій, ніж минулого року.",
+      
+      dailyAverageLabel: "У СЕРЕДНЬОМУ ЗА ДЕНЬ",
+      trendButton: "Тренд",
+      periodButtonWeek: "ТИЖ",
+      periodButtonMonth: "МІС",
+      periodButtonSixMonth: "6 МІС",
+      periodButtonYear: "РІК",
+      textActiveCaloriesNoTDEE: "Щоб побачити, як Ваше споживання калорій порівнюється із загальним добовим енергетичним витратом, спочатку розрахуйте його: поверніться до бота та виберіть «Метаболізм» у меню /calories.",
+      
+      loading: "Завантаження...",
+      loadingError: "Помилка завантаження даних",
+      retryButton: "Спробувати ще раз"
     }
-    // Дополнительные локализации можно добавить сюда.
   };
 
   // Устанавливаем глобальный объект локализации для текущего языка.
