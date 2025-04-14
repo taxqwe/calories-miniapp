@@ -268,50 +268,45 @@ document.addEventListener('DOMContentLoaded', () => {
   // группируя по месяцам – возвращает массив чисел
   function getYearData() {
     const now = new Date();
-    
-    // Создаем дату начала первого полного месяца год назад
-    // Если сейчас апрель 2025, то нам нужны данные с мая 2024
-    const startDate = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
-    
-    // Фильтруем данные, оставляя только те, что после startDate
-    const filteredData = window.allData.filter(item => item.date >= startDate);
-    
-    // Создаем объект для группировки по месяцам
-    const groups = {};
-    
-    // Заполняем группы для всех 12 месяцев (некоторые могут остаться пустыми)
+    // Начинаем с (текущий месяц - 11)
+    const startMonth = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+
+    // Готовим объект для группировки: ключ "YYYY-MM", значение — список калорий по дням
+    const monthlyGroups = {};
+
     for (let i = 0; i < 12; i++) {
-      const currentMonth = (startDate.getMonth() + i) % 12;
-      const currentYear = startDate.getFullYear() + Math.floor((startDate.getMonth() + i) / 12);
-      const monthKey = `${currentYear}-${currentMonth}`;
-      groups[monthKey] = [];
+      // Текущий рассматриваемый месяц
+      const current = new Date(startMonth.getFullYear(), startMonth.getMonth() + i, 1);
+      const keyYear = current.getFullYear();
+      const keyMonth = current.getMonth(); // 0..11
+      const monthKey = `${keyYear}-${keyMonth}`;
+      monthlyGroups[monthKey] = [];
     }
-    
-    // Распределяем данные по соответствующим месяцам
-    filteredData.forEach(item => {
-      const m = item.date.getMonth();
-      const y = item.date.getFullYear();
-      const monthKey = `${y}-${m}`;
-      if (groups[monthKey]) {
-        groups[monthKey].push(item.calories);
+
+    // Теперь проходим по allData, отбираем записи, попадающие в период [startMonth, now]
+    window.allData.forEach(item => {
+      if (item.date >= startMonth && item.date <= now) {
+        const y = item.date.getFullYear();
+        const m = item.date.getMonth();
+        const mk = `${y}-${m}`;
+        if (monthlyGroups[mk]) {
+          monthlyGroups[mk].push(item.calories);
+        }
       }
     });
-    
-    // Преобразуем группы в массив средних значений
+
+    // Считаем средние
     const aggregated = [];
-    
-    // Проходим по всем месяцам от startDate
     for (let i = 0; i < 12; i++) {
-      const currentMonth = (startDate.getMonth() + i) % 12;
-      const currentYear = startDate.getFullYear() + Math.floor((startDate.getMonth() + i) / 12);
-      const monthKey = `${currentYear}-${currentMonth}`;
-      
-      const group = groups[monthKey] || [];
-      const nonEmpty = group.filter(v => v > 0);
-      const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b, 0) / nonEmpty.length) : 0;
+      const current = new Date(startMonth.getFullYear(), startMonth.getMonth() + i, 1);
+      const mk = `${current.getFullYear()}-${current.getMonth()}`;
+      const nonEmpty = monthlyGroups[mk].filter(cal => cal > 0);
+      const avg = nonEmpty.length
+        ? Math.round(nonEmpty.reduce((a,b)=>a+b,0) / nonEmpty.length)
+        : 0;
       aggregated.push(avg);
     }
-    
+
     return aggregated;
   }
 
@@ -417,15 +412,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return labels;
       }
       case 'year': {
-        const rawData = window.allData.slice(-365);
-        if (!rawData.length) return [];
+        const now = new Date();
+        const startMonth = new Date(now.getFullYear(), now.getMonth() - 11, 1);
 
-        // Берем последнюю дату (конец периода)
-        const endDate = rawData[rawData.length - 1].date;
         const labels = [];
-        for (let i = 11; i >= 0; i--) {
-          const d = new Date(endDate.getFullYear(), endDate.getMonth() - i, 1);
-          const monthName = d.toLocaleDateString(window.localization.getLocale(), { month: 'narrow' });
+        for (let i = 0; i < 12; i++) {
+          const current = new Date(startMonth.getFullYear(), startMonth.getMonth() + i, 1);
+          const monthName = current.toLocaleDateString(window.localization.getLocale(), { month: 'narrow' });
           labels.push(monthName);
         }
         return labels;
@@ -507,8 +500,8 @@ document.addEventListener('DOMContentLoaded', () => {
           // Вычисляем дату начала месяца
           if (window.allData && window.allData.length > 0) {
             const now = new Date();
-            const startDate = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
-            const monthDate = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
+            const startMonth = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+            const monthDate = new Date(startMonth.getFullYear(), startMonth.getMonth() + i, 1);
             bar.setAttribute('data-date', monthDate.toISOString());
           }
         }
@@ -596,19 +589,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         rawData = weekData;
       } else if (period === 'year') {
-        const now = new Date(); // апрель 2025
-        // вместо (год-1, тот же месяц), берем (год-1, месяц+1), чтобы сдвинуться
-        // 1 мая 2024 => тогда через 12 шагов i=11 получим 1 апреля 2025
-        const startDate = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
-        // т.е. 1 мая 2024
+        const now = new Date(); 
+        // Используем ту же логику, что и в getYearData - 12 месяцев начиная с (текущий-11)
+        const startMonth = new Date(now.getFullYear(), now.getMonth() - 11, 1);
 
-        const rawYearData = window.allData.filter(item => item.date >= startDate);
+        const rawYearData = window.allData.filter(item => item.date >= startMonth && item.date <= now);
 
         const monthData = [];
         for (let i = 0; i < 12; i++) {
           const currentMonthDate = new Date(
-            startDate.getFullYear(),
-            startDate.getMonth() + i,
+            startMonth.getFullYear(),
+            startMonth.getMonth() + i,
             1
           );
           const group = rawYearData.filter(item =>
