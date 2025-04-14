@@ -12,6 +12,26 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('daily-average-label').textContent = window.localization.dailyAverageLabel;
   document.getElementById('trend-button').textContent = window.localization.trendButton;
 
+  // Проверяем URL-параметр "loading". Если его значение не равно "false", показываем спиннер.
+  const queryParams = new URLSearchParams(window.location.search);
+  const showLoadingSpinner = queryParams.get('loading') !== 'false';
+  if (showLoadingSpinner) {
+    const spinner = document.createElement("div");
+    spinner.id = "loading-spinner";
+    spinner.innerHTML = `
+      <div class="spinner"></div>
+      <div class="spinner-text">Загрузка...</div>
+    `;
+    // Добавляем спиннер в контейнер
+    document.querySelector('.stats-container').appendChild(spinner);
+  }
+
+  // Функция для скрытия спиннера
+  function hideLoadingSpinner() {
+    const spinner = document.getElementById("loading-spinner");
+    if (spinner) spinner.remove();
+  }
+
   // Получаем параметры темы Telegram (если заданы)
   const theme = tg.themeParams || {};
 
@@ -129,6 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Обновляем график после получения данных
         updateChart(currentPeriod);
+        
+        // Скрываем спиннер после успешной загрузки данных
+        if (showLoadingSpinner) hideLoadingSpinner();
 
         return true;
       } catch (fetchError) {
@@ -143,6 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // В случае ошибки используем моковые данные
       window.allData = generateMockData(730);
       updateChart(currentPeriod);
+      
+      // Скрываем спиннер в случае ошибки
+      if (showLoadingSpinner) hideLoadingSpinner();
+      
       return false;
     }
   }
