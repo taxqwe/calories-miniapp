@@ -12,17 +12,17 @@
   // Объект локализаций для разных языков
   const localizations = {
     ru: {
-      averageLabel: "СРЕДН.",
+      averageLabel: "Средн.<br>Килокалории",
       kilocalories: "ккал",
       noData: "Нет данных",
-      dailyKcalLabel: "ккал/день",
-      tdeeThreshold: "TDEE",
+      dailyKcalLabel: "ккал в день",
+      tdeeThreshold: "TDEE Порог",
       
-      titleStaticCalories: "Калории (7 дней)",
-      textStaticCalories: "За 7 дней среднее потребление калорий составило {value} ккал в день.",
+      titleStaticCalories: "Средние калории (последние 7 дней)",
+      textStaticCalories: "В среднем за последние 7 дней Вы потребляли по {value} ккал в день.",
       
       titleActiveCalories: "Калории активности",
-      textActiveCalories: "За {countAndUnit} вы превысили расчетную норму TDEE ({tdee} ккал) {aboveAndUnit}.",
+      textActiveCalories: "За {countAndUnit} вы превышали рассчетное значение TDEE ({tdee} ккал) {aboveAndUnit}.",
       
       titleMonthComparison: "Сравнение калорий за месяц",
       titleYearComparison: "Сравнение калорий за год",
@@ -50,14 +50,14 @@
       loadingError: "Ошибка загрузки данных"
     },
     en: {
-      averageLabel: "AVG.",
+      averageLabel: "Avg.<br>Calories",
       kilocalories: "kcal",
       noData: "No data",
       dailyKcalLabel: "kcal/day",
-      tdeeThreshold: "TDEE",
+      tdeeThreshold: "TDEE Threshold",
       
-      titleStaticCalories: "Calories (7 days)",
-      textStaticCalories: "For the past 7 days, the average calorie consumption was {value} kcal per day.",
+      titleStaticCalories: "Average Calories (Last 7 Days)",
+      textStaticCalories: "On average over the last 7 days you consumed {value} kcal per day.",
       
       titleActiveCalories: "Active Calories",
       textActiveCalories: "For {countAndUnit}, you exceeded your estimated TDEE ({tdee} kcal) {aboveAndUnit}.",

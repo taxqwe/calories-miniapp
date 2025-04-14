@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const previousBarRaw = safePreviousValue / maxValue * 100;
 
     // Минимальный процент (значение можно подогнать под дизайн)
-    const MIN_BAR_PERCENT = 30;
+    const MIN_BAR_PERCENT = 25;
 
     // Если данные есть – используем вычисленный процент, но не меньше MIN_BAR_PERCENT,
     // если данных нет, то просто возьмем MIN_BAR_PERCENT для отображения полоски
