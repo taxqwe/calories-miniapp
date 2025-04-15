@@ -43,7 +43,7 @@
       periodButtonMonth: "МЕС",
       periodButtonSixMonth: "6 МЕС",
       periodButtonYear: "ГОД",
-      textActiveCaloriesNoTDEE: "Чтобы увидеть сравнение потреблённых калорий со значением общего ежедневного расхода энергии, проведите его расчёт: вернитесь к боту и выберите «Метаболизм» в меню /calories.",
+      textActiveCaloriesNoTDEE: "Сначала рассчитайте расход энергии: вернитесь в бота и выберите 'Метаболизм' в /calories.",
       
       // Новые ключи для спиннера и ошибки
       loading: "Загрузка...",
@@ -83,7 +83,7 @@
       periodButtonSixMonth: "6 MONTHS",
       periodButtonYear: "YEAR",
       
-      textActiveCaloriesNoTDEE: "To see how your calorie intake compares to your total daily energy expenditure, please calculate it first: return to the bot and select “Metabolism” in the /calories menu.",
+      textActiveCaloriesNoTDEE: "First, calculate your energy expenditure: return to the bot and select 'Metabolism' in /calories.",
       
       // New keys for spinner and error
       loading: "Loading...",
@@ -122,7 +122,7 @@
       periodButtonMonth: "شهر",
       periodButtonSixMonth: "6 أشهر",
       periodButtonYear: "سنة",
-      textActiveCaloriesNoTDEE: "لمعرفة مقارنة استهلاكك للسعرات الحرارية بإجمالي المصروف اليومي للطاقة، يرجى حسابه أولاً: ارجع إلى البوت واختر \"التمثيل الغذائي\" في قائمة /calories.",
+      textActiveCaloriesNoTDEE: "أولاً، احسب إنفاقك اليومي للطاقة: عد إلى البوت واختر 'Metabolism' في /calories.",
       
       loading: "جارٍ التحميل...",
       loadingError: "خطأ في تحميل البيانات",
@@ -161,7 +161,7 @@
       periodButtonMonth: "MONAT",
       periodButtonSixMonth: "6 MONATE",
       periodButtonYear: "JAHR",
-      textActiveCaloriesNoTDEE: "Um Ihren Kalorienverbrauch mit Ihrem gesamten täglichen Energieverbrauch zu vergleichen, berechnen Sie diesen bitte zuerst: Kehren Sie zum Bot zurück und wählen Sie „Stoffwechsel“ im /calories-Menü.",
+      textActiveCaloriesNoTDEE: "Berechnen Sie zuerst Ihren Energieverbrauch: Kehren Sie zum Bot zurück und wählen Sie 'Metabolism' im Menü /calories.",
       
       loading: "Laden...",
       loadingError: "Fehler beim Laden der Daten",
@@ -200,7 +200,7 @@
       periodButtonMonth: "MES",
       periodButtonSixMonth: "6 MESES",
       periodButtonYear: "AÑO",
-      textActiveCaloriesNoTDEE: "Para ver cómo se compara tu ingesta de calorías con tu gasto energético diario total, primero debes calcularlo: regresa al bot y selecciona \"Metabolismo\" en el menú /calories.",
+      textActiveCaloriesNoTDEE: "Primero calcula tu gasto energético: regresa al bot y elige 'Metabolismo' en /calories.",
       
       loading: "Cargando...",
       loadingError: "Error al cargar datos",
@@ -239,7 +239,7 @@
       periodButtonMonth: "MOIS",
       periodButtonSixMonth: "6 MOIS",
       periodButtonYear: "AN",
-      textActiveCaloriesNoTDEE: "Pour voir comment votre consommation de calories se compare à votre dépense énergétique quotidienne totale, veuillez d'abord la calculer : retournez sur le bot et sélectionnez « Métabolisme » dans le menu /calories.",
+      textActiveCaloriesNoTDEE: "Calculez d'abord votre dépense énergétique : retournez sur le bot et sélectionnez 'Metabolism' dans /calories.",
       
       loading: "Chargement...",
       loadingError: "Erreur de chargement des données",
@@ -278,7 +278,7 @@
       periodButtonMonth: "महीना",
       periodButtonSixMonth: "6 महीने",
       periodButtonYear: "साल",
-      textActiveCaloriesNoTDEE: "यह देखने के लिए कि आपकी कैलोरी की खपत आपके कुल दैनिक ऊर्जा व्यय की तुलना में कैसी है, पहले इसका आकलन करें: बॉट पर वापस जाएँ और /calories मेनू में \"मेटाबॉलिज़्म\" चुनें।",
+      textActiveCaloriesNoTDEE: "पहले अपनी ऊर्जा खपत की गणना करें: बॉट पर वापस जाएँ और /calories मेनू में 'Metabolism' चुनें.",
       
       loading: "लोड हो रहा है...",
       loadingError: "डेटा लोड करते समय त्रुटि",
@@ -317,7 +317,7 @@
       periodButtonMonth: "MÊS",
       periodButtonSixMonth: "6 MESES",
       periodButtonYear: "ANO",
-      textActiveCaloriesNoTDEE: "Para ver como sua ingestão de calorias se compara ao seu gasto energético diário total, calcule-o primeiro: volte ao bot e selecione \"Metabolismo\" no menu /calories.",
+      textActiveCaloriesNoTDEE: "Primeiro, calcule seu gasto de energia: volte ao bot e selecione 'Metabolismo' no menu /calories.",
       
       loading: "Carregando...",
       loadingError: "Erro ao carregar os dados",
@@ -356,7 +356,7 @@
       periodButtonMonth: "AY",
       periodButtonSixMonth: "6 AY",
       periodButtonYear: "YIL",
-      textActiveCaloriesNoTDEE: "Kalori alımınızın toplam günlük enerji harcamanızla nasıl karşılaştırıldığını görmek için önce bunu hesaplayın: bota geri dönün ve /calories menüsünden \"Metabolizma\" seçin.",
+      textActiveCaloriesNoTDEE: "Önce enerji harcamanızı hesaplayın: bota geri dönün ve /calories menüsünde 'Metabolizma' seçin.",
       
       loading: "Yükleniyor...",
       loadingError: "Veriler yüklenirken hata oluştu",
@@ -395,7 +395,7 @@
       periodButtonMonth: "МІС",
       periodButtonSixMonth: "6 МІС",
       periodButtonYear: "РІК",
-      textActiveCaloriesNoTDEE: "Щоб побачити, як Ваше споживання калорій порівнюється із загальним добовим енергетичним витратом, спочатку розрахуйте його: поверніться до бота та виберіть «Метаболізм» у меню /calories.",
+      textActiveCaloriesNoTDEE: "Спочатку розрахуйте свій енергетичний витрат: поверніться до бота та оберіть 'Metabolism' у меню /calories.",
       
       loading: "Завантаження...",
       loadingError: "Помилка завантаження даних",
