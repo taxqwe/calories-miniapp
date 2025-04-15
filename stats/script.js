@@ -101,14 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return data;
   }
 
-  // Функция для получения локальной строки-ключа в формате "YYYY-MM-DD"
-  function getLocalDateKey(date) {
-    const year = date.getFullYear();
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const day = ('0' + date.getDate()).slice(-2);
-    return `${year}-${month}-${day}`;
-  }
-
   // Получение реальных данных с сервера
   async function fetchUserStats() {
     try {
@@ -156,8 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const currentDate = new Date(startDate);
           currentDate.setDate(startDate.getDate() + i);
 
-          // Форматируем дату в локальном формате
-          const dateKey = getLocalDateKey(currentDate);
+          // Форматируем дату в формат yyyy-MM-dd для поиска в полученных данных
+          const dateKey = currentDate.toISOString().split('T')[0];
           const calories = caloriesMap[dateKey] || 0;
 
           formattedData.push({ date: currentDate, calories: calories });
@@ -253,14 +245,25 @@ document.addEventListener('DOMContentLoaded', () => {
   // Функция для получения данных за 6 месяцев (последние 180 дней),
   // группируя по неделям (7-дневные группы) – возвращает массив чисел
   function getSixMonthData() {
-    const rawData = window.allData.slice(-180);
+    const now = new Date();
+    // Начинаем с первого числа месяца 5 месяцев назад от текущего месяца
+    const startDate = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+    
+    // Фильтруем данные, оставляя только записи, где дата не раньше startDate
+    const filteredData = window.allData.filter(item => item.date >= startDate);
+    
     const aggregated = [];
-    for (let i = 0; i < rawData.length; i += 7) {
-      const group = rawData.slice(i, i + 7);
-      const nonEmpty = group.filter(item => item.calories > 0).map(item => item.calories);
-      const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b, 0) / nonEmpty.length) : 0;
-      aggregated.push(avg);
+    
+    // Группируем данные по неделям
+    for (let i = 0; i < filteredData.length; i += 7) {
+      const group = filteredData.slice(i, i + 7);
+      if (group.length > 0) {
+        const nonEmpty = group.filter(item => item.calories > 0).map(item => item.calories);
+        const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b, 0) / nonEmpty.length) : 0;
+        aggregated.push(avg);
+      }
     }
+    
     return aggregated;
   }
 
@@ -360,14 +363,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Функция, возвращающая массив дат – начало каждой 7-дневной группы для 6 месяцев
   function getSixMonthIntervals() {
-    const rawData = window.allData.slice(-180); // последние 180 дней
+    const now = new Date();
+    // Начинаем с первого числа месяца 5 месяцев назад от текущего месяца
+    const startDate = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+    
+    // Фильтруем данные, оставляя только записи, где дата не раньше startDate
+    const filteredData = window.allData.filter(item => item.date >= startDate);
+    
     const intervals = [];
-    for (let i = 0; i < rawData.length; i += 7) {
-      intervals.push(rawData[i].date); // берем дату первого дня группы
+    
+    // Получаем интервалы на основе недельных групп
+    for (let i = 0; i < filteredData.length; i += 7) {
+      if (i < filteredData.length) {
+        intervals.push(filteredData[i].date);
+      }
     }
+    
     return intervals;
   }
   window.getSixMonthIntervals = getSixMonthIntervals;
+  
+  // Функция для генерации подписей для 6 месяцев
+  function getSixMonthLabels() {
+    const now = new Date();
+    const startDate = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+    const labels = [];
+    
+    for (let i = 0; i < 6; i++) {
+      const current = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
+      const monthName = current.toLocaleDateString(window.localization.getLocale(), { month: 'short' });
+      labels.push(monthName);
+    }
+    
+    return labels;
+  }
+  window.getSixMonthLabels = getSixMonthLabels;
 
   function getLabelsForPeriod(period) {
     // Если нет данных, возвращаем пустой массив
@@ -381,11 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return Array.from({ length: 7 }, (_, i) => {
           const date = new Date(now);
           date.setDate(now.getDate() - (6 - i));
-          // Получаем сокращенное название дня недели
-          let shortDay = date.toLocaleDateString(window.localization.getLocale(), { weekday: 'short' });
-          // Делаем первую букву заглавной
-          shortDay = shortDay.charAt(0).toUpperCase() + shortDay.slice(1);
-          return shortDay;
+          return date.getDate().toString();
         });
       case 'month': {
         // Получаем данные за последний месяц (30 дней)
@@ -404,6 +430,11 @@ document.addEventListener('DOMContentLoaded', () => {
       case '6month': {
         const intervals = getSixMonthIntervals(); // массив дат начала каждой недели
         const labels = [];
+        
+        // Получаем массив названий месяцев
+        const monthLabels = getSixMonthLabels();
+        let currentMonthIndex = 0;
+        
         for (let i = 0; i < intervals.length; i++) {
           // Если это первая группа или месяц изменился по сравнению с предыдущей группы,
           // подпишем данную группу коротким названием месяца
@@ -417,14 +448,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return labels;
       }
       case 'year': {
-        const rawData = window.allData.slice(-365);
-        if (!rawData.length) return [];
-
-        // Берем последнюю дату (конец периода)
-        const endDate = rawData[rawData.length - 1].date;
+        const now = new Date();
+        // Создаем дату начала первого полного месяца год назад (как в getYearData)
+        const startDate = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+        
         const labels = [];
-        for (let i = 11; i >= 0; i--) {
-          const d = new Date(endDate.getFullYear(), endDate.getMonth() - i, 1);
+        for (let i = 0; i < 12; i++) {
+          const currentMonth = (startDate.getMonth() + i) % 12;
+          const currentYear = startDate.getFullYear() + Math.floor((startDate.getMonth() + i) / 12);
+          const d = new Date(currentYear, currentMonth, 1);
           const monthName = d.toLocaleDateString(window.localization.getLocale(), { month: 'narrow' });
           labels.push(monthName);
         }
@@ -583,17 +615,35 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (period === '6month') {
         // Для 6 месяцев нам нужны не просто числа, а объекты с датами
         rawData = window.allData.slice(-180);
-        // Группируем по неделям для блока активности
+        
+        // Используем ту же логику, что и в getSixMonthData() и getSixMonthIntervals()
+        // для обеспечения согласованности данных
         const weekData = [];
-        for (let i = 0; i < rawData.length; i += 7) {
-          const group = rawData.slice(i, i + 7);
-          const nonEmpty = group.filter(item => item.calories > 0);
-          const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b.calories, 0) / nonEmpty.length) : 0;
-          // Берем первую дату из группы как ключевую для недели
+        const weekCount = 26;
+        const groupSize = 7;
+        
+        for (let i = 0; i < weekCount; i++) {
+          // Вычисляем индекс начала группы, идя от конца массива к началу
+          const startIndex = Math.max(0, rawData.length - (weekCount - i) * groupSize);
+          // Получаем группу дней для текущей недели
+          const group = rawData.slice(startIndex, startIndex + groupSize);
+          
+          // Проверяем, что группа не пустая перед обработкой
           if (group.length > 0) {
+            const nonEmpty = group.filter(item => item.calories > 0);
+            const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b.calories, 0) / nonEmpty.length) : 0;
+            // Берем первую дату из группы как ключевую для недели
             weekData.push({ date: group[0].date, calories: avg });
+          } else {
+            // Если данных нет, создаем запись с нулевым значением и расчетной датой
+            const lastDate = rawData.length > 0 ? rawData[rawData.length - 1].date : new Date();
+            const calculatedDate = new Date(lastDate);
+            const daysToSubtract = (weekCount - i) * groupSize;
+            calculatedDate.setDate(calculatedDate.getDate() - daysToSubtract);
+            weekData.push({ date: calculatedDate, calories: 0 });
           }
         }
+        
         rawData = weekData;
       } else if (period === 'year') {
         const now = new Date(); // апрель 2025

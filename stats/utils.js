@@ -57,9 +57,8 @@ function formatPeriodDate(period) {
       start.setDate(now.getDate() - 30);
       return `${start.getDate()} ${start.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} — ${now.getDate()} ${now.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${now.getFullYear()}г.`;
     case '6month':
-      start = new Date(now);
-      start.setMonth(now.getMonth() - 6);
-      return `14 ${start.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${start.getFullYear()} — 13 ${now.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${now.getFullYear()}г.`;
+      start = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+      return `1 ${start.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${start.getFullYear()} — ${now.getDate()} ${now.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${now.getFullYear()}г.`;
     case 'year':
       start = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
       return `${start.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${start.getFullYear()} — ${now.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${now.getFullYear()}г.`;
