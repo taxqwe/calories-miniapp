@@ -492,6 +492,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const maxValue = data.length > 0 ? Math.max(...data, TDEE, 100) : 100; // минимум 100 для пустого графика
     const labels = getLabelsForPeriod(period, data.length);
     
+    // Шкала графика - используем минимум 300 для пустого графика
+    const gridMax = data.length > 0 ? Math.ceil(maxValue / 3 / 100) * 100 * 3 : 300;
+    
     const chartContainerElem = document.querySelector('.stats-chart');
     if (chartContainerElem) {
       chartContainerElem.innerHTML = '';
@@ -503,7 +506,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const value = data[i] || 0;
         const bar = document.createElement('div');
         bar.className = 'chart-bar' + (value === 0 ? ' empty' : '');
-        const height = value === 0 ? 4 : (value / maxValue * 100);
+        const height = value === 0 ? 4 : (value / gridMax * 100);
         bar.style.height = `${height}%`;
         
         // Добавляем атрибут с информацией о калориях для столбца
@@ -582,8 +585,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.stats-value').textContent = `${parseInt(average).toLocaleString(window.localization.getLocale())} ${window.localization.kilocalories}`;
     document.querySelector('.stats-label:last-child').textContent = formatPeriodDate(period);
 
-    // Шкала графика - используем минимум 300 для пустого графика
-    const gridMax = data.length > 0 ? Math.ceil(maxValue / 3 / 100) * 100 * 3 : 300; 
+    // Удаляем дублирование вычисления gridMax
     const gridStep = gridMax / 3;
     const gridValues = document.querySelectorAll('.grid-value');
     gridValues[0].textContent = gridMax.toString();
