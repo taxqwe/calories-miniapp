@@ -142,6 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const formattedData = [];
         // Рассчитываем даты за последние 730 дней для полного набора данных
         let startDate = new Date();
+        // Устанавливаем время на полночь в локальной таймзоне
+        startDate.setHours(0, 0, 0, 0);
         startDate.setDate(startDate.getDate() - 729);
 
         for (let i = 0; i < 730; i++) {
@@ -149,7 +151,12 @@ document.addEventListener('DOMContentLoaded', () => {
           currentDate.setDate(startDate.getDate() + i);
 
           // Форматируем дату в формат yyyy-MM-dd для поиска в полученных данных
-          const dateKey = currentDate.toISOString().split('T')[0];
+          // Создаем строку даты с поправкой на таймзону, чтобы правильно сопоставить с данными сервера
+          const year = currentDate.getFullYear();
+          const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+          const day = String(currentDate.getDate()).padStart(2, '0');
+          const dateKey = `${year}-${month}-${day}`;
+          
           const calories = caloriesMap[dateKey] || 0;
 
           formattedData.push({ date: currentDate, calories: calories });
@@ -234,7 +241,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Функция для получения данных за неделю (последние 7 дней)
   function getWeekData() {
-    return window.allData.slice(-7);  // возвращаем массив объектов
+    // Получаем данные за последние 7 дней, но важно учитывать,
+    // что мы хотим полные дни в локальной таймзоне пользователя
+    return window.allData.slice(-7);
   }
 
   // Функция для получения данных за месяц (последние 30 дней)
@@ -246,6 +255,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // группируя по неделям (7-дневные группы) – возвращает массив чисел
   function getSixMonthData() {
     const now = new Date();
+    // Устанавливаем время на полночь в локальной таймзоне
+    now.setHours(0, 0, 0, 0);
     // Начинаем с первого числа месяца 5 месяцев назад от текущего месяца
     const startDate = new Date(now.getFullYear(), now.getMonth() - 5, 1);
     
@@ -271,6 +282,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // группируя по месяцам – возвращает массив чисел
   function getYearData() {
     const now = new Date();
+    // Устанавливаем время на полночь в локальной таймзоне
+    now.setHours(0, 0, 0, 0);
     
     // Создаем дату начала первого полного месяца год назад
     // Если сейчас апрель 2025, то нам нужны данные с мая 2024
@@ -364,6 +377,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Функция, возвращающая массив дат – начало каждой 7-дневной группы для 6 месяцев
   function getSixMonthIntervals() {
     const now = new Date();
+    // Устанавливаем время на полночь в локальной таймзоне
+    now.setHours(0, 0, 0, 0);
     // Начинаем с первого числа месяца 5 месяцев назад от текущего месяца
     const startDate = new Date(now.getFullYear(), now.getMonth() - 5, 1);
     
@@ -386,6 +401,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Функция для генерации подписей для 6 месяцев
   function getSixMonthLabels() {
     const now = new Date();
+    // Устанавливаем время на полночь в локальной таймзоне
+    now.setHours(0, 0, 0, 0);
     const startDate = new Date(now.getFullYear(), now.getMonth() - 5, 1);
     const labels = [];
     
@@ -406,6 +423,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     const now = new Date();
+    // Устанавливаем время на полночь в локальной таймзоне
+    now.setHours(0, 0, 0, 0);
+    
     switch (period) {
       case 'week':
         return Array.from({ length: 7 }, (_, i) => {
@@ -542,6 +562,8 @@ document.addEventListener('DOMContentLoaded', () => {
           // Вычисляем дату начала месяца
           if (window.allData && window.allData.length > 0) {
             const now = new Date();
+            // Устанавливаем время на полночь в локальной таймзоне
+            now.setHours(0, 0, 0, 0);
             const startDate = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
             const monthDate = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
             bar.setAttribute('data-date', monthDate.toISOString());
@@ -640,6 +662,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Если данных нет, создаем запись с нулевым значением и расчетной датой
             const lastDate = rawData.length > 0 ? rawData[rawData.length - 1].date : new Date();
             const calculatedDate = new Date(lastDate);
+            // Устанавливаем время на полночь в локальной таймзоне
+            calculatedDate.setHours(0, 0, 0, 0);
             const daysToSubtract = (weekCount - i) * groupSize;
             calculatedDate.setDate(calculatedDate.getDate() - daysToSubtract);
             weekData.push({ date: calculatedDate, calories: 0 });
@@ -648,7 +672,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         rawData = weekData;
       } else if (period === 'year') {
-        const now = new Date(); // апрель 2025
+        const now = new Date();
+        // Устанавливаем время на полночь в локальной таймзоне
+        now.setHours(0, 0, 0, 0);
         // вместо (год-1, тот же месяц), берем (год-1, месяц+1), чтобы сдвинуться
         // 1 мая 2024 => тогда через 12 шагов i=11 получим 1 апреля 2025
         const startDate = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);

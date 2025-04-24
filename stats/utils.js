@@ -45,6 +45,8 @@ function formatMonthYear(date) {
  */
 function formatPeriodDate(period) {
   const now = new Date();
+  // Устанавливаем время на полночь в локальной таймзоне
+  now.setHours(0, 0, 0, 0);
   let start;
   
   switch (period) {

@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const rawDate = targetElement.getAttribute('data-date');
     
     if (calories !== null && rawDate) {
+      // Создаем объект Date в локальной таймзоне
       const dateObj = new Date(rawDate);
       const statsValueElem = topStatsCard.querySelector('.stats-value');
       const statsLabelElem = topStatsCard.querySelector('.stats-label:last-child');
