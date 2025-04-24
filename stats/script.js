@@ -254,24 +254,26 @@ document.addEventListener('DOMContentLoaded', () => {
   // Функция для получения данных за 6 месяцев (последние 180 дней),
   // группируя по неделям (7-дневные группы) – возвращает массив чисел
   function getSixMonthData() {
-    const now = new Date();
-    // Устанавливаем время на полночь в локальной таймзоне
-    now.setHours(0, 0, 0, 0);
-    // Начинаем с первого числа месяца 5 месяцев назад от текущего месяца
-    const startDate = new Date(now.getFullYear(), now.getMonth() - 5, 1);
-    
-    // Фильтруем данные, оставляя только записи, где дата не раньше startDate
-    const filteredData = window.allData.filter(item => item.date >= startDate);
+    // Берем последние 180 дней данных (примерно 6 месяцев)
+    const rawData = window.allData.slice(-180);
+    const weekCount = 26; // ~6 месяцев
+    const groupSize = 7;
     
     const aggregated = [];
     
-    // Группируем данные по неделям
-    for (let i = 0; i < filteredData.length; i += 7) {
-      const group = filteredData.slice(i, i + 7);
+    for (let i = 0; i < weekCount; i++) {
+      // Вычисляем индекс начала группы, идя от конца массива к началу
+      const startIndex = Math.max(0, rawData.length - (weekCount - i) * groupSize);
+      // Получаем группу дней для текущей недели
+      const group = rawData.slice(startIndex, startIndex + groupSize);
+      
+      // Вычисляем среднее для группы с учетом только ненулевых записей
       if (group.length > 0) {
         const nonEmpty = group.filter(item => item.calories > 0).map(item => item.calories);
         const avg = nonEmpty.length ? Math.round(nonEmpty.reduce((a, b) => a + b, 0) / nonEmpty.length) : 0;
         aggregated.push(avg);
+      } else {
+        aggregated.push(0);
       }
     }
     
@@ -376,21 +378,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Функция, возвращающая массив дат – начало каждой 7-дневной группы для 6 месяцев
   function getSixMonthIntervals() {
-    const now = new Date();
-    // Устанавливаем время на полночь в локальной таймзоне
-    now.setHours(0, 0, 0, 0);
-    // Начинаем с первого числа месяца 5 месяцев назад от текущего месяца
-    const startDate = new Date(now.getFullYear(), now.getMonth() - 5, 1);
-    
-    // Фильтруем данные, оставляя только записи, где дата не раньше startDate
-    const filteredData = window.allData.filter(item => item.date >= startDate);
+    // Берем последние 180 дней данных (примерно 6 месяцев)
+    const rawData = window.allData.slice(-180);
+    const weekCount = 26; // ~6 месяцев
+    const groupSize = 7;
     
     const intervals = [];
     
-    // Получаем интервалы на основе недельных групп
-    for (let i = 0; i < filteredData.length; i += 7) {
-      if (i < filteredData.length) {
-        intervals.push(filteredData[i].date);
+    for (let i = 0; i < weekCount; i++) {
+      // Вычисляем индекс начала группы, идя от конца массива к началу
+      const startIndex = Math.max(0, rawData.length - (weekCount - i) * groupSize);
+      // Получаем группу дней для текущей недели
+      const group = rawData.slice(startIndex, startIndex + groupSize);
+      
+      if (group.length > 0) {
+        // Берем первую дату из группы как начало недели
+        intervals.push(group[0].date);
+      } else {
+        // Если группа пуста, создаем расчетную дату
+        const now = new Date();
+        // Устанавливаем время на полночь в локальной таймзоне
+        now.setHours(0, 0, 0, 0);
+        const calculatedDate = new Date(now);
+        calculatedDate.setDate(now.getDate() - (weekCount - i) * groupSize);
+        intervals.push(calculatedDate);
       }
     }
     
