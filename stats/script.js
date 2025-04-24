@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const controller = new AbortController();
       
       try {
+        // Получаем таймзону пользователя
+        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        
         const response = await fetch('https://calories-bot.duckdns.org:8443/api/stats', {
           method: 'POST',
           headers: {
@@ -123,7 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
           signal: controller.signal,
           body: JSON.stringify({
             initData: initData,
-            userId: userId
+            userId: userId,
+            timezone: userTimezone  // Добавляем таймзону в формате "Europe/Moscow", "Europe/London" и т.д.
           })
         });
 
