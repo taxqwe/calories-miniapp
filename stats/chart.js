@@ -211,7 +211,8 @@ export function updateChart(period){
   }
   const TDEE = state.userTDEE || 0;
   const maxValue = data.length > 0 ? Math.max(...data, TDEE, 100) : 100;
-  const labels = getLabelsForPeriod(period, data.length);
+  // getLabelsForPeriod doesn't need the data length
+  const labels = getLabelsForPeriod(period);
   const gridMax = data.length > 0 ? Math.ceil(maxValue / 3 / 100) * 100 * 3 : 300;
   const chartContainerElem = document.querySelector('.stats-chart');
   if(chartContainerElem){
