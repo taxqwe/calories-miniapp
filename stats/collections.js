@@ -1,5 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const collectionsContainer = document.querySelector('.stats-collections');
+import { state } from './dataService.js';
+import { getWeekData, getMonthData, getSixMonthIntervals } from './chart.js';
+
+const collectionsContainerSelector = '.stats-collections';
 
   function createFireIcon() {
     return `<svg class="collection-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -57,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'week':
         {
           // Для недели получаем оригинальные данные с датами
-          const weekData = window.getWeekData(); // вернёт массив объектов { date, calories }
+          const weekData = getWeekData(); // вернёт массив объектов { date, calories }
           labels = weekData.map(item => {
             const date = new Date(item.date);
             let shortDay = date.toLocaleDateString(window.localization.getLocale(), { weekday: 'short' });
@@ -70,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'month':
       {
         // Получаем оригинальные данные за месяц (30 дней)
-        const monthData = window.getMonthData(); // массив объектов { date, calories }
+        const monthData = getMonthData(); // массив объектов { date, calories }
         // Создаем массив длины 30 с пустыми span-элементами
         const labelsArray = monthData.map(() => '<span></span>');
         // Для каждого дня проверяем, является ли он понедельником (getDay() === 1)
@@ -87,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
       break;
       case '6month':
         {
-          const intervals = window.getSixMonthIntervals(); // массив дат начала каждой недели
+          const intervals = getSixMonthIntervals(); // массив дат начала каждой недели
           let lastMonth = null;
           labels = intervals.map(date => {
             const month = date.getMonth();
@@ -324,8 +326,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevStart = new Date(prevYear, prevMonth, 1);
     const prevEnd = new Date(prevYear, prevMonth + 1, 1);
 
-    const currentMonthData = window.allData.filter(item => item.date >= currentStart && item.date < currentEnd && item.calories > 0);
-    const prevMonthData = window.allData.filter(item => item.date >= prevStart && item.date < prevEnd && item.calories > 0);
+    const currentMonthData = state.allData.filter(item => item.date >= currentStart && item.date < currentEnd && item.calories > 0);
+    const prevMonthData = state.allData.filter(item => item.date >= prevStart && item.date < prevEnd && item.calories > 0);
 
     const currentAvg = currentMonthData.length
       ? Math.round(currentMonthData.reduce((a, b) => a + b.calories, 0) / currentMonthData.length)
@@ -378,8 +380,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentYear = now.getFullYear();
     const previousYear = currentYear - 1;
 
-    const currentYearData = window.allData.filter(item => item.date.getFullYear() === currentYear && item.calories > 0);
-    const previousYearData = window.allData.filter(item => item.date.getFullYear() === previousYear && item.calories > 0);
+    const currentYearData = state.allData.filter(item => item.date.getFullYear() === currentYear && item.calories > 0);
+    const previousYearData = state.allData.filter(item => item.date.getFullYear() === previousYear && item.calories > 0);
 
     const currentAvg = currentYearData.length
       ? Math.round(currentYearData.reduce((sum, v) => sum + v.calories, 0) / currentYearData.length)
@@ -436,25 +438,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // Основная функция обновления инфо-блоков, объединяющая результаты всех блоков
   // Теперь эта функция лишь инициализирует все блоки при загрузке и обновляет только блок активности при переключении вкладок
   function updateCollections(data, tdee) {
-    // Всегда создаем все блоки заново при каждом вызове
+    const collectionsContainer = document.querySelector(collectionsContainerSelector);
+    if (!collectionsContainer) return;
+
     const activeBlockHtml = buildActiveBlock(data, tdee);
     const staticBlockHtml = buildStaticBlock(getWeekData());
     const monthComparisonHtml = buildMonthComparisonBlock();
     const yearComparisonHtml = buildYearComparisonBlock();
 
-    // Собираем HTML для всех блоков
     collectionsContainer.innerHTML = activeBlockHtml + staticBlockHtml + monthComparisonHtml + yearComparisonHtml;
 
-    // Добавляем классы для идентификации блоков
     const blocks = collectionsContainer.querySelectorAll('.collection-card');
     if (blocks.length >= 2) blocks[1].classList.add('static-calories-block');
     if (blocks.length >= 3) blocks[2].classList.add('month-comparison-block');
     if (blocks.length >= 4) blocks[3].classList.add('year-comparison-block');
   }
 
-  // Экспортируем функцию updateCollections в глобальную область видимости
-  window.updateCollections = updateCollections;
-
   // Не вызываем здесь инициализацию, а перенесем ее в script.js
   // updateCollections(getWeekData(), 2200);
-});
+
+export { updateCollections };
