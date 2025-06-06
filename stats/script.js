@@ -446,7 +446,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return Array.from({ length: 7 }, (_, i) => {
           const date = new Date(now);
           date.setDate(now.getDate() - (6 - i));
-          return date.getDate().toString();
+          let shortDay = date.toLocaleDateString(window.localization.getLocale(), { weekday: 'short' });
+          shortDay = shortDay.charAt(0).toUpperCase() + shortDay.slice(1);
+          return shortDay;
         });
       case 'month': {
         // Получаем данные за последний месяц (30 дней)
