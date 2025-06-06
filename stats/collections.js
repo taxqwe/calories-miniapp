@@ -1,5 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const collectionsContainer = document.querySelector('.stats-collections');
+import { state } from './dataService.js';
+import { getWeekData, getMonthData, getSixMonthIntervals } from './chart.js';
+
+const collectionsContainerSelector = '.stats-collections';
 
   function createFireIcon() {
     return `<svg class="collection-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -436,25 +438,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // Основная функция обновления инфо-блоков, объединяющая результаты всех блоков
   // Теперь эта функция лишь инициализирует все блоки при загрузке и обновляет только блок активности при переключении вкладок
   function updateCollections(data, tdee) {
-    // Всегда создаем все блоки заново при каждом вызове
+    const collectionsContainer = document.querySelector(collectionsContainerSelector);
+    if (!collectionsContainer) return;
+
     const activeBlockHtml = buildActiveBlock(data, tdee);
     const staticBlockHtml = buildStaticBlock(getWeekData());
     const monthComparisonHtml = buildMonthComparisonBlock();
     const yearComparisonHtml = buildYearComparisonBlock();
 
-    // Собираем HTML для всех блоков
     collectionsContainer.innerHTML = activeBlockHtml + staticBlockHtml + monthComparisonHtml + yearComparisonHtml;
 
-    // Добавляем классы для идентификации блоков
     const blocks = collectionsContainer.querySelectorAll('.collection-card');
     if (blocks.length >= 2) blocks[1].classList.add('static-calories-block');
     if (blocks.length >= 3) blocks[2].classList.add('month-comparison-block');
     if (blocks.length >= 4) blocks[3].classList.add('year-comparison-block');
   }
 
-  // Экспортируем функцию updateCollections в глобальную область видимости
-  window.updateCollections = updateCollections;
-
   // Не вызываем здесь инициализацию, а перенесем ее в script.js
   // updateCollections(getWeekData(), 2200);
-});
+
+export { updateCollections };
