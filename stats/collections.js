@@ -454,7 +454,7 @@ const collectionsContainerSelector = '.stats-collections';
     if (blocks.length >= 4) blocks[3].classList.add('year-comparison-block');
   }
 
-  // Не вызываем здесь инициализацию, а перенесем ее в script.js
+  // Не вызываем здесь инициализацию, она выполняется в ui.js
   // updateCollections(getWeekData(), 2200);
 
 export { updateCollections };
