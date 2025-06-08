@@ -75,9 +75,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentPeriod = document.querySelector('.period-button.active')?.dataset.period || 'week';
         let formattedDate = '';
         
-        if (currentPeriod === 'week' || currentPeriod === 'month') {
-          // Для дня форматируем дату: 9 апр. 2025
+        if (currentPeriod === 'week') {
+          // Для дня в режиме недели: 9 апр. 2025
           formattedDate = formatShortDate(dateObj);
+        } else if (currentPeriod === 'month') {
+          // Для дня в режиме месяца показываем день недели
+          formattedDate = formatShortDateWithWeekday(dateObj);
         } else if (currentPeriod === '6month') {
           // Для недели вычисляем интервал: начальная дата + 6 дней
           formattedDate = formatWeekInterval(dateObj);
