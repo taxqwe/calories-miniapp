@@ -19,11 +19,26 @@ function formatNumber(num) {
  * @returns {string} Отформатированная дата
  */
 function formatShortDate(date) {
-  return date.toLocaleDateString(window.localization.getLocale(), { 
-    day: 'numeric', 
-    month: 'short', 
-    year: 'numeric' 
+  return date.toLocaleDateString(window.localization.getLocale(), {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
   });
+}
+
+/**
+ * Форматирует дату в виде "пн, 9 апр. 2025"
+ * @param {Date} date Объект даты
+ * @returns {string} Отформатированная дата с днём недели
+ */
+function formatShortDateWithWeekday(date) {
+  const formatted = date.toLocaleDateString(window.localization.getLocale(), {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  });
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }
 
 /**
