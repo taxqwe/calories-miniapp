@@ -19,11 +19,13 @@ function formatNumber(num) {
  * @returns {string} Отформатированная дата
  */
 function formatShortDate(date) {
-  return date.toLocaleDateString(window.localization.getLocale(), { 
-    day: 'numeric', 
-    month: 'short', 
-    year: 'numeric' 
+  const formatted = date.toLocaleDateString(window.localization.getLocale(), {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
   });
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }
 
 /**
