@@ -433,17 +433,18 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
+  // Регистрируем функции построения блоков в фабрике
+  BlockFactory.register((data, tdee) => buildActiveBlock(data, tdee));
+  BlockFactory.register(() => buildStaticBlock(getWeekData()));
+  BlockFactory.register(() => buildMonthComparisonBlock());
+  BlockFactory.register(() => buildYearComparisonBlock());
+
   // Основная функция обновления инфо-блоков, объединяющая результаты всех блоков
   // Теперь эта функция лишь инициализирует все блоки при загрузке и обновляет только блок активности при переключении вкладок
   function updateCollections(data, tdee) {
-    // Всегда создаем все блоки заново при каждом вызове
-    const activeBlockHtml = buildActiveBlock(data, tdee);
-    const staticBlockHtml = buildStaticBlock(getWeekData());
-    const monthComparisonHtml = buildMonthComparisonBlock();
-    const yearComparisonHtml = buildYearComparisonBlock();
-
-    // Собираем HTML для всех блоков
-    collectionsContainer.innerHTML = activeBlockHtml + staticBlockHtml + monthComparisonHtml + yearComparisonHtml;
+    // Создаем HTML для всех блоков через фабрику
+    const html = BlockFactory.buildAll(data, tdee);
+    collectionsContainer.innerHTML = html;
 
     // Добавляем классы для идентификации блоков
     const blocks = collectionsContainer.querySelectorAll('.collection-card');
