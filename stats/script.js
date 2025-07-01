@@ -26,9 +26,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (debugMode) {
     window.allData = generateMockData(730);
     window.userTDEE = 2200; // Значение по умолчанию
+    window.userCurrentStreak = 5;
+    window.userMaxStreak = 10;
   } else {
     window.allData = [];
     window.userTDEE = 0; // Начальное значение
+    window.userCurrentStreak = 0;
+    window.userMaxStreak = 0;
   }
 
   // Если нужно показать индикатор загрузки, создаём затемнённый оверлей
@@ -142,6 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Преобразуем данные из Map<String, Int> в массив объектов {date, calories}
         const caloriesMap = responseData.calories;
         const tdee = responseData.tdee;
+        const currentStreak = responseData.currentStreak;
+        const maxStreak = responseData.maxStreak;
 
         const formattedData = [];
         // Рассчитываем даты за последние 730 дней для полного набора данных
@@ -171,6 +177,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Если TDEE известен, используем его, иначе оставляем значение по умолчанию
         if (tdee) {
           window.userTDEE = tdee;
+        }
+
+        if (typeof currentStreak === 'number') {
+          window.userCurrentStreak = currentStreak;
+        }
+        if (typeof maxStreak === 'number') {
+          window.userMaxStreak = maxStreak;
         }
 
         // Обновляем график после получения данных

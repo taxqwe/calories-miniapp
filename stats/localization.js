@@ -48,7 +48,10 @@
       // Новые ключи для спиннера и ошибки
       loading: "Загрузка...",
       loadingError: "Ошибка при загрузке данных",
-      retryButton: "Попробовать ещё раз"
+      retryButton: "Попробовать ещё раз",
+      titleStreak: "Серия без пропусков",
+      textCurrentStreak: "Текущая серия: {value} {unit}.",
+      textMaxStreak: "Максимальная серия: {value} {unit}."
     },
     en: {
       averageLabel: "Average<br>per day",
@@ -88,7 +91,10 @@
       // New keys for spinner and error
       loading: "Loading...",
       loadingError: "Error loading data",
-      retryButton: "Try again"
+      retryButton: "Try again",
+      titleStreak: "Streaks",
+      textCurrentStreak: "Current streak: {value} {unit}.",
+      textMaxStreak: "Max streak: {value} {unit}."
     },
     ar: {
       averageLabel: "متوسط<br>في اليوم",
@@ -126,7 +132,10 @@
       
       loading: "جارٍ التحميل...",
       loadingError: "خطأ في تحميل البيانات",
-      retryButton: "حاول مرة أخرى"
+      retryButton: "حاول مرة أخرى",
+      titleStreak: "سلسلة",
+      textCurrentStreak: "السلسلة الحالية: {value} {unit}.",
+      textMaxStreak: "أطول سلسلة: {value} {unit}."
     },
 
     de: {
@@ -165,7 +174,10 @@
       
       loading: "Laden...",
       loadingError: "Fehler beim Laden der Daten",
-      retryButton: "Erneut versuchen"
+      retryButton: "Erneut versuchen",
+      titleStreak: "Serie",
+      textCurrentStreak: "Aktuelle Serie: {value} {unit}.",
+      textMaxStreak: "Beste Serie: {value} {unit}."
     },
 
     es: {
@@ -204,7 +216,10 @@
       
       loading: "Cargando...",
       loadingError: "Error al cargar datos",
-      retryButton: "Intentar de nuevo"
+      retryButton: "Intentar de nuevo",
+      titleStreak: "Racha",
+      textCurrentStreak: "Racha actual: {value} {unit}.",
+      textMaxStreak: "Racha máxima: {value} {unit}."
     },
 
     fr: {
@@ -243,7 +258,10 @@
       
       loading: "Chargement...",
       loadingError: "Erreur de chargement des données",
-      retryButton: "Réessayer"
+      retryButton: "Réessayer",
+      titleStreak: "Série",
+      textCurrentStreak: "Série en cours : {value} {unit}.",
+      textMaxStreak: "Meilleure série : {value} {unit}."
     },
 
     hi: {
@@ -282,7 +300,10 @@
       
       loading: "लोड हो रहा है...",
       loadingError: "डेटा लोड करते समय त्रुटि",
-      retryButton: "पुनः प्रयास करें"
+      retryButton: "पुनः प्रयास करें",
+      titleStreak: "स्ट्रीक",
+      textCurrentStreak: "वर्तमान स्ट्रीक: {value} {unit}.",
+      textMaxStreak: "अधिकतम स्ट्रीक: {value} {unit}."
     },
 
     pt: {
@@ -321,7 +342,10 @@
       
       loading: "Carregando...",
       loadingError: "Erro ao carregar os dados",
-      retryButton: "Tentar novamente"
+      retryButton: "Tentar novamente",
+      titleStreak: "Sequência",
+      textCurrentStreak: "Sequência atual: {value} {unit}.",
+      textMaxStreak: "Máxima: {value} {unit}."
     },
 
     tr: {
@@ -360,7 +384,10 @@
       
       loading: "Yükleniyor...",
       loadingError: "Veriler yüklenirken hata oluştu",
-      retryButton: "Tekrar dene"
+      retryButton: "Tekrar dene",
+      titleStreak: "Seri",
+      textCurrentStreak: "Mevcut seri: {value} {unit}.",
+      textMaxStreak: "En uzun seri: {value} {unit}."
     },
 
     uk: {
@@ -399,7 +426,10 @@
       
       loading: "Завантаження...",
       loadingError: "Помилка завантаження даних",
-      retryButton: "Спробувати ще раз"
+      retryButton: "Спробувати ще раз",
+      titleStreak: "Серія",
+      textCurrentStreak: "Поточна серія: {value} {unit}.",
+      textMaxStreak: "Макс. серія: {value} {unit}."
     }
   };
 
