@@ -433,11 +433,36 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
+  function buildStreakBlock() {
+    const current = window.userCurrentStreak || 0;
+    const max = window.userMaxStreak || 0;
+
+    const currentText = window.localization.textCurrentStreak
+      .replace('{value}', formatNumber(current))
+      .replace('{unit}', window.localization.pluralizeDays(current));
+    const maxText = window.localization.textMaxStreak
+      .replace('{value}', formatNumber(max))
+      .replace('{unit}', window.localization.pluralizeDays(max));
+
+    return `
+      <div class="collection-card">
+        <div class="collection-header">
+          ${createFireIcon()}
+          <span class="collection-title">${window.localization.titleStreak}</span>
+        </div>
+        <div class="collection-text">
+          ${currentText}<br>${maxText}
+        </div>
+      </div>
+    `;
+  }
+
   // Регистрируем функции построения блоков в фабрике
   BlockFactory.register((data, tdee) => buildActiveBlock(data, tdee));
   BlockFactory.register(() => buildStaticBlock(getWeekData()));
   BlockFactory.register(() => buildMonthComparisonBlock());
   BlockFactory.register(() => buildYearComparisonBlock());
+  BlockFactory.register(() => buildStreakBlock());
 
   // Основная функция обновления инфо-блоков, объединяющая результаты всех блоков
   // Теперь эта функция лишь инициализирует все блоки при загрузке и обновляет только блок активности при переключении вкладок
@@ -451,6 +476,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (blocks.length >= 2) blocks[1].classList.add('static-calories-block');
     if (blocks.length >= 3) blocks[2].classList.add('month-comparison-block');
     if (blocks.length >= 4) blocks[3].classList.add('year-comparison-block');
+    if (blocks.length >= 5) blocks[4].classList.add('streak-block');
   }
 
   // Экспортируем функцию updateCollections в глобальную область видимости
