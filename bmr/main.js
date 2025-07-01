@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Female",
       labelActivity: "Physical Activity Level:",
       selectActivity: "Select level on the scale:",
+      goalToggleLabel: "Set goal (optional)",
       labelGoal: "Your goal:",
       goalSurplus: "Calorie surplus (mass gain)",
       goalDeficit: "Calorie deficit (weight loss)",
@@ -60,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Женский",
       labelActivity: "Уровень физической активности:",
       selectActivity: "Выберите уровень на шкале:",
+      goalToggleLabel: "Установить цель (опционально)",
       labelGoal: "Ваша цель:",
       goalSurplus: "Профицит калорий (набор массы)",
       goalDeficit: "Дефицит калорий (снижение веса)",
@@ -106,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "أنثى",
       labelActivity: "مستوى النشاط البدني:",
       selectActivity: "اختر المستوى على المقياس:",
+      goalToggleLabel: "تعيين هدف (اختياري)",
       labelGoal: "هدفك:",
       goalSurplus: "فائض السعرات (زيادة الكتلة)",
       goalDeficit: "عجز السعرات (فقدان الوزن)",
@@ -152,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Weiblich",
       labelActivity: "Körperliches Aktivitätsniveau:",
       selectActivity: "Wählen Sie den Level auf der Skala:",
+      goalToggleLabel: "Ziel festlegen (optional)",
       labelGoal: "Dein Ziel:",
       goalSurplus: "Kalorienüberschuss (Masseaufbau)",
       goalDeficit: "Kaloriendefizit (Gewichtsverlust)",
@@ -198,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Mujer",
       labelActivity: "Nivel de actividad física:",
       selectActivity: "Seleccione el nivel en la escala:",
+      goalToggleLabel: "Establecer objetivo (opcional)",
       labelGoal: "Tu objetivo:",
       goalSurplus: "Superávit calórico (ganancia de masa)",
       goalDeficit: "Déficit calórico (pérdida de peso)",
@@ -244,6 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Femme",
       labelActivity: "Niveau d'activité physique :",
       selectActivity: "Sélectionnez le niveau sur l'échelle :",
+      goalToggleLabel: "Définir l'objectif (optionnel)",
       labelGoal: "Votre objectif :",
       goalSurplus: "Surplus calorique (prise de masse)",
       goalDeficit: "Déficit calorique (perte de poids)",
@@ -290,6 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "महिला",
       labelActivity: "शारीरिक गतिविधि का स्तर:",
       selectActivity: "स्केल पर स्तर चुनें:",
+      goalToggleLabel: "लक्ष्य सेट करें (वैकल्पिक)",
       labelGoal: "आपका लक्ष्य:",
       goalSurplus: "कैलोरी सरप्लस (वज़न बढ़ाना)",
       goalDeficit: "कैलोरी डेफिसिट (वज़न घटाना)",
@@ -336,6 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Kadın",
       labelActivity: "Fiziksel Aktivite Seviyesi:",
       selectActivity: "Ölçekteki seviyeyi seçin:",
+      goalToggleLabel: "Hedef belirle (isteğe bağlı)",
       labelGoal: "Hedefiniz:",
       goalSurplus: "Kalori fazlası (kütle kazanımı)",
       goalDeficit: "Kalori açığı (kilo verme)",
@@ -382,6 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Жіноча",
       labelActivity: "Рівень фізичної активності:",
       selectActivity: "Оберіть рівень на шкалі:",
+      goalToggleLabel: "Встановити ціль (опційно)",
       labelGoal: "Ваша мета:",
       goalSurplus: "Профіцит калорій (набір маси)",
       goalDeficit: "Дефіцит калорій (зниження ваги)",
@@ -428,6 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Feminino",
       labelActivity: "Nível de Atividade Física:",
       selectActivity: "Selecione o nível na escala:",
+      goalToggleLabel: "Definir meta (opcional)",
       labelGoal: "Seu objetivo:",
       goalSurplus: "Superávit calórico (ganho de massa)",
       goalDeficit: "Déficit calórico (perda de peso)",
@@ -481,6 +491,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const activityRangeEl = document.getElementById('activityRange');
   activityRangeEl.addEventListener('input', updateActivityDescription);
   const activityDescriptionEl = document.getElementById('activityDescription');
+  const goalToggleEl = document.getElementById('goal-toggle');
+  const goalToggleLabelEl = document.getElementById('label-goal-toggle');
+  const goalSettingsEl = document.getElementById('goal-settings');
   const labelGoalEl = document.getElementById('label-goal');
   const goalSurplusLabelEl = document.getElementById('goal-surplus-label');
   const goalDeficitLabelEl = document.getElementById('goal-deficit-label');
@@ -490,6 +503,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultEl = document.getElementById('result');
   const tooltipBmrEl = document.getElementById('tooltip-bmr');
   const tooltipTdeeEl = document.getElementById('tooltip-tdee');
+
+  goalToggleEl.addEventListener('change', () => {
+    goalSettingsEl.style.display = goalToggleEl.checked ? 'block' : 'none';
+  });
 
   // Состояние
   const urlParams = new URLSearchParams(window.location.search || '');
@@ -532,6 +549,7 @@ document.addEventListener('DOMContentLoaded', () => {
     labelFemaleEl.innerText = t.labelFemale;
     labelActivityEl.innerText = t.labelActivity;
     selectActivityEl.innerText = t.selectActivity;
+    goalToggleLabelEl.innerText = t.goalToggleLabel;
     labelGoalEl.innerText = t.labelGoal;
     goalSurplusLabelEl.innerText = t.goalSurplus;
     goalDeficitLabelEl.innerText = t.goalDeficit;
@@ -662,6 +680,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const multipliers = [1.2, 1.375, 1.55, 1.725, 1.9];
     const tdee = bmr * multipliers[activityLevel - 1];
     
+    const goalInfo = goalToggleEl.checked ? {
+      type: document.querySelector('input[name="goal"]:checked')?.value || null,
+      value: (() => {
+        const val = parseFloat(goalValueEl.value);
+        return isNaN(val) ? null : val;
+      })()
+    } : null;
+
     const payload = {
       data: {
         height: height,
@@ -672,6 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bmr: Math.round(bmr),
         tdee: Math.round(tdee) // именно tdee, как было раньше
       },
+      goal: goalInfo,
       initData: window.Telegram.WebApp.initData
     };
 
