@@ -14,6 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Female",
       labelActivity: "Physical Activity Level:",
       selectActivity: "Select level on the scale:",
+      labelGoal: "Your goal:",
+      goalSurplus: "Calorie surplus (mass gain)",
+      goalDeficit: "Calorie deficit (weight loss)",
       calculateButton: "Calculate and Send",
       resultTitle: "Result:",
       bmrResult: "BMR:",
@@ -55,6 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Женский",
       labelActivity: "Уровень физической активности:",
       selectActivity: "Выберите уровень на шкале:",
+      labelGoal: "Ваша цель:",
+      goalSurplus: "Профицит калорий (набор массы)",
+      goalDeficit: "Дефицит калорий (снижение веса)",
       calculateButton: "Рассчитать и отправить",
       resultTitle: "Результат:",
       bmrResult: "BMR:",
@@ -96,6 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "أنثى",
       labelActivity: "مستوى النشاط البدني:",
       selectActivity: "اختر المستوى على المقياس:",
+      labelGoal: "هدفك:",
+      goalSurplus: "فائض السعرات (زيادة الكتلة)",
+      goalDeficit: "عجز السعرات (فقدان الوزن)",
       calculateButton: "احسب وأرسل",
       resultTitle: "النتيجة:",
       bmrResult: "BMR:",
@@ -137,6 +146,9 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Weiblich",
       labelActivity: "Körperliches Aktivitätsniveau:",
       selectActivity: "Wählen Sie den Level auf der Skala:",
+      labelGoal: "Dein Ziel:",
+      goalSurplus: "Kalorienüberschuss (Masseaufbau)",
+      goalDeficit: "Kaloriendefizit (Gewichtsverlust)",
       calculateButton: "Berechnen und Senden",
       resultTitle: "Ergebnis:",
       bmrResult: "BMR:",
@@ -178,6 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Mujer",
       labelActivity: "Nivel de actividad física:",
       selectActivity: "Seleccione el nivel en la escala:",
+      labelGoal: "Tu objetivo:",
+      goalSurplus: "Superávit calórico (ganancia de masa)",
+      goalDeficit: "Déficit calórico (pérdida de peso)",
       calculateButton: "Calcular y Enviar",
       resultTitle: "Resultado:",
       bmrResult: "BMR:",
@@ -219,6 +234,9 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Femme",
       labelActivity: "Niveau d'activité physique :",
       selectActivity: "Sélectionnez le niveau sur l'échelle :",
+      labelGoal: "Votre objectif :",
+      goalSurplus: "Surplus calorique (prise de masse)",
+      goalDeficit: "Déficit calorique (perte de poids)",
       calculateButton: "Calculer et Envoyer",
       resultTitle: "Résultat :",
       bmrResult: "BMR :",
@@ -260,6 +278,9 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "महिला",
       labelActivity: "शारीरिक गतिविधि का स्तर:",
       selectActivity: "स्केल पर स्तर चुनें:",
+      labelGoal: "आपका लक्ष्य:",
+      goalSurplus: "कैलोरी सरप्लस (वज़न बढ़ाना)",
+      goalDeficit: "कैलोरी डेफिसिट (वज़न घटाना)",
       calculateButton: "गणना करें और भेजें",
       resultTitle: "परिणाम:",
       bmrResult: "BMR:",
@@ -301,6 +322,9 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Kadın",
       labelActivity: "Fiziksel Aktivite Seviyesi:",
       selectActivity: "Ölçekteki seviyeyi seçin:",
+      labelGoal: "Hedefiniz:",
+      goalSurplus: "Kalori fazlası (kütle kazanımı)",
+      goalDeficit: "Kalori açığı (kilo verme)",
       calculateButton: "Hesapla ve Gönder",
       resultTitle: "Sonuç:",
       bmrResult: "BMR:",
@@ -342,6 +366,9 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Жіноча",
       labelActivity: "Рівень фізичної активності:",
       selectActivity: "Оберіть рівень на шкалі:",
+      labelGoal: "Ваша мета:",
+      goalSurplus: "Профіцит калорій (набір маси)",
+      goalDeficit: "Дефіцит калорій (зниження ваги)",
       calculateButton: "Розрахувати і відправити",
       resultTitle: "Результат:",
       bmrResult: "BMR:",
@@ -383,6 +410,9 @@ document.addEventListener('DOMContentLoaded', () => {
       labelFemale: "Feminino",
       labelActivity: "Nível de Atividade Física:",
       selectActivity: "Selecione o nível na escala:",
+      labelGoal: "Seu objetivo:",
+      goalSurplus: "Superávit calórico (ganho de massa)",
+      goalDeficit: "Déficit calórico (perda de peso)",
       calculateButton: "Calcular e Enviar",
       resultTitle: "Resultado:",
       bmrResult: "BMR:",
@@ -431,6 +461,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const activityRangeEl = document.getElementById('activityRange');
   activityRangeEl.addEventListener('input', updateActivityDescription);
   const activityDescriptionEl = document.getElementById('activityDescription');
+  const labelGoalEl = document.getElementById('label-goal');
+  const goalSurplusLabelEl = document.getElementById('goal-surplus-label');
+  const goalDeficitLabelEl = document.getElementById('goal-deficit-label');
   const calculateButtonEl = document.getElementById('calculate-button');
   const resultEl = document.getElementById('result');
   const tooltipBmrEl = document.getElementById('tooltip-bmr');
@@ -477,6 +510,9 @@ document.addEventListener('DOMContentLoaded', () => {
     labelFemaleEl.innerText = t.labelFemale;
     labelActivityEl.innerText = t.labelActivity;
     selectActivityEl.innerText = t.selectActivity;
+    labelGoalEl.innerText = t.labelGoal;
+    goalSurplusLabelEl.innerText = t.goalSurplus;
+    goalDeficitLabelEl.innerText = t.goalDeficit;
     calculateButtonEl.innerText = t.calculateButton;
     heightEl.placeholder = t.heightPlaceholder;
     weightEl.placeholder = t.weightPlaceholder;
