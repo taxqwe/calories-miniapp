@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Your goal:",
       goalSurplus: "Calorie surplus (mass gain)",
       goalDeficit: "Calorie deficit (weight loss)",
+      labelGoalValue: "Desired daily calories:",
+      goalValuePlaceholder: "e.g., 2000",
       calculateButton: "Calculate and Send",
       resultTitle: "Result:",
       bmrResult: "BMR:",
@@ -61,6 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Ваша цель:",
       goalSurplus: "Профицит калорий (набор массы)",
       goalDeficit: "Дефицит калорий (снижение веса)",
+      labelGoalValue: "Желаемые калории в день:",
+      goalValuePlaceholder: "например, 2000",
       calculateButton: "Рассчитать и отправить",
       resultTitle: "Результат:",
       bmrResult: "BMR:",
@@ -105,6 +109,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "هدفك:",
       goalSurplus: "فائض السعرات (زيادة الكتلة)",
       goalDeficit: "عجز السعرات (فقدان الوزن)",
+      labelGoalValue: "السعرات المستهدفة يوميًا:",
+      goalValuePlaceholder: "مثال: 2000",
       calculateButton: "احسب وأرسل",
       resultTitle: "النتيجة:",
       bmrResult: "BMR:",
@@ -149,6 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Dein Ziel:",
       goalSurplus: "Kalorienüberschuss (Masseaufbau)",
       goalDeficit: "Kaloriendefizit (Gewichtsverlust)",
+      labelGoalValue: "Gewünschte Kalorien pro Tag:",
+      goalValuePlaceholder: "z.B. 2000",
       calculateButton: "Berechnen und Senden",
       resultTitle: "Ergebnis:",
       bmrResult: "BMR:",
@@ -193,6 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Tu objetivo:",
       goalSurplus: "Superávit calórico (ganancia de masa)",
       goalDeficit: "Déficit calórico (pérdida de peso)",
+      labelGoalValue: "Calorías deseadas por día:",
+      goalValuePlaceholder: "ej.: 2000",
       calculateButton: "Calcular y Enviar",
       resultTitle: "Resultado:",
       bmrResult: "BMR:",
@@ -237,6 +247,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Votre objectif :",
       goalSurplus: "Surplus calorique (prise de masse)",
       goalDeficit: "Déficit calorique (perte de poids)",
+      labelGoalValue: "Calories visées par jour :",
+      goalValuePlaceholder: "ex. : 2000",
       calculateButton: "Calculer et Envoyer",
       resultTitle: "Résultat :",
       bmrResult: "BMR :",
@@ -281,6 +293,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "आपका लक्ष्य:",
       goalSurplus: "कैलोरी सरप्लस (वज़न बढ़ाना)",
       goalDeficit: "कैलोरी डेफिसिट (वज़न घटाना)",
+      labelGoalValue: "रोज़ाना लक्ष्यित कैलोरी:",
+      goalValuePlaceholder: "उदा.: 2000",
       calculateButton: "गणना करें और भेजें",
       resultTitle: "परिणाम:",
       bmrResult: "BMR:",
@@ -325,6 +339,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Hedefiniz:",
       goalSurplus: "Kalori fazlası (kütle kazanımı)",
       goalDeficit: "Kalori açığı (kilo verme)",
+      labelGoalValue: "Günlük hedef kalori:",
+      goalValuePlaceholder: "örn. 2000",
       calculateButton: "Hesapla ve Gönder",
       resultTitle: "Sonuç:",
       bmrResult: "BMR:",
@@ -369,6 +385,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Ваша мета:",
       goalSurplus: "Профіцит калорій (набір маси)",
       goalDeficit: "Дефіцит калорій (зниження ваги)",
+      labelGoalValue: "Бажані калорії на день:",
+      goalValuePlaceholder: "наприклад, 2000",
       calculateButton: "Розрахувати і відправити",
       resultTitle: "Результат:",
       bmrResult: "BMR:",
@@ -413,6 +431,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Seu objetivo:",
       goalSurplus: "Superávit calórico (ganho de massa)",
       goalDeficit: "Déficit calórico (perda de peso)",
+      labelGoalValue: "Calorias desejadas por dia:",
+      goalValuePlaceholder: "ex.: 2000",
       calculateButton: "Calcular e Enviar",
       resultTitle: "Resultado:",
       bmrResult: "BMR:",
@@ -464,6 +484,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const labelGoalEl = document.getElementById('label-goal');
   const goalSurplusLabelEl = document.getElementById('goal-surplus-label');
   const goalDeficitLabelEl = document.getElementById('goal-deficit-label');
+  const labelGoalValueEl = document.getElementById('label-goal-value');
+  const goalValueEl = document.getElementById('goal-value');
   const calculateButtonEl = document.getElementById('calculate-button');
   const resultEl = document.getElementById('result');
   const tooltipBmrEl = document.getElementById('tooltip-bmr');
@@ -513,6 +535,8 @@ document.addEventListener('DOMContentLoaded', () => {
     labelGoalEl.innerText = t.labelGoal;
     goalSurplusLabelEl.innerText = t.goalSurplus;
     goalDeficitLabelEl.innerText = t.goalDeficit;
+    labelGoalValueEl.innerText = t.labelGoalValue;
+    goalValueEl.placeholder = t.goalValuePlaceholder;
     calculateButtonEl.innerText = t.calculateButton;
     heightEl.placeholder = t.heightPlaceholder;
     weightEl.placeholder = t.weightPlaceholder;

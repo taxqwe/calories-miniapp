@@ -372,6 +372,7 @@ input::placeholder {
   display: flex;
   gap: 20px;
   margin: 5px 0 15px;
+  flex-wrap: wrap;
 }
 
 .radio-option {
@@ -384,6 +385,7 @@ input::placeholder {
   width: 18px;
   height: 18px;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .radio-option label {
