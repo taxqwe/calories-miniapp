@@ -497,8 +497,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const labelGoalEl = document.getElementById('label-goal');
   const goalSurplusLabelEl = document.getElementById('goal-surplus-label');
   const goalDeficitLabelEl = document.getElementById('goal-deficit-label');
-  const labelGoalValueEl = document.getElementById('label-goal-value');
-  const goalValueEl = document.getElementById('goal-value');
   const calculateButtonEl = document.getElementById('calculate-button');
   const resultEl = document.getElementById('result');
   const tooltipBmrEl = document.getElementById('tooltip-bmr');
@@ -553,8 +551,6 @@ document.addEventListener('DOMContentLoaded', () => {
     labelGoalEl.innerText = t.labelGoal;
     goalSurplusLabelEl.innerText = t.goalSurplus;
     goalDeficitLabelEl.innerText = t.goalDeficit;
-    labelGoalValueEl.innerText = t.labelGoalValue;
-    goalValueEl.placeholder = t.goalValuePlaceholder;
     calculateButtonEl.innerText = t.calculateButton;
     heightEl.placeholder = t.heightPlaceholder;
     weightEl.placeholder = t.weightPlaceholder;
@@ -681,11 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tdee = bmr * multipliers[activityLevel - 1];
     
     const goalInfo = goalToggleEl.checked ? {
-      type: document.querySelector('input[name="goal"]:checked')?.value || null,
-      value: (() => {
-        const val = parseFloat(goalValueEl.value);
-        return isNaN(val) ? null : val;
-      })()
+      type: document.querySelector('input[name="goal"]:checked')?.value || null
     } : null;
 
     const payload = {
