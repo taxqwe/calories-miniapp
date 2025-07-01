@@ -105,10 +105,23 @@
           <div class="tick-container"><span class="tick">5</span></div>
         </div>
       </div>
-      <div id="activityDescription" class="activity-description"></div>
-      <button type="submit" id="calculate-button"></button>
-    </form>
-    <div id="result"></div>
+        <div id="activityDescription" class="activity-description"></div>
+        <div class="form-group">
+          <label class="field-label" id="label-goal"></label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" id="goal-surplus" name="goal" value="surplus">
+              <label for="goal-surplus" id="goal-surplus-label"></label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" id="goal-deficit" name="goal" value="deficit">
+              <label for="goal-deficit" id="goal-deficit-label"></label>
+            </div>
+          </div>
+        </div>
+        <button type="submit" id="calculate-button"></button>
+      </form>
+      <div id="result"></div>
   </div>
   
   <script src="main.js"></script>
