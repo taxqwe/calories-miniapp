@@ -433,9 +433,9 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
-  function buildStreakBlock() {
-    const current = window.userCurrentStreak || 0;
-    const max = window.userMaxStreak || 0;
+  function buildLoggedStreakCard() {
+    const current = window.userCurrentLoggedStreak || 0;
+    const max = window.userMaxLoggedStreak || 0;
 
     const currentText = window.localization.textCurrentStreak
       .replace('{value}', formatNumber(current))
@@ -443,6 +443,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const maxText = window.localization.textMaxStreak
       .replace('{value}', formatNumber(max))
       .replace('{unit}', window.localization.pluralizeDays(max));
+
+    const safeMax = max > 0 ? max : 1;
+    const rawPercent = (current / safeMax) * 100;
+    const barWidth = rawPercent < 20 ? 20 : rawPercent;
 
     return `
       <div class="collection-card">
@@ -453,8 +457,46 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="collection-text">
           ${currentText}<br>${maxText}
         </div>
+        <div class="period-bar current" style="width: ${barWidth.toFixed(1)}%">
+          <span class="period-bar-label">${current}/${max}</span>
+        </div>
       </div>
     `;
+  }
+
+  function buildGoalStreakCard() {
+    const current = window.userCurrentGoalStreak || 0;
+    const max = window.userMaxGoalStreak || 0;
+
+    const currentText = window.localization.textCurrentGoalStreak
+      .replace('{value}', formatNumber(current))
+      .replace('{unit}', window.localization.pluralizeDays(current));
+    const maxText = window.localization.textMaxGoalStreak
+      .replace('{value}', formatNumber(max))
+      .replace('{unit}', window.localization.pluralizeDays(max));
+
+    const safeMax = max > 0 ? max : 1;
+    const rawPercent = (current / safeMax) * 100;
+    const barWidth = rawPercent < 20 ? 20 : rawPercent;
+
+    return `
+      <div class="collection-card">
+        <div class="collection-header">
+          ${createFireIcon()}
+          <span class="collection-title">${window.localization.titleGoalStreak}</span>
+        </div>
+        <div class="collection-text">
+          ${currentText}<br>${maxText}
+        </div>
+        <div class="period-bar current" style="width: ${barWidth.toFixed(1)}%">
+          <span class="period-bar-label">${current}/${max}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function buildStreakRow() {
+    return `<div class="streak-row">${buildLoggedStreakCard()}${buildGoalStreakCard()}</div>`;
   }
 
   // Регистрируем функции построения блоков в фабрике
@@ -462,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
   BlockFactory.register(() => buildStaticBlock(getWeekData()));
   BlockFactory.register(() => buildMonthComparisonBlock());
   BlockFactory.register(() => buildYearComparisonBlock());
-  BlockFactory.register(() => buildStreakBlock());
+  BlockFactory.register(() => buildStreakRow());
 
   // Основная функция обновления инфо-блоков, объединяющая результаты всех блоков
   // Теперь эта функция лишь инициализирует все блоки при загрузке и обновляет только блок активности при переключении вкладок
@@ -477,6 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (blocks.length >= 3) blocks[2].classList.add('month-comparison-block');
     if (blocks.length >= 4) blocks[3].classList.add('year-comparison-block');
     if (blocks.length >= 5) blocks[4].classList.add('streak-block');
+    if (blocks.length >= 6) blocks[5].classList.add('goal-streak-block');
   }
 
   // Экспортируем функцию updateCollections в глобальную область видимости
