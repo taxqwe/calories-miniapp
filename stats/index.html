@@ -227,18 +227,14 @@
       border-radius: 8px;
       color: var(--text-color);
     }
-    .collection-card.streak-block,
-    .collection-card.goal-streak-block {
-      /* keep standard vertical layout */
+    .streak-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
     }
-    .streak-block .collection-text,
-    .goal-streak-block .collection-text {
+    .streak-row .collection-card {
+      flex: 1;
       margin-bottom: 0;
-      font-size: 16px;
-    }
-    .streak-number {
-      font-size: 20px;
-      font-weight: 600;
     }
     .collection-header {
       display: flex;
