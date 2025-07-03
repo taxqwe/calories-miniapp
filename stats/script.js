@@ -26,13 +26,17 @@ document.addEventListener('DOMContentLoaded', () => {
   if (debugMode) {
     window.allData = generateMockData(730);
     window.userTDEE = 2200; // Значение по умолчанию
-    window.userCurrentStreak = 5;
-    window.userMaxStreak = 10;
+    window.userCurrentLoggedStreak = 5;
+    window.userMaxLoggedStreak = 10;
+    window.userCurrentGoalStreak = 3;
+    window.userMaxGoalStreak = 7;
   } else {
     window.allData = [];
     window.userTDEE = 0; // Начальное значение
-    window.userCurrentStreak = 0;
-    window.userMaxStreak = 0;
+    window.userCurrentLoggedStreak = 0;
+    window.userMaxLoggedStreak = 0;
+    window.userCurrentGoalStreak = 0;
+    window.userMaxGoalStreak = 0;
   }
 
   // Если нужно показать индикатор загрузки, создаём затемнённый оверлей
@@ -146,8 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Преобразуем данные из Map<String, Int> в массив объектов {date, calories}
         const caloriesMap = responseData.calories;
         const tdee = responseData.tdee;
-        const currentStreak = responseData.currentStreak;
-        const maxStreak = responseData.maxStreak;
+        const currentLoggedStreak = responseData.currentLoggedDaysStreak;
+        const maxLoggedStreak = responseData.maxLoggedDaysStreak;
+        const currentGoalStreak = responseData.currentGoalStreak;
+        const maxGoalStreak = responseData.maxGoalStreak;
 
         const formattedData = [];
         // Рассчитываем даты за последние 730 дней для полного набора данных
@@ -179,11 +185,17 @@ document.addEventListener('DOMContentLoaded', () => {
           window.userTDEE = tdee;
         }
 
-        if (typeof currentStreak === 'number') {
-          window.userCurrentStreak = currentStreak;
+        if (typeof currentLoggedStreak === 'number') {
+          window.userCurrentLoggedStreak = currentLoggedStreak;
         }
-        if (typeof maxStreak === 'number') {
-          window.userMaxStreak = maxStreak;
+        if (typeof maxLoggedStreak === 'number') {
+          window.userMaxLoggedStreak = maxLoggedStreak;
+        }
+        if (typeof currentGoalStreak === 'number') {
+          window.userCurrentGoalStreak = currentGoalStreak;
+        }
+        if (typeof maxGoalStreak === 'number') {
+          window.userMaxGoalStreak = maxGoalStreak;
         }
 
         // Обновляем график после получения данных
