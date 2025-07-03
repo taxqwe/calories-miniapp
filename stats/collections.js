@@ -438,10 +438,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const max = window.userMaxLoggedStreak || 0;
 
     const currentText = window.localization.textCurrentStreak
-      .replace('{value}', formatNumber(current))
+      .replace(
+        '{value}',
+        `<span class="streak-number">${formatNumber(current)}</span>`
+      )
       .replace('{unit}', window.localization.pluralizeDays(current));
     const maxText = window.localization.textMaxStreak
-      .replace('{value}', formatNumber(max))
+      .replace(
+        '{value}',
+        `<span class="streak-number">${formatNumber(max)}</span>`
+      )
       .replace('{unit}', window.localization.pluralizeDays(max));
 
     return `
@@ -462,10 +468,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const max = window.userMaxGoalStreak || 0;
 
     const currentText = window.localization.textCurrentGoalStreak
-      .replace('{value}', formatNumber(current))
+      .replace(
+        '{value}',
+        `<span class="streak-number">${formatNumber(current)}</span>`
+      )
       .replace('{unit}', window.localization.pluralizeDays(current));
     const maxText = window.localization.textMaxGoalStreak
-      .replace('{value}', formatNumber(max))
+      .replace(
+        '{value}',
+        `<span class="streak-number">${formatNumber(max)}</span>`
+      )
       .replace('{unit}', window.localization.pluralizeDays(max));
 
     return `
