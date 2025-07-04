@@ -236,6 +236,7 @@
       flex: 1;
       margin-bottom: 0;
     }
+
     .collection-header {
       display: flex;
       align-items: center;
@@ -250,6 +251,7 @@
     .collection-title {
       color: var(--orange-accent);
       font-weight: 500;
+      line-height: 1.2;
     }
     .collection-text {
       font-size: 15px;
@@ -269,15 +271,27 @@
       color: var(--text-light);
       margin-left: 4px;
     }
+    .progress-container {
+      position: relative;
+      height: 24px;
+      margin-bottom: 8px;
+    }
     .period-bar {
       height: 24px;
       border-radius: 6px;
-      margin-bottom: 8px;
-      position: relative;
+      position: absolute;
+      top: 0;
+      left: 0;
       overflow: hidden;
+    }
+    .period-bar.background {
+      width: 100%;
+      background: var(--chart-secondary);
+      z-index: 1;
     }
     .period-bar.current {
       background: var(--orange-accent);
+      z-index: 2;
     }
     .period-bar.previous {
       background: var(--prev-bar-color);
