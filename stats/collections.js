@@ -433,26 +433,21 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
+
+
   function buildLoggedStreakCard() {
     const current = window.userCurrentLoggedStreak || 0;
     const max = window.userMaxLoggedStreak || 0;
 
     const currentText = window.localization.textCurrentStreak
-      .replace(
-        '{value}',
-        `<span class="streak-number">${formatNumber(current)}</span>`
-      )
-      .replace('{unit}', window.localization.pluralizeDays(current));
+      .replace('{value}', `<strong>${formatNumber(current)}</strong>`)
+      .replace('{unit}', `<strong>${window.localization.pluralizeDays(current)}</strong>`);
     const maxText = window.localization.textMaxStreak
-      .replace(
-        '{value}',
-        `<span class="streak-number">${formatNumber(max)}</span>`
-      )
-      .replace('{unit}', window.localization.pluralizeDays(max));
+      .replace('{value}', `<strong>${formatNumber(max)}</strong>`)
+      .replace('{unit}', `<strong>${window.localization.pluralizeDays(max)}</strong>`);
 
     const safeMax = max > 0 ? max : 1;
     const rawPercent = (current / safeMax) * 100;
-    const barWidth = rawPercent < 20 ? 20 : rawPercent;
 
     return `
       <div class="collection-card">
@@ -463,8 +458,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="collection-text">
           ${currentText}<br>${maxText}
         </div>
-        <div class="period-bar current" style="width: ${barWidth.toFixed(1)}%">
-          <span class="period-bar-label">${current}/${max}</span>
+        <div class="progress-container">
+          <div class="period-bar background"></div>
+          <div class="period-bar current" style="width: ${rawPercent.toFixed(1)}%">
+            <span class="period-bar-label">${current}/${max}</span>
+          </div>
         </div>
       </div>
     `;
@@ -475,15 +473,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const max = window.userMaxGoalStreak || 0;
 
     const currentText = window.localization.textCurrentGoalStreak
-      .replace('{value}', formatNumber(current))
-      .replace('{unit}', window.localization.pluralizeDays(current));
+      .replace('{value}', `<strong>${formatNumber(current)}</strong>`)
+      .replace('{unit}', `<strong>${window.localization.pluralizeDays(current)}</strong>`);
     const maxText = window.localization.textMaxGoalStreak
-      .replace('{value}', formatNumber(max))
-      .replace('{unit}', window.localization.pluralizeDays(max));
+      .replace('{value}', `<strong>${formatNumber(max)}</strong>`)
+      .replace('{unit}', `<strong>${window.localization.pluralizeDays(max)}</strong>`);
 
     const safeMax = max > 0 ? max : 1;
     const rawPercent = (current / safeMax) * 100;
-    const barWidth = rawPercent < 20 ? 20 : rawPercent;
 
     return `
       <div class="collection-card">
@@ -494,8 +491,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="collection-text">
           ${currentText}<br>${maxText}
         </div>
-        <div class="period-bar current" style="width: ${barWidth.toFixed(1)}%">
-          <span class="period-bar-label">${current}/${max}</span>
+        <div class="progress-container">
+          <div class="period-bar background"></div>
+          <div class="period-bar current" style="width: ${rawPercent.toFixed(1)}%">
+            <span class="period-bar-label">${current}/${max}</span>
+          </div>
         </div>
       </div>
     `;
