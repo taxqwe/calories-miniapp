@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ${hasCurrentData ? formatNumber(currentValue) : window.localization.noData}
             <span>${hasCurrentData ? window.localization.dailyKcalLabel : ''}</span>
           </div>
-          <div class="period-bar current" style="width: ${displayedCurrentBarWidth}%">
+          <div class="comparison-bar current" style="width: ${displayedCurrentBarWidth}%">
             <span class="period-bar-label">${currentLabel}</span>
           </div>
         </div>
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ${hasPrevData ? formatNumber(previousValue) : window.localization.noData}
             <span>${hasPrevData ? window.localization.dailyKcalLabel : ''}</span>
           </div>
-          <div class="period-bar previous" style="width: ${displayedPreviousBarWidth}%">
+          <div class="comparison-bar previous" style="width: ${displayedPreviousBarWidth}%">
             <span class="period-bar-label">${previousLabel}</span>
           </div>
         </div>
