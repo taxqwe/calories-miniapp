@@ -17,7 +17,7 @@
       noData: "Нет данных",
       dailyKcalLabel: "ккал в день",
       tdeeThreshold: "TDEE",
-      dayShort: "д.",
+      dayShort: "д",
       
       titleStaticCalories: "За последние 7 дней",
       textStaticCalories: "В среднем за последние 7 дней Вы потребляли {value} ккал в день.",
@@ -62,7 +62,7 @@
       kilocalories: "kcal",
       noData: "No data",
       dailyKcalLabel: "kcal/day",
-      dayShort: "d.",
+      dayShort: "d",
       tdeeThreshold: "TDEE",
       
       titleStaticCalories: "Last 7 days",
@@ -108,7 +108,7 @@
       averageLabel: "متوسط<br>في اليوم",
       kilocalories: "سعرة حرارية",
       noData: "لا توجد بيانات",
-      dayShort: "ي.",
+      dayShort: "ي",
       dailyKcalLabel: "سعرة/اليوم",
       tdeeThreshold: "TDEE",
       
@@ -156,7 +156,7 @@
       noData: "Keine Daten",
       dailyKcalLabel: "kcal/Tag",
       tdeeThreshold: "TDEE",
-      dayShort: "T.",
+      dayShort: "T",
       
       titleStaticCalories: "Letzte 7 Tage",
       textStaticCalories: "In den letzten 7 Tagen haben Sie durchschnittlich {value} kcal pro Tag konsumiert.",
@@ -202,7 +202,7 @@
       noData: "No hay datos",
       dailyKcalLabel: "kcal/día",
       tdeeThreshold: "TDEE",
-      dayShort: "d.",
+      dayShort: "d",
       
       titleStaticCalories: "Últimos 7 días",
       textStaticCalories: "En promedio, durante los últimos 7 días, consumiste {value} kcal por día.",
@@ -248,7 +248,7 @@
       noData: "Pas de données",
       dailyKcalLabel: "kcal/jour",
       tdeeThreshold: "TDEE",
-      dayShort: "j.",
+      dayShort: "j",
       
       titleStaticCalories: "7 derniers jours",
       textStaticCalories: "En moyenne, au cours des 7 derniers jours, vous avez consommé {value} kcal par jour.",
@@ -294,7 +294,7 @@
       noData: "कोई डेटा नहीं",
       dailyKcalLabel: "कैलोरी/दिन",
       tdeeThreshold: "TDEE",
-      dayShort: "दि.",
+      dayShort: "दि",
       
       titleStaticCalories: "पिछले 7 दिन",
       textStaticCalories: "पिछले 7 दिनों में औसतन, आपने {value} कैलोरी प्रति दिन उपभोग की हैं।",
@@ -340,7 +340,7 @@
       noData: "Nenhum dado",
       dailyKcalLabel: "kcal/dia",
       tdeeThreshold: "TDEE",
-      dayShort: "d.",
+      dayShort: "d",
       
       titleStaticCalories: "Últimos 7 dias",
       textStaticCalories: "Em média, nos últimos 7 dias, você consumiu {value} kcal por dia.",
@@ -386,7 +386,7 @@
       noData: "Veri yok",
       dailyKcalLabel: "kcal/gün",
       tdeeThreshold: "TDEE",
-      dayShort: "g.",
+      dayShort: "g",
       
       titleStaticCalories: "Son 7 gün",
       textStaticCalories: "Son 7 günde ortalama olarak günde {value} kcal tükettiniz.",
@@ -432,7 +432,7 @@
       noData: "Немає даних",
       dailyKcalLabel: "ккал/день",
       tdeeThreshold: "TDEE",
-      dayShort: "д.",
+      dayShort: "д",
       
       titleStaticCalories: "Останні 7 днів",
       textStaticCalories: "У середньому за останні 7 днів Ви споживали {value} ккал на день.",
@@ -486,7 +486,7 @@
 
   // Возвращает сокращённую форму слова "день" для текущей локали
   window.localization.getDayShort = function() {
-    return localizations[window.localization._lang]?.dayShort || 'd.';
+    return localizations[window.localization._lang]?.dayShort || 'd';
   };
 
   /**
