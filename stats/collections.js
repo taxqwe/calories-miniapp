@@ -441,10 +441,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const currentText = window.localization.textCurrentStreak
       .replace('{value}', `<strong>${formatNumber(current)}</strong>`)
-      .replace('{unit}', `<strong>${window.localization.pluralizeDays(current)}</strong>`);
+      .replace('{unit}', `<strong>${window.localization.getDayShort()}</strong>`);
     const maxText = window.localization.textMaxStreak
       .replace('{value}', `<strong>${formatNumber(max)}</strong>`)
-      .replace('{unit}', `<strong>${window.localization.pluralizeDays(max)}</strong>`);
+      .replace('{unit}', `<strong>${window.localization.getDayShort()}</strong>`);
 
     const safeMax = max > 0 ? max : 1;
     const rawPercent = (current / safeMax) * 100;
@@ -474,10 +474,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const currentText = window.localization.textCurrentGoalStreak
       .replace('{value}', `<strong>${formatNumber(current)}</strong>`)
-      .replace('{unit}', `<strong>${window.localization.pluralizeDays(current)}</strong>`);
+      .replace('{unit}', `<strong>${window.localization.getDayShort()}</strong>`);
     const maxText = window.localization.textMaxGoalStreak
       .replace('{value}', `<strong>${formatNumber(max)}</strong>`)
-      .replace('{unit}', `<strong>${window.localization.pluralizeDays(max)}</strong>`);
+      .replace('{unit}', `<strong>${window.localization.getDayShort()}</strong>`);
 
     const safeMax = max > 0 ? max : 1;
     const rawPercent = (current / safeMax) * 100;
