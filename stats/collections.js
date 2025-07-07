@@ -456,7 +456,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="collection-title">${window.localization.titleStreak}</span>
         </div>
         <div class="collection-text">
-          ${currentText}<br>${maxText}
+          <span class="streak-text">${currentText}</span><br>
+          <span class="streak-text">${maxText}</span>
         </div>
         <div class="progress-container">
           <div class="period-bar background"></div>
@@ -489,7 +490,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="collection-title">${window.localization.titleGoalStreak}</span>
         </div>
         <div class="collection-text">
-          ${currentText}<br>${maxText}
+          <span class="streak-text">${currentText}</span><br>
+          <span class="streak-text">${maxText}</span>
         </div>
         <div class="progress-container">
           <div class="period-bar background"></div>
