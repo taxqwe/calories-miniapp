@@ -51,11 +51,11 @@
       loadingError: "Ошибка при загрузке данных",
       retryButton: "Попробовать ещё раз",
       titleStreak: "Серия без пропусков",
-      textCurrentStreak: "Текущая серия: {value} {unit}.",
-      textMaxStreak: "Максимальная серия: {value} {unit}.",
+      textCurrentStreak: "Текущая серия: {value} {unit}",
+      textMaxStreak: "Максимальная серия: {value} {unit}",
       titleGoalStreak: "Серия выполнения цели",
-      textCurrentGoalStreak: "Текущая серия: {value} {unit}.",
-      textMaxGoalStreak: "Максимальная серия: {value} {unit}."
+      textCurrentGoalStreak: "Текущая серия: {value} {unit}",
+      textMaxGoalStreak: "Максимальная серия: {value} {unit}"
     },
     en: {
       averageLabel: "Average<br>per day",
@@ -98,11 +98,11 @@
       loadingError: "Error loading data",
       retryButton: "Try again",
       titleStreak: "Streaks",
-      textCurrentStreak: "Current streak: {value} {unit}.",
-      textMaxStreak: "Max streak: {value} {unit}.",
+      textCurrentStreak: "Current streak: {value} {unit}",
+      textMaxStreak: "Max streak: {value} {unit}",
       titleGoalStreak: "Goal streak",
-      textCurrentGoalStreak: "Current goal streak: {value} {unit}.",
-      textMaxGoalStreak: "Max goal streak: {value} {unit}."
+      textCurrentGoalStreak: "Current goal streak: {value} {unit}",
+      textMaxGoalStreak: "Max goal streak: {value} {unit}"
     },
     ar: {
       averageLabel: "متوسط<br>في اليوم",
@@ -143,11 +143,11 @@
       loadingError: "خطأ في تحميل البيانات",
       retryButton: "حاول مرة أخرى",
       titleStreak: "سلسلة",
-      textCurrentStreak: "السلسلة الحالية: {value} {unit}.",
-      textMaxStreak: "أطول سلسلة: {value} {unit}.",
+      textCurrentStreak: "السلسلة الحالية: {value} {unit}",
+      textMaxStreak: "أطول سلسلة: {value} {unit}",
       titleGoalStreak: "سلسلة الهدف",
-      textCurrentGoalStreak: "السلسلة الحالية: {value} {unit}.",
-      textMaxGoalStreak: "أطول سلسلة: {value} {unit}."
+      textCurrentGoalStreak: "السلسلة الحالية: {value} {unit}",
+      textMaxGoalStreak: "أطول سلسلة: {value} {unit}"
     },
 
     de: {
@@ -189,11 +189,11 @@
       loadingError: "Fehler beim Laden der Daten",
       retryButton: "Erneut versuchen",
       titleStreak: "Serie",
-      textCurrentStreak: "Aktuelle Serie: {value} {unit}.",
-      textMaxStreak: "Beste Serie: {value} {unit}.",
+      textCurrentStreak: "Aktuelle Serie: {value} {unit}",
+      textMaxStreak: "Beste Serie: {value} {unit}",
       titleGoalStreak: "Ziel-Serie",
-      textCurrentGoalStreak: "Aktuelle Serie: {value} {unit}.",
-      textMaxGoalStreak: "Beste Serie: {value} {unit}."
+      textCurrentGoalStreak: "Aktuelle Serie: {value} {unit}",
+      textMaxGoalStreak: "Beste Serie: {value} {unit}"
     },
 
     es: {
@@ -235,11 +235,11 @@
       loadingError: "Error al cargar datos",
       retryButton: "Intentar de nuevo",
       titleStreak: "Racha",
-      textCurrentStreak: "Racha actual: {value} {unit}.",
-      textMaxStreak: "Racha máxima: {value} {unit}.",
+      textCurrentStreak: "Racha actual: {value} {unit}",
+      textMaxStreak: "Racha máxima: {value} {unit}",
       titleGoalStreak: "Racha de objetivo",
-      textCurrentGoalStreak: "Racha actual: {value} {unit}.",
-      textMaxGoalStreak: "Racha máxima: {value} {unit}."
+      textCurrentGoalStreak: "Racha actual: {value} {unit}",
+      textMaxGoalStreak: "Racha máxima: {value} {unit}"
     },
 
     fr: {
@@ -281,11 +281,11 @@
       loadingError: "Erreur de chargement des données",
       retryButton: "Réessayer",
       titleStreak: "Série",
-      textCurrentStreak: "Série en cours : {value} {unit}.",
-      textMaxStreak: "Meilleure série : {value} {unit}.",
+      textCurrentStreak: "Série en cours : {value} {unit}",
+      textMaxStreak: "Meilleure série : {value} {unit}",
       titleGoalStreak: "Série d'objectif",
-      textCurrentGoalStreak: "Série en cours : {value} {unit}.",
-      textMaxGoalStreak: "Meilleure série : {value} {unit}."
+      textCurrentGoalStreak: "Série en cours : {value} {unit}",
+      textMaxGoalStreak: "Meilleure série : {value} {unit}"
     },
 
     hi: {
@@ -327,11 +327,11 @@
       loadingError: "डेटा लोड करते समय त्रुटि",
       retryButton: "पुनः प्रयास करें",
       titleStreak: "स्ट्रीक",
-      textCurrentStreak: "वर्तमान स्ट्रीक: {value} {unit}.",
-      textMaxStreak: "अधिकतम स्ट्रीक: {value} {unit}.",
+      textCurrentStreak: "वर्तमान स्ट्रीक: {value} {unit}",
+      textMaxStreak: "अधिकतम स्ट्रीक: {value} {unit}",
       titleGoalStreak: "लक्ष्य स्ट्रीक",
-      textCurrentGoalStreak: "वर्तमान स्ट्रीक: {value} {unit}.",
-      textMaxGoalStreak: "अधिकतम स्ट्रीक: {value} {unit}."
+      textCurrentGoalStreak: "वर्तमान स्ट्रीक: {value} {unit}",
+      textMaxGoalStreak: "अधिकतम स्ट्रीक: {value} {unit}"
     },
 
     pt: {
@@ -373,11 +373,11 @@
       loadingError: "Erro ao carregar os dados",
       retryButton: "Tentar novamente",
       titleStreak: "Sequência",
-      textCurrentStreak: "Sequência atual: {value} {unit}.",
-      textMaxStreak: "Máxima: {value} {unit}.",
+      textCurrentStreak: "Sequência atual: {value} {unit}",
+      textMaxStreak: "Máxima: {value} {unit}",
       titleGoalStreak: "Sequência da meta",
-      textCurrentGoalStreak: "Sequência atual: {value} {unit}.",
-      textMaxGoalStreak: "Máxima: {value} {unit}."
+      textCurrentGoalStreak: "Sequência atual: {value} {unit}",
+      textMaxGoalStreak: "Máxima: {value} {unit}"
     },
 
     tr: {
@@ -419,11 +419,11 @@
       loadingError: "Veriler yüklenirken hata oluştu",
       retryButton: "Tekrar dene",
       titleStreak: "Seri",
-      textCurrentStreak: "Mevcut seri: {value} {unit}.",
-      textMaxStreak: "En uzun seri: {value} {unit}.",
+      textCurrentStreak: "Mevcut seri: {value} {unit}",
+      textMaxStreak: "En uzun seri: {value} {unit}",
       titleGoalStreak: "Hedef serisi",
-      textCurrentGoalStreak: "Mevcut seri: {value} {unit}.",
-      textMaxGoalStreak: "En uzun seri: {value} {unit}."
+      textCurrentGoalStreak: "Mevcut seri: {value} {unit}",
+      textMaxGoalStreak: "En uzun seri: {value} {unit}"
     },
 
     uk: {
@@ -465,11 +465,11 @@
       loadingError: "Помилка завантаження даних",
       retryButton: "Спробувати ще раз",
       titleStreak: "Серія",
-      textCurrentStreak: "Поточна серія: {value} {unit}.",
-      textMaxStreak: "Макс. серія: {value} {unit}.",
+      textCurrentStreak: "Поточна серія: {value} {unit}",
+      textMaxStreak: "Макс. серія: {value} {unit}",
       titleGoalStreak: "Серія виконання мети",
-      textCurrentGoalStreak: "Поточна серія: {value} {unit}.",
-      textMaxGoalStreak: "Макс. серія: {value} {unit}."
+      textCurrentGoalStreak: "Поточна серія: {value} {unit}",
+      textMaxGoalStreak: "Макс. серія: {value} {unit}"
     }
   };
 
