@@ -52,10 +52,10 @@
       retryButton: "Попробовать ещё раз",
       titleStreak: "Серия без пропусков",
       textCurrentStreak: "Текущая серия: {value} {unit}.",
-      textMaxStreak: "Максимальная серия: {value} {unit}.",
+      textMaxStreak: "Макс. серия: {value} {unit}.",
       titleGoalStreak: "Серия выполнения цели",
       textCurrentGoalStreak: "Текущая серия: {value} {unit}.",
-      textMaxGoalStreak: "Максимальная серия: {value} {unit}."
+      textMaxGoalStreak: "Макс. серия: {value} {unit}."
     },
     en: {
       averageLabel: "Average<br>per day",
