@@ -381,6 +381,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentYearData = window.allData.filter(item => item.date.getFullYear() === currentYear && item.calories > 0);
     const previousYearData = window.allData.filter(item => item.date.getFullYear() === previousYear && item.calories > 0);
 
+    if (previousYearData.length === 0) {
+      // Don't display the block if there is no data for the previous year
+      return '';
+    }
+
     const currentAvg = currentYearData.length
       ? Math.round(currentYearData.reduce((sum, v) => sum + v.calories, 0) / currentYearData.length)
       : null;
@@ -508,26 +513,39 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Регистрируем функции построения блоков в фабрике
+  // Регистрация базовых карточек в фабрике. Годовое сравнение строится отдельно.
   BlockFactory.register((data, tdee) => buildActiveBlock(data, tdee));
   BlockFactory.register(() => buildStaticBlock(getWeekData()));
   BlockFactory.register(() => buildMonthComparisonBlock());
-  BlockFactory.register(() => buildYearComparisonBlock());
   BlockFactory.register(() => buildStreakRow());
 
   // Основная функция обновления инфо-блоков, объединяющая результаты всех блоков
   // Теперь эта функция лишь инициализирует все блоки при загрузке и обновляет только блок активности при переключении вкладок
   function updateCollections(data, tdee) {
-    // Создаем HTML для всех блоков через фабрику
-    const html = BlockFactory.buildAll(data, tdee);
-    collectionsContainer.innerHTML = html;
+    const parts = [];
 
-    // Добавляем классы для идентификации блоков
+    parts.push(buildActiveBlock(data, tdee));
+    parts.push(buildStaticBlock(getWeekData()));
+    parts.push(buildMonthComparisonBlock());
+
+    const yearHtml = buildYearComparisonBlock();
+    const hasYearBlock = yearHtml !== '';
+    if (hasYearBlock) {
+      parts.push(yearHtml);
+    }
+
+    parts.push(buildStreakRow());
+
+    collectionsContainer.innerHTML = parts.join('');
+
+    // Назначаем классы блокам по порядку
     const blocks = collectionsContainer.querySelectorAll('.collection-card');
-    if (blocks.length >= 2) blocks[1].classList.add('static-calories-block');
-    if (blocks.length >= 3) blocks[2].classList.add('month-comparison-block');
-    if (blocks.length >= 4) blocks[3].classList.add('year-comparison-block');
-    if (blocks.length >= 5) blocks[4].classList.add('streak-block');
-    if (blocks.length >= 6) blocks[5].classList.add('goal-streak-block');
+    let i = 1; // первый блок already has its class
+    if (blocks.length > i) blocks[i++].classList.add('static-calories-block');
+    if (blocks.length > i) blocks[i++].classList.add('month-comparison-block');
+    if (hasYearBlock && blocks.length > i) blocks[i++].classList.add('year-comparison-block');
+    if (blocks.length > i) blocks[i++].classList.add('streak-block');
+    if (blocks.length > i) blocks[i++].classList.add('goal-streak-block');
   }
 
   // Экспортируем функцию updateCollections в глобальную область видимости
