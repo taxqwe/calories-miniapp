@@ -503,6 +503,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const tooltipTdeeEl = document.getElementById('tooltip-tdee');
 
   goalToggleEl.addEventListener('change', () => {
+    if (goalToggleEl.checked) {
+      // При активации свитча по умолчанию выбираем дефицит калорий
+      document.getElementById('goal-deficit').checked = true;
+    } else {
+      // При выключении свитча сбрасываем выбор цели
+      document.querySelectorAll('input[name="goal"]').forEach(el => el.checked = false);
+    }
     goalSettingsEl.style.display = goalToggleEl.checked ? 'block' : 'none';
   });
 
