@@ -32,11 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — Total Daily Energy Expenditure.",
       tooltipBMR: "BMR (Basal Metabolic Rate) is the number of calories your body burns at rest over 24 hours. It's the basic energy requirement to maintain vital functions.",
       tooltipTDEE: "TDEE (Total Daily Energy Expenditure) is the total number of calories your body uses in a day, including physical activities.",
-      validationErrors: { 
+      validationErrors: {
         fillAll: "Please fill in all fields",
         heightRange: "The height must be between 100 and 250 cm",
         weightRange: "The weight must be between 30 and 300 kg",
-        ageRange: "The age must be between 14 and 120 years"
+        ageRange: "The age must be between 14 and 120 years",
+        customCaloriesInvalid: "Custom calories must contain digits only",
+        customCaloriesRange: "Custom calories must be between 1000 and 20000"
       },
       sending: "Sending data...",
       success: "✅ Data successfully sent!",
@@ -79,11 +81,13 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — общий дневной расход энергии.",
       tooltipBMR: "BMR (Basal Metabolic Rate) — это количество калорий, которое ваш организм сжигает в состоянии покоя за 24 часа. Это базовая потребность организма в энергии для поддержания жизнедеятельности.",
       tooltipTDEE: "TDEE (Total Daily Energy Expenditure) — это суммарное количество калорий, затрачиваемое организмом за день, включая физическую активность.",
-      validationErrors: { 
+      validationErrors: {
         fillAll: "Пожалуйста, заполните все поля",
         heightRange: "Рост должен быть от 100 до 250 см",
         weightRange: "Вес должен быть от 30 до 300 кг",
-        ageRange: "Возраст должен быть от 14 до 120 лет"
+        ageRange: "Возраст должен быть от 14 до 120 лет",
+        customCaloriesInvalid: "Введите только цифры для кастомной цели",
+        customCaloriesRange: "Значение должно быть от 1000 до 20000 калорий"
       },
       sending: "Отправка данных...",
       success: "✅ Данные успешно отправлены!",
@@ -126,11 +130,13 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — إجمالي استهلاك الطاقة اليومي.",
       tooltipBMR: "BMR (Basal Metabolic Rate) هو عدد السعرات الحرارية التي يحرقها جسمك أثناء الراحة على مدار 24 ساعة. إنه الحد الأدنى من الطاقة المطلوبة للحفاظ على الوظائف الحيوية.",
       tooltipTDEE: "TDEE (Total Daily Energy Expenditure) هو إجمالي السعرات الحرارية التي يستهلكها جسمك في اليوم، بما في ذلك النشاط البدني.",
-      validationErrors: { 
+      validationErrors: {
         fillAll: "يرجى ملء جميع الحقول",
         heightRange: "الطول يجب أن يكون بين 100 و 250 سم",
         weightRange: "الوزن يجب أن يكون بين 30 و 300 كجم",
-        ageRange: "يجب أن يكون العمر بين 14 و 120 عامًا"
+        ageRange: "يجب أن يكون العمر بين 14 و 120 عامًا",
+        customCaloriesInvalid: "يجب أن يحتوي هدف السعرات المخصص على أرقام فقط",
+        customCaloriesRange: "يجب أن يكون هدف السعرات المخصص بين 1000 و 20000"
       },
       sending: "جاري إرسال البيانات...",
       success: "✅ تم إرسال البيانات بنجاح!",
@@ -173,11 +179,13 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — Gesamtumsatz pro Tag.",
       tooltipBMR: "Der BMR (Basal Metabolic Rate) ist die Menge an Kalorien, die Ihr Körper in Ruhe über 24 Stunden verbrennt. Dies ist der grundlegende Energiebedarf zur Aufrechterhaltung lebenswichtiger Funktionen.",
       tooltipTDEE: "Der TDEE (Total Daily Energy Expenditure) ist die Gesamtzahl der Kalorien, die Ihr Körper an einem Tag verbraucht, einschließlich körperlicher Aktivitäten.",
-      validationErrors: { 
+      validationErrors: {
         fillAll: "Bitte füllen Sie alle Felder aus",
         heightRange: "Die Körpergröße muss zwischen 100 und 250 cm liegen",
         weightRange: "Das Gewicht muss zwischen 30 und 300 kg liegen",
-        ageRange: "Das Alter muss zwischen 14 und 120 Jahren liegen"
+        ageRange: "Das Alter muss zwischen 14 und 120 Jahren liegen",
+        customCaloriesInvalid: "Das benutzerdefinierte Kalorienziel darf nur Ziffern enthalten",
+        customCaloriesRange: "Das benutzerdefinierte Kalorienziel muss zwischen 1000 und 20000 liegen"
       },
       sending: "Daten werden gesendet...",
       success: "✅ Daten erfolgreich gesendet!",
@@ -220,11 +228,13 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — Gasto Energético Total Diario.",
       tooltipBMR: "La BMR (Tasa Metabólica Basal) es la cantidad de calorías que tu cuerpo quema en reposo durante 24 horas. Es el requerimiento básico de energía para mantener las funciones vitales.",
       tooltipTDEE: "El TDEE (Gasto Energético Total Diario) es la cantidad total de calorías que tu cuerpo usa en un día, incluyendo actividades físicas.",
-      validationErrors: { 
+      validationErrors: {
         fillAll: "Por favor, complete todos los campos",
         heightRange: "La altura debe estar entre 100 y 250 cm",
         weightRange: "El peso debe estar entre 30 y 300 kg",
-        ageRange: "La edad debe estar entre 14 y 120 años"
+        ageRange: "La edad debe estar entre 14 y 120 años",
+        customCaloriesInvalid: "El objetivo de calorías personalizado debe contener solo dígitos",
+        customCaloriesRange: "El objetivo de calorías personalizado debe estar entre 1000 y 20000"
       },
       sending: "Enviando datos...",
       success: "✅ ¡Datos enviados con éxito!",
@@ -267,11 +277,13 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — Dépense énergétique quotidienne totale.",
       tooltipBMR: "Le BMR (Basal Metabolic Rate) est la quantité de calories que votre corps brûle au repos pendant 24 heures. C'est le besoin énergétique de base pour maintenir les fonctions vitales.",
       tooltipTDEE: "Le TDEE (Total Daily Energy Expenditure) est la quantité totale de calories que votre corps utilise en une journée, y compris les activités physiques.",
-      validationErrors: { 
+      validationErrors: {
         fillAll: "Veuillez remplir tous les champs",
         heightRange: "La taille doit être entre 100 et 250 cm",
         weightRange: "Le poids doit être entre 30 et 300 kg",
-        ageRange: "L'âge doit être entre 14 et 120 ans"
+        ageRange: "L'âge doit être entre 14 et 120 ans",
+        customCaloriesInvalid: "L'objectif calorique personnalisé doit contenir uniquement des chiffres",
+        customCaloriesRange: "L'objectif calorique personnalisé doit être compris entre 1000 et 20000"
       },
       sending: "Envoi des données...",
       success: "✅ Données envoyées avec succès !",
@@ -314,11 +326,13 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — कुल दैनिक ऊर्जा व्यय.",
       tooltipBMR: "BMR (Basal Metabolic Rate) वह कैलोरी की मात्रा है जो आपका शरीर 24 घंटे के आराम में जलाता है। यह महत्वपूर्ण शारीरिक कार्यों को बनाए रखने के लिए आवश्यक मूलभूत ऊर्जा है।",
       tooltipTDEE: "TDEE (Total Daily Energy Expenditure) वह कुल कैलोरी है जो आपका शरीर एक दिन में उपयोग करता है, जिसमें शारीरिक गतिविधियाँ शामिल हैं।",
-      validationErrors: { 
+      validationErrors: {
         fillAll: "कृपया सभी फ़ील्ड भरें",
         heightRange: "ऊँचाई 100 से 250 सेमी के बीच होनी चाहिए",
         weightRange: "वज़न 30 से 300 किग्रा के बीच होना चाहिए",
-        ageRange: "उम्र 14 से 120 वर्षों के बीच होनी चाहिए"
+        ageRange: "उम्र 14 से 120 वर्षों के बीच होनी चाहिए",
+        customCaloriesInvalid: "कस्टम कैलोरी लक्ष्य में केवल अंक होने चाहिए",
+        customCaloriesRange: "कस्टम कैलोरी लक्ष्य 1000 और 20000 के बीच होना चाहिए"
       },
       sending: "डेटा भेजे जा रहे हैं...",
       success: "✅ डेटा सफलतापूर्वक भेजे गए!",
@@ -361,11 +375,13 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — Toplam Günlük Enerji Harcaması.",
       tooltipBMR: "BMR (Bazal Metabolizma Hızı), vücudunuzun 24 saatlik dinlenme süresince yaktığı kalori miktarıdır. Hayati fonksiyonları sürdürmek için gereken temel enerji ihtiyacıdır.",
       tooltipTDEE: "TDEE (Toplam Günlük Enerji Harcaması), fiziksel aktiviteler dahil olmak üzere vücudunuzun bir günde kullandığı toplam kalori miktarıdır.",
-      validationErrors: { 
+      validationErrors: {
         fillAll: "Lütfen tüm alanları doldurun",
         heightRange: "Boy 100 ile 250 cm arasında olmalı",
         weightRange: "Kilo 30 ile 300 kg arasında olmalı",
-        ageRange: "Yaş 14 ile 120 yaş arasında olmalı"
+        ageRange: "Yaş 14 ile 120 yaş arasında olmalı",
+        customCaloriesInvalid: "Özel kalori hedefi yalnızca rakamlardan oluşmalıdır",
+        customCaloriesRange: "Özel kalori hedefi 1000 ile 20000 arasında olmalıdır"
       },
       sending: "Veriler gönderiliyor...",
       success: "✅ Veriler başarıyla gönderildi!",
@@ -408,11 +424,13 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — загальні добові витрати енергії.",
       tooltipBMR: "BMR (Basal Metabolic Rate) — це кількість калорій, які організм спалює в стані спокою за 24 години. Це базова потреба в енергії для підтримання життєво важливих функцій.",
       tooltipTDEE: "TDEE (Total Daily Energy Expenditure) — це загальна кількість калорій, які організм витрачає за день, враховуючи фізичну активність.",
-      validationErrors: { 
+      validationErrors: {
         fillAll: "Будь ласка, заповніть усі поля",
         heightRange: "Зріст повинен бути від 100 до 250 см",
         weightRange: "Вага повинна бути від 30 до 300 кг",
-        ageRange: "Вік повинен бути від 14 до 120 років"
+        ageRange: "Вік повинен бути від 14 до 120 років",
+        customCaloriesInvalid: "Власна ціль за калоріями має містити лише цифри",
+        customCaloriesRange: "Власна ціль за калоріями має бути від 1000 до 20000"
       },
       sending: "Відправка даних...",
       success: "✅ Дані успішно відправлено!",
@@ -455,11 +473,13 @@ document.addEventListener('DOMContentLoaded', () => {
       descTDEE: "TDEE — Despesa Energética Total Diária.",
       tooltipBMR: "BMR (Taxa Metabólica Basal) é o número de calorias que seu corpo queima em repouso durante 24 horas. É o requisito energético básico para manter as funções vitais.",
       tooltipTDEE: "TDEE (Despesa Energética Total Diária) é o total de calorias que seu corpo utiliza em um dia, incluindo atividades físicas.",
-      validationErrors: { 
+      validationErrors: {
         fillAll: "Por favor, preencha todos os campos",
         heightRange: "A altura deve estar entre 100 e 250 cm",
         weightRange: "O peso deve estar entre 30 e 300 kg",
-        ageRange: "A idade deve estar entre 14 e 120 anos"
+        ageRange: "A idade deve estar entre 14 e 120 anos",
+        customCaloriesInvalid: "A meta de calorias personalizada deve conter apenas dígitos",
+        customCaloriesRange: "A meta de calorias personalizada deve estar entre 1000 e 20000"
       },
       sending: "Enviando dados...",
       success: "✅ Dados enviados com sucesso!",
@@ -497,10 +517,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const labelGoalEl = document.getElementById('label-goal');
   const goalSurplusLabelEl = document.getElementById('goal-surplus-label');
   const goalDeficitLabelEl = document.getElementById('goal-deficit-label');
+  const goalCustomLabelEl = document.getElementById('label-goal-custom');
+  const goalCustomCaloriesEl = document.getElementById('goal-custom-calories');
   const calculateButtonEl = document.getElementById('calculate-button');
   const resultEl = document.getElementById('result');
   const tooltipBmrEl = document.getElementById('tooltip-bmr');
   const tooltipTdeeEl = document.getElementById('tooltip-tdee');
+
+  goalCustomCaloriesEl.addEventListener('input', handleCustomGoalInput);
 
   goalToggleEl.addEventListener('change', () => {
     if (goalToggleEl.checked) {
@@ -509,6 +533,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       // При выключении свитча сбрасываем выбор цели
       document.querySelectorAll('input[name="goal"]').forEach(el => el.checked = false);
+      goalCustomCaloriesEl.value = '';
+      goalCustomCaloriesEl.classList.remove('error');
+      goalCustomCaloriesEl.parentNode.querySelectorAll('.error-message').forEach(el => el.remove());
     }
     goalSettingsEl.style.display = goalToggleEl.checked ? 'block' : 'none';
   });
@@ -526,7 +553,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const validationRanges = {
     height: { min: 100, max: 250 },
     weight: { min: 30, max: 300 },
-    age: { min: 14, max: 120 }
+    age: { min: 14, max: 120 },
+    customCalories: { min: 1000, max: 20000 }
   };
 
   // Функция обновления текста на странице
@@ -558,6 +586,8 @@ document.addEventListener('DOMContentLoaded', () => {
     labelGoalEl.innerText = t.labelGoal;
     goalSurplusLabelEl.innerText = t.goalSurplus;
     goalDeficitLabelEl.innerText = t.goalDeficit;
+    goalCustomLabelEl.innerText = t.labelGoalValue;
+    goalCustomCaloriesEl.placeholder = t.goalValuePlaceholder;
     calculateButtonEl.innerText = t.calculateButton;
     heightEl.placeholder = t.heightPlaceholder;
     weightEl.placeholder = t.weightPlaceholder;
@@ -636,17 +666,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const age = parseFloat(ageEl.value);
     const gender = document.querySelector('input[name="gender"]:checked')?.value;
     const activityLevel = parseInt(activityRangeEl.value, 10);
+    const customCaloriesRaw = goalCustomCaloriesEl.value.trim();
     const t = translations[lang] || translations["en"];
     
     // Очистка предыдущих ошибок
     heightEl.classList.remove('error');
     weightEl.classList.remove('error');
     ageEl.classList.remove('error');
+    goalCustomCaloriesEl.classList.remove('error');
     
     // Удаляем предыдущие сообщения об ошибках
     document.querySelectorAll('.error-message').forEach(el => el.remove());
-    
+
     let hasErrors = false;
+    let customCalories = null;
     
     // Проверка заполнения полей
     if (!height || !weight || !age || !gender) {
@@ -669,7 +702,20 @@ document.addEventListener('DOMContentLoaded', () => {
       displayError(ageEl, t.validationErrors.ageRange);
       hasErrors = true;
     }
-    
+
+    if (goalToggleEl.checked && customCaloriesRaw !== '') {
+      if (!/^\d+$/.test(customCaloriesRaw)) {
+        displayError(goalCustomCaloriesEl, t.validationErrors.customCaloriesInvalid);
+        hasErrors = true;
+      } else {
+        customCalories = parseInt(customCaloriesRaw, 10);
+        if (customCalories < validationRanges.customCalories.min || customCalories > validationRanges.customCalories.max) {
+          displayError(goalCustomCaloriesEl, t.validationErrors.customCaloriesRange);
+          hasErrors = true;
+        }
+      }
+    }
+
     if (hasErrors) {
       return;
     }
@@ -683,9 +729,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const multipliers = [1.2, 1.375, 1.55, 1.725, 1.9];
     const tdee = bmr * multipliers[activityLevel - 1];
     
-    const goalInfo = goalToggleEl.checked ? {
-      type: document.querySelector('input[name="goal"]:checked')?.value || null
-    } : null;
+    const goalInfo = goalToggleEl.checked ? (() => {
+      const info = {
+        type: document.querySelector('input[name="goal"]:checked')?.value || null
+      };
+      if (customCalories !== null) {
+        info.customCalories = customCalories;
+      }
+      return info;
+    })() : null;
 
     const payload = {
       data: {
@@ -739,7 +791,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const daySize = (containerWidth - 10) / 7;
     document.documentElement.style.setProperty('--day-size', `${daySize}px`);
   }
-  
+
+  function handleCustomGoalInput(event) {
+    const inputEl = event.target;
+    const digitsOnly = inputEl.value.replace(/\D/g, '');
+    let sanitized = digitsOnly.slice(0, 5);
+    if (sanitized !== inputEl.value) {
+      inputEl.value = sanitized;
+    }
+
+    if (sanitized) {
+      const numericValue = parseInt(sanitized, 10);
+      if (!Number.isNaN(numericValue) && numericValue > validationRanges.customCalories.max) {
+        inputEl.value = validationRanges.customCalories.max.toString();
+      }
+    }
+
+    inputEl.classList.remove('error');
+    inputEl.parentNode.querySelectorAll('.error-message').forEach(el => el.remove());
+  }
+
   // Функция для отображения ошибки под полем ввода
   function displayError(inputElement, message) {
     inputElement.classList.add('error');

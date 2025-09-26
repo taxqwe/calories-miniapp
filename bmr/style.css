@@ -47,7 +47,8 @@ form label {
   color: #fff;
 }
 
-form input[type="number"] {
+form input[type="number"],
+form input[type="text"] {
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
@@ -55,6 +56,10 @@ form input[type="number"] {
   border-radius: 4px;
   background-color: #333333;
   color: #fff;
+}
+
+.goal-custom-group {
+  margin-top: 5px;
 }
 
 /* Стили для range-элемента */
