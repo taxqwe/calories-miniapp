@@ -18,7 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Your goal:",
       goalSurplus: "Calorie surplus (mass gain)",
       goalDeficit: "Calorie deficit (weight loss)",
-      labelGoalValue: "Desired daily calories:",
+      labelGoalValue: "Desired daily calories (optional):",
+      goalCustomHint: "Leave this blank to use the calculated total daily energy expenditure.",
       goalValuePlaceholder: "e.g., 2000",
       calculateButton: "Calculate and Send",
       resultTitle: "Result:",
@@ -67,7 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Ваша цель:",
       goalSurplus: "Профицит калорий (набор массы)",
       goalDeficit: "Дефицит калорий (снижение веса)",
-      labelGoalValue: "Желаемые калории в день:",
+      labelGoalValue: "Желаемые калории в день (опционально):",
+      goalCustomHint: "Если оставить поле пустым, будет использован общий дневной расход энергии.",
       goalValuePlaceholder: "например, 2000",
       calculateButton: "Рассчитать и отправить",
       resultTitle: "Результат:",
@@ -116,7 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "هدفك:",
       goalSurplus: "فائض السعرات (زيادة الكتلة)",
       goalDeficit: "عجز السعرات (فقدان الوزن)",
-      labelGoalValue: "السعرات المستهدفة يوميًا:",
+      labelGoalValue: "السعرات المستهدفة يوميًا (اختياري):",
+      goalCustomHint: "اترك الحقل فارغًا لاستخدام إجمالي استهلاك الطاقة اليومي المحسوب.",
       goalValuePlaceholder: "مثال: 2000",
       calculateButton: "احسب وأرسل",
       resultTitle: "النتيجة:",
@@ -165,7 +168,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Dein Ziel:",
       goalSurplus: "Kalorienüberschuss (Masseaufbau)",
       goalDeficit: "Kaloriendefizit (Gewichtsverlust)",
-      labelGoalValue: "Gewünschte Kalorien pro Tag:",
+      labelGoalValue: "Gewünschte Kalorien pro Tag (optional):",
+      goalCustomHint: "Lass das Feld leer, um den berechneten Gesamtenergieverbrauch zu verwenden.",
       goalValuePlaceholder: "z.B. 2000",
       calculateButton: "Berechnen und Senden",
       resultTitle: "Ergebnis:",
@@ -214,7 +218,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Tu objetivo:",
       goalSurplus: "Superávit calórico (ganancia de masa)",
       goalDeficit: "Déficit calórico (pérdida de peso)",
-      labelGoalValue: "Calorías deseadas por día:",
+      labelGoalValue: "Calorías deseadas por día (opcional):",
+      goalCustomHint: "Deja el campo vacío para usar el gasto energético diario total calculado.",
       goalValuePlaceholder: "ej.: 2000",
       calculateButton: "Calcular y Enviar",
       resultTitle: "Resultado:",
@@ -263,7 +268,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Votre objectif :",
       goalSurplus: "Surplus calorique (prise de masse)",
       goalDeficit: "Déficit calorique (perte de poids)",
-      labelGoalValue: "Calories visées par jour :",
+      labelGoalValue: "Calories quotidiennes souhaitées (optionnel) :",
+      goalCustomHint: "Laissez le champ vide pour utiliser la dépense énergétique quotidienne totale calculée.",
       goalValuePlaceholder: "ex. : 2000",
       calculateButton: "Calculer et Envoyer",
       resultTitle: "Résultat :",
@@ -312,7 +318,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "आपका लक्ष्य:",
       goalSurplus: "कैलोरी सरप्लस (वज़न बढ़ाना)",
       goalDeficit: "कैलोरी डेफिसिट (वज़न घटाना)",
-      labelGoalValue: "रोज़ाना लक्ष्यित कैलोरी:",
+      labelGoalValue: "वांछित दैनिक कैलोरी (वैकल्पिक):",
+      goalCustomHint: "गणना किए गए कुल दैनिक ऊर्जा व्यय का उपयोग करने के लिए इस फ़ील्ड को खाली छोड़ें।",
       goalValuePlaceholder: "उदा.: 2000",
       calculateButton: "गणना करें और भेजें",
       resultTitle: "परिणाम:",
@@ -361,7 +368,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Hedefiniz:",
       goalSurplus: "Kalori fazlası (kütle kazanımı)",
       goalDeficit: "Kalori açığı (kilo verme)",
-      labelGoalValue: "Günlük hedef kalori:",
+      labelGoalValue: "Günlük hedef kalori (opsiyonel):",
+      goalCustomHint: "Hesaplanan toplam günlük enerji harcamasını kullanmak için alanı boş bırakın.",
       goalValuePlaceholder: "örn. 2000",
       calculateButton: "Hesapla ve Gönder",
       resultTitle: "Sonuç:",
@@ -410,7 +418,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Ваша мета:",
       goalSurplus: "Профіцит калорій (набір маси)",
       goalDeficit: "Дефіцит калорій (зниження ваги)",
-      labelGoalValue: "Бажані калорії на день:",
+      labelGoalValue: "Бажані калорії на день (необов’язково):",
+      goalCustomHint: "Щоб використати розраховані загальні добові енерговитрати, залиште поле порожнім.",
       goalValuePlaceholder: "наприклад, 2000",
       calculateButton: "Розрахувати і відправити",
       resultTitle: "Результат:",
@@ -459,7 +468,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelGoal: "Seu objetivo:",
       goalSurplus: "Superávit calórico (ganho de massa)",
       goalDeficit: "Déficit calórico (perda de peso)",
-      labelGoalValue: "Calorias desejadas por dia:",
+      labelGoalValue: "Calorias desejadas por dia (opcional):",
+      goalCustomHint: "Deixe em branco para usar a despesa energética diária total calculada.",
       goalValuePlaceholder: "ex.: 2000",
       calculateButton: "Calcular e Enviar",
       resultTitle: "Resultado:",
@@ -519,6 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const goalDeficitLabelEl = document.getElementById('goal-deficit-label');
   const goalCustomLabelEl = document.getElementById('label-goal-custom');
   const goalCustomCaloriesEl = document.getElementById('goal-custom-calories');
+  const goalCustomHintEl = document.getElementById('goal-custom-hint');
   const calculateButtonEl = document.getElementById('calculate-button');
   const resultEl = document.getElementById('result');
   const tooltipBmrEl = document.getElementById('tooltip-bmr');
@@ -587,6 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
     goalSurplusLabelEl.innerText = t.goalSurplus;
     goalDeficitLabelEl.innerText = t.goalDeficit;
     goalCustomLabelEl.innerText = t.labelGoalValue;
+    goalCustomHintEl.innerText = t.goalCustomHint || '';
     goalCustomCaloriesEl.placeholder = t.goalValuePlaceholder;
     calculateButtonEl.innerText = t.calculateButton;
     heightEl.placeholder = t.heightPlaceholder;

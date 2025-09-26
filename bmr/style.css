@@ -62,6 +62,12 @@ form input[type="text"] {
   margin-top: 5px;
 }
 
+.goal-custom-group .field-hint {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #a0a0a0;
+}
+
 /* Стили для range-элемента */
 form input[type="range"] {
   width: 100%;
