@@ -125,6 +125,20 @@
               <label for="goal-deficit" id="goal-deficit-label"></label>
             </div>
           </div>
+          <div class="goal-custom-group">
+            <label for="goal-custom-calories" id="label-goal-custom"></label>
+            <input
+              type="text"
+              id="goal-custom-calories"
+              name="goalCustomCalories"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="5"
+              enterkeyhint="done"
+              autocomplete="off"
+            >
+            <p id="goal-custom-hint" class="field-hint"></p>
+          </div>
         </div>
         <button type="submit" id="calculate-button"></button>
       </form>
