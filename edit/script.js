@@ -308,8 +308,22 @@
       fetchAndRenderCalendar();
     });
 
-    document.getElementById('caloriesInput').addEventListener('change', function() {
-      const value = parseInt(this.value) || 0;
+    const caloriesInputElement = document.getElementById('caloriesInput');
+
+    caloriesInputElement.addEventListener('input', function() {
+      if (this.value === '') return;
+
+      const parsedValue = parseInt(this.value, 10);
+      const sanitizedValue = Math.max(0, isNaN(parsedValue) ? 0 : parsedValue);
+
+      if (isNaN(parsedValue) || sanitizedValue !== parsedValue) {
+        this.value = sanitizedValue;
+      }
+    });
+
+    caloriesInputElement.addEventListener('change', function() {
+      const value = Math.max(0, parseInt(this.value, 10) || 0);
+      this.value = value;
       updateCalories(selectedDate, value);
       // Скрываем клавиатуру после ввода
       this.blur();
@@ -320,15 +334,15 @@
       button.addEventListener('click', function() {
         const change = parseInt(this.getAttribute('data-value'));
         const input = document.getElementById('caloriesInput');
-        let currentValue = parseInt(input.value) || 0;
-        
+        const currentValue = parseInt(input.value, 10) || 0;
+
         // Проверяем, чтобы значение не стало отрицательным
         const newValue = Math.max(0, currentValue + change);
         input.value = newValue;
-        
+
         // Обновляем калории на сервере
         updateCalories(selectedDate, newValue);
-        
+
         // Скрываем клавиатуру после изменения
         input.blur();
       });
