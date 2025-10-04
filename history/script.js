@@ -331,10 +331,11 @@ function getDayCalories(day) {
 }
 
 function setupSwipeInteraction(mealElement, onDelete) {
+  const swipeContainer = mealElement.querySelector('.meal__swipe');
   const swipeContent = mealElement.querySelector('.meal__content');
   const deleteButton = mealElement.querySelector('.meal__delete');
 
-  if (!swipeContent || !deleteButton) {
+  if (!swipeContainer || !swipeContent || !deleteButton) {
     return;
   }
 
@@ -349,11 +350,17 @@ function setupSwipeInteraction(mealElement, onDelete) {
   let currentOffset = mealElement.classList.contains('meal--open') ? maxOffset : 0;
   let isDragging = false;
   let isOpen = mealElement.classList.contains('meal--open');
+  let activePointerId = null;
 
   mealElement.style.setProperty('--action-width', `${actionWidth}px`);
 
+  const setTransitionsEnabled = (enabled) => {
+    const value = enabled ? '' : 'none';
+    swipeContent.style.transition = value;
+    deleteButton.style.transition = value;
+  };
+
   const updateDeleteReveal = (value) => {
-    if (!deleteButton) return;
     if (actionWidth <= 0) {
       deleteButton.style.transform = 'translateX(100%)';
       deleteButton.style.opacity = '0';
@@ -367,7 +374,9 @@ function setupSwipeInteraction(mealElement, onDelete) {
   };
 
   const applyOffset = (value) => {
-    if (value === 0) {
+    currentOffset = value;
+
+    if (Math.abs(value) < 0.5) {
       swipeContent.style.transform = '';
     } else {
       swipeContent.style.transform = `translateX(${value}px)`;
@@ -380,54 +389,68 @@ function setupSwipeInteraction(mealElement, onDelete) {
 
   const pointerDown = (event) => {
     if (!event.isPrimary) return;
+
     actionWidth = getActionWidth();
     maxOffset = -actionWidth;
     isOpen = mealElement.classList.contains('meal--open');
     isDragging = true;
     startX = event.clientX;
-    mealElement.setPointerCapture(event.pointerId);
-    swipeContent.style.transition = 'none';
-    deleteButton.style.transition = 'none';
+    activePointerId = event.pointerId;
     mealElement.style.setProperty('--action-width', `${actionWidth}px`);
-    currentOffset = isOpen ? maxOffset : 0;
-    applyOffset(currentOffset);
+
+    setTransitionsEnabled(false);
+    applyOffset(isOpen ? maxOffset : 0);
+
+    swipeContainer.setPointerCapture(event.pointerId);
   };
 
   const pointerMove = (event) => {
     if (!isDragging) return;
     const delta = event.clientX - startX;
     const baseOffset = isOpen ? maxOffset : 0;
-    currentOffset = clamp(baseOffset + delta, maxOffset, 0);
-    applyOffset(currentOffset);
+    const nextOffset = clamp(baseOffset + delta, maxOffset, 0);
+    applyOffset(nextOffset);
+  };
+
+  const settle = (shouldOpen) => {
+    isOpen = shouldOpen;
+    mealElement.classList.toggle('meal--open', shouldOpen);
+    setTransitionsEnabled(true);
+    applyOffset(shouldOpen ? maxOffset : 0);
+  };
+
+  const releasePointer = (pointerId) => {
+    if (pointerId == null) return;
+    try {
+      swipeContainer.releasePointerCapture(pointerId);
+    } catch (error) {
+      // Ничего не делаем, если указатель уже освобождён
+    }
   };
 
   const pointerUp = (event) => {
     if (!isDragging) return;
     isDragging = false;
-    mealElement.releasePointerCapture(event.pointerId);
-    swipeContent.style.transition = '';
-    deleteButton.style.transition = '';
+    releasePointer(event.pointerId);
+
     const shouldOpen = currentOffset < maxOffset / 2;
-    isOpen = shouldOpen;
-    mealElement.classList.toggle('meal--open', shouldOpen);
-    applyOffset(shouldOpen ? maxOffset : 0);
+    settle(shouldOpen);
+    activePointerId = null;
   };
 
   const pointerCancel = () => {
     if (!isDragging) return;
     isDragging = false;
-    swipeContent.style.transition = '';
-    deleteButton.style.transition = '';
-    mealElement.classList.toggle('meal--open', isOpen);
-    applyOffset(isOpen ? maxOffset : 0);
+    releasePointer(activePointerId);
+    settle(isOpen);
+    activePointerId = null;
   };
 
-  mealElement.addEventListener('pointerdown', pointerDown);
-  mealElement.addEventListener('pointermove', pointerMove);
-  mealElement.addEventListener('pointerup', pointerUp);
-  mealElement.addEventListener('pointercancel', pointerCancel);
-
-  mealElement.addEventListener('mouseleave', () => {
+  swipeContainer.addEventListener('pointerdown', pointerDown);
+  swipeContainer.addEventListener('pointermove', pointerMove);
+  swipeContainer.addEventListener('pointerup', pointerUp);
+  swipeContainer.addEventListener('pointercancel', pointerCancel);
+  swipeContainer.addEventListener('pointerleave', () => {
     if (!isDragging) return;
     pointerCancel();
   });
