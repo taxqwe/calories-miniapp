@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>История питания</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <main class="page">
+    <header class="page__header">
+      <h1 class="page__title">История</h1>
+      <p class="page__subtitle">Выберите день, чтобы посмотреть приёмы пищи</p>
+    </header>
+
+    <section class="day-selector" aria-label="Выбор дня">
+      <button class="day-selector__nav day-selector__nav--prev" type="button" aria-label="Предыдущие дни">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5.5a1 1 0 0 1 0 1.4L11.4 11l4.1 4.1a1 1 0 1 1-1.4 1.4l-4.8-4.8a1 1 0 0 1 0-1.4l4.8-4.8a1 1 0 0 1 1.4 0z"/></svg>
+      </button>
+      <div class="day-selector__list" role="listbox" tabindex="0"></div>
+      <button class="day-selector__nav day-selector__nav--next" type="button" aria-label="Следующие дни">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.5a1 1 0 0 1 1.4 0l4.8 4.8a1 1 0 0 1 0 1.4l-4.8 4.8a1 1 0 0 1-1.4-1.4L12.6 11 8.5 6.9a1 1 0 0 1 0-1.4z"/></svg>
+      </button>
+    </section>
+
+    <section class="meals" aria-live="polite">
+      <header class="meals__header">
+        <div>
+          <h2 class="meals__title">Приёмы пищи</h2>
+          <p class="meals__subtitle">Отражаются калории и БЖУ за выбранный день</p>
+        </div>
+        <div class="meals__summary">
+          <span class="meals__calories">0 ккал</span>
+          <span class="meals__macros">Б 0 г • Ж 0 г • У 0 г</span>
+        </div>
+      </header>
+      <div class="meals__list"></div>
+    </section>
+
+    <button class="add-button" type="button">Добавить</button>
+  </main>
+
+  <template id="meal-item-template">
+    <article class="meal" data-id="">
+      <div class="meal__swipe">
+        <div class="meal__content">
+          <header class="meal__header">
+            <div class="meal__info">
+              <h3 class="meal__title"></h3>
+              <span class="meal__time"></span>
+            </div>
+            <div class="meal__totals">
+              <span class="meal__calories"></span>
+              <span class="meal__macros"></span>
+            </div>
+          </header>
+          <ul class="meal__dishes"></ul>
+        </div>
+        <button class="meal__delete" type="button" aria-label="Удалить приём пищи">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3a1 1 0 0 0-.94.66L7.38 5H5a1 1 0 0 0 0 2h.17l.76 11.07A2 2 0 0 0 7.92 20h8.16a2 2 0 0 0 1.99-1.93L18.83 7H19a1 1 0 1 0 0-2h-2.38l-.68-1.34A1 1 0 0 0 15 3zm.62 4H14.4l.63 10H8.97zm5.84 10H16l.63-10h-2.06z"/></svg>
+        </button>
+      </div>
+    </article>
+  </template>
+
+  <template id="dish-item-template">
+    <li class="dish">
+      <span class="dish__name"></span>
+      <span class="dish__calories"></span>
+    </li>
+  </template>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
