@@ -142,6 +142,13 @@ const timeFormatter = new Intl.DateTimeFormat('ru-RU', {
   minute: '2-digit'
 });
 
+function capitalize(value = '') {
+  if (typeof value !== 'string' || value.length === 0) {
+    return value;
+  }
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
 const numberFormatter = new Intl.NumberFormat('ru-RU', {
   maximumFractionDigits: 0
 });
