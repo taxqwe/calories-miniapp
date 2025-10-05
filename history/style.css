@@ -178,6 +178,7 @@ body {
   justify-content: space-between;
   gap: 12px;
   align-items: flex-start;
+  padding: 0px 8px;
 }
 
 .meals__title {
@@ -275,7 +276,6 @@ body {
   justify-content: space-between;
   gap: 12px;
   align-items: flex-start;
-  padding: 0px 8px;
 }
 
 .meal__info {
