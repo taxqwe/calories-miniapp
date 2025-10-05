@@ -166,7 +166,7 @@ body {
 .meals {
   background-color: var(--card-bg);
   border-radius: 20px;
-  padding: 22px 14px;
+  padding: 20px 12px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -258,7 +258,7 @@ body {
   position: relative;
   z-index: 1;
   flex: 1;
-  padding: 10px 7px;
+  padding: 12px 12px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -275,6 +275,7 @@ body {
   justify-content: space-between;
   gap: 12px;
   align-items: flex-start;
+  padding: 0px 8px;
 }
 
 .meal__info {
