@@ -201,8 +201,10 @@ body {
 
 .meals__macros,
 .meals__ratios {
+  display: block;
   font-size: 13px;
   color: var(--text-secondary);
+  white-space: nowrap;
 }
 
 .meals__list {
@@ -291,7 +293,9 @@ body {
 
 .meal__macros,
 .meal__ratios {
+  display: block;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .meal__dishes {
