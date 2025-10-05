@@ -262,7 +262,8 @@ function renderDaySelector() {
       card.setAttribute('aria-selected', 'false');
     }
 
-    card.addEventListener('click', () => {
+    card.addEventListener('click', (event) => {
+      // Предотвращаем обработку клика, если это был свайп
       if (suppressNextDayCardClick) {
         suppressNextDayCardClick = false;
         if (suppressClickResetTimer !== null) {
@@ -613,7 +614,7 @@ function enableDaySelectorDrag() {
       suppressClickResetTimer = window.setTimeout(() => {
         suppressNextDayCardClick = false;
         suppressClickResetTimer = null;
-      }, 250);
+      }, 100);
     }
 
     daySelectorDragState.pointerId = null;
