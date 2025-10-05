@@ -811,7 +811,13 @@ function setupSwipeInteraction(mealElement, onDelete) {
   applyOffset(currentOffset);
 
   const pointerDown = (event) => {
-    if (!event.isPrimary) return;
+    if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) {
+      return;
+    }
+
+    if (deleteButton.contains(event.target)) {
+      return;
+    }
 
     actionWidth = getActionWidth();
     maxOffset = -actionWidth;
