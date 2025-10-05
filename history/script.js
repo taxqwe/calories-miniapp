@@ -53,6 +53,9 @@ const historyState = {
 };
 
 const REQUEST_TIMEOUT_MS = 20000;
+const USER_TIMEZONE = getUserTimezone();
+
+let timeFormatter = createTimeFormatter(USER_TIMEZONE);
 
 function getInitDataString() {
   return tg?.initData || window.Telegram?.WebApp?.initData || '';
@@ -130,17 +133,30 @@ const daySelectorDragState = {
 
 const dayFormatter = new Intl.DateTimeFormat('ru-RU', {
   day: '2-digit',
-  month: 'short'
+  month: 'short',
+  timeZone: USER_TIMEZONE
 });
 
 const weekdayFormatter = new Intl.DateTimeFormat('ru-RU', {
-  weekday: 'short'
+  weekday: 'short',
+  timeZone: USER_TIMEZONE
 });
 
-const timeFormatter = new Intl.DateTimeFormat('ru-RU', {
-  hour: '2-digit',
-  minute: '2-digit'
-});
+function createTimeFormatter(timeZone) {
+  try {
+    return new Intl.DateTimeFormat('ru-RU', {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone
+    });
+  } catch (error) {
+    console.warn('Failed to create time formatter with timezone', timeZone, error);
+    return new Intl.DateTimeFormat('ru-RU', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+}
 
 function capitalize(value = '') {
   if (typeof value !== 'string' || value.length === 0) {
@@ -323,13 +339,13 @@ function renderMeals() {
 
   day.meals
     .slice()
-    .sort((a, b) => (a.timestamp ?? 0) - (b.timestamp ?? 0))
+    .sort((a, b) => getMealTimestampMs(a) - getMealTimestampMs(b))
     .forEach((meal) => {
       const mealNode = mealTemplate.content.firstElementChild.cloneNode(true);
       const mealContent = mealNode.querySelector('.meal__content');
       mealNode.dataset.id = meal.mealId != null ? String(meal.mealId) : meal.timestamp != null ? String(meal.timestamp) : '';
 
-      mealContent.querySelector('.meal__time').textContent = formatMealTime(meal.timestamp);
+      mealContent.querySelector('.meal__time').textContent = formatMealTime(meal);
 
       const mealCalories = safeNumber(meal.totals?.calories);
       mealContent.querySelector('.meal__calories').textContent = `${numberFormatter.format(mealCalories)} ккал`;
@@ -387,7 +403,8 @@ async function ensureDayDetails(dayId) {
   try {
     const response = await callHistoryApi('/api/history/day', {
       initData: getInitDataString(),
-      date: dayId
+      date: dayId,
+      timezone: USER_TIMEZONE
     });
 
     if (historyState.currentDayRequestToken !== requestToken) {
@@ -421,7 +438,7 @@ async function loadAvailableDays() {
   try {
     const response = await callHistoryApi('/api/history/days', {
       initData: getInitDataString(),
-      timezone: getUserTimezone()
+      timezone: USER_TIMEZONE
     });
 
     const normalizedDays = Array.isArray(response?.days)
@@ -501,13 +518,14 @@ function getSummaryFromDayList(dayId) {
   return { calories: caloriesValue };
 }
 
-function formatMealTime(timestamp) {
-  if (!Number.isFinite(Number(timestamp))) {
+function formatMealTime(meal) {
+  const timestampMs = getMealTimestampMs(meal);
+  if (!Number.isFinite(timestampMs)) {
     return '—';
   }
 
   try {
-    return timeFormatter.format(new Date(Number(timestamp) * 1000));
+    return timeFormatter.format(new Date(timestampMs));
   } catch (error) {
     console.error('Failed to format meal time', error);
     return '—';
@@ -570,7 +588,9 @@ function recalcDayTotals(meals) {
 
 function normalizeDayDetailsResponse(payload, fallbackDate) {
   const normalizedTotals = normalizeTotals(payload?.totals);
-  const meals = Array.isArray(payload?.meals) ? payload.meals.map(normalizeMeal) : [];
+  const meals = Array.isArray(payload?.meals)
+    ? payload.meals.map((meal, index) => normalizeMeal(meal, index))
+    : [];
 
   return {
     date: payload?.date || fallbackDate,
@@ -643,10 +663,73 @@ function normalizeTotals(totals = {}) {
   };
 }
 
-function normalizeMeal(meal = {}) {
+function normalizeMealTimestamp(value) {
+  if (value == null) {
+    return { seconds: null, milliseconds: null };
+  }
+
+  if (typeof value === 'number') {
+    if (!Number.isFinite(value)) {
+      return { seconds: null, milliseconds: null };
+    }
+
+    const milliseconds = value > 1e12 ? value : value * 1000;
+    return {
+      seconds: milliseconds / 1000,
+      milliseconds
+    };
+  }
+
+  const numericValue = Number(value);
+  if (Number.isFinite(numericValue)) {
+    const milliseconds = numericValue > 1e12 ? numericValue : numericValue * 1000;
+    return {
+      seconds: milliseconds / 1000,
+      milliseconds
+    };
+  }
+
+  if (typeof value === 'string') {
+    const parsed = Date.parse(value);
+    if (!Number.isNaN(parsed)) {
+      return {
+        seconds: parsed / 1000,
+        milliseconds: parsed
+      };
+    }
+  }
+
+  return { seconds: null, milliseconds: null };
+}
+
+function getMealTimestampMs(meal) {
+  if (!meal) {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  if (Number.isFinite(meal.timestampMs)) {
+    return meal.timestampMs;
+  }
+
+  if (Number.isFinite(meal.timestamp)) {
+    return meal.timestamp * 1000;
+  }
+
+  if (Number.isFinite(meal.order)) {
+    return Number.MAX_SAFE_INTEGER / 2 + meal.order;
+  }
+
+  return Number.POSITIVE_INFINITY;
+}
+
+function normalizeMeal(meal = {}, order = 0) {
+  const normalizedTimestamp = normalizeMealTimestamp(meal.timestamp);
+
   return {
     mealId: meal.mealId ?? meal.id ?? null,
-    timestamp: meal.timestamp != null ? Number(meal.timestamp) : null,
+    timestamp: normalizedTimestamp.seconds,
+    timestampMs: normalizedTimestamp.milliseconds,
+    order,
     totals: normalizeTotals(meal.totals),
     dishes: Array.isArray(meal.dishes) ? meal.dishes.map(normalizeDish) : [],
     date: meal.date
@@ -888,6 +971,10 @@ function setupSwipeInteraction(mealElement, onDelete) {
   deleteButton.addEventListener('click', (event) => {
     event.stopPropagation();
     onDelete();
+  });
+
+  deleteButton.addEventListener('pointerdown', (event) => {
+    event.stopPropagation();
   });
 }
 
