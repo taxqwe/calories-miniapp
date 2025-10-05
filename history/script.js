@@ -338,6 +338,7 @@ function setupSwipeInteraction(mealElement, onDelete) {
   if (!swipeContainer || !swipeContent || !deleteButton) {
     return;
   }
+
   const getActionWidth = () => {
     const width = deleteButton.getBoundingClientRect().width;
     return Number.isFinite(width) && width > 0 ? width : 72;
@@ -349,10 +350,7 @@ function setupSwipeInteraction(mealElement, onDelete) {
   let currentOffset = mealElement.classList.contains('meal--open') ? maxOffset : 0;
   let isDragging = false;
   let isOpen = mealElement.classList.contains('meal--open');
-<<<<<<< HEAD
   let activePointerId = null;
-
-  mealElement.style.setProperty('--action-width', `${actionWidth}px`);
 
   const setTransitionsEnabled = (enabled) => {
     const value = enabled ? '' : 'none';
@@ -385,16 +383,12 @@ function setupSwipeInteraction(mealElement, onDelete) {
     updateDeleteReveal(value);
   };
 
+  mealElement.style.setProperty('--action-width', `${actionWidth}px`);
   applyOffset(currentOffset);
 
   const pointerDown = (event) => {
     if (!event.isPrimary) return;
 
-=======
-
-  const pointerDown = (event) => {
-    if (!event.isPrimary) return;
->>>>>>> main
     actionWidth = getActionWidth();
     maxOffset = -actionWidth;
     isOpen = mealElement.classList.contains('meal--open');
@@ -413,8 +407,8 @@ function setupSwipeInteraction(mealElement, onDelete) {
     if (!isDragging) return;
     const delta = event.clientX - startX;
     const baseOffset = isOpen ? maxOffset : 0;
-    currentOffset = clamp(baseOffset + delta, maxOffset, 0);
-    swipeContainer.style.transform = `translateX(${currentOffset}px)`;
+    const nextOffset = clamp(baseOffset + delta, maxOffset, 0);
+    applyOffset(nextOffset);
   };
 
   const settle = (shouldOpen) => {
@@ -429,9 +423,8 @@ function setupSwipeInteraction(mealElement, onDelete) {
     try {
       swipeContainer.releasePointerCapture(pointerId);
     } catch (error) {
-      // Ничего не делаем, если указатель уже освобождён
+      // Pointer already released, ignore.
     }
-  };
   };
 
   const pointerUp = (event) => {
