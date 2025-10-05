@@ -102,12 +102,17 @@ body {
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   padding: 8px 0;
+  touch-action: pan-x;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
 }
 
 .day-selector__list::-webkit-scrollbar {
   display: none;
+}
+
+.day-selector__list--dragging {
+  cursor: grabbing;
 }
 
 .day-card {
@@ -194,6 +199,12 @@ body {
   color: var(--text-color);
 }
 
+.meals__macros,
+.meals__ratios {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
 .meals__list {
   display: flex;
   flex-direction: column;
@@ -268,7 +279,7 @@ body {
 .meal__totals {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   align-items: flex-end;
   font-size: 13px;
   color: var(--text-secondary);
@@ -276,6 +287,11 @@ body {
 
 .meal__totals .meal__calories {
   font-size: 15px;
+}
+
+.meal__macros,
+.meal__ratios {
+  font-variant-numeric: tabular-nums;
 }
 
 .meal__dishes {

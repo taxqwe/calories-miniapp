@@ -191,9 +191,19 @@ const daySelectorList = document.querySelector('.day-selector__list');
 const mealsList = document.querySelector('.meals__list');
 const mealsCalories = document.querySelector('.meals__calories');
 const mealsMacros = document.querySelector('.meals__macros');
+const mealsRatios = document.querySelector('.meals__ratios');
 const navPrevButton = document.querySelector('.day-selector__nav--prev');
 const navNextButton = document.querySelector('.day-selector__nav--next');
 let navStateFrame = null;
+let suppressNextDayCardClick = false;
+let suppressClickResetTimer = null;
+
+const daySelectorDragState = {
+  pointerId: null,
+  startX: 0,
+  startScrollLeft: 0,
+  moved: false
+};
 
 const dayFormatter = new Intl.DateTimeFormat('ru-RU', {
   day: '2-digit',
@@ -251,6 +261,14 @@ function renderDaySelector() {
     }
 
     card.addEventListener('click', () => {
+      if (suppressNextDayCardClick) {
+        suppressNextDayCardClick = false;
+        if (suppressClickResetTimer !== null) {
+          clearTimeout(suppressClickResetTimer);
+          suppressClickResetTimer = null;
+        }
+        return;
+      }
       selectedDayId = day.id;
       updateSelection();
       card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
@@ -279,7 +297,9 @@ function renderMeals() {
 
   if (!day || day.meals.length === 0) {
     mealsCalories.textContent = '0 ккал';
-    mealsMacros.textContent = formatMacrosLine();
+    const breakdown = formatMacroBreakdown();
+    mealsMacros.textContent = breakdown.macrosLine;
+    mealsRatios.textContent = breakdown.ratiosLine;
     mealsList.innerHTML = '<p class="meals__empty">Нет данных за этот день</p>';
     return;
   }
@@ -294,7 +314,9 @@ function renderMeals() {
   }, { calories: 0, protein: 0, fat: 0, carbs: 0 });
 
   mealsCalories.textContent = `${numberFormatter.format(totals.calories)} ккал`;
-  mealsMacros.textContent = formatMacrosLine(totals);
+  const totalsBreakdown = formatMacroBreakdown(totals);
+  mealsMacros.textContent = totalsBreakdown.macrosLine;
+  mealsRatios.textContent = totalsBreakdown.ratiosLine;
 
   const mealTemplate = document.getElementById('meal-item-template');
   const dishTemplate = document.getElementById('dish-item-template');
@@ -308,11 +330,13 @@ function renderMeals() {
 
     const totalCalories = meal.dishes.reduce((sum, dish) => sum + dish.calories, 0);
     mealContent.querySelector('.meal__calories').textContent = `${totalCalories} ккал`;
-    mealContent.querySelector('.meal__macros').textContent = formatMacrosLine({
+    const mealBreakdown = formatMacroBreakdown({
       protein: meal.macros.protein,
       fat: meal.macros.fat,
       carbs: meal.macros.carbs
     });
+    mealContent.querySelector('.meal__macros').textContent = mealBreakdown.macrosLine;
+    mealContent.querySelector('.meal__ratios').textContent = mealBreakdown.ratiosLine;
 
     const dishesList = mealContent.querySelector('.meal__dishes');
     meal.dishes.forEach((dish) => {
@@ -345,7 +369,7 @@ function getDayCalories(day) {
   );
 }
 
-function formatMacrosLine({ protein = 0, fat = 0, carbs = 0 } = {}) {
+function formatMacroBreakdown({ protein = 0, fat = 0, carbs = 0 } = {}) {
   const proteinValue = Number.isFinite(protein) ? protein : 0;
   const fatValue = Number.isFinite(fat) ? fat : 0;
   const carbsValue = Number.isFinite(carbs) ? carbs : 0;
@@ -380,10 +404,10 @@ function formatMacrosLine({ protein = 0, fat = 0, carbs = 0 } = {}) {
     percentages = basePercents;
   }
 
-  const macrosText = [`🥚 ${proteinValue} г`, `🧈 ${fatValue} г`, `🍞 ${carbsValue} г`];
-  const percentagesText = `🥧 ${percentages.join('/')}%`;
+  const macrosLine = [`🥚 ${proteinValue} г`, `🧈 ${fatValue} г`, `🍞 ${carbsValue} г`].join(' · ');
+  const ratiosLine = `🥧 ${percentages.join('/')}%`;
 
-  return `${macrosText.join(' · ')} · ${percentagesText}`;
+  return { macrosLine, ratiosLine };
 }
 
 function setupSwipeInteraction(mealElement, onDelete) {
@@ -524,6 +548,7 @@ function clamp(value, min, max) {
 renderDaySelector();
 updateSelection();
 scheduleNavStateUpdate();
+enableDaySelectorDrag();
 
 const navButtons = document.querySelectorAll('.day-selector__nav');
 navButtons.forEach((button) => {
@@ -560,4 +585,78 @@ function updateNavState() {
 
   navPrevButton.disabled = disablePrev;
   navNextButton.disabled = disableNext;
+}
+
+function enableDaySelectorDrag() {
+  if (!daySelectorList) return;
+
+  const releasePointer = () => {
+    if (daySelectorDragState.pointerId == null) {
+      return;
+    }
+
+    try {
+      daySelectorList.releasePointerCapture(daySelectorDragState.pointerId);
+    } catch (error) {
+      // Pointer already released, ignore.
+    }
+
+    daySelectorList.classList.remove('day-selector__list--dragging');
+
+    if (daySelectorDragState.moved) {
+      suppressNextDayCardClick = true;
+      if (suppressClickResetTimer !== null) {
+        clearTimeout(suppressClickResetTimer);
+      }
+      suppressClickResetTimer = window.setTimeout(() => {
+        suppressNextDayCardClick = false;
+        suppressClickResetTimer = null;
+      }, 250);
+    }
+
+    daySelectorDragState.pointerId = null;
+    daySelectorDragState.moved = false;
+  };
+
+  daySelectorList.addEventListener('pointerdown', (event) => {
+    if (!event.isPrimary || event.button !== 0) return;
+
+    daySelectorDragState.pointerId = event.pointerId;
+    daySelectorDragState.startX = event.clientX;
+    daySelectorDragState.startScrollLeft = daySelectorList.scrollLeft;
+    daySelectorDragState.moved = false;
+
+    daySelectorList.classList.add('day-selector__list--dragging');
+    daySelectorList.setPointerCapture(event.pointerId);
+  });
+
+  daySelectorList.addEventListener('pointermove', (event) => {
+    if (daySelectorDragState.pointerId !== event.pointerId) return;
+
+    const delta = event.clientX - daySelectorDragState.startX;
+    if (!daySelectorDragState.moved && Math.abs(delta) > 3) {
+      daySelectorDragState.moved = true;
+    }
+
+    if (daySelectorDragState.moved) {
+      const maxScroll = Math.max(daySelectorList.scrollWidth - daySelectorList.clientWidth, 0);
+      const target = clamp(daySelectorDragState.startScrollLeft - delta, 0, maxScroll);
+      daySelectorList.scrollLeft = target;
+      scheduleNavStateUpdate();
+      event.preventDefault();
+    }
+  });
+
+  const endDragHandler = (event) => {
+    if (daySelectorDragState.pointerId !== event.pointerId) return;
+    releasePointer();
+  };
+
+  daySelectorList.addEventListener('pointerup', endDragHandler);
+  daySelectorList.addEventListener('pointercancel', endDragHandler);
+  daySelectorList.addEventListener('pointerleave', () => {
+    if (daySelectorDragState.pointerId == null) return;
+    releasePointer();
+  });
+  daySelectorList.addEventListener('lostpointercapture', releasePointer);
 }
