@@ -256,19 +256,13 @@ body {
 .meal__info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
-.meal__title {
+.meal__time {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
   color: var(--text-color);
-}
-
-.meal__time {
-  font-size: 13px;
-  color: var(--text-secondary);
 }
 
 .meal__totals {

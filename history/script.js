@@ -208,6 +208,12 @@ const numberFormatter = new Intl.NumberFormat('ru-RU', {
   maximumFractionDigits: 0
 });
 
+const MACRO_CALORIES = {
+  protein: 4,
+  fat: 9,
+  carbs: 4
+};
+
 let selectedDayId = mockHistory[0]?.id ?? null;
 
 function renderDaySelector() {
@@ -273,7 +279,7 @@ function renderMeals() {
 
   if (!day || day.meals.length === 0) {
     mealsCalories.textContent = '0 ккал';
-    mealsMacros.textContent = 'Б 0 г • Ж 0 г • У 0 г';
+    mealsMacros.textContent = formatMacrosLine();
     mealsList.innerHTML = '<p class="meals__empty">Нет данных за этот день</p>';
     return;
   }
@@ -288,7 +294,7 @@ function renderMeals() {
   }, { calories: 0, protein: 0, fat: 0, carbs: 0 });
 
   mealsCalories.textContent = `${numberFormatter.format(totals.calories)} ккал`;
-  mealsMacros.textContent = `Б ${totals.protein} г • Ж ${totals.fat} г • У ${totals.carbs} г`;
+  mealsMacros.textContent = formatMacrosLine(totals);
 
   const mealTemplate = document.getElementById('meal-item-template');
   const dishTemplate = document.getElementById('dish-item-template');
@@ -298,12 +304,15 @@ function renderMeals() {
     const mealContent = mealNode.querySelector('.meal__content');
     mealNode.dataset.id = meal.id;
 
-    mealContent.querySelector('.meal__title').textContent = meal.title;
     mealContent.querySelector('.meal__time').textContent = meal.time;
 
     const totalCalories = meal.dishes.reduce((sum, dish) => sum + dish.calories, 0);
     mealContent.querySelector('.meal__calories').textContent = `${totalCalories} ккал`;
-    mealContent.querySelector('.meal__macros').textContent = `Б ${meal.macros.protein} г • Ж ${meal.macros.fat} г • У ${meal.macros.carbs} г`;
+    mealContent.querySelector('.meal__macros').textContent = formatMacrosLine({
+      protein: meal.macros.protein,
+      fat: meal.macros.fat,
+      carbs: meal.macros.carbs
+    });
 
     const dishesList = mealContent.querySelector('.meal__dishes');
     meal.dishes.forEach((dish) => {
@@ -334,6 +343,47 @@ function getDayCalories(day) {
   return numberFormatter.format(
     day.meals.reduce((acc, meal) => acc + meal.dishes.reduce((sum, dish) => sum + dish.calories, 0), 0)
   );
+}
+
+function formatMacrosLine({ protein = 0, fat = 0, carbs = 0 } = {}) {
+  const proteinValue = Number.isFinite(protein) ? protein : 0;
+  const fatValue = Number.isFinite(fat) ? fat : 0;
+  const carbsValue = Number.isFinite(carbs) ? carbs : 0;
+
+  const caloriesFromProtein = proteinValue * MACRO_CALORIES.protein;
+  const caloriesFromFat = fatValue * MACRO_CALORIES.fat;
+  const caloriesFromCarbs = carbsValue * MACRO_CALORIES.carbs;
+  const caloriesTotal = caloriesFromProtein + caloriesFromFat + caloriesFromCarbs;
+
+  let percentages = [0, 0, 0];
+
+  if (caloriesTotal > 0) {
+    const rawPercentages = [caloriesFromProtein, caloriesFromFat, caloriesFromCarbs].map((value) =>
+      (value / caloriesTotal) * 100
+    );
+
+    const basePercents = rawPercentages.map((value) => Math.floor(value));
+    let remainderBudget = 100 - basePercents.reduce((sum, value) => sum + value, 0);
+
+    const remainders = rawPercentages
+      .map((value, index) => ({ index, fraction: value - basePercents[index] }))
+      .sort((a, b) => b.fraction - a.fraction);
+
+    let pointer = 0;
+    while (remainderBudget > 0 && remainders.length > 0) {
+      const target = remainders[pointer % remainders.length];
+      basePercents[target.index] += 1;
+      remainderBudget -= 1;
+      pointer += 1;
+    }
+
+    percentages = basePercents;
+  }
+
+  const macrosText = [`🥚 ${proteinValue} г`, `🧈 ${fatValue} г`, `🍞 ${carbsValue} г`];
+  const percentagesText = `🥧 ${percentages.join('/')}%`;
+
+  return `${macrosText.join(' · ')} · ${percentagesText}`;
 }
 
 function setupSwipeInteraction(mealElement, onDelete) {
