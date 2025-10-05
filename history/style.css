@@ -169,7 +169,7 @@ body {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .meals__title {
@@ -179,9 +179,9 @@ body {
 }
 
 .meals__summary {
-  display: grid;
-  justify-items: end;
-  align-content: start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   gap: 4px;
   text-align: right;
   font-size: 14px;
@@ -274,9 +274,9 @@ body {
 }
 
 .meal__totals {
-  display: grid;
-  justify-items: end;
-  align-content: start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   gap: 2px;
   text-align: right;
   font-size: 13px;
