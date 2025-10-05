@@ -180,19 +180,31 @@ function renderDaySelector() {
     return;
   }
 
-  const sortedDays = historyState.days.slice().sort((a, b) => new Date(b) - new Date(a));
+  const sortedDays = historyState.days
+    .slice()
+    .sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0));
 
-  sortedDays.forEach((date) => {
+  sortedDays.forEach((day) => {
+    const date = day.date;
     const card = document.createElement('button');
     card.type = 'button';
     card.className = 'day-card';
     card.dataset.dayId = date;
 
-    const jsDate = new Date(`${date}T00:00:00`);
-    const formattedDate = dayFormatter.format(jsDate).replace('.', '');
-    const weekday = capitalize(weekdayFormatter.format(jsDate));
+    const jsDate = createDayDate(day);
+    let formattedDate = date;
+    let weekday = '';
 
-    const caloriesValue = getCachedDayCalories(date);
+    if (jsDate) {
+      try {
+        formattedDate = dayFormatter.format(jsDate).replace('.', '');
+        weekday = capitalize(weekdayFormatter.format(jsDate));
+      } catch (error) {
+        console.warn('Failed to format day', date, error);
+      }
+    }
+
+    const caloriesValue = getCachedDayCalories(date, day.calories);
     const caloriesText = caloriesValue != null ? `${numberFormatter.format(caloriesValue)} ккал` : '—';
 
     card.innerHTML = `
@@ -280,13 +292,13 @@ function renderMeals() {
   }
 
   if (historyState.loadingDayId === dayId && !historyState.dayDetails.has(dayId)) {
-    setSummaryFromTotals();
+    setSummaryFromTotals(getSummaryFromDayList(dayId));
     renderMealsStatus('Загрузка...', 'meals__status');
     return;
   }
 
   if (historyState.fetchDayError && !historyState.dayDetails.has(dayId)) {
-    setSummaryFromTotals();
+    setSummaryFromTotals(getSummaryFromDayList(dayId));
     renderMealsStatus(historyState.fetchDayError, 'meals__status');
     return;
   }
@@ -294,7 +306,7 @@ function renderMeals() {
   const day = historyState.dayDetails.get(dayId);
 
   if (!day) {
-    setSummaryFromTotals();
+    setSummaryFromTotals(getSummaryFromDayList(dayId));
     renderMealsStatus('Нет данных');
     return;
   }
@@ -412,18 +424,21 @@ async function loadAvailableDays() {
       timezone: getUserTimezone()
     });
 
-    const days = Array.isArray(response?.days) ? response.days : [];
-    historyState.days = days;
+    const normalizedDays = Array.isArray(response?.days)
+      ? response.days.map(normalizeDayListEntry).filter(Boolean)
+      : [];
 
-    const allowedDays = new Set(days);
+    historyState.days = normalizedDays;
+
+    const dayDates = new Set(normalizedDays.map((item) => item.date));
     Array.from(historyState.dayDetails.keys()).forEach((day) => {
-      if (!allowedDays.has(day)) {
+      if (!dayDates.has(day)) {
         historyState.dayDetails.delete(day);
       }
     });
 
-    if (!days.includes(historyState.selectedDayId || '')) {
-      historyState.selectedDayId = days[0] || null;
+    if (!dayDates.has(historyState.selectedDayId || '')) {
+      historyState.selectedDayId = normalizedDays[0]?.date || null;
     }
   } catch (error) {
     historyState.fetchDaysError = error.message || 'Не удалось загрузить список дней';
@@ -449,11 +464,41 @@ function initializeHistory() {
   loadAvailableDays();
 }
 
-function getCachedDayCalories(dayId) {
+function getCachedDayCalories(dayId, fallbackCalories = null) {
   const details = historyState.dayDetails.get(dayId);
-  if (!details) return null;
-  const calories = safeNumber(details?.totals?.calories);
-  return Number.isFinite(calories) ? calories : null;
+  if (details) {
+    const caloriesValue = Number(details?.totals?.calories);
+    if (Number.isFinite(caloriesValue)) {
+      return caloriesValue;
+    }
+  }
+
+  const fallbackValue = Number(fallbackCalories);
+  if (Number.isFinite(fallbackValue)) {
+    return fallbackValue;
+  }
+
+  const listEntry = historyState.days.find((day) => day.date === dayId);
+  const listValue = Number(listEntry?.calories);
+  if (Number.isFinite(listValue)) {
+    return listValue;
+  }
+
+  return null;
+}
+
+function getSummaryFromDayList(dayId) {
+  const entry = historyState.days.find((day) => day.date === dayId);
+  if (!entry) {
+    return null;
+  }
+
+  const caloriesValue = Number(entry.calories);
+  if (!Number.isFinite(caloriesValue)) {
+    return null;
+  }
+
+  return { calories: caloriesValue };
 }
 
 function formatMealTime(timestamp) {
@@ -532,6 +577,47 @@ function normalizeDayDetailsResponse(payload, fallbackDate) {
     totals: normalizedTotals,
     meals
   };
+}
+
+function normalizeDayListEntry(day) {
+  if (!day) return null;
+
+  const date = typeof day.date === 'string' ? day.date : typeof day === 'string' ? day : null;
+  if (!date) {
+    return null;
+  }
+
+  const parsedTime = Date.parse(`${date}T00:00:00Z`);
+  if (Number.isNaN(parsedTime)) {
+    return null;
+  }
+
+  const caloriesValue = Number(day.calories);
+  const calories = Number.isFinite(caloriesValue) ? caloriesValue : null;
+
+  return {
+    date,
+    calories,
+    timestamp: parsedTime
+  };
+}
+
+function createDayDate(day) {
+  if (!day) return null;
+
+  if (Number.isFinite(day.timestamp)) {
+    const dateFromTimestamp = new Date(day.timestamp);
+    if (!Number.isNaN(dateFromTimestamp.getTime())) {
+      return dateFromTimestamp;
+    }
+  }
+
+  const fallback = typeof day.date === 'string' ? Date.parse(`${day.date}T00:00:00Z`) : NaN;
+  if (!Number.isNaN(fallback)) {
+    return new Date(fallback);
+  }
+
+  return null;
 }
 
 function normalizeTotals(totals = {}) {
