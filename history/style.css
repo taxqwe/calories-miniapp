@@ -41,6 +41,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding: 8px 8px 0;
 }
 
 .page__title {
@@ -60,7 +61,7 @@ body {
   grid-template-columns: auto 1fr auto;
   gap: 8px;
   align-items: center;
-  padding: 6px 4px;
+  padding: 8px 6px;
   border-radius: 16px;
   background-color: var(--card-bg);
   box-shadow: var(--shadow-soft);
@@ -165,7 +166,7 @@ body {
 .meals {
   background-color: var(--card-bg);
   border-radius: 20px;
-  padding: 16px 8px;
+  padding: 20px 12px;
   display: flex;
   flex-direction: column;
   gap: 16px;
