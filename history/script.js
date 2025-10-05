@@ -197,12 +197,14 @@ const navNextButton = document.querySelector('.day-selector__nav--next');
 let navStateFrame = null;
 let suppressNextDayCardClick = false;
 let suppressClickResetTimer = null;
+const DAY_SELECTOR_TOUCH_DRAG_THRESHOLD = 24;
 
 const daySelectorDragState = {
   pointerId: null,
   startX: 0,
   startScrollLeft: 0,
-  moved: false
+  moved: false,
+  pointerType: null
 };
 
 const dayFormatter = new Intl.DateTimeFormat('ru-RU', {
@@ -616,6 +618,7 @@ function enableDaySelectorDrag() {
 
     daySelectorDragState.pointerId = null;
     daySelectorDragState.moved = false;
+    daySelectorDragState.pointerType = null;
   };
 
   daySelectorList.addEventListener('pointerdown', (event) => {
@@ -625,6 +628,9 @@ function enableDaySelectorDrag() {
     daySelectorDragState.startX = event.clientX;
     daySelectorDragState.startScrollLeft = daySelectorList.scrollLeft;
     daySelectorDragState.moved = false;
+    daySelectorDragState.pointerType = typeof event.pointerType === 'string' && event.pointerType.length > 0
+      ? event.pointerType
+      : 'touch';
 
     daySelectorList.classList.add('day-selector__list--dragging');
     daySelectorList.setPointerCapture(event.pointerId);
@@ -634,17 +640,22 @@ function enableDaySelectorDrag() {
     if (daySelectorDragState.pointerId !== event.pointerId) return;
 
     const delta = event.clientX - daySelectorDragState.startX;
-    if (!daySelectorDragState.moved && Math.abs(delta) > 3) {
+    const maxScroll = Math.max(daySelectorList.scrollWidth - daySelectorList.clientWidth, 0);
+    const target = clamp(daySelectorDragState.startScrollLeft - delta, 0, maxScroll);
+    const scrollDelta = target - daySelectorDragState.startScrollLeft;
+    const threshold = daySelectorDragState.pointerType === 'mouse' ? 4 : DAY_SELECTOR_TOUCH_DRAG_THRESHOLD;
+
+    if (!daySelectorDragState.moved) {
+      const shouldTreatAsClick = Math.abs(delta) < threshold && Math.abs(scrollDelta) < 1;
+      if (shouldTreatAsClick) {
+        return;
+      }
       daySelectorDragState.moved = true;
     }
 
-    if (daySelectorDragState.moved) {
-      const maxScroll = Math.max(daySelectorList.scrollWidth - daySelectorList.clientWidth, 0);
-      const target = clamp(daySelectorDragState.startScrollLeft - delta, 0, maxScroll);
-      daySelectorList.scrollLeft = target;
-      scheduleNavStateUpdate();
-      event.preventDefault();
-    }
+    daySelectorList.scrollLeft = target;
+    scheduleNavStateUpdate();
+    event.preventDefault();
   });
 
   const endDragHandler = (event) => {
