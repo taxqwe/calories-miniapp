@@ -623,7 +623,7 @@ function enableDaySelectorDrag() {
   };
 
   daySelectorList.addEventListener('pointerdown', (event) => {
-    if (!event.isPrimary || event.button !== 0) return;
+    if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
 
     daySelectorDragState.pointerId = event.pointerId;
     daySelectorDragState.startX = event.clientX;
@@ -644,7 +644,7 @@ function enableDaySelectorDrag() {
     const maxScroll = Math.max(daySelectorList.scrollWidth - daySelectorList.clientWidth, 0);
     const target = clamp(daySelectorDragState.startScrollLeft - delta, 0, maxScroll);
     const scrollDelta = target - daySelectorDragState.startScrollLeft;
-    const threshold = daySelectorDragState.pointerType === 'mouse' ? 4 : DAY_SELECTOR_TOUCH_DRAG_THRESHOLD;
+    const threshold = daySelectorDragState.pointerType === 'mouse' ? 2 : DAY_SELECTOR_TOUCH_DRAG_THRESHOLD;
 
     if (!daySelectorDragState.moved) {
       const shouldTreatAsClick = Math.abs(delta) < threshold && Math.abs(scrollDelta) < 1;
