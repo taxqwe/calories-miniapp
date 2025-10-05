@@ -633,21 +633,25 @@ function enableDaySelectorDrag() {
       ? event.pointerType
       : 'touch';
 
+    // Для мыши устанавливаем более строгий режим - отключаем перетаскивание
+    if (event.pointerType === 'mouse') {
+      return;
+    }
+
     daySelectorList.classList.add('day-selector__list--dragging');
     daySelectorList.setPointerCapture(event.pointerId);
   });
 
   daySelectorList.addEventListener('pointermove', (event) => {
-    if (daySelectorDragState.pointerId !== event.pointerId) return;
+    if (daySelectorDragState.pointerId !== event.pointerId || daySelectorDragState.pointerType === 'mouse') return;
 
     const delta = event.clientX - daySelectorDragState.startX;
     const maxScroll = Math.max(daySelectorList.scrollWidth - daySelectorList.clientWidth, 0);
     const target = clamp(daySelectorDragState.startScrollLeft - delta, 0, maxScroll);
     const scrollDelta = target - daySelectorDragState.startScrollLeft;
-    const threshold = daySelectorDragState.pointerType === 'mouse' ? 2 : DAY_SELECTOR_TOUCH_DRAG_THRESHOLD;
 
     if (!daySelectorDragState.moved) {
-      const shouldTreatAsClick = Math.abs(delta) < threshold && Math.abs(scrollDelta) < 1;
+      const shouldTreatAsClick = Math.abs(delta) < DAY_SELECTOR_TOUCH_DRAG_THRESHOLD && Math.abs(scrollDelta) < 1;
       if (shouldTreatAsClick) {
         return;
       }
