@@ -169,7 +169,7 @@ body {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .meals__title {
@@ -178,17 +178,12 @@ body {
   font-weight: 600;
 }
 
-.meals__subtitle {
-  margin: 4px 0 0;
-  font-size: 13px;
-  color: var(--text-secondary);
-}
-
 .meals__summary {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  justify-items: end;
+  align-content: start;
   gap: 4px;
-  align-items: flex-end;
+  text-align: right;
   font-size: 14px;
   color: var(--text-secondary);
 }
@@ -279,10 +274,11 @@ body {
 }
 
 .meal__totals {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  justify-items: end;
+  align-content: start;
   gap: 2px;
-  align-items: flex-end;
+  text-align: right;
   font-size: 13px;
   color: var(--text-secondary);
 }
