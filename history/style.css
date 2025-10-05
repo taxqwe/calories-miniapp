@@ -28,10 +28,10 @@ body {
 .page {
   width: 100%;
   min-height: 100vh;
-  padding: 16px;
+  padding: 2px;
   padding-bottom: calc(24px + env(safe-area-inset-bottom));
-  padding-left: calc(16px + env(safe-area-inset-left));
-  padding-right: calc(16px + env(safe-area-inset-right));
+  padding-left: calc(2px + env(safe-area-inset-left));
+  padding-right: calc(2px + env(safe-area-inset-right));
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -60,7 +60,7 @@ body {
   grid-template-columns: auto 1fr auto;
   gap: 8px;
   align-items: center;
-  padding: 8px 12px;
+  padding: 6px;
   border-radius: 16px;
   background-color: var(--card-bg);
   box-shadow: var(--shadow-soft);
@@ -165,7 +165,7 @@ body {
 .meals {
   background-color: var(--card-bg);
   border-radius: 20px;
-  padding: 16px;
+  padding: 16px 8px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -257,7 +257,7 @@ body {
   position: relative;
   z-index: 1;
   flex: 1;
-  padding: 14px;
+  padding: 10px 7px;
   display: flex;
   flex-direction: column;
   gap: 12px;
