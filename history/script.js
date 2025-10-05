@@ -3,6 +3,12 @@ const tg = window.Telegram?.WebApp;
 tg?.ready();
 tg?.expand();
 
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    window.location.reload();
+  }
+});
+
 function applyTheme(themeParams = {}, colorScheme = tg?.colorScheme) {
   const root = document.documentElement;
   const isLight = colorScheme === 'light';
