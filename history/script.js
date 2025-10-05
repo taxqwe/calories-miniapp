@@ -39,153 +39,74 @@ if (tg) {
   tg.onEvent('themeChanged', () => applyTheme(tg.themeParams, tg.colorScheme));
 }
 
-const mockHistory = [
-  {
-    id: '2024-06-20',
-    date: '2024-06-20',
-    meals: [
-      {
-        id: 'breakfast-1',
-        title: 'Завтрак',
-        time: '08:15',
-        macros: { protein: 28, fat: 18, carbs: 42 },
-        dishes: [
-          { name: 'Овсяная каша с ягодами', calories: 260 },
-          { name: 'Греческий йогурт', calories: 110 }
-        ]
-      },
-      {
-        id: 'lunch-1',
-        title: 'Обед',
-        time: '13:05',
-        macros: { protein: 36, fat: 22, carbs: 48 },
-        dishes: [
-          { name: 'Куриное филе на гриле', calories: 220 },
-          { name: 'Киноа с овощами', calories: 180 },
-          { name: 'Салат из огурцов', calories: 40 }
-        ]
-      },
-      {
-        id: 'snack-1',
-        title: 'Перекус',
-        time: '17:40',
-        macros: { protein: 14, fat: 9, carbs: 25 },
-        dishes: [
-          { name: 'Протеиновый батончик', calories: 190 }
-        ]
-      }
-    ]
-  },
-  {
-    id: '2024-06-19',
-    date: '2024-06-19',
-    meals: [
-      {
-        id: 'breakfast-2',
-        title: 'Завтрак',
-        time: '07:55',
-        macros: { protein: 24, fat: 16, carbs: 38 },
-        dishes: [
-          { name: 'Омлет с овощами', calories: 220 },
-          { name: 'Тост из цельнозернового хлеба', calories: 90 }
-        ]
-      },
-      {
-        id: 'lunch-2',
-        title: 'Обед',
-        time: '12:40',
-        macros: { protein: 32, fat: 18, carbs: 52 },
-        dishes: [
-          { name: 'Треска на пару', calories: 210 },
-          { name: 'Булгур с зеленью', calories: 160 },
-          { name: 'Тыквенный суп-пюре', calories: 120 }
-        ]
-      },
-      {
-        id: 'dinner-2',
-        title: 'Ужин',
-        time: '19:30',
-        macros: { protein: 26, fat: 14, carbs: 30 },
-        dishes: [
-          { name: 'Индейка запечённая', calories: 240 },
-          { name: 'Тушёные овощи', calories: 130 }
-        ]
-      }
-    ]
-  },
-  {
-    id: '2024-06-18',
-    date: '2024-06-18',
-    meals: [
-      {
-        id: 'breakfast-3',
-        title: 'Завтрак',
-        time: '08:05',
-        macros: { protein: 22, fat: 12, carbs: 44 },
-        dishes: [
-          { name: 'Гранола с молоком', calories: 280 },
-          { name: 'Яблоко', calories: 80 }
-        ]
-      },
-      {
-        id: 'lunch-3',
-        title: 'Обед',
-        time: '12:55',
-        macros: { protein: 34, fat: 20, carbs: 56 },
-        dishes: [
-          { name: 'Лосось на пару', calories: 260 },
-          { name: 'Картофельное пюре', calories: 190 },
-          { name: 'Салат из шпината', calories: 60 }
-        ]
-      },
-      {
-        id: 'dinner-3',
-        title: 'Ужин',
-        time: '20:10',
-        macros: { protein: 20, fat: 11, carbs: 28 },
-        dishes: [
-          { name: 'Тофу с рисовой лапшой', calories: 310 }
-        ]
-      }
-    ]
-  },
-  {
-    id: '2024-06-17',
-    date: '2024-06-17',
-    meals: [
-      {
-        id: 'breakfast-4',
-        title: 'Завтрак',
-        time: '07:45',
-        macros: { protein: 18, fat: 10, carbs: 42 },
-        dishes: [
-          { name: 'Тост с авокадо', calories: 230 },
-          { name: 'Кофе с молоком', calories: 60 }
-        ]
-      },
-      {
-        id: 'lunch-4',
-        title: 'Обед',
-        time: '13:25',
-        macros: { protein: 30, fat: 19, carbs: 50 },
-        dishes: [
-          { name: 'Говяжьи тефтели', calories: 240 },
-          { name: 'Рис басмати', calories: 170 },
-          { name: 'Овощной салат', calories: 70 }
-        ]
-      },
-      {
-        id: 'dinner-4',
-        title: 'Ужин',
-        time: '19:45',
-        macros: { protein: 24, fat: 15, carbs: 22 },
-        dishes: [
-          { name: 'Тунец с овощами-гриль', calories: 280 }
-        ]
-      }
-    ]
+const API_BASE_URL = window.__CALORIES_HISTORY_API_BASE__ || 'https://calories-bot.duckdns.org:8443';
+
+const historyState = {
+  days: [],
+  dayDetails: new Map(),
+  selectedDayId: null,
+  loadingDayId: null,
+  isFetchingDays: false,
+  fetchDaysError: null,
+  fetchDayError: null,
+  currentDayRequestToken: null
+};
+
+const REQUEST_TIMEOUT_MS = 20000;
+
+function getInitDataString() {
+  return tg?.initData || window.Telegram?.WebApp?.initData || '';
+}
+
+function getUserTimezone() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  } catch (error) {
+    console.error('Failed to resolve timezone', error);
+    return 'UTC';
   }
-];
+}
+
+async function callHistoryApi(path, body, { method = 'POST' } = {}) {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      mode: 'cors',
+      body: method === 'GET' ? undefined : JSON.stringify(body),
+      signal: controller.signal
+    });
+
+    if (response.status === 204) {
+      return null;
+    }
+
+    if (!response.ok) {
+      let errorMessage = `Request failed with status ${response.status}`;
+      try {
+        const errorBody = await response.json();
+        errorMessage = errorBody?.error?.message || errorMessage;
+      } catch (parseError) {
+        // no-op: keep default message
+      }
+      throw new Error(errorMessage);
+    }
+
+    if (response.headers.get('content-length') === '0') {
+      return null;
+    }
+
+    return await response.json();
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
 
 const daySelectorList = document.querySelector('.day-selector__list');
 const mealsList = document.querySelector('.meals__list');
@@ -216,6 +137,11 @@ const weekdayFormatter = new Intl.DateTimeFormat('ru-RU', {
   weekday: 'short'
 });
 
+const timeFormatter = new Intl.DateTimeFormat('ru-RU', {
+  hour: '2-digit',
+  minute: '2-digit'
+});
+
 const numberFormatter = new Intl.NumberFormat('ru-RU', {
   maximumFractionDigits: 0
 });
@@ -226,44 +152,53 @@ const MACRO_CALORIES = {
   carbs: 4
 };
 
-let selectedDayId = mockHistory[0]?.id ?? null;
-
 function renderDaySelector() {
   daySelectorList.innerHTML = '';
 
-  const days = mockHistory
-    .slice()
-    .sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  if (!selectedDayId && days.length > 0) {
-    selectedDayId = days[0].id;
+  if (historyState.isFetchingDays) {
+    renderDaySelectorStatus('Загрузка...');
+    scheduleNavStateUpdate();
+    return;
   }
 
-  days.forEach((day) => {
+  if (historyState.fetchDaysError) {
+    renderDaySelectorStatus(historyState.fetchDaysError);
+    scheduleNavStateUpdate();
+    return;
+  }
+
+  if (!historyState.days.length) {
+    renderDaySelectorStatus('Нет данных');
+    scheduleNavStateUpdate();
+    return;
+  }
+
+  const sortedDays = historyState.days.slice().sort((a, b) => new Date(b) - new Date(a));
+
+  sortedDays.forEach((date) => {
     const card = document.createElement('button');
     card.type = 'button';
     card.className = 'day-card';
-    card.dataset.dayId = day.id;
+    card.dataset.dayId = date;
 
-    const date = new Date(day.date);
-    const formattedDate = dayFormatter.format(date).replace('.', '');
-    const weekday = capitalize(weekdayFormatter.format(date));
+    const jsDate = new Date(`${date}T00:00:00`);
+    const formattedDate = dayFormatter.format(jsDate).replace('.', '');
+    const weekday = capitalize(weekdayFormatter.format(jsDate));
+
+    const caloriesValue = getCachedDayCalories(date);
+    const caloriesText = caloriesValue != null ? `${numberFormatter.format(caloriesValue)} ккал` : '—';
 
     card.innerHTML = `
       <span class="day-card__date">${formattedDate}</span>
       <span class="day-card__weekday">${weekday}</span>
-      <span class="day-card__total">${getDayCalories(day)} ккал</span>
+      <span class="day-card__total">${caloriesText}</span>
     `;
 
-    if (day.id === selectedDayId) {
-      card.classList.add('day-card--active');
-      card.setAttribute('aria-selected', 'true');
-    } else {
-      card.setAttribute('aria-selected', 'false');
-    }
+    const isActive = date === historyState.selectedDayId;
+    card.classList.toggle('day-card--active', isActive);
+    card.setAttribute('aria-selected', String(isActive));
 
-    card.addEventListener('click', (event) => {
-      // Предотвращаем обработку клика, если это был свайп
+    card.addEventListener('click', () => {
       if (suppressNextDayCardClick) {
         suppressNextDayCardClick = false;
         if (suppressClickResetTimer !== null) {
@@ -272,143 +207,456 @@ function renderDaySelector() {
         }
         return;
       }
-      selectedDayId = day.id;
-      updateSelection();
-      card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+      handleDayCardClick(date, card);
     });
 
     daySelectorList.append(card);
   });
 
+  updateSelectionUI();
   scheduleNavStateUpdate();
 }
 
-function updateSelection() {
-  Array.from(daySelectorList.children).forEach((card) => {
-    const isActive = card.dataset.dayId === selectedDayId;
-    card.classList.toggle('day-card--active', isActive);
-    card.setAttribute('aria-selected', String(isActive));
+function renderDaySelectorStatus(message) {
+  const status = document.createElement('div');
+  status.className = 'day-selector__status';
+  status.textContent = message;
+  daySelectorList.append(status);
+}
+
+function updateSelectionUI() {
+  Array.from(daySelectorList.children).forEach((element) => {
+    if (!(element instanceof HTMLElement) || !element.dataset?.dayId) {
+      return;
+    }
+
+    const isActive = element.dataset.dayId === historyState.selectedDayId;
+    element.classList.toggle('day-card--active', isActive);
+    element.setAttribute('aria-selected', String(isActive));
   });
+}
+
+async function handleDayCardClick(dayId, card) {
+  try {
+    await selectDay(dayId, { scrollTarget: card });
+  } catch (error) {
+    console.error('Failed to select day', error);
+  }
+}
+
+async function selectDay(dayId, { scrollTarget } = {}) {
+  if (!dayId) return;
+
+  historyState.selectedDayId = dayId;
+  historyState.fetchDayError = null;
+
+  updateSelectionUI();
+
+  if (scrollTarget) {
+    scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
 
   renderMeals();
-  scheduleNavStateUpdate();
+  await ensureDayDetails(dayId);
 }
 
 function renderMeals() {
   mealsList.innerHTML = '';
-  const day = mockHistory.find((item) => item.id === selectedDayId);
 
-  if (!day || day.meals.length === 0) {
-    mealsCalories.textContent = '0 ккал';
-    const breakdown = formatMacroBreakdown();
-    mealsMacros.textContent = breakdown.macrosLine;
-    mealsRatios.textContent = breakdown.ratiosLine;
-    mealsList.innerHTML = '<p class="meals__empty">Нет данных за этот день</p>';
+  const dayId = historyState.selectedDayId;
+
+  if (!dayId) {
+    setSummaryFromTotals();
+    renderMealsStatus('Выберите день, чтобы посмотреть приёмы пищи');
     return;
   }
 
-  const totals = day.meals.reduce((acc, meal) => {
-    const calories = meal.dishes.reduce((sum, dish) => sum + dish.calories, 0);
-    acc.calories += calories;
-    acc.protein += meal.macros.protein;
-    acc.fat += meal.macros.fat;
-    acc.carbs += meal.macros.carbs;
-    return acc;
-  }, { calories: 0, protein: 0, fat: 0, carbs: 0 });
+  if (historyState.loadingDayId === dayId && !historyState.dayDetails.has(dayId)) {
+    setSummaryFromTotals();
+    renderMealsStatus('Загрузка...', 'meals__status');
+    return;
+  }
 
-  mealsCalories.textContent = `${numberFormatter.format(totals.calories)} ккал`;
-  const totalsBreakdown = formatMacroBreakdown(totals);
-  mealsMacros.textContent = totalsBreakdown.macrosLine;
-  mealsRatios.textContent = totalsBreakdown.ratiosLine;
+  if (historyState.fetchDayError && !historyState.dayDetails.has(dayId)) {
+    setSummaryFromTotals();
+    renderMealsStatus(historyState.fetchDayError, 'meals__status');
+    return;
+  }
+
+  const day = historyState.dayDetails.get(dayId);
+
+  if (!day) {
+    setSummaryFromTotals();
+    renderMealsStatus('Нет данных');
+    return;
+  }
+
+  setSummaryFromTotals(day.totals);
+
+  if (!day.meals.length) {
+    renderMealsStatus('Нет данных за этот день');
+    return;
+  }
 
   const mealTemplate = document.getElementById('meal-item-template');
   const dishTemplate = document.getElementById('dish-item-template');
 
-  day.meals.forEach((meal) => {
-    const mealNode = mealTemplate.content.firstElementChild.cloneNode(true);
-    const mealContent = mealNode.querySelector('.meal__content');
-    mealNode.dataset.id = meal.id;
+  day.meals
+    .slice()
+    .sort((a, b) => (a.timestamp ?? 0) - (b.timestamp ?? 0))
+    .forEach((meal) => {
+      const mealNode = mealTemplate.content.firstElementChild.cloneNode(true);
+      const mealContent = mealNode.querySelector('.meal__content');
+      mealNode.dataset.id = meal.mealId != null ? String(meal.mealId) : meal.timestamp != null ? String(meal.timestamp) : '';
 
-    mealContent.querySelector('.meal__time').textContent = meal.time;
+      mealContent.querySelector('.meal__time').textContent = formatMealTime(meal.timestamp);
 
-    const totalCalories = meal.dishes.reduce((sum, dish) => sum + dish.calories, 0);
-    mealContent.querySelector('.meal__calories').textContent = `${totalCalories} ккал`;
-    const mealBreakdown = formatMacroBreakdown({
-      protein: meal.macros.protein,
-      fat: meal.macros.fat,
-      carbs: meal.macros.carbs
+      const mealCalories = safeNumber(meal.totals?.calories);
+      mealContent.querySelector('.meal__calories').textContent = `${numberFormatter.format(mealCalories)} ккал`;
+      const mealBreakdown = formatMacroBreakdown(meal.totals);
+      mealContent.querySelector('.meal__macros').textContent = mealBreakdown.macrosLine;
+      mealContent.querySelector('.meal__ratios').textContent = mealBreakdown.ratiosLine;
+
+      const dishesList = mealContent.querySelector('.meal__dishes');
+      (meal.dishes || []).forEach((dish) => {
+        const dishNode = dishTemplate.content.firstElementChild.cloneNode(true);
+        dishNode.querySelector('.dish__name').textContent = dish.name ?? '';
+        dishNode.querySelector('.dish__calories').textContent = `${numberFormatter.format(safeNumber(dish.calories))} ккал`;
+        dishesList.append(dishNode);
+      });
+
+      mealsList.append(mealNode);
+      setupSwipeInteraction(mealNode, () => deleteMeal(day.date, meal.mealId));
     });
-    mealContent.querySelector('.meal__macros').textContent = mealBreakdown.macrosLine;
-    mealContent.querySelector('.meal__ratios').textContent = mealBreakdown.ratiosLine;
-
-    const dishesList = mealContent.querySelector('.meal__dishes');
-    meal.dishes.forEach((dish) => {
-      const dishNode = dishTemplate.content.firstElementChild.cloneNode(true);
-      dishNode.querySelector('.dish__name').textContent = dish.name;
-      dishNode.querySelector('.dish__calories').textContent = `${dish.calories} ккал`;
-      dishesList.append(dishNode);
-    });
-
-    mealsList.append(mealNode);
-    setupSwipeInteraction(mealNode, () => deleteMeal(day.id, meal.id));
-  });
 }
 
-function deleteMeal(dayId, mealId) {
-  const day = mockHistory.find((item) => item.id === dayId);
-  if (!day) return;
+function setSummaryFromTotals(totals = {}) {
+  const calories = safeNumber(totals.calories);
+  mealsCalories.textContent = `${numberFormatter.format(calories)} ккал`;
 
-  day.meals = day.meals.filter((meal) => meal.id !== mealId);
-  renderMeals();
+  const breakdown = formatMacroBreakdown(totals);
+  mealsMacros.textContent = breakdown.macrosLine;
+  mealsRatios.textContent = breakdown.ratiosLine;
 }
 
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+function renderMealsStatus(message, className = 'meals__empty') {
+  const status = document.createElement('p');
+  status.className = className;
+  status.textContent = message;
+  mealsList.append(status);
 }
 
-function getDayCalories(day) {
-  return numberFormatter.format(
-    day.meals.reduce((acc, meal) => acc + meal.dishes.reduce((sum, dish) => sum + dish.calories, 0), 0)
-  );
-}
+async function ensureDayDetails(dayId) {
+  if (!dayId) return;
 
-function formatMacroBreakdown({ protein = 0, fat = 0, carbs = 0 } = {}) {
-  const proteinValue = Number.isFinite(protein) ? protein : 0;
-  const fatValue = Number.isFinite(fat) ? fat : 0;
-  const carbsValue = Number.isFinite(carbs) ? carbs : 0;
-
-  const caloriesFromProtein = proteinValue * MACRO_CALORIES.protein;
-  const caloriesFromFat = fatValue * MACRO_CALORIES.fat;
-  const caloriesFromCarbs = carbsValue * MACRO_CALORIES.carbs;
-  const caloriesTotal = caloriesFromProtein + caloriesFromFat + caloriesFromCarbs;
-
-  let percentages = [0, 0, 0];
-
-  if (caloriesTotal > 0) {
-    const rawPercentages = [caloriesFromProtein, caloriesFromFat, caloriesFromCarbs].map((value) =>
-      (value / caloriesTotal) * 100
-    );
-
-    const basePercents = rawPercentages.map((value) => Math.floor(value));
-    let remainderBudget = 100 - basePercents.reduce((sum, value) => sum + value, 0);
-
-    const remainders = rawPercentages
-      .map((value, index) => ({ index, fraction: value - basePercents[index] }))
-      .sort((a, b) => b.fraction - a.fraction);
-
-    let pointer = 0;
-    while (remainderBudget > 0 && remainders.length > 0) {
-      const target = remainders[pointer % remainders.length];
-      basePercents[target.index] += 1;
-      remainderBudget -= 1;
-      pointer += 1;
-    }
-
-    percentages = basePercents;
+  if (historyState.dayDetails.has(dayId)) {
+    historyState.loadingDayId = null;
+    historyState.fetchDayError = null;
+    renderMeals();
+    renderDaySelector();
+    return;
   }
 
-  const macrosLine = [`🥚 ${proteinValue} г`, `🧈 ${fatValue} г`, `🍞 ${carbsValue} г`].join(' · ');
-  const ratiosLine = `🥧 ${percentages.join('/')}%`;
+  historyState.loadingDayId = dayId;
+  historyState.fetchDayError = null;
+  renderMeals();
+
+  const requestToken = Symbol('dayRequest');
+  historyState.currentDayRequestToken = requestToken;
+
+  try {
+    const response = await callHistoryApi('/api/history/day', {
+      initData: getInitDataString(),
+      date: dayId
+    });
+
+    if (historyState.currentDayRequestToken !== requestToken) {
+      return;
+    }
+
+    const normalizedDay = normalizeDayDetailsResponse(response, dayId);
+    historyState.dayDetails.set(dayId, normalizedDay);
+    historyState.fetchDayError = null;
+  } catch (error) {
+    if (historyState.currentDayRequestToken === requestToken) {
+      historyState.fetchDayError = error.message || 'Не удалось загрузить данные';
+    }
+    console.error('Failed to fetch day details', error);
+  } finally {
+    if (historyState.currentDayRequestToken === requestToken) {
+      historyState.currentDayRequestToken = null;
+      historyState.loadingDayId = null;
+    }
+
+    renderMeals();
+    renderDaySelector();
+  }
+}
+
+async function loadAvailableDays() {
+  historyState.isFetchingDays = true;
+  historyState.fetchDaysError = null;
+  renderDaySelector();
+
+  try {
+    const response = await callHistoryApi('/api/history/days', {
+      initData: getInitDataString(),
+      timezone: getUserTimezone()
+    });
+
+    const days = Array.isArray(response?.days) ? response.days : [];
+    historyState.days = days;
+
+    const allowedDays = new Set(days);
+    Array.from(historyState.dayDetails.keys()).forEach((day) => {
+      if (!allowedDays.has(day)) {
+        historyState.dayDetails.delete(day);
+      }
+    });
+
+    if (!days.includes(historyState.selectedDayId || '')) {
+      historyState.selectedDayId = days[0] || null;
+    }
+  } catch (error) {
+    historyState.fetchDaysError = error.message || 'Не удалось загрузить список дней';
+    historyState.days = [];
+    historyState.selectedDayId = null;
+    console.error('Failed to load history days', error);
+  } finally {
+    historyState.isFetchingDays = false;
+    renderDaySelector();
+
+    if (historyState.selectedDayId) {
+      ensureDayDetails(historyState.selectedDayId);
+    } else {
+      renderMeals();
+    }
+  }
+}
+
+function initializeHistory() {
+  historyState.isFetchingDays = true;
+  renderDaySelector();
+  renderMeals();
+  loadAvailableDays();
+}
+
+function getCachedDayCalories(dayId) {
+  const details = historyState.dayDetails.get(dayId);
+  if (!details) return null;
+  const calories = safeNumber(details?.totals?.calories);
+  return Number.isFinite(calories) ? calories : null;
+}
+
+function formatMealTime(timestamp) {
+  if (!Number.isFinite(Number(timestamp))) {
+    return '—';
+  }
+
+  try {
+    return timeFormatter.format(new Date(Number(timestamp) * 1000));
+  } catch (error) {
+    console.error('Failed to format meal time', error);
+    return '—';
+  }
+}
+
+async function deleteMeal(dayId, mealId) {
+  if (!dayId || mealId == null) {
+    return;
+  }
+
+  try {
+    await callHistoryApi('/api/history/day/meal', {
+      initData: getInitDataString(),
+      mealId
+    }, { method: 'DELETE' });
+
+    if (removeMealFromState(dayId, mealId)) {
+      renderMeals();
+      renderDaySelector();
+    }
+  } catch (error) {
+    console.error('Failed to delete meal', error);
+    tg?.showAlert?.('Не удалось удалить приём пищи');
+  }
+}
+
+function removeMealFromState(dayId, mealId) {
+  const day = historyState.dayDetails.get(dayId);
+
+  if (!day) {
+    return false;
+  }
+
+  const initialLength = day.meals.length;
+  day.meals = day.meals.filter((meal) => String(meal.mealId) !== String(mealId));
+
+  if (day.meals.length === initialLength) {
+    return false;
+  }
+
+  day.totals = recalcDayTotals(day.meals);
+  historyState.dayDetails.set(dayId, day);
+  return true;
+}
+
+function recalcDayTotals(meals) {
+  const totals = meals.reduce((acc, meal) => {
+    const mealTotals = meal.totals || {};
+    acc.calories += safeNumber(mealTotals.calories);
+    acc.protein_g += getMacroValue(mealTotals, 'protein');
+    acc.fat_g += getMacroValue(mealTotals, 'fat');
+    acc.carbs_g += getMacroValue(mealTotals, 'carbs');
+    return acc;
+  }, { calories: 0, protein_g: 0, fat_g: 0, carbs_g: 0 });
+
+  totals.ratios_percent = calculateRatiosFromMacros(totals);
+  return totals;
+}
+
+function normalizeDayDetailsResponse(payload, fallbackDate) {
+  const normalizedTotals = normalizeTotals(payload?.totals);
+  const meals = Array.isArray(payload?.meals) ? payload.meals.map(normalizeMeal) : [];
+
+  return {
+    date: payload?.date || fallbackDate,
+    totals: normalizedTotals,
+    meals
+  };
+}
+
+function normalizeTotals(totals = {}) {
+  const calories = safeNumber(totals.calories);
+  const protein = safeNumber(getMacroValue(totals, 'protein'));
+  const fat = safeNumber(getMacroValue(totals, 'fat'));
+  const carbs = safeNumber(getMacroValue(totals, 'carbs'));
+
+  const ratios = totals.ratios_percent
+    ? {
+        protein: safeNumber(totals.ratios_percent.protein),
+        fat: safeNumber(totals.ratios_percent.fat),
+        carbs: safeNumber(totals.ratios_percent.carbs)
+      }
+    : calculateRatiosFromMacros({ protein_g: protein, fat_g: fat, carbs_g: carbs });
+
+  return {
+    calories,
+    protein_g: protein,
+    fat_g: fat,
+    carbs_g: carbs,
+    ratios_percent: ratios
+  };
+}
+
+function normalizeMeal(meal = {}) {
+  return {
+    mealId: meal.mealId ?? meal.id ?? null,
+    timestamp: meal.timestamp != null ? Number(meal.timestamp) : null,
+    totals: normalizeTotals(meal.totals),
+    dishes: Array.isArray(meal.dishes) ? meal.dishes.map(normalizeDish) : [],
+    date: meal.date
+  };
+}
+
+function normalizeDish(dish = {}) {
+  return {
+    id: dish.id ?? null,
+    name: dish.name ?? '',
+    calories: safeNumber(dish.calories)
+  };
+}
+
+function safeNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : 0;
+}
+
+function getMacroValue(source = {}, key) {
+  if (!source) return 0;
+  const direct = source[key];
+  if (Number.isFinite(direct)) {
+    return direct;
+  }
+  const gramsKey = `${key}_g`;
+  const gramsValue = source[gramsKey];
+  if (Number.isFinite(gramsValue)) {
+    return gramsValue;
+  }
+  return 0;
+}
+
+function calculateRatiosFromMacros(totals) {
+  const caloriesFromProtein = totals.protein_g * MACRO_CALORIES.protein;
+  const caloriesFromFat = totals.fat_g * MACRO_CALORIES.fat;
+  const caloriesFromCarbs = totals.carbs_g * MACRO_CALORIES.carbs;
+  const totalCalories = caloriesFromProtein + caloriesFromFat + caloriesFromCarbs;
+
+  if (totalCalories <= 0) {
+    return { protein: 0, fat: 0, carbs: 0 };
+  }
+
+  const rawValues = [
+    { key: 'protein', calories: caloriesFromProtein },
+    { key: 'fat', calories: caloriesFromFat },
+    { key: 'carbs', calories: caloriesFromCarbs }
+  ];
+
+  const basePercents = rawValues.map((item) => Math.floor((item.calories / totalCalories) * 100));
+  let remainderBudget = 100 - basePercents.reduce((sum, value) => sum + value, 0);
+
+  const remainders = rawValues
+    .map((item, index) => ({ index, fraction: (item.calories / totalCalories) * 100 - basePercents[index] }))
+    .sort((a, b) => b.fraction - a.fraction);
+
+  let pointer = 0;
+  while (remainderBudget > 0 && remainders.length > 0) {
+    const target = remainders[pointer % remainders.length];
+    basePercents[target.index] += 1;
+    remainderBudget -= 1;
+    pointer += 1;
+  }
+
+  return {
+    protein: basePercents[0],
+    fat: basePercents[1],
+    carbs: basePercents[2]
+  };
+}
+
+function formatMacroBreakdown(source = {}) {
+  const proteinValue = getMacroValue(source, 'protein');
+  const fatValue = getMacroValue(source, 'fat');
+  const carbsValue = getMacroValue(source, 'carbs');
+
+  let percentages;
+
+  if (source?.ratios_percent) {
+    percentages = [
+      safeNumber(source.ratios_percent.protein),
+      safeNumber(source.ratios_percent.fat),
+      safeNumber(source.ratios_percent.carbs)
+    ];
+  } else {
+    const calculated = calculateRatiosFromMacros({
+      protein_g: proteinValue,
+      fat_g: fatValue,
+      carbs_g: carbsValue
+    });
+    percentages = [calculated.protein, calculated.fat, calculated.carbs];
+  }
+
+  const normalizedPercentages = percentages.map((value) =>
+    Math.round(Math.max(0, Math.min(100, value)))
+  );
+
+  const macrosLine = [
+    `🥚 ${numberFormatter.format(proteinValue)} г`,
+    `🧈 ${numberFormatter.format(fatValue)} г`,
+    `🍞 ${numberFormatter.format(carbsValue)} г`
+  ].join(' · ');
+  const ratiosLine = `🥧 ${normalizedPercentages.join('/')}%`;
 
   return { macrosLine, ratiosLine };
 }
@@ -548,9 +796,7 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
-renderDaySelector();
-updateSelection();
-scheduleNavStateUpdate();
+initializeHistory();
 enableDaySelectorDrag();
 
 const navButtons = document.querySelectorAll('.day-selector__nav');

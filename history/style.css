@@ -111,6 +111,14 @@ body {
   display: none;
 }
 
+.day-selector__status {
+  flex: 1 0 100%;
+  padding: 12px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
 .day-selector__list--dragging {
   cursor: grabbing;
 }
@@ -209,6 +217,14 @@ body {
 }
 
 .meals__empty {
+  margin: 0;
+  padding: 12px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.meals__status {
   margin: 0;
   padding: 12px 0;
   font-size: 14px;
