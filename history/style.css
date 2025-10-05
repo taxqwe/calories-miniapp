@@ -96,7 +96,6 @@ body {
   opacity: 0.4;
   pointer-events: none;
 }
-
 .day-selector__list {
   display: flex;
   gap: 8px;

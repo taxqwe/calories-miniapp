@@ -338,7 +338,6 @@ function setupSwipeInteraction(mealElement, onDelete) {
   if (!swipeContainer || !swipeContent || !deleteButton) {
     return;
   }
-
   const getActionWidth = () => {
     const width = deleteButton.getBoundingClientRect().width;
     return Number.isFinite(width) && width > 0 ? width : 72;
@@ -350,6 +349,7 @@ function setupSwipeInteraction(mealElement, onDelete) {
   let currentOffset = mealElement.classList.contains('meal--open') ? maxOffset : 0;
   let isDragging = false;
   let isOpen = mealElement.classList.contains('meal--open');
+<<<<<<< HEAD
   let activePointerId = null;
 
   mealElement.style.setProperty('--action-width', `${actionWidth}px`);
@@ -390,6 +390,11 @@ function setupSwipeInteraction(mealElement, onDelete) {
   const pointerDown = (event) => {
     if (!event.isPrimary) return;
 
+=======
+
+  const pointerDown = (event) => {
+    if (!event.isPrimary) return;
+>>>>>>> main
     actionWidth = getActionWidth();
     maxOffset = -actionWidth;
     isOpen = mealElement.classList.contains('meal--open');
@@ -408,8 +413,8 @@ function setupSwipeInteraction(mealElement, onDelete) {
     if (!isDragging) return;
     const delta = event.clientX - startX;
     const baseOffset = isOpen ? maxOffset : 0;
-    const nextOffset = clamp(baseOffset + delta, maxOffset, 0);
-    applyOffset(nextOffset);
+    currentOffset = clamp(baseOffset + delta, maxOffset, 0);
+    swipeContainer.style.transform = `translateX(${currentOffset}px)`;
   };
 
   const settle = (shouldOpen) => {
@@ -426,6 +431,7 @@ function setupSwipeInteraction(mealElement, onDelete) {
     } catch (error) {
       // Ничего не делаем, если указатель уже освобождён
     }
+  };
   };
 
   const pointerUp = (event) => {
@@ -446,11 +452,12 @@ function setupSwipeInteraction(mealElement, onDelete) {
     activePointerId = null;
   };
 
-  swipeContainer.addEventListener('pointerdown', pointerDown);
-  swipeContainer.addEventListener('pointermove', pointerMove);
-  swipeContainer.addEventListener('pointerup', pointerUp);
-  swipeContainer.addEventListener('pointercancel', pointerCancel);
-  swipeContainer.addEventListener('pointerleave', () => {
+  mealElement.addEventListener('pointerdown', pointerDown);
+  mealElement.addEventListener('pointermove', pointerMove);
+  mealElement.addEventListener('pointerup', pointerUp);
+  mealElement.addEventListener('pointercancel', pointerCancel);
+
+  mealElement.addEventListener('mouseleave', () => {
     if (!isDragging) return;
     pointerCancel();
   });
@@ -469,17 +476,17 @@ renderDaySelector();
 updateSelection();
 scheduleNavStateUpdate();
 
-function handleNavClick(direction) {
-  const scrollAmount = daySelectorList.clientWidth * 0.8;
-  const maxScroll = Math.max(daySelectorList.scrollWidth - daySelectorList.clientWidth, 0);
-  const target = clamp(daySelectorList.scrollLeft + scrollAmount * direction, 0, maxScroll);
-  daySelectorList.scrollTo({ left: target, behavior: 'smooth' });
-}
-
-if (navPrevButton && navNextButton) {
-  navPrevButton.addEventListener('click', () => handleNavClick(-1));
-  navNextButton.addEventListener('click', () => handleNavClick(1));
-}
+const navButtons = document.querySelectorAll('.day-selector__nav');
+navButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const direction = button.classList.contains('day-selector__nav--next') ? 1 : -1;
+    const scrollAmount = daySelectorList.clientWidth * 0.8;
+    const maxScroll = Math.max(daySelectorList.scrollWidth - daySelectorList.clientWidth, 0);
+    const current = daySelectorList.scrollLeft;
+    const target = clamp(current + scrollAmount * direction, 0, maxScroll);
+    daySelectorList.scrollTo({ left: target, behavior: 'smooth' });
+  });
+});
 
 daySelectorList.addEventListener('scroll', scheduleNavStateUpdate, { passive: true });
 window.addEventListener('resize', scheduleNavStateUpdate);
