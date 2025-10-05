@@ -185,6 +185,9 @@ const daySelectorList = document.querySelector('.day-selector__list');
 const mealsList = document.querySelector('.meals__list');
 const mealsCalories = document.querySelector('.meals__calories');
 const mealsMacros = document.querySelector('.meals__macros');
+const navPrevButton = document.querySelector('.day-selector__nav--prev');
+const navNextButton = document.querySelector('.day-selector__nav--next');
+let navStateFrame = null;
 
 const dayFormatter = new Intl.DateTimeFormat('ru-RU', {
   day: '2-digit',
@@ -238,10 +241,13 @@ function renderDaySelector() {
     card.addEventListener('click', () => {
       selectedDayId = day.id;
       updateSelection();
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     });
 
     daySelectorList.append(card);
   });
+
+  scheduleNavStateUpdate();
 }
 
 function updateSelection() {
@@ -252,6 +258,7 @@ function updateSelection() {
   });
 
   renderMeals();
+  scheduleNavStateUpdate();
 }
 
 function renderMeals() {
@@ -325,8 +332,12 @@ function getDayCalories(day) {
 
 function setupSwipeInteraction(mealElement, onDelete) {
   const swipeContainer = mealElement.querySelector('.meal__swipe');
+  const swipeContent = mealElement.querySelector('.meal__content');
   const deleteButton = mealElement.querySelector('.meal__delete');
 
+  if (!swipeContainer || !swipeContent || !deleteButton) {
+    return;
+  }
   const getActionWidth = () => {
     const width = deleteButton.getBoundingClientRect().width;
     return Number.isFinite(width) && width > 0 ? width : 72;
@@ -338,16 +349,64 @@ function setupSwipeInteraction(mealElement, onDelete) {
   let currentOffset = mealElement.classList.contains('meal--open') ? maxOffset : 0;
   let isDragging = false;
   let isOpen = mealElement.classList.contains('meal--open');
+<<<<<<< HEAD
+  let activePointerId = null;
+
+  mealElement.style.setProperty('--action-width', `${actionWidth}px`);
+
+  const setTransitionsEnabled = (enabled) => {
+    const value = enabled ? '' : 'none';
+    swipeContent.style.transition = value;
+    deleteButton.style.transition = value;
+  };
+
+  const updateDeleteReveal = (value) => {
+    if (actionWidth <= 0) {
+      deleteButton.style.transform = 'translateX(100%)';
+      deleteButton.style.opacity = '0';
+      return;
+    }
+
+    const progress = clamp(Math.abs(value) / actionWidth, 0, 1);
+    const hiddenPercent = (1 - progress) * 100;
+    deleteButton.style.transform = `translateX(${hiddenPercent}%)`;
+    deleteButton.style.opacity = `${progress}`;
+  };
+
+  const applyOffset = (value) => {
+    currentOffset = value;
+
+    if (Math.abs(value) < 0.5) {
+      swipeContent.style.transform = '';
+    } else {
+      swipeContent.style.transform = `translateX(${value}px)`;
+    }
+
+    updateDeleteReveal(value);
+  };
+
+  applyOffset(currentOffset);
 
   const pointerDown = (event) => {
     if (!event.isPrimary) return;
+
+=======
+
+  const pointerDown = (event) => {
+    if (!event.isPrimary) return;
+>>>>>>> main
     actionWidth = getActionWidth();
     maxOffset = -actionWidth;
     isOpen = mealElement.classList.contains('meal--open');
     isDragging = true;
     startX = event.clientX;
-    mealElement.setPointerCapture(event.pointerId);
-    swipeContainer.style.transition = 'none';
+    activePointerId = event.pointerId;
+    mealElement.style.setProperty('--action-width', `${actionWidth}px`);
+
+    setTransitionsEnabled(false);
+    applyOffset(isOpen ? maxOffset : 0);
+
+    swipeContainer.setPointerCapture(event.pointerId);
   };
 
   const pointerMove = (event) => {
@@ -358,23 +417,39 @@ function setupSwipeInteraction(mealElement, onDelete) {
     swipeContainer.style.transform = `translateX(${currentOffset}px)`;
   };
 
+  const settle = (shouldOpen) => {
+    isOpen = shouldOpen;
+    mealElement.classList.toggle('meal--open', shouldOpen);
+    setTransitionsEnabled(true);
+    applyOffset(shouldOpen ? maxOffset : 0);
+  };
+
+  const releasePointer = (pointerId) => {
+    if (pointerId == null) return;
+    try {
+      swipeContainer.releasePointerCapture(pointerId);
+    } catch (error) {
+      // Ничего не делаем, если указатель уже освобождён
+    }
+  };
+  };
+
   const pointerUp = (event) => {
     if (!isDragging) return;
     isDragging = false;
-    mealElement.releasePointerCapture(event.pointerId);
-    swipeContainer.style.transition = '';
+    releasePointer(event.pointerId);
+
     const shouldOpen = currentOffset < maxOffset / 2;
-    isOpen = shouldOpen;
-    mealElement.classList.toggle('meal--open', shouldOpen);
-    swipeContainer.style.transform = shouldOpen ? `translateX(${maxOffset}px)` : '';
+    settle(shouldOpen);
+    activePointerId = null;
   };
 
   const pointerCancel = () => {
     if (!isDragging) return;
     isDragging = false;
-    swipeContainer.style.transition = '';
-    mealElement.classList.toggle('meal--open', isOpen);
-    swipeContainer.style.transform = isOpen ? `translateX(${maxOffset}px)` : '';
+    releasePointer(activePointerId);
+    settle(isOpen);
+    activePointerId = null;
   };
 
   mealElement.addEventListener('pointerdown', pointerDown);
@@ -399,12 +474,41 @@ function clamp(value, min, max) {
 
 renderDaySelector();
 updateSelection();
+scheduleNavStateUpdate();
 
 const navButtons = document.querySelectorAll('.day-selector__nav');
 navButtons.forEach((button) => {
   button.addEventListener('click', () => {
     const direction = button.classList.contains('day-selector__nav--next') ? 1 : -1;
     const scrollAmount = daySelectorList.clientWidth * 0.8;
-    daySelectorList.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
+    const maxScroll = Math.max(daySelectorList.scrollWidth - daySelectorList.clientWidth, 0);
+    const current = daySelectorList.scrollLeft;
+    const target = clamp(current + scrollAmount * direction, 0, maxScroll);
+    daySelectorList.scrollTo({ left: target, behavior: 'smooth' });
   });
 });
+
+daySelectorList.addEventListener('scroll', scheduleNavStateUpdate, { passive: true });
+window.addEventListener('resize', scheduleNavStateUpdate);
+
+function scheduleNavStateUpdate() {
+  if (navStateFrame !== null) return;
+  navStateFrame = requestAnimationFrame(() => {
+    navStateFrame = null;
+    updateNavState();
+  });
+}
+
+function updateNavState() {
+  if (!navPrevButton || !navNextButton) return;
+  const maxScroll = Math.max(daySelectorList.scrollWidth - daySelectorList.clientWidth, 0);
+  const current = daySelectorList.scrollLeft;
+  const epsilon = 1;
+  const hasOverflow = maxScroll > epsilon;
+
+  const disablePrev = !hasOverflow || current <= epsilon;
+  const disableNext = !hasOverflow || current >= maxScroll - epsilon;
+
+  navPrevButton.disabled = disablePrev;
+  navNextButton.disabled = disableNext;
+}

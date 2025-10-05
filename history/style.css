@@ -92,6 +92,10 @@ body {
   color: var(--text-color);
 }
 
+.day-selector__nav[disabled] {
+  opacity: 0.4;
+  pointer-events: none;
+}
 .day-selector__list {
   display: flex;
   gap: 8px;
@@ -205,6 +209,7 @@ body {
 }
 
 .meal {
+  position: relative;
   background: var(--card-elevated-bg);
   border-radius: 16px;
   overflow: hidden;
@@ -213,8 +218,10 @@ body {
 }
 
 .meal__swipe {
+  position: relative;
   display: flex;
   align-items: stretch;
+  width: 100%;
   transform: translateX(0);
   transition: transform 0.25s ease;
 }
@@ -224,11 +231,19 @@ body {
 }
 
 .meal__content {
+  position: relative;
+  z-index: 1;
   flex: 1;
   padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  transform: translateX(0);
+  transition: transform 0.25s ease;
+}
+
+.meal--open .meal__content {
+  transition: transform 0.25s ease;
 }
 
 .meal__header {
@@ -294,7 +309,11 @@ body {
 }
 
 .meal__delete {
-  flex: 0 0 72px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--action-width, 72px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -303,6 +322,10 @@ body {
   color: #fff;
   padding: 0;
   cursor: pointer;
+  z-index: 0;
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.2s ease;
 }
 
 .meal__delete svg {
