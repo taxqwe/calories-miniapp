@@ -589,7 +589,9 @@ function recalcDayTotals(meals) {
 function normalizeDayDetailsResponse(payload, fallbackDate) {
   const normalizedTotals = normalizeTotals(payload?.totals);
   const meals = Array.isArray(payload?.meals)
-    ? payload.meals.map((meal, index) => normalizeMeal(meal, index))
+    ? payload.meals
+        .map((meal, index) => normalizeMeal(meal, index))
+        .filter(hasMealContent)
     : [];
 
   return {
@@ -597,6 +599,31 @@ function normalizeDayDetailsResponse(payload, fallbackDate) {
     totals: normalizedTotals,
     meals
   };
+}
+
+function hasMealContent(meal) {
+  if (!meal) {
+    return false;
+  }
+
+  const totals = meal.totals || {};
+  const hasMacros = ['protein', 'fat', 'carbs'].some((macro) => safeNumber(getMacroValue(totals, macro)) > 0);
+  if (hasMacros) {
+    return true;
+  }
+
+  if (!Array.isArray(meal.dishes)) {
+    return false;
+  }
+
+  return meal.dishes.some((dish) => {
+    if (!dish) {
+      return false;
+    }
+
+    const name = typeof dish.name === 'string' ? dish.name.trim() : '';
+    return name.length > 0 || safeNumber(dish.calories) > 0;
+  });
 }
 
 function normalizeDayListEntry(day) {
