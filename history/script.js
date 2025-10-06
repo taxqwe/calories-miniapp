@@ -349,9 +349,21 @@ function renderMeals() {
 
       const mealCalories = safeNumber(meal.totals?.calories);
       mealContent.querySelector('.meal__calories').textContent = `${numberFormatter.format(mealCalories)} ккал`;
-      const mealBreakdown = formatMacroBreakdown(meal.totals);
-      mealContent.querySelector('.meal__macros').textContent = mealBreakdown.macrosLine;
-      mealContent.querySelector('.meal__ratios').textContent = mealBreakdown.ratiosLine;
+      const macrosElement = mealContent.querySelector('.meal__macros');
+      const ratiosElement = mealContent.querySelector('.meal__ratios');
+      const hideBreakdown = shouldHideMealBreakdown(meal);
+      if (hideBreakdown) {
+        macrosElement.textContent = '';
+        ratiosElement.textContent = '';
+        macrosElement.style.display = 'none';
+        ratiosElement.style.display = 'none';
+      } else {
+        const mealBreakdown = formatMacroBreakdown(meal.totals);
+        macrosElement.textContent = mealBreakdown.macrosLine;
+        ratiosElement.textContent = mealBreakdown.ratiosLine;
+        macrosElement.style.display = '';
+        ratiosElement.style.display = '';
+      }
 
       const dishesList = mealContent.querySelector('.meal__dishes');
       (meal.dishes || []).forEach((dish) => {
@@ -364,6 +376,33 @@ function renderMeals() {
       mealsList.append(mealNode);
       setupSwipeInteraction(mealNode, () => deleteMeal(day.date, meal.mealId));
     });
+}
+
+function shouldHideMealBreakdown(meal) {
+  if (!meal) {
+    return false;
+  }
+
+  const totals = meal.totals || {};
+  const hasMacros = ['protein', 'fat', 'carbs'].some((macro) => safeNumber(getMacroValue(totals, macro)) > 0);
+  if (hasMacros) {
+    return false;
+  }
+
+  if (!Array.isArray(meal.dishes)) {
+    return true;
+  }
+
+  const hasDishes = meal.dishes.some((dish) => {
+    if (!dish) {
+      return false;
+    }
+
+    const name = typeof dish.name === 'string' ? dish.name.trim() : '';
+    return name.length > 0 || safeNumber(dish.calories) > 0;
+  });
+
+  return !hasDishes;
 }
 
 function setSummaryFromTotals(totals = {}) {
@@ -589,9 +628,7 @@ function recalcDayTotals(meals) {
 function normalizeDayDetailsResponse(payload, fallbackDate) {
   const normalizedTotals = normalizeTotals(payload?.totals);
   const meals = Array.isArray(payload?.meals)
-    ? payload.meals
-        .map((meal, index) => normalizeMeal(meal, index))
-        .filter(hasMealContent)
+    ? payload.meals.map((meal, index) => normalizeMeal(meal, index))
     : [];
 
   return {
@@ -599,31 +636,6 @@ function normalizeDayDetailsResponse(payload, fallbackDate) {
     totals: normalizedTotals,
     meals
   };
-}
-
-function hasMealContent(meal) {
-  if (!meal) {
-    return false;
-  }
-
-  const totals = meal.totals || {};
-  const hasMacros = ['protein', 'fat', 'carbs'].some((macro) => safeNumber(getMacroValue(totals, macro)) > 0);
-  if (hasMacros) {
-    return true;
-  }
-
-  if (!Array.isArray(meal.dishes)) {
-    return false;
-  }
-
-  return meal.dishes.some((dish) => {
-    if (!dish) {
-      return false;
-    }
-
-    const name = typeof dish.name === 'string' ? dish.name.trim() : '';
-    return name.length > 0 || safeNumber(dish.calories) > 0;
-  });
 }
 
 function normalizeDayListEntry(day) {
