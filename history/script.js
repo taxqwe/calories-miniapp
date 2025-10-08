@@ -17,8 +17,8 @@ function applyTheme(themeParams = {}, colorScheme = tg?.colorScheme) {
   const secondaryBackground = themeParams.secondary_bg_color || (isLight ? '#f3f4f6' : '#2c2c2e');
   const textColor = themeParams.text_color || (isLight ? '#1f2933' : '#ffffff');
   const hintColor = themeParams.hint_color || (isLight ? '#6b7a8c' : '#a0a0a0');
-  const accentColor = themeParams.button_color || '#ff6422';
-  const accentContrast = themeParams.button_text_color || '#ffffff';
+  const accentColor = '#ff6422';
+  const accentContrast = '#ffffff';
   const destructiveColor = themeParams.destructive_text_color || '#ff5c5c';
 
   root.style.setProperty('--bg-color', background);
