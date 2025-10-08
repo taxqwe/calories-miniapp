@@ -44,6 +44,35 @@
     <button class="add-button" type="button">Добавить</button>
   </main>
 
+  <div class="modal add-modal" hidden aria-hidden="true" role="dialog" aria-modal="true">
+    <form class="modal__dialog add-modal__form">
+      <h2 class="modal__title">Добавить калории</h2>
+      <p class="modal__description">Укажите, сколько калорий добавить к выбранному дню.</p>
+      <p class="modal__hint add-modal__day" aria-live="polite"></p>
+      <p class="modal__hint add-modal__current" aria-live="polite"></p>
+      <div class="modal__field">
+        <label class="modal__label" for="addCaloriesInput">Количество калорий</label>
+        <input
+          class="modal__input add-modal__input"
+          id="addCaloriesInput"
+          name="calories"
+          type="number"
+          inputmode="numeric"
+          min="1"
+          step="1"
+          placeholder="Например, 250"
+          autocomplete="off"
+          required
+        >
+      </div>
+      <p class="modal__error add-modal__error" role="alert" hidden></p>
+      <div class="modal__actions">
+        <button type="button" class="modal__button modal__button--secondary" data-action="cancel">Отмена</button>
+        <button type="submit" class="modal__button modal__button--primary">Добавить</button>
+      </div>
+    </form>
+  </div>
+
   <template id="meal-item-template">
     <article class="meal" data-id="">
       <div class="meal__swipe">

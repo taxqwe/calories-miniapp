@@ -367,6 +367,136 @@ body {
   fill: currentColor;
 }
 
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal__dialog {
+  width: min(100%, 360px);
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border-radius: 20px;
+  padding: 24px 20px 20px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transform: translateY(16px);
+  transition: transform 0.25s ease;
+}
+
+.modal--visible .modal__dialog {
+  transform: translateY(0);
+}
+
+.modal__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.modal__description {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.modal__hint {
+  margin: -4px 0 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal__label {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.modal__input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--card-elevated-bg);
+  color: var(--text-color);
+  font-size: 16px;
+  font-weight: 500;
+  transition: border-color 0.2s ease, outline-color 0.2s ease;
+}
+
+.modal__input:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+  border-color: transparent;
+}
+
+.modal__error {
+  margin: -4px 0 0;
+  font-size: 13px;
+  color: var(--destructive-color);
+}
+
+.modal__actions {
+  display: flex;
+  gap: 12px;
+}
+
+.modal__button {
+  flex: 1;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.modal__button--secondary {
+  background: var(--card-elevated-bg);
+  color: var(--text-color);
+}
+
+.modal__button--primary {
+  background: var(--accent-color);
+  color: var(--accent-contrast);
+}
+
+.modal__button:active {
+  transform: scale(0.98);
+}
+
+.modal--busy .modal__button {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
 .add-button {
   margin-top: auto;
   position: sticky;
@@ -391,6 +521,16 @@ body {
 @media (min-width: 520px) {
   .page {
     margin: 0 auto;
+  }
+
+  .modal {
+    align-items: center;
+    padding: 32px;
+  }
+
+  .modal__dialog {
+    border-radius: 24px;
+    padding: 28px 24px 24px;
   }
 
   .meals__summary {
