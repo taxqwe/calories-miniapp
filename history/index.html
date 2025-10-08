@@ -13,16 +13,16 @@
 <body>
   <main class="page">
     <header class="page__header">
-      <h1 class="page__title">История</h1>
-      <p class="page__subtitle">Выберите день, чтобы посмотреть приёмы пищи</p>
+      <h1 class="page__title" data-i18n="pageTitle">История</h1>
+      <p class="page__subtitle" data-i18n="pageSubtitle">Выберите день, чтобы посмотреть приёмы пищи</p>
     </header>
 
-    <section class="day-selector" aria-label="Выбор дня">
-      <button class="day-selector__nav day-selector__nav--prev" type="button" aria-label="Предыдущие дни">
+    <section class="day-selector" aria-label="Выбор дня" data-i18n-aria-label="daySelectorAriaLabel">
+      <button class="day-selector__nav day-selector__nav--prev" type="button" aria-label="Предыдущие дни" data-i18n-aria-label="prevDaysAriaLabel">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5.5a1 1 0 0 1 0 1.4L11.4 11l4.1 4.1a1 1 0 1 1-1.4 1.4l-4.8-4.8a1 1 0 0 1 0-1.4l4.8-4.8a1 1 0 0 1 1.4 0z"/></svg>
       </button>
       <div class="day-selector__list" role="listbox" tabindex="0"></div>
-      <button class="day-selector__nav day-selector__nav--next" type="button" aria-label="Следующие дни">
+      <button class="day-selector__nav day-selector__nav--next" type="button" aria-label="Следующие дни" data-i18n-aria-label="nextDaysAriaLabel">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.5a1 1 0 0 1 1.4 0l4.8 4.8a1 1 0 0 1 0 1.4l-4.8 4.8a1 1 0 0 1-1.4-1.4L12.6 11 8.5 6.9a1 1 0 0 1 0-1.4z"/></svg>
       </button>
     </section>
@@ -30,7 +30,7 @@
     <section class="meals" aria-live="polite">
       <header class="meals__header">
         <div>
-          <h2 class="meals__title">Приёмы пищи</h2>
+          <h2 class="meals__title" data-i18n="mealsTitle">Приёмы пищи</h2>
         </div>
         <div class="meals__summary">
           <div class="meals__calories">0 ккал</div>
@@ -41,17 +41,16 @@
       <div class="meals__list"></div>
     </section>
 
-    <button class="add-button" type="button">Добавить</button>
+    <button class="add-button" type="button" data-i18n="addButton">Добавить</button>
   </main>
 
   <div class="modal add-modal" hidden aria-hidden="true" role="dialog" aria-modal="true">
     <form class="modal__dialog add-modal__form">
-      <h2 class="modal__title">Добавить калории</h2>
-      <p class="modal__description">Укажите, сколько калорий добавить к выбранному дню.</p>
+      <h2 class="modal__title" data-i18n="addModalTitle">Добавить калории</h2>
+      <p class="modal__description" data-i18n="addModalDescription">Укажите, сколько калорий добавить к выбранному дню.</p>
       <p class="modal__hint add-modal__day" aria-live="polite"></p>
       <p class="modal__hint add-modal__current" aria-live="polite"></p>
       <div class="modal__field">
-        <label class="modal__label" for="addCaloriesInput">Количество калорий</label>
         <input
           class="modal__input add-modal__input"
           id="addCaloriesInput"
@@ -61,14 +60,15 @@
           min="1"
           step="1"
           placeholder="Например, 250"
+          data-i18n-placeholder="addModalPlaceholder"
           autocomplete="off"
           required
         >
       </div>
       <p class="modal__error add-modal__error" role="alert" hidden></p>
       <div class="modal__actions">
-        <button type="button" class="modal__button modal__button--secondary" data-action="cancel">Отмена</button>
-        <button type="submit" class="modal__button modal__button--primary">Добавить</button>
+        <button type="button" class="modal__button modal__button--secondary" data-action="cancel" data-i18n="addModalCancel">Отмена</button>
+        <button type="submit" class="modal__button modal__button--primary" data-i18n="addModalSubmit">Добавить</button>
       </div>
     </form>
   </div>
@@ -89,7 +89,7 @@
           </header>
           <ul class="meal__dishes"></ul>
         </div>
-        <button class="meal__delete" type="button" aria-label="Удалить приём пищи">
+        <button class="meal__delete" type="button" aria-label="Удалить приём пищи" data-i18n-aria-label="deleteMealAriaLabel">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3a1 1 0 0 0-.94.66L7.38 5H5a1 1 0 0 0 0 2h.17l.76 11.07A2 2 0 0 0 7.92 20h8.16a2 2 0 0 0 1.99-1.93L18.83 7H19a1 1 0 1 0 0-2h-2.38l-.68-1.34A1 1 0 0 0 15 3zm.62 4H14.4l.63 10H8.97zm5.84 10H16l.63-10h-2.06z"/></svg>
         </button>
       </div>
@@ -103,6 +103,7 @@
     </li>
   </template>
 
+  <script src="localization.js"></script>
   <script type="module" src="script.js"></script>
 </body>
 </html>

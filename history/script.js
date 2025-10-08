@@ -52,10 +52,51 @@ const historyState = {
   currentDayRequestToken: null
 };
 
-const LOADING_OVERLAY_ID = 'loading-overlay';
-const LOADING_OVERLAY_TEXT = 'Загрузка...';
+const defaultLocalization = {
+  locale: 'en-US',
+  loading: 'Loading...',
+  pageTitle: 'History',
+  pageSubtitle: 'Select a day to view meals',
+  mealsTitle: 'Meals',
+  daySelectorAriaLabel: 'Select day',
+  prevDaysAriaLabel: 'Previous days',
+  nextDaysAriaLabel: 'Next days',
+  addButton: 'Add',
+  addModalTitle: 'Add Calories',
+  addModalDescription: 'Specify how many calories to add to the selected day.',
+  addModalPlaceholder: 'For example, 250',
+  addModalCancel: 'Cancel',
+  addModalSubmit: 'Add',
+  addModalSubmitBusy: 'Adding…',
+  addModalDayLabel: 'Selected day: {day}',
+  addModalCurrent: 'Current total: {value} {unit}',
+  addModalCurrentZero: 'Current total: 0 {unit}',
+  selectDayFirst: 'Select a day first',
+  invalidCalories: 'Enter a positive calorie amount',
+  addCaloriesError: 'Failed to add calories',
+  invalidAddData: 'Invalid data for adding calories',
+  userNotFound: 'Unable to identify the user',
+  httpErrorStatus: 'Error {status}',
+  daySelectorLoading: 'Loading...',
+  daySelectorEmpty: 'No data',
+  mealsSelectPrompt: 'Select a day to view meals',
+  mealsLoading: 'Loading...',
+  mealsNoData: 'No data',
+  mealsNoDataDay: 'No data for this day',
+  deleteMealError: 'Failed to delete the meal',
+  loadDaysError: 'Failed to load days list',
+  loadDayError: 'Failed to load day data',
+  caloriesUnit: 'kcal',
+  gramsUnit: 'g',
+  deleteMealAriaLabel: 'Delete meal'
+};
 
-function setLoadingOverlayVisible(visible, message = LOADING_OVERLAY_TEXT) {
+const i18n = Object.assign({}, defaultLocalization, window.historyLocalization || {});
+const CURRENT_LOCALE = typeof i18n.locale === 'string' && i18n.locale.length > 0 ? i18n.locale : defaultLocalization.locale;
+
+const LOADING_OVERLAY_ID = 'loading-overlay';
+
+function setLoadingOverlayVisible(visible, message = i18n.loading) {
   let overlay = document.getElementById(LOADING_OVERLAY_ID);
 
   if (visible) {
@@ -86,6 +127,23 @@ function isGlobalLoadingActive() {
 
 function updateLoadingOverlay() {
   setLoadingOverlayVisible(isGlobalLoadingActive());
+}
+
+function formatMessage(template, params = {}) {
+  if (typeof template !== 'string' || template.length === 0) {
+    return '';
+  }
+  return template.replace(/\{(\w+)\}/g, (_, key) => (params[key] != null ? String(params[key]) : ''));
+}
+
+const numberFormatter = new Intl.NumberFormat(CURRENT_LOCALE, {
+  maximumFractionDigits: 0
+});
+
+function formatCalories(value) {
+  const numericValue = Number(value);
+  const safeValue = Number.isFinite(numericValue) ? numericValue : 0;
+  return `${numberFormatter.format(safeValue)} ${i18n.caloriesUnit}`;
 }
 
 const REQUEST_TIMEOUT_MS = 20000;
@@ -127,7 +185,7 @@ async function callHistoryApi(path, body, { method = 'POST' } = {}) {
     }
 
     if (!response.ok) {
-      let errorMessage = `Request failed with status ${response.status}`;
+      let errorMessage = formatMessage(i18n.httpErrorStatus, { status: response.status });
       try {
         const errorBody = await response.json();
         errorMessage = errorBody?.error?.message || errorMessage;
@@ -180,27 +238,83 @@ const daySelectorDragState = {
   pointerType: null
 };
 
-const dayFormatter = new Intl.DateTimeFormat('ru-RU', {
+function applyStaticLocalization() {
+  document.title = i18n.pageTitle;
+  const htmlLang = typeof window.historyLanguage === 'string' && window.historyLanguage.length > 0
+    ? window.historyLanguage
+    : 'en';
+  document.documentElement.setAttribute('lang', htmlLang);
+
+  document.querySelectorAll('[data-i18n]').forEach((element) => {
+    const key = element.getAttribute('data-i18n');
+    if (key && i18n[key] != null) {
+      element.textContent = i18n[key];
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-aria-label]').forEach((element) => {
+    const key = element.getAttribute('data-i18n-aria-label');
+    if (key && i18n[key] != null) {
+      element.setAttribute('aria-label', i18n[key]);
+    }
+  });
+
+  if (addCaloriesInput) {
+    const placeholderKey = addCaloriesInput.getAttribute('data-i18n-placeholder');
+    if (placeholderKey && i18n[placeholderKey] != null) {
+      addCaloriesInput.setAttribute('placeholder', i18n[placeholderKey]);
+    }
+  }
+
+  if (addModalSubmitButton) {
+    addModalSubmitButton.textContent = i18n.addModalSubmit;
+  }
+
+  if (addModalCancelButton) {
+    addModalCancelButton.textContent = i18n.addModalCancel;
+  }
+
+  if (addButton) {
+    addButton.textContent = i18n.addButton;
+  }
+
+  if (mealsCalories) {
+    mealsCalories.textContent = formatCalories(0);
+  }
+
+  if (mealsMacros) {
+    const unit = i18n.gramsUnit;
+    mealsMacros.textContent = `🥚 0 ${unit} · 🧈 0 ${unit} · 🍞 0 ${unit}`;
+  }
+
+  if (mealsRatios) {
+    mealsRatios.textContent = '🥧 0/0/0%';
+  }
+}
+
+applyStaticLocalization();
+
+const dayFormatter = new Intl.DateTimeFormat(CURRENT_LOCALE, {
   day: '2-digit',
   month: 'short',
   timeZone: USER_TIMEZONE
 });
 
-const weekdayFormatter = new Intl.DateTimeFormat('ru-RU', {
+const weekdayFormatter = new Intl.DateTimeFormat(CURRENT_LOCALE, {
   weekday: 'short',
   timeZone: USER_TIMEZONE
 });
 
 function createTimeFormatter(timeZone) {
   try {
-    return new Intl.DateTimeFormat('ru-RU', {
+    return new Intl.DateTimeFormat(CURRENT_LOCALE, {
       hour: '2-digit',
       minute: '2-digit',
       timeZone
     });
   } catch (error) {
     console.warn('Failed to create time formatter with timezone', timeZone, error);
-    return new Intl.DateTimeFormat('ru-RU', {
+    return new Intl.DateTimeFormat(CURRENT_LOCALE, {
       hour: '2-digit',
       minute: '2-digit'
     });
@@ -214,7 +328,7 @@ function setupAddCaloriesModal() {
 
   addButton.addEventListener('click', () => {
     if (!historyState.selectedDayId) {
-      tg?.showAlert?.('Сначала выберите день');
+      tg?.showAlert?.(i18n.selectDayFirst);
       return;
     }
 
@@ -324,7 +438,7 @@ function setAddModalBusy(value) {
 
   if (addModalSubmitButton) {
     addModalSubmitButton.disabled = value;
-    addModalSubmitButton.textContent = value ? 'Добавляем…' : 'Добавить';
+    addModalSubmitButton.textContent = value ? i18n.addModalSubmitBusy : i18n.addModalSubmit;
   }
 
   if (addModalCancelButton) {
@@ -362,17 +476,22 @@ function updateAddModalInfo(dayId) {
 
   if (addModalDayInfo) {
     const formattedDay = formatSelectedDayForModal(dayId);
-    addModalDayInfo.textContent = formattedDay ? `Выбранный день: ${formattedDay}` : '';
+    addModalDayInfo.textContent = formattedDay ? formatMessage(i18n.addModalDayLabel, { day: formattedDay }) : '';
     addModalDayInfo.hidden = !formattedDay;
   }
 
   if (addModalCurrentInfo) {
     const currentCalories = getCachedDayCalories(dayId, 0);
     if (Number.isFinite(currentCalories) && currentCalories > 0) {
-      addModalCurrentInfo.textContent = `Текущий итог: ${numberFormatter.format(currentCalories)} ккал`;
+      addModalCurrentInfo.textContent = formatMessage(i18n.addModalCurrent, {
+        value: numberFormatter.format(currentCalories),
+        unit: i18n.caloriesUnit
+      });
       addModalCurrentInfo.hidden = false;
     } else if (currentCalories === 0) {
-      addModalCurrentInfo.textContent = 'Текущий итог: 0 ккал';
+      addModalCurrentInfo.textContent = formatMessage(i18n.addModalCurrentZero, {
+        unit: i18n.caloriesUnit
+      });
       addModalCurrentInfo.hidden = false;
     } else {
       addModalCurrentInfo.textContent = '';
@@ -419,7 +538,7 @@ async function handleAddModalSubmit(event) {
 
   const dayId = historyState.selectedDayId;
   if (!dayId) {
-    showAddModalError('Сначала выберите день');
+    showAddModalError(i18n.selectDayFirst);
     return;
   }
 
@@ -427,7 +546,7 @@ async function handleAddModalSubmit(event) {
   const value = Number.parseInt(addCaloriesInput.value, 10);
 
   if (!Number.isFinite(value) || value <= 0) {
-    showAddModalError('Введите количество калорий больше нуля');
+    showAddModalError(i18n.invalidCalories);
     addCaloriesInput.focus();
     return;
   }
@@ -442,7 +561,7 @@ async function handleAddModalSubmit(event) {
     console.error('Failed to add calories', error);
     const message = typeof error?.message === 'string' && error.message.trim().length > 0
       ? error.message
-      : 'Не удалось добавить калории';
+      : i18n.addCaloriesError;
     showAddModalError(message);
   } finally {
     setAddModalBusy(false);
@@ -451,7 +570,7 @@ async function handleAddModalSubmit(event) {
 
 async function addCaloriesToDay(dayId, amount) {
   if (!dayId || !Number.isFinite(amount) || amount <= 0) {
-    throw new Error('Некорректные данные для добавления');
+    throw new Error(i18n.invalidAddData);
   }
 
   const currentValue = Number(getCachedDayCalories(dayId, 0)) || 0;
@@ -481,7 +600,7 @@ async function addCaloriesToDay(dayId, amount) {
 async function sendCaloriesAdditionRequest(dayId, amount) {
   const chatId = resolveChatId();
   if (chatId == null) {
-    throw new Error('Не удалось определить пользователя');
+    throw new Error(i18n.userNotFound);
   }
 
   const response = await fetch(`${API_BASE_URL}/api/add`, {
@@ -501,7 +620,7 @@ async function sendCaloriesAdditionRequest(dayId, amount) {
   });
 
   if (!response.ok) {
-    let message = `Ошибка ${response.status}`;
+    let message = formatMessage(i18n.httpErrorStatus, { status: response.status });
     try {
       const errorBody = await response.json();
       message = errorBody?.error?.message || message;
@@ -551,10 +670,6 @@ function capitalize(value = '') {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
-const numberFormatter = new Intl.NumberFormat('ru-RU', {
-  maximumFractionDigits: 0
-});
-
 const MACRO_CALORIES = {
   protein: 4,
   fat: 9,
@@ -565,7 +680,7 @@ function renderDaySelector() {
   daySelectorList.innerHTML = '';
 
   if (historyState.isFetchingDays) {
-    renderDaySelectorStatus('Загрузка...');
+    renderDaySelectorStatus(i18n.daySelectorLoading);
     scheduleNavStateUpdate();
     return;
   }
@@ -577,7 +692,7 @@ function renderDaySelector() {
   }
 
   if (!historyState.days.length) {
-    renderDaySelectorStatus('Нет данных');
+    renderDaySelectorStatus(i18n.daySelectorEmpty);
     scheduleNavStateUpdate();
     return;
   }
@@ -607,7 +722,7 @@ function renderDaySelector() {
     }
 
     const caloriesValue = getCachedDayCalories(date, day.calories);
-    const caloriesText = caloriesValue != null ? `${numberFormatter.format(caloriesValue)} ккал` : '—';
+    const caloriesText = caloriesValue != null ? formatCalories(caloriesValue) : '—';
 
     card.innerHTML = `
       <span class="day-card__date">${formattedDate}</span>
@@ -689,13 +804,13 @@ function renderMeals() {
 
   if (!dayId) {
     setSummaryFromTotals();
-    renderMealsStatus('Выберите день, чтобы посмотреть приёмы пищи');
+    renderMealsStatus(i18n.mealsSelectPrompt);
     return;
   }
 
   if (historyState.loadingDayId === dayId && !historyState.dayDetails.has(dayId)) {
     setSummaryFromTotals(getSummaryFromDayList(dayId));
-    renderMealsStatus('Загрузка...', 'meals__status');
+    renderMealsStatus(i18n.mealsLoading, 'meals__status');
     return;
   }
 
@@ -709,14 +824,14 @@ function renderMeals() {
 
   if (!day) {
     setSummaryFromTotals(getSummaryFromDayList(dayId));
-    renderMealsStatus('Нет данных');
+    renderMealsStatus(i18n.mealsNoData);
     return;
   }
 
   setSummaryFromTotals(day.totals);
 
   if (!day.meals.length) {
-    renderMealsStatus('Нет данных за этот день');
+    renderMealsStatus(i18n.mealsNoDataDay);
     return;
   }
 
@@ -734,7 +849,7 @@ function renderMeals() {
       mealContent.querySelector('.meal__time').textContent = formatMealTime(meal);
 
       const mealCalories = safeNumber(meal.totals?.calories);
-      mealContent.querySelector('.meal__calories').textContent = `${numberFormatter.format(mealCalories)} ккал`;
+      mealContent.querySelector('.meal__calories').textContent = formatCalories(mealCalories);
       const macrosElement = mealContent.querySelector('.meal__macros');
       const ratiosElement = mealContent.querySelector('.meal__ratios');
       const hideBreakdown = shouldHideMealBreakdown(meal);
@@ -755,7 +870,7 @@ function renderMeals() {
       (meal.dishes || []).forEach((dish) => {
         const dishNode = dishTemplate.content.firstElementChild.cloneNode(true);
         dishNode.querySelector('.dish__name').textContent = dish.name ?? '';
-        dishNode.querySelector('.dish__calories').textContent = `${numberFormatter.format(safeNumber(dish.calories))} ккал`;
+        dishNode.querySelector('.dish__calories').textContent = formatCalories(safeNumber(dish.calories));
         dishesList.append(dishNode);
       });
 
@@ -793,7 +908,7 @@ function shouldHideMealBreakdown(meal) {
 
 function setSummaryFromTotals(totals = {}) {
   const calories = safeNumber(totals.calories);
-  mealsCalories.textContent = `${numberFormatter.format(calories)} ккал`;
+  mealsCalories.textContent = formatCalories(calories);
 
   const breakdown = formatMacroBreakdown(totals);
   mealsMacros.textContent = breakdown.macrosLine;
@@ -843,7 +958,7 @@ async function ensureDayDetails(dayId) {
     historyState.fetchDayError = null;
   } catch (error) {
     if (historyState.currentDayRequestToken === requestToken) {
-      historyState.fetchDayError = error.message || 'Не удалось загрузить данные';
+      historyState.fetchDayError = error.message || i18n.loadDayError;
     }
     console.error('Failed to fetch day details', error);
   } finally {
@@ -887,7 +1002,7 @@ async function loadAvailableDays() {
       historyState.selectedDayId = normalizedDays[0]?.date || null;
     }
   } catch (error) {
-    historyState.fetchDaysError = error.message || 'Не удалось загрузить список дней';
+    historyState.fetchDaysError = error.message || i18n.loadDaysError;
     historyState.days = [];
     historyState.selectedDayId = null;
     console.error('Failed to load history days', error);
@@ -980,7 +1095,7 @@ async function deleteMeal(dayId, mealId) {
     }
   } catch (error) {
     console.error('Failed to delete meal', error);
-    tg?.showAlert?.('Не удалось удалить приём пищи');
+    tg?.showAlert?.(i18n.deleteMealError);
   }
 }
 
@@ -1258,10 +1373,11 @@ function formatMacroBreakdown(source = {}) {
     Math.round(Math.max(0, Math.min(100, value)))
   );
 
+  const unit = i18n.gramsUnit;
   const macrosLine = [
-    `🥚 ${numberFormatter.format(proteinValue)} г`,
-    `🧈 ${numberFormatter.format(fatValue)} г`,
-    `🍞 ${numberFormatter.format(carbsValue)} г`
+    `🥚 ${numberFormatter.format(proteinValue)} ${unit}`,
+    `🧈 ${numberFormatter.format(fatValue)} ${unit}`,
+    `🍞 ${numberFormatter.format(carbsValue)} ${unit}`
   ].join(' · ');
   const ratiosLine = `🥧 ${normalizedPercentages.join('/')}%`;
 
@@ -1278,6 +1394,8 @@ function setupSwipeInteraction(mealElement, onDelete) {
   }
 
   const DRAG_ACTIVATION_THRESHOLD_PX = 6;
+
+  deleteButton.setAttribute('aria-label', i18n.deleteMealAriaLabel);
 
   const getActionWidth = () => {
     const width = deleteButton.getBoundingClientRect().width;
