@@ -17,7 +17,7 @@ function applyTheme(themeParams = {}, colorScheme = tg?.colorScheme) {
   const secondaryBackground = themeParams.secondary_bg_color || (isLight ? '#f3f4f6' : '#2c2c2e');
   const textColor = themeParams.text_color || (isLight ? '#1f2933' : '#ffffff');
   const hintColor = themeParams.hint_color || (isLight ? '#6b7a8c' : '#a0a0a0');
-  const accentColor = themeParams.button_color || '#2ea6ff';
+  const accentColor = themeParams.button_color || '#ff6422';
   const accentContrast = themeParams.button_text_color || '#ffffff';
   const destructiveColor = themeParams.destructive_text_color || '#ff5c5c';
 
@@ -51,6 +51,42 @@ const historyState = {
   fetchDayError: null,
   currentDayRequestToken: null
 };
+
+const LOADING_OVERLAY_ID = 'loading-overlay';
+const LOADING_OVERLAY_TEXT = 'Загрузка...';
+
+function setLoadingOverlayVisible(visible, message = LOADING_OVERLAY_TEXT) {
+  let overlay = document.getElementById(LOADING_OVERLAY_ID);
+
+  if (visible) {
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = LOADING_OVERLAY_ID;
+      overlay.innerHTML = `
+        <div id="loading-spinner">
+          <div class="spinner"></div>
+          <div class="spinner-text">${message}</div>
+        </div>
+      `;
+      document.body.append(overlay);
+    } else {
+      const textNode = overlay.querySelector('.spinner-text');
+      if (textNode) {
+        textNode.textContent = message;
+      }
+    }
+  } else if (overlay) {
+    overlay.remove();
+  }
+}
+
+function isGlobalLoadingActive() {
+  return historyState.isFetchingDays || historyState.loadingDayId != null;
+}
+
+function updateLoadingOverlay() {
+  setLoadingOverlayVisible(isGlobalLoadingActive());
+}
 
 const REQUEST_TIMEOUT_MS = 20000;
 const USER_TIMEZONE = getUserTimezone();
@@ -779,12 +815,14 @@ async function ensureDayDetails(dayId) {
     historyState.fetchDayError = null;
     renderMeals();
     renderDaySelector();
+    updateLoadingOverlay();
     return;
   }
 
   historyState.loadingDayId = dayId;
   historyState.fetchDayError = null;
   renderMeals();
+  updateLoadingOverlay();
 
   const requestToken = Symbol('dayRequest');
   historyState.currentDayRequestToken = requestToken;
@@ -812,6 +850,7 @@ async function ensureDayDetails(dayId) {
     if (historyState.currentDayRequestToken === requestToken) {
       historyState.currentDayRequestToken = null;
       historyState.loadingDayId = null;
+      updateLoadingOverlay();
     }
 
     renderMeals();
@@ -822,6 +861,7 @@ async function ensureDayDetails(dayId) {
 async function loadAvailableDays() {
   historyState.isFetchingDays = true;
   historyState.fetchDaysError = null;
+  updateLoadingOverlay();
   renderDaySelector();
 
   try {
@@ -853,6 +893,7 @@ async function loadAvailableDays() {
     console.error('Failed to load history days', error);
   } finally {
     historyState.isFetchingDays = false;
+    updateLoadingOverlay();
     renderDaySelector();
 
     if (historyState.selectedDayId) {
@@ -865,6 +906,7 @@ async function loadAvailableDays() {
 
 function initializeHistory() {
   historyState.isFetchingDays = true;
+  updateLoadingOverlay();
   renderDaySelector();
   renderMeals();
   loadAvailableDays();
