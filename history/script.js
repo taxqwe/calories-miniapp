@@ -1235,6 +1235,8 @@ function setupSwipeInteraction(mealElement, onDelete) {
     return;
   }
 
+  const DRAG_ACTIVATION_THRESHOLD_PX = 6;
+
   const getActionWidth = () => {
     const width = deleteButton.getBoundingClientRect().width;
     return Number.isFinite(width) && width > 0 ? width : 72;
@@ -1243,10 +1245,13 @@ function setupSwipeInteraction(mealElement, onDelete) {
   let actionWidth = getActionWidth();
   let maxOffset = -actionWidth;
   let startX = 0;
+  let startY = 0;
   let currentOffset = mealElement.classList.contains('meal--open') ? maxOffset : 0;
   let isDragging = false;
   let isOpen = mealElement.classList.contains('meal--open');
   let activePointerId = null;
+  let dragMode = null;
+  let hasPointerCapture = false;
 
   const setTransitionsEnabled = (enabled) => {
     const value = enabled ? '' : 'none';
@@ -1295,21 +1300,62 @@ function setupSwipeInteraction(mealElement, onDelete) {
     maxOffset = -actionWidth;
     isOpen = mealElement.classList.contains('meal--open');
     isDragging = true;
+    dragMode = null;
     startX = event.clientX;
+    startY = event.clientY;
     activePointerId = event.pointerId;
+    hasPointerCapture = false;
     mealElement.style.setProperty('--action-width', `${actionWidth}px`);
 
     setTransitionsEnabled(false);
     applyOffset(isOpen ? maxOffset : 0);
-
-    swipeContainer.setPointerCapture(event.pointerId);
   };
 
   const pointerMove = (event) => {
-    if (!isDragging) return;
-    const delta = event.clientX - startX;
+    if (!isDragging || event.pointerId !== activePointerId) {
+      return;
+    }
+
+    const deltaX = event.clientX - startX;
+    const deltaY = event.clientY - startY;
+
+    if (!dragMode) {
+      const absX = Math.abs(deltaX);
+      const absY = Math.abs(deltaY);
+
+      if (absX < DRAG_ACTIVATION_THRESHOLD_PX && absY < DRAG_ACTIVATION_THRESHOLD_PX) {
+        return;
+      }
+
+      if (absX >= absY) {
+        dragMode = 'horizontal';
+        if (!hasPointerCapture) {
+          try {
+            swipeContainer.setPointerCapture(event.pointerId);
+            hasPointerCapture = true;
+          } catch (error) {
+            // Ignore pointer capture failures (e.g. unsupported browsers).
+          }
+        }
+      } else {
+        dragMode = 'vertical';
+        isDragging = false;
+        setTransitionsEnabled(true);
+        applyOffset(isOpen ? maxOffset : 0);
+        releasePointer(activePointerId);
+        activePointerId = null;
+        return;
+      }
+    }
+
+    if (dragMode !== 'horizontal') {
+      return;
+    }
+
+    event.preventDefault();
+
     const baseOffset = isOpen ? maxOffset : 0;
-    const nextOffset = clamp(baseOffset + delta, maxOffset, 0);
+    const nextOffset = clamp(baseOffset + deltaX, maxOffset, 0);
     applyOffset(nextOffset);
   };
 
@@ -1321,21 +1367,36 @@ function setupSwipeInteraction(mealElement, onDelete) {
   };
 
   const releasePointer = (pointerId) => {
-    if (pointerId == null) return;
+    if (!hasPointerCapture || pointerId == null) {
+      hasPointerCapture = false;
+      return;
+    }
     try {
       swipeContainer.releasePointerCapture(pointerId);
     } catch (error) {
       // Pointer already released, ignore.
     }
+    hasPointerCapture = false;
   };
 
   const pointerUp = (event) => {
     if (!isDragging) return;
     isDragging = false;
+    const pointerId = event.pointerId;
+    if (dragMode !== 'horizontal') {
+      releasePointer(pointerId);
+      dragMode = null;
+      activePointerId = null;
+      setTransitionsEnabled(true);
+      applyOffset(isOpen ? maxOffset : 0);
+      return;
+    }
+
     releasePointer(event.pointerId);
 
     const shouldOpen = currentOffset < maxOffset / 2;
     settle(shouldOpen);
+    dragMode = null;
     activePointerId = null;
   };
 
@@ -1344,6 +1405,7 @@ function setupSwipeInteraction(mealElement, onDelete) {
     isDragging = false;
     releasePointer(activePointerId);
     settle(isOpen);
+    dragMode = null;
     activePointerId = null;
   };
 
