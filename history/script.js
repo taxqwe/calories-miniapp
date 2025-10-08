@@ -118,10 +118,23 @@ const mealsMacros = document.querySelector('.meals__macros');
 const mealsRatios = document.querySelector('.meals__ratios');
 const navPrevButton = document.querySelector('.day-selector__nav--prev');
 const navNextButton = document.querySelector('.day-selector__nav--next');
+const addButton = document.querySelector('.add-button');
+const addModal = document.querySelector('.add-modal');
+const addModalForm = addModal?.querySelector('.add-modal__form');
+const addCaloriesInput = addModal?.querySelector('.add-modal__input');
+const addModalError = addModal?.querySelector('.add-modal__error');
+const addModalDayInfo = addModal?.querySelector('.add-modal__day');
+const addModalCurrentInfo = addModal?.querySelector('.add-modal__current');
+const addModalCancelButton = addModal?.querySelector('[data-action="cancel"]');
+const addModalSubmitButton = addModal?.querySelector('button[type="submit"]');
 let navStateFrame = null;
 let suppressNextDayCardClick = false;
 let suppressClickResetTimer = null;
 const DAY_SELECTOR_TOUCH_DRAG_THRESHOLD = 24;
+
+let addModalPreviousFocus = null;
+let isAddModalBusy = false;
+let cachedChatId = null;
 
 const daySelectorDragState = {
   pointerId: null,
@@ -156,6 +169,343 @@ function createTimeFormatter(timeZone) {
       minute: '2-digit'
     });
   }
+}
+
+function setupAddCaloriesModal() {
+  if (!addButton || !addModal || !addModalForm || !addCaloriesInput || !addModalSubmitButton || !addModalCancelButton) {
+    return;
+  }
+
+  addButton.addEventListener('click', () => {
+    if (!historyState.selectedDayId) {
+      tg?.showAlert?.('Сначала выберите день');
+      return;
+    }
+
+    openAddModal();
+  });
+
+  addModal.addEventListener('click', (event) => {
+    if (event.target === addModal) {
+      closeAddModal();
+    }
+  });
+
+  addModalCancelButton.addEventListener('click', () => {
+    closeAddModal();
+  });
+
+  addCaloriesInput.addEventListener('input', () => {
+    sanitizeAddCaloriesInput();
+    hideAddModalError();
+  });
+
+  addModalForm.addEventListener('submit', handleAddModalSubmit);
+}
+
+function openAddModal() {
+  if (!addModal || !addModalForm || !addCaloriesInput) {
+    return;
+  }
+
+  const dayId = historyState.selectedDayId;
+  if (!dayId) {
+    return;
+  }
+
+  addModalPreviousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+  addModal.hidden = false;
+  addModal.setAttribute('aria-hidden', 'false');
+  requestAnimationFrame(() => {
+    addModal.classList.add('modal--visible');
+  });
+
+  document.body.classList.add('modal-open');
+  document.addEventListener('keydown', handleAddModalKeydown, true);
+
+  addModalForm.reset();
+  sanitizeAddCaloriesInput();
+  hideAddModalError();
+  setAddModalBusy(false);
+  updateAddModalInfo(dayId);
+
+  window.setTimeout(() => {
+    addCaloriesInput.focus();
+    addCaloriesInput.select?.();
+  }, 50);
+}
+
+function closeAddModal({ force = false } = {}) {
+  if (!addModal) {
+    return;
+  }
+
+  if (isAddModalBusy && !force) {
+    return;
+  }
+
+  setAddModalBusy(false);
+
+  addModal.classList.remove('modal--visible');
+  addModal.setAttribute('aria-hidden', 'true');
+  addModal.hidden = true;
+
+  document.body.classList.remove('modal-open');
+  document.removeEventListener('keydown', handleAddModalKeydown, true);
+
+  addModalForm?.reset();
+  hideAddModalError();
+
+  if (addModalDayInfo) {
+    addModalDayInfo.textContent = '';
+    addModalDayInfo.hidden = true;
+  }
+
+  if (addModalCurrentInfo) {
+    addModalCurrentInfo.textContent = '';
+    addModalCurrentInfo.hidden = true;
+  }
+
+  const focusTarget = addModalPreviousFocus;
+  addModalPreviousFocus = null;
+  focusTarget?.focus?.();
+}
+
+function handleAddModalKeydown(event) {
+  if (event.key === 'Escape' || event.key === 'Esc') {
+    event.preventDefault();
+    closeAddModal();
+  }
+}
+
+function setAddModalBusy(value) {
+  isAddModalBusy = value;
+
+  if (addModal) {
+    addModal.classList.toggle('modal--busy', value);
+  }
+
+  if (addModalSubmitButton) {
+    addModalSubmitButton.disabled = value;
+    addModalSubmitButton.textContent = value ? 'Добавляем…' : 'Добавить';
+  }
+
+  if (addModalCancelButton) {
+    addModalCancelButton.disabled = value;
+  }
+
+  if (addCaloriesInput) {
+    addCaloriesInput.disabled = value;
+  }
+}
+
+function sanitizeAddCaloriesInput() {
+  if (!addCaloriesInput) {
+    return;
+  }
+
+  const raw = addCaloriesInput.value;
+  if (raw === '') {
+    return;
+  }
+
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    addCaloriesInput.value = '';
+    return;
+  }
+
+  addCaloriesInput.value = String(Math.max(1, Math.floor(parsed)));
+}
+
+function updateAddModalInfo(dayId) {
+  if (!dayId) {
+    return;
+  }
+
+  if (addModalDayInfo) {
+    const formattedDay = formatSelectedDayForModal(dayId);
+    addModalDayInfo.textContent = formattedDay ? `Выбранный день: ${formattedDay}` : '';
+    addModalDayInfo.hidden = !formattedDay;
+  }
+
+  if (addModalCurrentInfo) {
+    const currentCalories = getCachedDayCalories(dayId, 0);
+    if (Number.isFinite(currentCalories) && currentCalories > 0) {
+      addModalCurrentInfo.textContent = `Текущий итог: ${numberFormatter.format(currentCalories)} ккал`;
+      addModalCurrentInfo.hidden = false;
+    } else if (currentCalories === 0) {
+      addModalCurrentInfo.textContent = 'Текущий итог: 0 ккал';
+      addModalCurrentInfo.hidden = false;
+    } else {
+      addModalCurrentInfo.textContent = '';
+      addModalCurrentInfo.hidden = true;
+    }
+  }
+}
+
+function showAddModalError(message) {
+  if (!addModalError) {
+    return;
+  }
+
+  addModalError.textContent = message || '';
+  addModalError.hidden = !message;
+}
+
+function hideAddModalError() {
+  showAddModalError('');
+}
+
+function formatSelectedDayForModal(dayId) {
+  if (!dayId) {
+    return '';
+  }
+
+  try {
+    const date = new Date(`${dayId}T00:00:00`);
+    const formattedDate = dayFormatter.format(date).replace('.', '');
+    const weekday = capitalize(weekdayFormatter.format(date));
+    return `${formattedDate}, ${weekday}`;
+  } catch (error) {
+    console.warn('Failed to format selected day for modal', dayId, error);
+    return dayId;
+  }
+}
+
+async function handleAddModalSubmit(event) {
+  event.preventDefault();
+
+  if (!addCaloriesInput) {
+    return;
+  }
+
+  const dayId = historyState.selectedDayId;
+  if (!dayId) {
+    showAddModalError('Сначала выберите день');
+    return;
+  }
+
+  sanitizeAddCaloriesInput();
+  const value = Number.parseInt(addCaloriesInput.value, 10);
+
+  if (!Number.isFinite(value) || value <= 0) {
+    showAddModalError('Введите количество калорий больше нуля');
+    addCaloriesInput.focus();
+    return;
+  }
+
+  hideAddModalError();
+  setAddModalBusy(true);
+
+  try {
+    await addCaloriesToDay(dayId, value);
+    closeAddModal({ force: true });
+  } catch (error) {
+    console.error('Failed to add calories', error);
+    const message = typeof error?.message === 'string' && error.message.trim().length > 0
+      ? error.message
+      : 'Не удалось добавить калории';
+    showAddModalError(message);
+  } finally {
+    setAddModalBusy(false);
+  }
+}
+
+async function addCaloriesToDay(dayId, amount) {
+  if (!dayId || !Number.isFinite(amount) || amount <= 0) {
+    throw new Error('Некорректные данные для добавления');
+  }
+
+  const currentValue = Number(getCachedDayCalories(dayId, 0)) || 0;
+  const newTotal = Math.max(0, currentValue + amount);
+
+  await sendAddCaloriesRequest(dayId, amount);
+
+  const dayEntry = historyState.days.find((day) => day.date === dayId);
+  if (dayEntry) {
+    dayEntry.calories = newTotal;
+  }
+
+  historyState.dayDetails.delete(dayId);
+  historyState.loadingDayId = dayId;
+  historyState.fetchDayError = null;
+
+  renderDaySelector();
+  renderMeals();
+
+  ensureDayDetails(dayId).catch((error) => {
+    console.error('Failed to refresh day after calories update', error);
+  });
+
+  return newTotal;
+}
+
+async function sendAddCaloriesRequest(dayId, caloriesDelta) {
+  const chatId = resolveChatId();
+  if (chatId == null) {
+    throw new Error('Не удалось определить пользователя');
+  }
+
+  const response = await fetch(`${API_BASE_URL}/api/add`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      'X-Source-App': 'Calories-History'
+    },
+    mode: 'cors',
+    body: JSON.stringify({
+      chatId,
+      date: dayId,
+      calories: caloriesDelta,
+      initData: getInitDataString()
+    })
+  });
+
+  if (!response.ok) {
+    let message = `Ошибка ${response.status}`;
+    try {
+      const errorBody = await response.json();
+      message = errorBody?.error?.message || message;
+    } catch (parseError) {
+      // ignore parse errors
+    }
+    throw new Error(message);
+  }
+}
+
+function resolveChatId() {
+  if (cachedChatId != null) {
+    return cachedChatId;
+  }
+
+  const unsafeId = tg?.initDataUnsafe?.user?.id;
+  if (unsafeId != null) {
+    cachedChatId = unsafeId;
+    return cachedChatId;
+  }
+
+  const initData = getInitDataString();
+  if (typeof initData === 'string' && initData.length > 0) {
+    try {
+      const params = new URLSearchParams(initData);
+      const userParam = params.get('user');
+      if (userParam) {
+        const parsed = JSON.parse(userParam);
+        if (parsed?.id != null) {
+          const numericId = Number(parsed.id);
+          cachedChatId = Number.isFinite(numericId) ? numericId : parsed.id;
+          return cachedChatId;
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to parse chat id from init data', error);
+    }
+  }
+
+  return null;
 }
 
 function capitalize(value = '') {
@@ -1021,6 +1371,7 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+setupAddCaloriesModal();
 initializeHistory();
 enableDaySelectorDrag();
 
