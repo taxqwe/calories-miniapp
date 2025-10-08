@@ -448,7 +448,7 @@ async function sendCaloriesUpdateRequest(dayId, calories) {
     throw new Error('Не удалось определить пользователя');
   }
 
-  const response = await fetch(`${API_BASE_URL}/api/edit`, {
+  const response = await fetch(`${API_BASE_URL}/api/add`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
