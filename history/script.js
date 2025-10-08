@@ -421,7 +421,7 @@ async function addCaloriesToDay(dayId, amount) {
   const currentValue = Number(getCachedDayCalories(dayId, 0)) || 0;
   const newTotal = Math.max(0, currentValue + amount);
 
-  await sendCaloriesUpdateRequest(dayId, newTotal);
+  await sendCaloriesAdditionRequest(dayId, amount);
 
   const dayEntry = historyState.days.find((day) => day.date === dayId);
   if (dayEntry) {
@@ -442,7 +442,7 @@ async function addCaloriesToDay(dayId, amount) {
   return newTotal;
 }
 
-async function sendCaloriesUpdateRequest(dayId, calories) {
+async function sendCaloriesAdditionRequest(dayId, amount) {
   const chatId = resolveChatId();
   if (chatId == null) {
     throw new Error('Не удалось определить пользователя');
@@ -459,7 +459,7 @@ async function sendCaloriesUpdateRequest(dayId, calories) {
     body: JSON.stringify({
       chatId,
       date: dayId,
-      calories,
+      calories: amount,
       initData: getInitDataString()
     })
   });
