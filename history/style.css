@@ -240,7 +240,6 @@ body {
   overflow: hidden;
   touch-action: pan-y;
   border: 1px solid var(--border-color);
-  --swipe-hint-offset: 32px;
 }
 
 .meal__swipe {
@@ -362,60 +361,8 @@ body {
   transition: transform 0.25s ease, opacity 0.2s ease;
 }
 
-.meal--swipe-hint {
+.meal--swipe-hint-active {
   pointer-events: none;
-}
-
-.meal--swipe-hint .meal__content,
-.meal--swipe-hint .meal__delete {
-  transition: none;
-}
-
-.meal--swipe-hint .meal__content {
-  animation: meal-swipe-hint-content 1.4s ease-in-out forwards;
-  animation-delay: 0.2s;
-}
-
-.meal--swipe-hint .meal__delete {
-  animation: meal-swipe-hint-action 1.4s ease-in-out forwards;
-  animation-delay: 0.2s;
-}
-
-@keyframes meal-swipe-hint-content {
-  0% {
-    transform: translateX(0);
-  }
-  18% {
-    transform: translateX(calc(-1 * var(--swipe-hint-offset)));
-  }
-  38% {
-    transform: translateX(calc(-1 * (var(--swipe-hint-offset) * 0.7)));
-  }
-  56% {
-    transform: translateX(calc(-1 * var(--swipe-hint-offset)));
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-@keyframes meal-swipe-hint-action {
-  0% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  18% {
-    transform: translateX(30%);
-    opacity: 1;
-  }
-  56% {
-    transform: translateX(30%);
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
 }
 
 .meal__delete svg {

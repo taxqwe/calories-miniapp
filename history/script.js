@@ -910,32 +910,17 @@ function maybeShowSwipeHint() {
 
     const firstMeal = mealsList.querySelector('.meal');
     if (!firstMeal) {
+      historyState.swipeHintPlayed = true;
       return;
     }
 
-    historyState.swipeHintPlayed = true;
-    firstMeal.classList.add('meal--swipe-hint');
-
-    let cleanupTimer = null;
-    let handleAnimationEnd = null;
-    const cleanup = () => {
-      if (cleanupTimer != null) {
-        window.clearTimeout(cleanupTimer);
-        cleanupTimer = null;
-      }
-      firstMeal.classList.remove('meal--swipe-hint');
-      if (handleAnimationEnd) {
-        firstMeal.removeEventListener('animationend', handleAnimationEnd);
-        handleAnimationEnd = null;
-      }
-    };
-
-    handleAnimationEnd = () => {
-      cleanup();
-    };
-
-    firstMeal.addEventListener('animationend', handleAnimationEnd, { once: true });
-    cleanupTimer = window.setTimeout(cleanup, 2000);
+    const playHint = firstMeal.__playSwipeHint;
+    if (typeof playHint === 'function') {
+      historyState.swipeHintPlayed = true;
+      playHint();
+    } else {
+      historyState.swipeHintPlayed = true;
+    }
   }, 480);
 }
 
@@ -1479,6 +1464,9 @@ function setupSwipeInteraction(mealElement, onDelete) {
   let activePointerId = null;
   let dragMode = null;
   let hasPointerCapture = false;
+  let hintForwardTimer = null;
+  let hintReturnTimer = null;
+  let isHintActive = false;
 
   const setTransitionsEnabled = (enabled) => {
     const value = enabled ? '' : 'none';
@@ -1514,10 +1502,67 @@ function setupSwipeInteraction(mealElement, onDelete) {
   mealElement.style.setProperty('--action-width', `${actionWidth}px`);
   applyOffset(currentOffset);
 
+  const clearHintTimers = () => {
+    if (hintForwardTimer != null) {
+      window.clearTimeout(hintForwardTimer);
+      hintForwardTimer = null;
+    }
+
+    if (hintReturnTimer != null) {
+      window.clearTimeout(hintReturnTimer);
+      hintReturnTimer = null;
+    }
+  };
+
+  const cancelHintAnimation = () => {
+    if (!isHintActive) {
+      clearHintTimers();
+      return;
+    }
+
+    clearHintTimers();
+    mealElement.classList.remove('meal--swipe-hint-active');
+    setTransitionsEnabled(true);
+    applyOffset(isOpen ? maxOffset : 0);
+    isHintActive = false;
+  };
+
+  const playSwipeHint = () => {
+    if (isDragging || isOpen || isHintActive) {
+      return;
+    }
+
+    cancelHintAnimation();
+
+    actionWidth = getActionWidth();
+    maxOffset = -actionWidth;
+    mealElement.style.setProperty('--action-width', `${actionWidth}px`);
+
+    const targetOffset = maxOffset * 0.85;
+    isHintActive = true;
+    mealElement.classList.add('meal--swipe-hint-active');
+    setTransitionsEnabled(true);
+    applyOffset(targetOffset);
+
+    hintForwardTimer = window.setTimeout(() => {
+      setTransitionsEnabled(true);
+      applyOffset(0);
+      hintReturnTimer = window.setTimeout(() => {
+        mealElement.classList.remove('meal--swipe-hint-active');
+        isHintActive = false;
+      }, 280);
+    }, 480);
+  };
+
+  mealElement.__playSwipeHint = playSwipeHint;
+  mealElement.__cancelSwipeHint = cancelHintAnimation;
+
   const pointerDown = (event) => {
     if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) {
       return;
     }
+
+    cancelHintAnimation();
 
     if (deleteButton.contains(event.target)) {
       return;
