@@ -49,7 +49,9 @@ const historyState = {
   isFetchingDays: false,
   fetchDaysError: null,
   fetchDayError: null,
-  currentDayRequestToken: null
+  currentDayRequestToken: null,
+  initialDayId: null,
+  swipeHintPlayed: false
 };
 
 const defaultLocalization = {
@@ -225,6 +227,7 @@ let navStateFrame = null;
 let suppressNextDayCardClick = false;
 let suppressClickResetTimer = null;
 const DAY_SELECTOR_TOUCH_DRAG_THRESHOLD = 24;
+let swipeHintTimeoutId = null;
 
 let addModalPreviousFocus = null;
 let isAddModalBusy = false;
@@ -877,6 +880,63 @@ function renderMeals() {
       mealsList.append(mealNode);
       setupSwipeInteraction(mealNode, () => deleteMeal(day.date, meal.mealId));
     });
+
+  maybeShowSwipeHint();
+}
+
+function maybeShowSwipeHint() {
+  if (historyState.swipeHintPlayed) {
+    return;
+  }
+
+  if (!historyState.initialDayId || historyState.selectedDayId !== historyState.initialDayId) {
+    return;
+  }
+
+  if (!mealsList.querySelector('.meal')) {
+    return;
+  }
+
+  if (swipeHintTimeoutId != null) {
+    return;
+  }
+
+  swipeHintTimeoutId = window.setTimeout(() => {
+    swipeHintTimeoutId = null;
+
+    if (historyState.swipeHintPlayed || historyState.selectedDayId !== historyState.initialDayId) {
+      return;
+    }
+
+    const firstMeal = mealsList.querySelector('.meal');
+    if (!firstMeal) {
+      return;
+    }
+
+    historyState.swipeHintPlayed = true;
+    firstMeal.classList.add('meal--swipe-hint');
+
+    let cleanupTimer = null;
+    let handleAnimationEnd = null;
+    const cleanup = () => {
+      if (cleanupTimer != null) {
+        window.clearTimeout(cleanupTimer);
+        cleanupTimer = null;
+      }
+      firstMeal.classList.remove('meal--swipe-hint');
+      if (handleAnimationEnd) {
+        firstMeal.removeEventListener('animationend', handleAnimationEnd);
+        handleAnimationEnd = null;
+      }
+    };
+
+    handleAnimationEnd = () => {
+      cleanup();
+    };
+
+    firstMeal.addEventListener('animationend', handleAnimationEnd, { once: true });
+    cleanupTimer = window.setTimeout(cleanup, 2000);
+  }, 480);
 }
 
 function shouldHideMealBreakdown(meal) {
@@ -990,6 +1050,9 @@ async function loadAvailableDays() {
       : [];
 
     historyState.days = normalizedDays;
+    if (!historyState.initialDayId && normalizedDays.length > 0) {
+      historyState.initialDayId = normalizedDays[0].date;
+    }
 
     const dayDates = new Set(normalizedDays.map((item) => item.date));
     Array.from(historyState.dayDetails.keys()).forEach((day) => {
@@ -1010,6 +1073,10 @@ async function loadAvailableDays() {
     historyState.isFetchingDays = false;
     updateLoadingOverlay();
     renderDaySelector();
+
+    if (!historyState.initialDayId && historyState.selectedDayId) {
+      historyState.initialDayId = historyState.selectedDayId;
+    }
 
     if (historyState.selectedDayId) {
       ensureDayDetails(historyState.selectedDayId);
