@@ -1473,6 +1473,7 @@ function setupSwipeInteraction(mealElement, onDelete) {
   let bodyScrollLockApplied = false;
   let bodyPrevOverflow = '';
   let bodyPrevTouchAction = '';
+  let bodyTouchMoveHandler = null;
 
   const setTransitionsEnabled = (enabled) => {
     const value = enabled ? '' : 'none';
@@ -1583,6 +1584,12 @@ function setupSwipeInteraction(mealElement, onDelete) {
     bodyPrevTouchAction = body.style.touchAction;
     body.style.overflow = 'hidden';
     body.style.touchAction = 'none';
+    bodyTouchMoveHandler = (event) => {
+      if (event.cancelable) {
+        event.preventDefault();
+      }
+    };
+    document.addEventListener('touchmove', bodyTouchMoveHandler, { passive: false });
     bodyScrollLockApplied = true;
   }
 
@@ -1592,6 +1599,10 @@ function setupSwipeInteraction(mealElement, onDelete) {
     }
     body.style.overflow = bodyPrevOverflow;
     body.style.touchAction = bodyPrevTouchAction;
+    if (bodyTouchMoveHandler) {
+      document.removeEventListener('touchmove', bodyTouchMoveHandler);
+      bodyTouchMoveHandler = null;
+    }
     bodyScrollLockApplied = false;
   }
 
