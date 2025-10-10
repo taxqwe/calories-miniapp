@@ -1467,6 +1467,12 @@ function setupSwipeInteraction(mealElement, onDelete) {
   let hintForwardTimer = null;
   let hintReturnTimer = null;
   let isHintActive = false;
+  const originalMealTouchAction = mealElement.style.touchAction;
+  const originalSwipeTouchAction = swipeContainer.style.touchAction;
+  const body = document.body;
+  let bodyScrollLockApplied = false;
+  let bodyPrevOverflow = '';
+  let bodyPrevTouchAction = '';
 
   const setTransitionsEnabled = (enabled) => {
     const value = enabled ? '' : 'none';
@@ -1501,6 +1507,17 @@ function setupSwipeInteraction(mealElement, onDelete) {
 
   mealElement.style.setProperty('--action-width', `${actionWidth}px`);
   applyOffset(currentOffset);
+  resetTouchActionOverride();
+
+  function setTouchActionNone() {
+    mealElement.style.touchAction = 'none';
+    swipeContainer.style.touchAction = 'none';
+  }
+
+  function resetTouchActionOverride() {
+    mealElement.style.touchAction = originalMealTouchAction;
+    swipeContainer.style.touchAction = originalSwipeTouchAction;
+  }
 
   const clearHintTimers = () => {
     if (hintForwardTimer != null) {
@@ -1525,6 +1542,7 @@ function setupSwipeInteraction(mealElement, onDelete) {
     setTransitionsEnabled(true);
     applyOffset(isOpen ? maxOffset : 0);
     isHintActive = false;
+    unlockGlobalScroll();
   };
 
   const playSwipeHint = () => {
@@ -1556,6 +1574,26 @@ function setupSwipeInteraction(mealElement, onDelete) {
 
   mealElement.__playSwipeHint = playSwipeHint;
   mealElement.__cancelSwipeHint = cancelHintAnimation;
+
+  function lockGlobalScroll() {
+    if (bodyScrollLockApplied) {
+      return;
+    }
+    bodyPrevOverflow = body.style.overflow;
+    bodyPrevTouchAction = body.style.touchAction;
+    body.style.overflow = 'hidden';
+    body.style.touchAction = 'none';
+    bodyScrollLockApplied = true;
+  }
+
+  function unlockGlobalScroll() {
+    if (!bodyScrollLockApplied) {
+      return;
+    }
+    body.style.overflow = bodyPrevOverflow;
+    body.style.touchAction = bodyPrevTouchAction;
+    bodyScrollLockApplied = false;
+  }
 
   const pointerDown = (event) => {
     if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) {
@@ -1601,9 +1639,11 @@ function setupSwipeInteraction(mealElement, onDelete) {
 
       if (absX >= absY) {
         dragMode = 'horizontal';
+        setTouchActionNone();
+        lockGlobalScroll();
         if (!hasPointerCapture) {
           try {
-            swipeContainer.setPointerCapture(event.pointerId);
+            mealElement.setPointerCapture(event.pointerId);
             hasPointerCapture = true;
           } catch (error) {
             // Ignore pointer capture failures (e.g. unsupported browsers).
@@ -1616,6 +1656,8 @@ function setupSwipeInteraction(mealElement, onDelete) {
         applyOffset(isOpen ? maxOffset : 0);
         releasePointer(activePointerId);
         activePointerId = null;
+        resetTouchActionOverride();
+        unlockGlobalScroll();
         return;
       }
     }
@@ -1644,7 +1686,7 @@ function setupSwipeInteraction(mealElement, onDelete) {
       return;
     }
     try {
-      swipeContainer.releasePointerCapture(pointerId);
+      mealElement.releasePointerCapture(pointerId);
     } catch (error) {
       // Pointer already released, ignore.
     }
@@ -1670,6 +1712,8 @@ function setupSwipeInteraction(mealElement, onDelete) {
     settle(shouldOpen);
     dragMode = null;
     activePointerId = null;
+    resetTouchActionOverride();
+    unlockGlobalScroll();
   };
 
   const pointerCancel = () => {
@@ -1679,6 +1723,8 @@ function setupSwipeInteraction(mealElement, onDelete) {
     settle(isOpen);
     dragMode = null;
     activePointerId = null;
+    resetTouchActionOverride();
+    unlockGlobalScroll();
   };
 
   mealElement.addEventListener('pointerdown', pointerDown);
