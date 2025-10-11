@@ -86,9 +86,15 @@
     }
   };
 
-  const fallback = localizations.ru;
-  const selected = localizations[lang] || fallback;
+  const fallbackLang = 'en';
+  const fallback = localizations[fallbackLang];
+  const selected = localizations[lang];
 
-  window.historyLocalization = selected;
-  window.historyLanguage = lang;
+  if (selected) {
+    window.historyLocalization = selected;
+    window.historyLanguage = lang;
+  } else {
+    window.historyLocalization = fallback;
+    window.historyLanguage = fallbackLang;
+  }
 })();
