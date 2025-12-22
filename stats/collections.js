@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="mini-chart">
           <div class="mini-chart-trend" style="bottom: ${maxVal === 0 ? 20 : (20 + (average / maxVal * 80))}%"></div>
           <div class="mini-chart-bars">${barsHtml}</div>
-          <div class="mini-chart-labels">
+          <div class="mini-chart-labels" style="grid-template-columns: repeat(${calorieArray.length}, 1fr);">
             ${labelsHtml}
           </div>
         </div>
