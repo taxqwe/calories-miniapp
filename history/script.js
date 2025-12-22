@@ -987,10 +987,11 @@ function shouldHideMealBreakdown(meal) {
 }
 
 function setSummaryFromTotals(totals = {}) {
-  const calories = safeNumber(totals.calories);
+  const safeTotals = totals || {};
+  const calories = safeNumber(safeTotals.calories);
   mealsCalories.textContent = formatCalories(calories);
 
-  const breakdown = formatMacroBreakdown(totals);
+  const breakdown = formatMacroBreakdown(safeTotals);
   mealsMacros.textContent = breakdown.macrosLine;
   mealsRatios.textContent = breakdown.ratiosLine;
 }
