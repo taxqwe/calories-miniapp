@@ -1832,7 +1832,7 @@ function setupBottomNavigation() {
   }
   
   if (!currentLang) {
-    currentLang = 'ru';
+    currentLang = 'en';
   }
   
   const navHistory = document.getElementById('nav-history');

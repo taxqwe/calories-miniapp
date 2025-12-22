@@ -5,7 +5,7 @@
   }
 
   const langParam = getURLParameter('lang');
-  const lang = typeof langParam === 'string' && langParam.length > 0 ? langParam.toLowerCase() : 'ru';
+  const lang = typeof langParam === 'string' && langParam.length > 0 ? langParam.toLowerCase() : 'en';
 
   const localizations = {
     ru: {
