@@ -40,17 +40,23 @@ document.addEventListener('DOMContentLoaded', () => {
   function createTdeeMiniChart(data, tdee) {
     // data – массив чисел
     const hasValidTdee = tdee && tdee > 0;
-    const maxValue = hasValidTdee ? Math.max(...data, tdee) : Math.max(...data);
+    
+    const currentPeriod = document.querySelector('.period-button.active').dataset.period;
+    
+    // Используем все данные без ограничений
+    let displayData = data;
+    let displayLabelsOffset = 0;
+    
+    const maxValue = hasValidTdee ? Math.max(...displayData, tdee) : Math.max(...displayData);
     const safeMaxValue = maxValue === 0 ? 1 : maxValue; // Предотвращаем деление на ноль
 
-    const bars = data.map(value => {
+    const bars = displayData.map(value => {
       const height = value === 0 ? 4 : (value / safeMaxValue * 100);
       // Добавляем класс excess только если TDEE валидный и значение его превышает
       const excessClass = hasValidTdee && value > tdee ? ' excess' : '';
       return `<div class="mini-chart-bar${excessClass}" style="height: ${height}%"></div>`;
     }).join('');
 
-    const currentPeriod = document.querySelector('.period-button.active').dataset.period;
     let labels = '';
 
     switch (currentPeriod) {
@@ -88,8 +94,10 @@ document.addEventListener('DOMContentLoaded', () => {
       case '6month':
         {
           const intervals = window.getSixMonthIntervals(); // массив дат начала каждой недели
+          // Применяем offset если данные были обрезаны
+          const displayIntervals = displayLabelsOffset > 0 ? intervals.slice(displayLabelsOffset) : intervals;
           let lastMonth = null;
-          labels = intervals.map(date => {
+          labels = displayIntervals.map(date => {
             const month = date.getMonth();
             const monthName = date.toLocaleDateString(window.localization.getLocale(), { month: 'short' });
             if (lastMonth === null || month !== lastMonth) {
@@ -142,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="mini-chart">
           ${tdeeTrendHtml}
           <div class="mini-chart-bars">${bars}</div>
-          <div class="mini-chart-labels" style="grid-template-columns: repeat(${data.length}, 1fr);">
+          <div class="mini-chart-labels" style="grid-template-columns: repeat(${displayData.length}, 1fr);">
             ${labels}
           </div>
         </div>
