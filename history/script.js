@@ -833,17 +833,40 @@ function renderMeals() {
 
   setSummaryFromTotals(day.totals);
 
-  if (!day.meals.length) {
-    renderMealsStatus(i18n.mealsNoDataDay);
-    return;
-  }
-
   const mealTemplate = document.getElementById('meal-item-template');
   const dishTemplate = document.getElementById('dish-item-template');
 
+  const addMealButton = document.createElement('button');
+  addMealButton.className = 'meal meal--add';
+  addMealButton.type = 'button';
+  addMealButton.innerHTML = `
+    <div class="meal__swipe">
+      <div class="meal__content meal__content--add">
+        <div class="meal__add-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  `;
+  addMealButton.addEventListener('click', () => {
+    if (!historyState.selectedDayId) {
+      tg?.showAlert?.(i18n.selectDayFirst);
+      return;
+    }
+    openAddModal();
+  });
+  mealsList.append(addMealButton);
+
+  if (!day.meals.length) {
+    maybeShowSwipeHint();
+    return;
+  }
+
   day.meals
     .slice()
-    .sort((a, b) => getMealTimestampMs(a) - getMealTimestampMs(b))
+    .sort((a, b) => getMealTimestampMs(b) - getMealTimestampMs(a))
     .forEach((meal) => {
       const mealNode = mealTemplate.content.firstElementChild.cloneNode(true);
       const mealContent = mealNode.querySelector('.meal__content');

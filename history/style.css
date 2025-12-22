@@ -371,6 +371,38 @@ body {
   fill: currentColor;
 }
 
+.meal--add {
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.meal--add:active {
+  transform: scale(0.98);
+  opacity: 0.8;
+}
+
+.meal__content--add {
+  padding: 8px 12px;
+  justify-content: center;
+  align-items: center;
+  min-height: 48px;
+}
+
+.meal__add-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--accent-color);
+}
+
+.meal__add-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
 .modal {
   position: fixed;
   inset: 0;
