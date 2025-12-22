@@ -471,6 +471,58 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      background-color: var(--card-bg);
+      border-top: 1px solid var(--border-color);
+      padding-bottom: calc(8px + env(safe-area-inset-bottom));
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+      z-index: 100;
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .bottom-nav__item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      text-decoration: none;
+      color: var(--text-light);
+      transition: color 0.2s ease;
+      min-height: 56px;
+    }
+
+    .bottom-nav__item:active {
+      opacity: 0.7;
+    }
+
+    .bottom-nav__item--active {
+      color: var(--orange-accent);
+    }
+
+    .bottom-nav__icon {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+      margin-bottom: 4px;
+    }
+
+    .bottom-nav__label {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .stats-container {
+      padding-bottom: calc(72px + env(safe-area-inset-bottom));
+    }
   </style>
 </head>
 <body>
@@ -506,6 +558,22 @@
     <button class="trend-button" id="trend-button"></button>
     <div class="stats-collections"></div>
   </div>
+
+  <nav class="bottom-nav" role="navigation" aria-label="Основная навигация">
+    <a href="../history/index.html" class="bottom-nav__item">
+      <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+      </svg>
+      <span class="bottom-nav__label">История</span>
+    </a>
+    <a href="../stats/index.html" class="bottom-nav__item bottom-nav__item--active" aria-current="page">
+      <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+      </svg>
+      <span class="bottom-nav__label">Статистика</span>
+    </a>
+  </nav>
+
   <script src="localization.js"></script>
   <script src="utils.js"></script>
   <script src="block-factory.js"></script>
