@@ -1823,9 +1823,38 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+function setupBottomNavigation() {
+  const urlParams = new URLSearchParams(window.location.search);
+  let currentLang = urlParams.get('lang');
+  
+  if (!currentLang && typeof window.historyLanguage === 'string') {
+    currentLang = window.historyLanguage;
+  }
+  
+  if (!currentLang) {
+    currentLang = 'ru';
+  }
+  
+  const navHistory = document.getElementById('nav-history');
+  const navStats = document.getElementById('nav-stats');
+  
+  if (navHistory) {
+    const historyUrl = new URL(navHistory.href, window.location.href);
+    historyUrl.searchParams.set('lang', currentLang);
+    navHistory.href = historyUrl.toString();
+  }
+  
+  if (navStats) {
+    const statsUrl = new URL(navStats.href, window.location.href);
+    statsUrl.searchParams.set('lang', currentLang);
+    navStats.href = statsUrl.toString();
+  }
+}
+
 setupAddCaloriesModal();
 initializeHistory();
 enableDaySelectorDrag();
+setupBottomNavigation();
 
 const navButtons = document.querySelectorAll('.day-selector__nav');
 navButtons.forEach((button) => {

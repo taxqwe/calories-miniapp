@@ -760,4 +760,34 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Вызываем функцию построения графика, которая также обновит блоки коллекций
   updateChart(currentPeriod);
+
+  function setupBottomNavigation() {
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentLang = urlParams.get('lang');
+    
+    if (!currentLang && window.localization && window.localization._lang) {
+      currentLang = window.localization._lang;
+    }
+    
+    if (!currentLang) {
+      currentLang = 'en';
+    }
+    
+    const navHistory = document.getElementById('nav-history');
+    const navStats = document.getElementById('nav-stats');
+    
+    if (navHistory) {
+      const historyUrl = new URL(navHistory.href, window.location.href);
+      historyUrl.searchParams.set('lang', currentLang);
+      navHistory.href = historyUrl.toString();
+    }
+    
+    if (navStats) {
+      const statsUrl = new URL(navStats.href, window.location.href);
+      statsUrl.searchParams.set('lang', currentLang);
+      navStats.href = statsUrl.toString();
+    }
+  }
+
+  setupBottomNavigation();
 });
