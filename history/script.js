@@ -153,6 +153,25 @@ const USER_TIMEZONE = getUserTimezone();
 
 let timeFormatter = createTimeFormatter(USER_TIMEZONE);
 
+function getCurrentDateString() {
+  try {
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: USER_TIMEZONE,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    return formatter.format(now);
+  } catch (error) {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+}
+
 function getInitDataString() {
   return tg?.initData || window.Telegram?.WebApp?.initData || '';
 }
@@ -214,7 +233,6 @@ const mealsMacros = document.querySelector('.meals__macros');
 const mealsRatios = document.querySelector('.meals__ratios');
 const navPrevButton = document.querySelector('.day-selector__nav--prev');
 const navNextButton = document.querySelector('.day-selector__nav--next');
-const addButton = document.querySelector('.add-button');
 const addModal = document.querySelector('.add-modal');
 const addModalForm = addModal?.querySelector('.add-modal__form');
 const addCaloriesInput = addModal?.querySelector('.add-modal__input');
@@ -277,10 +295,6 @@ function applyStaticLocalization() {
     addModalCancelButton.textContent = i18n.addModalCancel;
   }
 
-  if (addButton) {
-    addButton.textContent = i18n.addButton;
-  }
-
   if (mealsCalories) {
     mealsCalories.textContent = formatCalories(0);
   }
@@ -325,18 +339,9 @@ function createTimeFormatter(timeZone) {
 }
 
 function setupAddCaloriesModal() {
-  if (!addButton || !addModal || !addModalForm || !addCaloriesInput || !addModalSubmitButton || !addModalCancelButton) {
+  if (!addModal || !addModalForm || !addCaloriesInput || !addModalSubmitButton || !addModalCancelButton) {
     return;
   }
-
-  addButton.addEventListener('click', () => {
-    if (!historyState.selectedDayId) {
-      tg?.showAlert?.(i18n.selectDayFirst);
-      return;
-    }
-
-    openAddModal();
-  });
 
   addModal.addEventListener('click', (event) => {
     if (event.target === addModal) {
@@ -700,9 +705,16 @@ function renderDaySelector() {
     return;
   }
 
+  const currentDateString = getCurrentDateString();
   const sortedDays = historyState.days
     .slice()
-    .sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0));
+    .sort((a, b) => {
+      const aIsToday = a.date === currentDateString;
+      const bIsToday = b.date === currentDateString;
+      if (aIsToday && !bIsToday) return -1;
+      if (!aIsToday && bIsToday) return 1;
+      return (b.timestamp ?? 0) - (a.timestamp ?? 0);
+    });
 
   sortedDays.forEach((day) => {
     const date = day.date;
@@ -1057,25 +1069,46 @@ async function loadAvailableDays() {
       ? response.days.map(normalizeDayListEntry).filter(Boolean)
       : [];
 
-    historyState.days = normalizedDays;
-    if (!historyState.initialDayId && normalizedDays.length > 0) {
-      historyState.initialDayId = normalizedDays[0].date;
+    const currentDateString = getCurrentDateString();
+    const dayDates = new Set(normalizedDays.map((item) => item.date));
+    
+    if (!dayDates.has(currentDateString)) {
+      const todayTimestamp = Date.parse(`${currentDateString}T00:00:00Z`);
+      normalizedDays.push({
+        date: currentDateString,
+        calories: null,
+        timestamp: todayTimestamp
+      });
     }
 
-    const dayDates = new Set(normalizedDays.map((item) => item.date));
+    historyState.days = normalizedDays;
+    
+    if (!historyState.initialDayId) {
+      historyState.initialDayId = currentDateString;
+    }
+
+    const allDayDates = new Set(normalizedDays.map((item) => item.date));
     Array.from(historyState.dayDetails.keys()).forEach((day) => {
-      if (!dayDates.has(day)) {
+      if (!allDayDates.has(day)) {
         historyState.dayDetails.delete(day);
       }
     });
 
-    if (!dayDates.has(historyState.selectedDayId || '')) {
-      historyState.selectedDayId = normalizedDays[0]?.date || null;
+    if (!allDayDates.has(historyState.selectedDayId || '')) {
+      historyState.selectedDayId = currentDateString;
     }
   } catch (error) {
     historyState.fetchDaysError = error.message || i18n.loadDaysError;
-    historyState.days = [];
-    historyState.selectedDayId = null;
+    const currentDateString = getCurrentDateString();
+    const todayTimestamp = Date.parse(`${currentDateString}T00:00:00Z`);
+    historyState.days = [{
+      date: currentDateString,
+      calories: null,
+      timestamp: todayTimestamp
+    }];
+    if (!historyState.selectedDayId) {
+      historyState.selectedDayId = currentDateString;
+    }
     console.error('Failed to load history days', error);
   } finally {
     historyState.isFetchingDays = false;
@@ -1095,6 +1128,10 @@ async function loadAvailableDays() {
 }
 
 function initializeHistory() {
+  const currentDateString = getCurrentDateString();
+  if (!historyState.selectedDayId) {
+    historyState.selectedDayId = currentDateString;
+  }
   historyState.isFetchingDays = true;
   updateLoadingOverlay();
   renderDaySelector();

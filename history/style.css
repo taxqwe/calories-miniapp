@@ -382,10 +382,10 @@ body {
 }
 
 .meal__content--add {
-  padding: 8px 12px;
+  padding: 6px 12px;
   justify-content: center;
   align-items: center;
-  min-height: 48px;
+  min-height: 36px;
 }
 
 .meal__add-icon {
@@ -531,27 +531,6 @@ body {
 
 body.modal-open {
   overflow: hidden;
-}
-
-.add-button {
-  margin-top: auto;
-  position: sticky;
-  bottom: 16px;
-  align-self: center;
-  width: min(100%, 360px);
-  padding: 14px 18px;
-  border-radius: 16px;
-  border: none;
-  background: var(--accent-color);
-  color: var(--accent-contrast);
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: var(--shadow-soft);
-}
-
-.add-button:active {
-  transform: scale(0.98);
 }
 
 #loading-overlay {
