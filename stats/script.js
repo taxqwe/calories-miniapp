@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Получаем таймзону пользователя
         const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         
-        const response = await fetch('https://calories-bot.duckdns.org:8443/api/stats', {
+        const response = await fetch('https://calories-bot.duckdns.org/api/stats', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

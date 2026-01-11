@@ -776,7 +776,7 @@ document.addEventListener('DOMContentLoaded', () => {
     resultEl.classList.add('visible');
     
     try {
-      const response = await fetch('https://calories-bot.duckdns.org:8443/bot/mbr', {
+      const response = await fetch('https://calories-bot.duckdns.org/bot/mbr', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

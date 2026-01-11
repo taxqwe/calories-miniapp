@@ -39,7 +39,7 @@ if (tg) {
   tg.onEvent('themeChanged', () => applyTheme(tg.themeParams, tg.colorScheme));
 }
 
-const API_BASE_URL = window.__CALORIES_HISTORY_API_BASE__ || 'https://calories-bot.duckdns.org:8443';
+const API_BASE_URL = window.__CALORIES_HISTORY_API_BASE__ || 'https://calories-bot.duckdns.org';
 
 const historyState = {
   days: [],
