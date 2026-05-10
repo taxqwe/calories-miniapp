@@ -64,19 +64,17 @@
       <p class="modal__hint add-modal__day" aria-live="polite"></p>
       <p class="modal__hint add-modal__current" aria-live="polite"></p>
       <div class="modal__field">
-        <input
+        <textarea
           class="modal__input add-modal__input"
-          id="addCaloriesInput"
-          name="calories"
-          type="number"
-          inputmode="numeric"
-          min="1"
-          step="1"
-          placeholder="Например, 250"
+          id="addMealDescriptionInput"
+          name="mealText"
+          rows="3"
+          maxlength="4000"
+          placeholder="Например, овсянка на молоке и кофе"
           data-i18n-placeholder="addModalPlaceholder"
           autocomplete="off"
           required
-        >
+        ></textarea>
       </div>
       <p class="modal__error add-modal__error" role="alert" hidden></p>
       <div class="modal__actions">
