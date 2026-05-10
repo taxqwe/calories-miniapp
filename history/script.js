@@ -64,19 +64,19 @@ const defaultLocalization = {
   prevDaysAriaLabel: 'Previous days',
   nextDaysAriaLabel: 'Next days',
   addButton: 'Add',
-  addModalTitle: 'Add Calories',
-  addModalDescription: 'Specify how many calories to add to the selected day.',
-  addModalPlaceholder: 'For example, 250',
+  addModalTitle: 'Add meal',
+  addModalDescription: 'Describe what you ate for the selected day. Analysis and save or cancel happen in the Telegram chat.',
+  addModalPlaceholder: 'For example, oatmeal with milk and coffee',
   addModalCancel: 'Cancel',
-  addModalSubmit: 'Add',
-  addModalSubmitBusy: 'Adding…',
+  addModalSubmit: 'Send',
+  addModalSubmitBusy: 'Sending…',
   addModalDayLabel: 'Selected day: {day}',
   addModalCurrent: 'Current total: {value} {unit}',
   addModalCurrentZero: 'Current total: 0 {unit}',
   selectDayFirst: 'Select a day first',
-  invalidCalories: 'Enter a positive calorie amount',
-  addCaloriesError: 'Failed to add calories',
-  invalidAddData: 'Invalid data for adding calories',
+  invalidMealText: 'Enter a meal description',
+  addMealAnalyzeError: 'Failed to send meal',
+  invalidMealAnalyzeData: 'Invalid data',
   userNotFound: 'Unable to identify the user',
   httpErrorStatus: 'Error {status}',
   daySelectorLoading: 'Loading...',
@@ -235,7 +235,7 @@ const navPrevButton = document.querySelector('.day-selector__nav--prev');
 const navNextButton = document.querySelector('.day-selector__nav--next');
 const addModal = document.querySelector('.add-modal');
 const addModalForm = addModal?.querySelector('.add-modal__form');
-const addCaloriesInput = addModal?.querySelector('.add-modal__input');
+const mealDescriptionInput = addModal?.querySelector('.add-modal__input');
 const addModalError = addModal?.querySelector('.add-modal__error');
 const addModalDayInfo = addModal?.querySelector('.add-modal__day');
 const addModalCurrentInfo = addModal?.querySelector('.add-modal__current');
@@ -280,10 +280,10 @@ function applyStaticLocalization() {
     }
   });
 
-  if (addCaloriesInput) {
-    const placeholderKey = addCaloriesInput.getAttribute('data-i18n-placeholder');
+  if (mealDescriptionInput) {
+    const placeholderKey = mealDescriptionInput.getAttribute('data-i18n-placeholder');
     if (placeholderKey && i18n[placeholderKey] != null) {
-      addCaloriesInput.setAttribute('placeholder', i18n[placeholderKey]);
+      mealDescriptionInput.setAttribute('placeholder', i18n[placeholderKey]);
     }
   }
 
@@ -339,7 +339,7 @@ function createTimeFormatter(timeZone) {
 }
 
 function setupAddCaloriesModal() {
-  if (!addModal || !addModalForm || !addCaloriesInput || !addModalSubmitButton || !addModalCancelButton) {
+  if (!addModal || !addModalForm || !mealDescriptionInput || !addModalSubmitButton || !addModalCancelButton) {
     return;
   }
 
@@ -353,8 +353,7 @@ function setupAddCaloriesModal() {
     closeAddModal();
   });
 
-  addCaloriesInput.addEventListener('input', () => {
-    sanitizeAddCaloriesInput();
+  mealDescriptionInput.addEventListener('input', () => {
     hideAddModalError();
   });
 
@@ -362,7 +361,7 @@ function setupAddCaloriesModal() {
 }
 
 function openAddModal() {
-  if (!addModal || !addModalForm || !addCaloriesInput) {
+  if (!addModal || !addModalForm || !mealDescriptionInput) {
     return;
   }
 
@@ -383,14 +382,13 @@ function openAddModal() {
   document.addEventListener('keydown', handleAddModalKeydown, true);
 
   addModalForm.reset();
-  sanitizeAddCaloriesInput();
   hideAddModalError();
   setAddModalBusy(false);
   updateAddModalInfo(dayId);
 
   window.setTimeout(() => {
-    addCaloriesInput.focus();
-    addCaloriesInput.select?.();
+    mealDescriptionInput.focus();
+    mealDescriptionInput.select?.();
   }, 50);
 }
 
@@ -453,28 +451,9 @@ function setAddModalBusy(value) {
     addModalCancelButton.disabled = value;
   }
 
-  if (addCaloriesInput) {
-    addCaloriesInput.disabled = value;
+  if (mealDescriptionInput) {
+    mealDescriptionInput.disabled = value;
   }
-}
-
-function sanitizeAddCaloriesInput() {
-  if (!addCaloriesInput) {
-    return;
-  }
-
-  const raw = addCaloriesInput.value;
-  if (raw === '') {
-    return;
-  }
-
-  const parsed = Number.parseInt(raw, 10);
-  if (!Number.isFinite(parsed) || parsed <= 0) {
-    addCaloriesInput.value = '';
-    return;
-  }
-
-  addCaloriesInput.value = String(Math.max(1, Math.floor(parsed)));
 }
 
 function updateAddModalInfo(dayId) {
@@ -540,7 +519,7 @@ function formatSelectedDayForModal(dayId) {
 async function handleAddModalSubmit(event) {
   event.preventDefault();
 
-  if (!addCaloriesInput) {
+  if (!mealDescriptionInput) {
     return;
   }
 
@@ -550,12 +529,11 @@ async function handleAddModalSubmit(event) {
     return;
   }
 
-  sanitizeAddCaloriesInput();
-  const value = Number.parseInt(addCaloriesInput.value, 10);
+  const mealText = mealDescriptionInput.value.trim();
 
-  if (!Number.isFinite(value) || value <= 0) {
-    showAddModalError(i18n.invalidCalories);
-    addCaloriesInput.focus();
+  if (!mealText) {
+    showAddModalError(i18n.invalidMealText);
+    mealDescriptionInput.focus();
     return;
   }
 
@@ -563,33 +541,25 @@ async function handleAddModalSubmit(event) {
   setAddModalBusy(true);
 
   try {
-    await addCaloriesToDay(dayId, value);
+    await submitMealDescriptionForDay(dayId, mealText);
     closeAddModal({ force: true });
   } catch (error) {
-    console.error('Failed to add calories', error);
+    console.error('Failed to send meal for analysis', error);
     const message = typeof error?.message === 'string' && error.message.trim().length > 0
       ? error.message
-      : i18n.addCaloriesError;
+      : i18n.addMealAnalyzeError;
     showAddModalError(message);
   } finally {
     setAddModalBusy(false);
   }
 }
 
-async function addCaloriesToDay(dayId, amount) {
-  if (!dayId || !Number.isFinite(amount) || amount <= 0) {
-    throw new Error(i18n.invalidAddData);
+async function submitMealDescriptionForDay(dayId, mealText) {
+  if (!dayId || !mealText) {
+    throw new Error(i18n.invalidMealAnalyzeData);
   }
 
-  const currentValue = Number(getCachedDayCalories(dayId, 0)) || 0;
-  const newTotal = Math.max(0, currentValue + amount);
-
-  await sendCaloriesAdditionRequest(dayId, amount);
-
-  const dayEntry = historyState.days.find((day) => day.date === dayId);
-  if (dayEntry) {
-    dayEntry.calories = newTotal;
-  }
+  await sendMealAnalyzeRequest(dayId, mealText);
 
   historyState.dayDetails.delete(dayId);
   historyState.loadingDayId = dayId;
@@ -599,43 +569,59 @@ async function addCaloriesToDay(dayId, amount) {
   renderMeals();
 
   ensureDayDetails(dayId).catch((error) => {
-    console.error('Failed to refresh day after calories update', error);
+    console.error('Failed to refresh day after meal analyze request', error);
   });
-
-  return newTotal;
 }
 
-async function sendCaloriesAdditionRequest(dayId, amount) {
-  const chatId = resolveChatId();
-  if (chatId == null) {
+async function sendMealAnalyzeRequest(dayId, mealText) {
+  const initData = getInitDataString();
+  if (!initData) {
     throw new Error(i18n.userNotFound);
   }
 
-  const response = await fetch(`${API_BASE_URL}/api/add`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      'X-Source-App': 'Calories-History'
-    },
-    mode: 'cors',
-    body: JSON.stringify({
-      chatId,
-      date: dayId,
-      calories: amount,
-      initData: getInitDataString()
-    })
-  });
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
-  if (!response.ok) {
-    let message = formatMessage(i18n.httpErrorStatus, { status: response.status });
-    try {
-      const errorBody = await response.json();
-      message = errorBody?.error?.message || message;
-    } catch (parseError) {
-      // ignore parse errors
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/history/meal/analyze`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'X-Source-App': 'Calories-History'
+      },
+      mode: 'cors',
+      body: JSON.stringify({
+        initData,
+        date: dayId,
+        mealText
+      }),
+      signal: controller.signal
+    });
+
+    if (!response.ok) {
+      let message = formatMessage(i18n.httpErrorStatus, { status: response.status });
+      try {
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const errorBody = await response.json();
+          message =
+            (typeof errorBody?.error?.message === 'string' ? errorBody.error.message : null) ||
+            (typeof errorBody?.message === 'string' ? errorBody.message : null) ||
+            message;
+        }
+      } catch (parseError) {
+        // ignore parse errors
+      }
+      throw new Error(message);
     }
-    throw new Error(message);
+  } catch (error) {
+    if (error?.name === 'AbortError') {
+      throw new Error(formatMessage(i18n.httpErrorStatus, { status: 408 }));
+    }
+    throw error;
+  } finally {
+    window.clearTimeout(timeout);
   }
 }
 
