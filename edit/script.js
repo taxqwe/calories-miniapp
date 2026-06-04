@@ -9,6 +9,7 @@
   const editSection = document.getElementById('editSection');
   const caloriesInput = document.getElementById('caloriesInput');
   const loadingElement = document.getElementById('loading');
+  const API_BASE_URL = window.CaloriesMiniAppConfig?.apiBaseUrl || 'https://caloriesai.duckdns.org';
 
   // Состояние
   let currentDate = new Date();
@@ -88,7 +89,7 @@
       };
       console.log('Отправляем запрос:', JSON.stringify(requestBody));
       
-      const response = await fetch('https://calories-bot.duckdns.org/api/calories', {
+      const response = await fetch(`${API_BASE_URL}/api/calories`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -144,7 +145,7 @@
       };
       console.log('Отправляем запрос на обновление:', JSON.stringify(requestBody));
       
-      const response = await fetch('https://calories-bot.duckdns.org/api/edit', {
+      const response = await fetch(`${API_BASE_URL}/api/edit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -386,4 +387,4 @@ window.addEventListener('resize', () => {
   
   // Запускаем приложение
   init();
-})(); 
+})();

@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const API_BASE_URL = window.CaloriesMiniAppConfig?.apiBaseUrl || 'https://caloriesai.duckdns.org';
+
   // Поддерживаемые локали
   const supportedLocales = ["ar", "de", "es", "fr", "hi", "ru", "tr", "uk", "en"];
   
@@ -776,7 +778,7 @@ document.addEventListener('DOMContentLoaded', () => {
     resultEl.classList.add('visible');
     
     try {
-      const response = await fetch('https://calories-bot.duckdns.org/bot/mbr', {
+      const response = await fetch(`${API_BASE_URL}/bot/mbr`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
