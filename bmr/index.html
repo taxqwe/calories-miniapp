@@ -1,150 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>BMR Calculator</title>
+  <title>Метаболизм</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Подключаем Telegram WebApp API -->
+  <!-- Telegram WebApp API -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    /* Стили для всплывающих подсказок */
-    .info-icon {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      width: 24px;
-      height: 24px;
-      background-color: rgba(0,0,0,0.6);
-      color: #fff;
-      border-radius: 50%;
-      font-size: 14px;
-      margin-left: 5px;
-      cursor: pointer;
-    }
-    .info-tooltip {
-      position: relative;
-      display: inline-block;
-    }
-    .info-tooltip .tooltip-text {
-      visibility: hidden;
-      width: 280px;
-      max-width: 80vw;
-      background-color: rgba(60,70,80,0.95);
-      color: #fff;
-      text-align: left;
-      padding: 12px 16px;
-      border-radius: 10px;
-      position: fixed;
-      z-index: 100;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      opacity: 0;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
-      font-size: 14px;
-      line-height: 1.5;
-      transition: opacity 0.2s ease;
-      border: 1px solid rgba(255,255,255,0.1);
-      backdrop-filter: blur(4px);
-    }
-    .info-tooltip.active .tooltip-text {
-      visibility: visible;
-      opacity: 1;
-    }
-  </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Заголовок калькулятора -->
-    <h2 id="main-title"></h2>
-    
-    <!-- Блок описания с подсказками для BMR и TDEE -->
-    <div id="description">
-      <p id="desc-bmr"></p>
-      <p id="desc-tdee"></p>
+  <div class="page" id="page">
+
+    <!-- ── Шапка ── -->
+    <header class="page__header">
+      <button type="button" class="hdr-back" id="back-btn" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5.5a1 1 0 0 1 0 1.4L11.4 11l4.1 4.1a1 1 0 1 1-1.4 1.4l-4.8-4.8a1 1 0 0 1 0-1.4l4.8-4.8a1 1 0 0 1 1.4 0z"/></svg>
+        <span id="back-label"></span>
+      </button>
+      <h1 class="page__title" id="page-title"></h1>
+      <p class="page__subtitle" id="page-subtitle"></p>
+    </header>
+
+    <!-- ── Онбординг-баннер (только первичный расчёт) ── -->
+    <div class="onb-guide" id="onb-guide" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      <p id="onb-guide-text"></p>
     </div>
-    
-    <!-- Форма для ввода данных -->
-    <h3 id="form-header"></h3>
-    <form id="bmr-form">
-      <div class="form-group">
-        <label for="height" id="label-height"></label>
-        <input type="number" id="height" name="height" placeholder="" inputmode="numeric" enterkeyhint="next">
+
+    <!-- ── Hero: целевые калории + базовый обмен ── -->
+    <section class="metab-hero" id="metab-hero">
+      <div class="metab-hero__label" id="hero-label"></div>
+      <div class="metab-hero__value">
+        <span id="hero-value">—</span><span class="unit" id="hero-unit"></span>
       </div>
-      <div class="form-group">
-        <label for="weight" id="label-weight"></label>
-        <input type="number" id="weight" name="weight" placeholder="" inputmode="numeric" enterkeyhint="next">
-      </div>
-      <div class="form-group">
-        <label for="age" id="label-age"></label>
-        <input type="number" id="age" name="age" placeholder="" inputmode="numeric" enterkeyhint="done">
-      </div>
-      <div class="form-group">
-        <label class="field-label" id="label-gender"></label>
-        <div class="radio-group">
-          <div class="radio-option">
-            <input type="radio" id="gender-male" name="gender" value="m">
-            <label for="gender-male" id="label-male"></label>
-          </div>
-          <div class="radio-option">
-            <input type="radio" id="gender-female" name="gender" value="f">
-            <label for="gender-female" id="label-female"></label>
-          </div>
+      <div class="metab-hero__meta" id="hero-meta"></div>
+    </section>
+
+    <form id="bmr-form" novalidate>
+
+      <!-- ── Данные тела ── -->
+      <section class="card">
+        <h2 class="card__title" id="body-section-title"></h2>
+        <div class="metab-rows">
+          <label class="metab-field">
+            <span class="metab-field__label" id="label-height"></span>
+            <input class="metab-field__input" type="text" id="height" name="height"
+              inputmode="numeric" autocomplete="off" enterkeyhint="next" placeholder="">
+          </label>
+          <label class="metab-field">
+            <span class="metab-field__label" id="label-weight"></span>
+            <input class="metab-field__input" type="text" id="weight" name="weight"
+              inputmode="numeric" autocomplete="off" enterkeyhint="next" placeholder="">
+          </label>
+          <label class="metab-field">
+            <span class="metab-field__label" id="label-age"></span>
+            <input class="metab-field__input" type="text" id="age" name="age"
+              inputmode="numeric" autocomplete="off" enterkeyhint="done" placeholder="">
+          </label>
         </div>
-      </div>
-      <p id="label-activity"></p>
-      <label id="select-activity" for="activityRange"></label>
-      <div class="range-container">
-        <input type="range" id="activityRange" name="activity" min="1" max="5" step="1" value="3">
-        <div class="range-ticks">
-          <div class="tick-container"><span class="tick">1</span></div>
-          <div class="tick-container"><span class="tick">2</span></div>
-          <div class="tick-container"><span class="tick">3</span></div>
-          <div class="tick-container"><span class="tick">4</span></div>
-          <div class="tick-container"><span class="tick">5</span></div>
+        <div class="segmented" id="gender-seg" role="group">
+          <button type="button" class="segmented__item" id="gender-male" data-value="m"></button>
+          <button type="button" class="segmented__item" id="gender-female" data-value="f"></button>
         </div>
-      </div>
-        <div id="activityDescription" class="activity-description"></div>
-        <div id="goal-toggle-group" class="form-group switch-group">
+      </section>
+
+      <!-- ── Активность ── -->
+      <section class="card">
+        <h2 class="card__title" id="activity-section-title"></h2>
+        <div class="activity-row">
+          <span id="activity-row-label"></span>
+          <span class="activity-row__level" id="activity-level-name"></span>
+        </div>
+        <input class="metab-range" type="range" id="activityRange" name="activity" min="1" max="5" step="1" value="3">
+        <div class="metab-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+        <div class="activity-note" id="activity-note"></div>
+      </section>
+
+      <!-- ── Цель ── -->
+      <section class="card" id="goal-card">
+        <div class="switch-row">
+          <label for="goal-toggle" id="label-goal-toggle"></label>
           <label class="switch">
             <input type="checkbox" id="goal-toggle">
-            <span class="slider"></span>
+            <span class="switch__slider"></span>
           </label>
-          <label for="goal-toggle" id="label-goal-toggle" class="switch-label"></label>
         </div>
-        <div id="goal-settings" class="form-group">
-          <label class="field-label" id="label-goal"></label>
-          <div class="radio-group">
-            <div class="radio-option">
-              <input type="radio" id="goal-surplus" name="goal" value="surplus">
-              <label for="goal-surplus" id="goal-surplus-label"></label>
-            </div>
-            <div class="radio-option">
-              <input type="radio" id="goal-deficit" name="goal" value="deficit">
-              <label for="goal-deficit" id="goal-deficit-label"></label>
-            </div>
-          </div>
-          <div class="goal-custom-group">
-            <label for="goal-custom-calories" id="label-goal-custom"></label>
-            <input
-              type="text"
-              id="goal-custom-calories"
-              name="goalCustomCalories"
-              inputmode="numeric"
-              pattern="[0-9]*"
-              maxlength="5"
-              enterkeyhint="done"
-              autocomplete="off"
-            >
-            <p id="goal-custom-hint" class="field-hint"></p>
-          </div>
+        <div class="segmented" id="goal-seg" role="group" hidden>
+          <button type="button" class="segmented__item" id="goal-deficit" data-value="deficit"></button>
+          <button type="button" class="segmented__item" id="goal-surplus" data-value="surplus"></button>
         </div>
-        <button type="submit" id="calculate-button"></button>
-      </form>
-      <div id="result"></div>
+      </section>
+
+      <button type="submit" class="metab-cta" id="calculate-button"></button>
+      <div class="cta-hint" id="cta-hint"></div>
+    </form>
+
+    <div id="result" class="result"></div>
   </div>
-  
+
   <script src="../config.js"></script>
   <script src="main.js"></script>
 </body>
