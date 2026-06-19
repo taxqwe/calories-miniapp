@@ -50,10 +50,24 @@
       </section>
 
       <!--
-        НАПОМИНАНИЯ — карточка реализуется в отдельной задаче (#42).
-        Якорь ниже отмечает место вставки между «Норма и цель» и списком «Прочее»;
-        пока не рендерит ничего видимого.
+        НАПОМИНАНИЯ (#42).
+        Якорь между «Норма и цель» и списком «Прочее». Карточка рендерится
+        скриптом reminders.js из данных профиля (поле reminders),
+        сохранение — POST /api/reminders (REPLACE-семантика).
       -->
+      <section class="card" id="reminders-card" hidden>
+        <h2 class="card__title">Напоминания</h2>
+        <div class="reminders__list" id="reminders-list"></div>
+        <p class="reminders__empty" id="reminders-empty" hidden>Пока нет напоминаний. Добавьте первое.</p>
+        <button type="button" class="reminder-add" id="reminders-add">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          <span>Добавить напоминание</span>
+        </button>
+        <p class="reminders__error" id="reminders-error" role="alert" aria-live="polite" hidden></p>
+        <p class="reminders__note">Вечерний отчёт приходит один раз в день. Дневных напоминаний — до трёх.</p>
+      </section>
+
+      <!-- сохранён прежний якорь (скрытый) для совместимости с каркасом -->
       <div id="reminders-anchor" data-placeholder="reminders" hidden></div>
 
       <!-- ПРОЧЕЕ -->
@@ -70,6 +84,40 @@
       </div>
     </div>
   </main>
+
+  <!-- МОДАЛКА: добавить напоминание (#42) -->
+  <div class="modal reminders-modal" id="reminders-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="reminders-modal-title">
+    <form class="modal__dialog reminders-modal__form" id="reminders-modal-form">
+      <h2 class="modal__title" id="reminders-modal-title">Новое напоминание</h2>
+      <p class="modal__description">Выберите время и тип напоминания.</p>
+
+      <div class="modal__field">
+        <label class="modal__label" for="reminders-modal-time">Время</label>
+        <input class="modal__input" id="reminders-modal-time" type="time" required>
+      </div>
+
+      <div class="modal__field">
+        <span class="modal__label">Тип</span>
+        <div class="reminders-modal__types" id="reminders-modal-types" role="radiogroup" aria-label="Тип напоминания">
+          <button type="button" class="reminders-type" data-type="EVENING" role="radio" aria-checked="false">
+            <span class="reminder__chip reminder__chip--evening">Полный отчёт</span>
+            <span class="reminders-type__hint">Вечерний итог дня</span>
+          </button>
+          <button type="button" class="reminders-type" data-type="DAYTIME" role="radio" aria-checked="false">
+            <span class="reminder__chip reminder__chip--daytime">Напоминание</span>
+            <span class="reminders-type__hint">Подсказка в течение дня</span>
+          </button>
+        </div>
+      </div>
+
+      <p class="modal__error reminders-modal__error" id="reminders-modal-error" role="alert" hidden></p>
+
+      <div class="modal__actions">
+        <button type="button" class="modal__button modal__button--secondary" data-action="cancel">Отмена</button>
+        <button type="submit" class="modal__button modal__button--primary" data-action="submit">Добавить</button>
+      </div>
+    </form>
+  </div>
 
   <nav class="bottom-nav" role="navigation" aria-label="Основная навигация">
     <a href="../history/index.html" class="bottom-nav__item" id="nav-history">
@@ -94,5 +142,6 @@
 
   <script src="../config.js"></script>
   <script src="script.js"></script>
+  <script src="reminders.js"></script>
 </body>
 </html>
