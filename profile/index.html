@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Профиль</title>
+  <link rel="stylesheet" href="../history/style.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <main class="page">
+    <header class="page__header">
+      <h1 class="page__title">Профиль</h1>
+      <p class="page__subtitle" id="profile-subtitle">&nbsp;</p>
+    </header>
+
+    <!-- Статус загрузки / ошибки -->
+    <p class="profile__status" id="profile-status">Загружаем профиль…</p>
+
+    <div class="profile__body" id="profile-body" hidden>
+      <!-- ТАРИФ -->
+      <section class="card" id="tier-card">
+        <h2 class="card__title">Тариф</h2>
+        <div class="tier">
+          <span class="tier__badge" id="tier-badge">
+            <span id="tier-badge-icon"></span>
+            <span id="tier-badge-text">Базовый</span>
+          </span>
+          <div class="tier__meta" id="tier-meta" hidden>активен до<b id="tier-expires"></b></div>
+        </div>
+      </section>
+
+      <!-- НОРМА И ЦЕЛЬ -->
+      <section class="card" id="norm-card">
+        <h2 class="card__title">Норма и цель</h2>
+        <div class="norm" id="norm-block">
+          <div class="norm__value" id="norm-value">— <span class="unit">ккал/день</span></div>
+          <div class="norm__meta" id="norm-meta">дневной расход <b id="norm-tdee">—</b></div>
+          <span class="goal-chip" id="goal-chip" hidden></span>
+        </div>
+        <p class="profile__hint" id="norm-empty" hidden>Норма ещё не рассчитана. Рассчитайте дневную норму калорий.</p>
+        <a class="btn-secondary" id="norm-edit-link" href="../bmr/index.html?mode=edit">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+          <span id="norm-edit-label">Изменить расчёт</span>
+        </a>
+      </section>
+
+      <!--
+        НАПОМИНАНИЯ — карточка реализуется в отдельной задаче (#42).
+        Якорь ниже отмечает место вставки между «Норма и цель» и списком «Прочее»;
+        пока не рендерит ничего видимого.
+      -->
+      <div id="reminders-anchor" data-placeholder="reminders" hidden></div>
+
+      <!-- ПРОЧЕЕ -->
+      <div class="rows">
+        <div class="row" id="row-language">
+          <span class="row__label">Язык</span><span class="row__spacer"></span>
+          <span class="row__value" id="language-value">—</span>
+          <svg class="row__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.5a1 1 0 0 1 1.4 0l4.8 4.8a1 1 0 0 1 0 1.4l-4.8 4.8a1 1 0 0 1-1.4-1.4L12.6 11 8.5 6.9a1 1 0 0 1 0-1.4z"/></svg>
+        </div>
+        <a class="row" id="row-faq" href="../faq/index.html">
+          <span class="row__label">Помощь и ответы</span><span class="row__spacer"></span>
+          <svg class="row__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.5a1 1 0 0 1 1.4 0l4.8 4.8a1 1 0 0 1 0 1.4l-4.8 4.8a1 1 0 0 1-1.4-1.4L12.6 11 8.5 6.9a1 1 0 0 1 0-1.4z"/></svg>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav" role="navigation" aria-label="Основная навигация">
+    <a href="../history/index.html" class="bottom-nav__item" id="nav-history">
+      <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+      </svg>
+      <span class="bottom-nav__label">История</span>
+    </a>
+    <a href="../stats/index.html" class="bottom-nav__item" id="nav-stats">
+      <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+      </svg>
+      <span class="bottom-nav__label">Статистика</span>
+    </a>
+    <a href="../profile/index.html" class="bottom-nav__item bottom-nav__item--active" aria-current="page" id="nav-profile">
+      <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+      <span class="bottom-nav__label">Профиль</span>
+    </a>
+  </nav>
+
+  <script src="../config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

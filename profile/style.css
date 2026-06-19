@@ -1,0 +1,224 @@
+/*
+  Профиль — стили, специфичные для раздела.
+  База берётся из ../history/style.css (токены --bg-color, --card-bg,
+  --accent-color, --text-color, --text-secondary, --border-color, --shadow-soft,
+  компоненты .page, .bottom-nav). Здесь — карточки/строки из прототипа «Профиль».
+*/
+
+/* [hidden] должен побеждать display из компонентов (.card, .goal-chip, .tier__meta) */
+[hidden] {
+  display: none !important;
+}
+
+.page__subtitle {
+  min-height: 18px;
+}
+
+.profile__status {
+  margin: 8px;
+  padding: 24px 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.profile__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile__hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* ── секция-карточка ── */
+.card {
+  background: var(--card-bg);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.card__title {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* ── тариф ── */
+.tier {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tier__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 100, 34, 0.16);
+  color: var(--accent-color);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 999px;
+}
+
+.tier__badge svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.tier__badge--basic {
+  background: var(--card-elevated-bg);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.tier__meta {
+  text-align: right;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.tier__meta b {
+  display: block;
+  color: var(--text-color);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── норма / цель ── */
+.norm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.norm__value {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.norm__value .unit {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-left: 6px;
+}
+
+.norm__meta {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.45;
+}
+
+.norm__meta b {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.goal-chip {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  background: var(--card-elevated-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+
+.btn-secondary {
+  background: var(--card-elevated-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  border-radius: 12px;
+  padding: 13px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.btn-secondary svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  color: var(--text-secondary);
+}
+
+.btn-secondary:active {
+  transform: scale(0.99);
+}
+
+/* ── список «Прочее» ── */
+.rows {
+  background: var(--card-bg);
+  border-radius: 18px;
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 18px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--separator-color);
+  color: inherit;
+  text-decoration: none;
+}
+
+.row:last-child {
+  border-bottom: 0;
+}
+
+.row:active {
+  background: var(--card-elevated-bg);
+}
+
+.row__label {
+  font-size: 15px;
+  color: var(--text-color);
+}
+
+.row__spacer {
+  flex: 1;
+}
+
+.row__value {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.row__chev {
+  width: 18px;
+  height: 18px;
+  fill: var(--text-secondary);
+}
