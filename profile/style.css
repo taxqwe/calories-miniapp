@@ -338,6 +338,11 @@
   pointer-events: none;
 }
 
+.modal__button--danger {
+  background: var(--destructive-color);
+  color: var(--accent-contrast);
+}
+
 /* ── список «Прочее» ── */
 .rows {
   background: var(--card-bg);

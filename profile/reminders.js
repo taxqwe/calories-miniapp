@@ -41,6 +41,10 @@
     unavailable: 'Напоминания пока недоступны. Попробуйте позже.'
   };
 
+  function confirmDeleteText(item) {
+    return `Удалить напоминание ${item.time}?`;
+  }
+
   const TRASH_SVG =
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3a1 1 0 0 0-.94.66L7.38 5H5a1 1 0 0 0 0 2h.17l.76 11.07A2 2 0 0 0 7.92 20h8.16a2 2 0 0 0 1.99-1.93L18.83 7H19a1 1 0 1 0 0-2h-2.38l-.68-1.34A1 1 0 0 0 15 3z"/></svg>';
 
@@ -55,7 +59,9 @@
     modalTime: document.getElementById('reminders-modal-time'),
     modalTypes: document.getElementById('reminders-modal-types'),
     modalError: document.getElementById('reminders-modal-error'),
-    modalSubmit: null
+    modalSubmit: null,
+    confirm: document.getElementById('reminders-confirm'),
+    confirmText: document.getElementById('reminders-confirm-text')
   };
 
   if (!els.card) return; // каркас без карточки — нечего инициализировать
@@ -67,6 +73,8 @@
   let reminders = [];
   let selectedType = null;
   let saving = false;
+  let pendingDelete = null;
+  const hideTimers = new Map();
 
   // ── утилиты ────────────────────────────────────────────────────
   function getInitDataString() {
@@ -205,6 +213,43 @@
     els.modalError.hidden = false;
   }
 
+  function clearHideTimer(modal) {
+    const pending = hideTimers.get(modal);
+    if (pending) {
+      window.clearTimeout(pending.timer);
+      modal.removeEventListener('transitionend', pending.onEnd);
+      hideTimers.delete(modal);
+    }
+  }
+
+  function showModal(modal) {
+    clearHideTimer(modal);
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => modal.classList.add('modal--visible'));
+    });
+  }
+
+  function hideModal(modal) {
+    clearHideTimer(modal);
+    modal.classList.remove('modal--visible');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+
+    const finalize = () => {
+      modal.hidden = true;
+      clearHideTimer(modal);
+    };
+    const onEnd = (event) => {
+      if (event.target === modal) finalize();
+    };
+    const timer = window.setTimeout(finalize, 300);
+    hideTimers.set(modal, { timer, onEnd });
+    modal.addEventListener('transitionend', onEnd);
+  }
+
   function openModal() {
     clearError();
     clearModalError();
@@ -217,28 +262,11 @@
     else if (canAdd('EVENING')) setSelectedType('EVENING');
 
     els.modalTime.value = '';
-    els.modal.hidden = false;
-    els.modal.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('modal-open');
-    // Двойной rAF, чтобы сработал transition появления.
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => els.modal.classList.add('modal--visible'));
-    });
+    showModal(els.modal);
   }
 
   function closeModal() {
-    els.modal.classList.remove('modal--visible');
-    els.modal.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('modal-open');
-    const hide = () => {
-      els.modal.hidden = true;
-      els.modal.removeEventListener('transitionend', hide);
-    };
-    els.modal.addEventListener('transitionend', hide);
-    // Фолбэк, если transitionend не сработал.
-    window.setTimeout(() => {
-      els.modal.hidden = true;
-    }, 300);
+    hideModal(els.modal);
   }
 
   function setBusy(busy) {
@@ -286,8 +314,35 @@
   function handleDelete(item) {
     if (saving) return;
     clearError();
+    openConfirm(item);
+  }
+
+  function openConfirm(item) {
+    pendingDelete = item;
+    els.confirmText.textContent = confirmDeleteText(item);
+    showModal(els.confirm);
+  }
+
+  function closeConfirm() {
+    pendingDelete = null;
+    hideModal(els.confirm);
+  }
+
+  function confirmDelete() {
+    const item = pendingDelete;
+    if (!item || saving) return;
+    closeConfirm();
+    triggerHaptic();
     const next = reminders.filter((r) => !(r.type === item.type && r.time === item.time));
     persist(next, { onError: () => showError(STR.saveError) });
+  }
+
+  function triggerHaptic() {
+    try {
+      tg?.HapticFeedback?.notificationOccurred?.('warning');
+    } catch (_) {
+      void 0;
+    }
   }
 
   // ── сохранение (REPLACE) ────────────────────────────────────────
@@ -374,7 +429,20 @@
     }
   });
 
+  els.confirm.addEventListener('click', (event) => {
+    if (saving) return;
+    if (event.target.closest('[data-action="confirm"]')) {
+      confirmDelete();
+      return;
+    }
+    if (event.target === els.confirm || event.target.closest('[data-action="cancel"]')) {
+      closeConfirm();
+    }
+  });
+
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !els.modal.hidden && !saving) closeModal();
+    if (event.key !== 'Escape' || saving) return;
+    if (!els.confirm.hidden) closeConfirm();
+    else if (!els.modal.hidden) closeModal();
   });
 })();

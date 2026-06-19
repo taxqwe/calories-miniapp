@@ -118,6 +118,19 @@
     </form>
   </div>
 
+  <!-- МОДАЛКА: подтверждение удаления (#42) -->
+  <div class="modal reminders-confirm" id="reminders-confirm" hidden aria-hidden="true" role="alertdialog" aria-modal="true" aria-labelledby="reminders-confirm-title">
+    <div class="modal__dialog">
+      <h2 class="modal__title" id="reminders-confirm-title">Удалить напоминание?</h2>
+      <p class="modal__description" id="reminders-confirm-text"></p>
+
+      <div class="modal__actions">
+        <button type="button" class="modal__button modal__button--secondary" data-action="cancel">Отмена</button>
+        <button type="button" class="modal__button modal__button--danger" data-action="confirm">Удалить</button>
+      </div>
+    </div>
+  </div>
+
   <nav class="bottom-nav" role="navigation" aria-label="Основная навигация">
     <a href="../history/index.html" class="bottom-nav__item" id="nav-history">
       <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
