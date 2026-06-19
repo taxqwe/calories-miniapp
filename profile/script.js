@@ -234,6 +234,9 @@ function render(profile) {
   renderMisc(profile?.locale);
   els.status.hidden = true;
   els.body.hidden = false;
+  // Передаём профиль модулю напоминаний (reminders.js), чтобы не делать
+  // второй такой же запрос /api/profile.
+  document.dispatchEvent(new CustomEvent('profile:loaded', { detail: profile }));
 }
 
 function showError() {

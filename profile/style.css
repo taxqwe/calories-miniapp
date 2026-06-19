@@ -176,6 +176,173 @@
   transform: scale(0.99);
 }
 
+/* ── напоминания (#42) ── */
+.reminders__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reminders__empty {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.reminders__note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.reminders__error {
+  margin: 0;
+  font-size: 13px;
+  color: var(--destructive-color);
+  line-height: 1.45;
+}
+
+.reminder {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card-elevated-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 13px 14px;
+}
+
+.reminder__time {
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 60px;
+}
+
+.reminder__chip {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 11px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.reminder__chip--evening {
+  background: rgba(255, 100, 34, 0.16);
+  color: var(--accent-color);
+}
+
+.reminder__chip--daytime {
+  background: rgba(33, 150, 243, 0.18);
+  color: #69b6f5;
+}
+
+.reminder__spacer {
+  flex: 1;
+}
+
+.reminder__del {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.reminder__del:active {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--destructive-color);
+}
+
+.reminder__del svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.reminder-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px dashed var(--border-color);
+  border-radius: 12px;
+  padding: 13px;
+  color: var(--accent-color);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reminder-add svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.reminder-add:active {
+  opacity: 0.7;
+}
+
+.reminder-add:disabled {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ── модалка выбора типа ── */
+.reminders-modal__types {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reminders-type {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  background: var(--card-elevated-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.reminders-type__hint {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.reminders-type--active {
+  border-color: var(--accent-color);
+  background: rgba(255, 100, 34, 0.08);
+}
+
+.reminders-type--disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+.modal__button--danger {
+  background: var(--destructive-color);
+  color: var(--accent-contrast);
+}
+
 /* ── список «Прочее» ── */
 .rows {
   background: var(--card-bg);
