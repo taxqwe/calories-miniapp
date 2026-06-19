@@ -203,6 +203,14 @@
   background: var(--card-elevated-bg);
 }
 
+.row--static {
+  cursor: default;
+}
+
+.row--static:active {
+  background: transparent;
+}
+
 .row__label {
   font-size: 15px;
   color: var(--text-color);
