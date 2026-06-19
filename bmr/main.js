@@ -626,8 +626,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const mode = urlParams.get('mode') === 'edit' ? 'edit' : 'first';
   const isEdit = mode === 'edit';
   const langParam = urlParams.get('lang');
-  const lang = (langParam && supportedLocales.includes(langParam)) ? langParam : 'ru';
-  const t = translations[lang] || translations.ru;
+
+  function normalizeLocale(value) {
+    if (typeof value !== 'string') return null;
+    const code = value.toLowerCase().split('-')[0];
+    return supportedLocales.includes(code) ? code : null;
+  }
+
+  const langFromUrl = normalizeLocale(langParam);
+  let lang = langFromUrl || 'ru';
+  let t = translations[lang] || translations.ru;
+  let langLocked = Boolean(langFromUrl);
+
+  function setLocale(value) {
+    if (langLocked) return false;
+    const next = normalizeLocale(value);
+    if (!next || next === lang) return false;
+    lang = next;
+    t = translations[lang] || translations.ru;
+    return true;
+  }
 
   let chatId = null;
   let tg = null;
@@ -643,6 +661,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function formatNumber(n) {
     // Пробел-разделитель тысяч (узкий неразрывный)
     return Math.round(n).toLocaleString('ru-RU').replace(/ /g, ' ');
+  }
+
+  function formatMultiplier(n) {
+    return n.toLocaleString(lang, { minimumFractionDigits: 1, maximumFractionDigits: 2 });
   }
 
   function getInputs() {
@@ -697,7 +719,7 @@ document.addEventListener('DOMContentLoaded', () => {
         : comp.tdee;
       heroValueEl.textContent = formatNumber(goalTarget);
       heroUnitEl.textContent = t.heroUnit;
-      heroMetaEl.innerHTML = `${t.basalLabel}<br><b>${formatNumber(comp.bmr)}</b> · ×${multiplier}`;
+      heroMetaEl.innerHTML = `${t.basalLabel}<br><b>${formatNumber(comp.bmr)}</b> · ×${formatMultiplier(multiplier)}`;
     } else {
       heroValueEl.textContent = t.heroEmpty;
       heroUnitEl.textContent = '';
@@ -835,11 +857,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const initData = (tg && tg.initData) || '';
       const url = `${API_BASE_URL}/api/profile`;
       const response = await fetch(url, {
-        method: 'GET',
+        method: 'POST',
         headers: {
-          'X-Source-App': 'BMR-Calculator',
-          'X-Telegram-Init-Data': initData
+          'Content-Type': 'application/json',
+          'X-Source-App': 'BMR-Calculator'
         },
+        body: JSON.stringify({ initData }),
         mode: 'cors'
       });
       if (!response.ok) return;
@@ -853,6 +876,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function applyPrefill(data) {
     if (!data || typeof data !== 'object') return;
+    if (setLocale(data.locale)) {
+      applyText();
+      updateActivityDescription();
+    }
     const inputs = data.bmrInputs;
     if (inputs) {
       if (inputs.height != null) heightEl.value = String(inputs.height);
@@ -975,15 +1002,16 @@ document.addEventListener('DOMContentLoaded', () => {
       tg.expand();
     } catch (_) { /* noop */ }
 
-    if (tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
-      chatId = tg.initDataUnsafe.user.id;
-    } else if (tg.initData) {
-      try {
-        const parsed = JSON.parse(tg.initData);
-        if (parsed.user && parsed.user.id) {
-          chatId = parsed.user.id;
-        }
-      } catch (_) { /* initData может быть query-строкой — игнорируем */ }
+    const tgUser = tg.initDataUnsafe && tg.initDataUnsafe.user;
+    if (tgUser && tgUser.id) {
+      chatId = tgUser.id;
+    }
+    if (tgUser && tgUser.language_code) {
+      const tgLocale = normalizeLocale(tgUser.language_code);
+      if (tgLocale) {
+        setLocale(tgLocale);
+        langLocked = true;
+      }
     }
 
     if (tg.BackButton) {
@@ -1049,11 +1077,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Инициализация ──
   function init() {
+    initTelegram();
     applyText();
     applyMode();
     updateActivityDescription();
     bindEvents();
-    initTelegram();
     refresh();
 
     if (isEdit) {
