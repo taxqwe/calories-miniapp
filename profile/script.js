@@ -103,7 +103,7 @@ function getInitDataString() {
 function formatNumber(value) {
   const n = Number(value);
   if (!Number.isFinite(n)) return null;
-  return Math.round(n).toLocaleString('ru-RU').replace(/ /g, ' ');
+  return Math.round(n).toLocaleString('ru-RU');
 }
 
 function formatDate(iso) {
@@ -121,6 +121,22 @@ function languageName(locale) {
   if (!locale) return null;
   const code = String(locale).toLowerCase().split(/[-_]/)[0];
   return LANG_NAMES[code] || locale;
+}
+
+let profileLocale = null;
+
+function resolveLocale() {
+  const candidate = profileLocale || tg?.initDataUnsafe?.user?.language_code;
+  if (!candidate) return null;
+  return String(candidate).toLowerCase().split(/[-_]/)[0];
+}
+
+function withLang(href) {
+  const locale = resolveLocale();
+  if (!locale) return href;
+  const url = new URL(href, window.location.href);
+  url.searchParams.set('lang', locale);
+  return url.pathname + url.search + url.hash;
 }
 
 function setSubtitle() {
@@ -154,36 +170,48 @@ function renderTier(subscription) {
   }
 }
 
+const DEFAULT_GOAL_SHIFT = 300;
+
 function renderNorm(norm, goal) {
-  const tdee = formatNumber(norm?.tdee);
-  // Целевые калории: пользовательское значение, иначе расход (tdee).
-  const target =
-    goal && Number.isFinite(Number(goal.customCalories))
-      ? formatNumber(goal.customCalories)
-      : tdee;
-  const hasNorm = Boolean(norm && tdee);
+  const tdeeValue = Number(norm?.tdee);
+  const hasNorm = Number.isFinite(tdeeValue);
+  const tdee = formatNumber(tdeeValue);
 
   if (hasNorm) {
-    els.normValue.innerHTML = `${target} <span class="unit">${STR.unit}</span>`;
+    const hasCustom = Boolean(goal) && Number.isFinite(Number(goal.customCalories));
+    const isDeficit = goal?.type === 'deficit';
+    const isSurplus = goal?.type === 'surplus';
+
+    let targetValue = tdeeValue;
+    if (hasCustom) {
+      targetValue = Number(goal.customCalories);
+    } else if (isDeficit) {
+      targetValue = tdeeValue - DEFAULT_GOAL_SHIFT;
+    } else if (isSurplus) {
+      targetValue = tdeeValue + DEFAULT_GOAL_SHIFT;
+    }
+
+    els.normValue.innerHTML = `${formatNumber(targetValue)} <span class="unit">${STR.unit}</span>`;
     els.normTdee.textContent = `${tdee} ${STR.kcal}`;
     els.normMeta.hidden = false;
     els.normEmpty.hidden = true;
 
-    if (goal?.type === 'deficit' || goal?.type === 'surplus') {
-      const label = goal.type === 'deficit' ? STR.goalDeficit : STR.goalSurplus;
-      const diff =
-        Number.isFinite(Number(goal.customCalories)) && Number.isFinite(Number(norm?.tdee))
-          ? Number(goal.customCalories) - Number(norm.tdee)
-          : null;
-      const sign = diff != null ? (diff > 0 ? ' +' : ' ') + formatNumber(diff) : '';
-      els.goalChip.textContent = `${label}${sign}`;
+    if (isDeficit || isSurplus) {
+      const label = isDeficit ? STR.goalDeficit : STR.goalSurplus;
+      const diff = targetValue - tdeeValue;
+      if (diff !== 0) {
+        const sign = diff > 0 ? '+' : '−';
+        els.goalChip.textContent = `${label} ${sign}${formatNumber(Math.abs(diff))}`;
+      } else {
+        els.goalChip.textContent = label;
+      }
       els.goalChip.hidden = false;
     } else {
       els.goalChip.hidden = true;
     }
 
     els.normEditLabel.textContent = STR.normEdit;
-    els.normEditLink.setAttribute('href', '../bmr/index.html?mode=edit');
+    els.normEditLink.setAttribute('href', withLang('../bmr/index.html?mode=edit'));
   } else {
     // Норма ещё не рассчитана — ведём на первичный расчёт.
     els.normValue.innerHTML = `— <span class="unit">${STR.unit}</span>`;
@@ -191,7 +219,7 @@ function renderNorm(norm, goal) {
     els.goalChip.hidden = true;
     els.normEmpty.hidden = false;
     els.normEditLabel.textContent = STR.normCalc;
-    els.normEditLink.setAttribute('href', '../bmr/');
+    els.normEditLink.setAttribute('href', withLang('../bmr/'));
   }
 }
 
@@ -200,6 +228,7 @@ function renderMisc(locale) {
 }
 
 function render(profile) {
+  profileLocale = profile?.locale || null;
   renderTier(profile?.subscription);
   renderNorm(profile?.norm, profile?.goal);
   renderMisc(profile?.locale);
