@@ -88,7 +88,7 @@ body {
 }
 
 .day-selector__nav:active {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--separator-color);
   color: var(--text-color);
 }
 
@@ -655,23 +655,5 @@ body.modal-open {
 
   .page {
     max-width: 720px;
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg-color: #ffffff;
-    --card-bg: #f3f4f6;
-    --card-elevated-bg: #ffffff;
-    --text-color: #1f2933;
-    --text-secondary: #6b7a8c;
-    --separator-color: rgba(15, 23, 42, 0.1);
-    --border-color: rgba(15, 23, 42, 0.08);
-    --destructive-color: #ff5c5c;
-    --shadow-soft: 0 4px 14px rgba(15, 23, 42, 0.12);
-  }
-
-  .day-selector__nav:active {
-    background-color: rgba(15, 23, 42, 0.08);
   }
 }
