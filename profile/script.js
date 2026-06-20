@@ -48,21 +48,57 @@ const API_BASE_URL =
 
 const REQUEST_TIMEOUT_MS = 15000;
 
-// ── строки (ru-first) ─────────────────────────────────────────────
-const STR = {
-  subtitleFallback: 'Ваш профиль',
-  tierPremium: 'Premium',
-  tierBasic: 'Базовый',
-  tierActiveUntil: 'активен до',
-  goalDeficit: 'Цель: дефицит',
-  goalSurplus: 'Цель: профицит',
-  normEdit: 'Изменить расчёт',
-  normCalc: 'Рассчитать норму',
-  normEmpty: 'Норма ещё не рассчитана. Рассчитайте дневную норму калорий.',
-  loadError: 'Не удалось загрузить профиль. Попробуйте позже.',
-  unit: 'ккал/день',
-  expend: 'дневной расход',
-  kcal: 'ккал'
+// ── строки (RU + EN) ──────────────────────────────────────────────
+// Паритет только RU+EN: ru → ru, всё остальное → en (по решению владельца).
+const translations = {
+  ru: {
+    pageTitle: 'Профиль',
+    subtitleFallback: 'Ваш профиль',
+    statusLoading: 'Загружаем профиль…',
+    cardTier: 'Тариф',
+    cardNorm: 'Норма и цель',
+    cardReminders: 'Напоминания',
+    rowLanguage: 'Язык',
+    navHistory: 'История',
+    navStats: 'Статистика',
+    navProfile: 'Профиль',
+    tierPremium: 'Premium',
+    tierBasic: 'Базовый',
+    tierActiveUntil: 'активен до',
+    goalDeficit: 'Цель: дефицит',
+    goalSurplus: 'Цель: профицит',
+    normEdit: 'Изменить расчёт',
+    normCalc: 'Рассчитать норму',
+    normEmpty: 'Норма ещё не рассчитана. Рассчитайте дневную норму калорий.',
+    loadError: 'Не удалось загрузить профиль. Попробуйте позже.',
+    unit: 'ккал/день',
+    expend: 'дневной расход',
+    kcal: 'ккал'
+  },
+  en: {
+    pageTitle: 'Profile',
+    subtitleFallback: 'Your profile',
+    statusLoading: 'Loading profile…',
+    cardTier: 'Plan',
+    cardNorm: 'Norm & goal',
+    cardReminders: 'Reminders',
+    rowLanguage: 'Language',
+    navHistory: 'History',
+    navStats: 'Stats',
+    navProfile: 'Profile',
+    tierPremium: 'Premium',
+    tierBasic: 'Basic',
+    tierActiveUntil: 'active until',
+    goalDeficit: 'Goal: deficit',
+    goalSurplus: 'Goal: surplus',
+    normEdit: 'Edit calculation',
+    normCalc: 'Calculate norm',
+    normEmpty: 'Norm not calculated yet. Calculate your daily calorie norm.',
+    loadError: "Couldn't load profile. Please try again later.",
+    unit: 'kcal/day',
+    expend: 'daily expenditure',
+    kcal: 'kcal'
+  }
 };
 
 const LANG_NAMES = {
@@ -103,10 +139,15 @@ function getInitDataString() {
   return tg?.initData || window.Telegram?.WebApp?.initData || '';
 }
 
+// Локаль форматирования чисел/дат: ru → ru-RU, en → en-US.
+function intlLocale() {
+  return resolveLocale() === 'ru' ? 'ru-RU' : 'en-US';
+}
+
 function formatNumber(value) {
   const n = Number(value);
   if (!Number.isFinite(n)) return null;
-  return Math.round(n).toLocaleString('ru-RU');
+  return Math.round(n).toLocaleString(intlLocale());
 }
 
 function formatDate(iso) {
@@ -114,7 +155,7 @@ function formatDate(iso) {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return null;
   try {
-    return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+    return date.toLocaleDateString(intlLocale(), { day: 'numeric', month: 'long', year: 'numeric' });
   } catch (error) {
     return null;
   }
@@ -126,17 +167,36 @@ function languageName(locale) {
   return LANG_NAMES[code] || locale;
 }
 
+// Локаль из URL (?lang=) и из профиля (/api/profile.locale).
+const urlLangParam = new URLSearchParams(window.location.search || '').get('lang');
 let profileLocale = null;
 
+// Нормализуем до 2-букв; паритет RU+EN: ru → ru, всё остальное → en.
+function normalizeLocale(value) {
+  if (!value) return null;
+  const code = String(value).toLowerCase().split(/[-_]/)[0];
+  if (!code) return null;
+  return code === 'ru' ? 'ru' : 'en';
+}
+
+// Приоритет источников языка (как в остальных разделах):
+//   ?lang= → /api/profile.locale → tg language_code → дефолт (en).
 function resolveLocale() {
-  const candidate = profileLocale || tg?.initDataUnsafe?.user?.language_code;
-  if (!candidate) return null;
-  return String(candidate).toLowerCase().split(/[-_]/)[0];
+  return (
+    normalizeLocale(urlLangParam) ||
+    normalizeLocale(profileLocale) ||
+    normalizeLocale(tg?.initDataUnsafe?.user?.language_code) ||
+    'en'
+  );
+}
+
+// Активный словарь — пересчитывается при каждом обращении к resolveLocale.
+function t() {
+  return translations[resolveLocale()] || translations.en;
 }
 
 function withLang(href) {
   const locale = resolveLocale();
-  if (!locale) return href;
   const url = new URL(href, window.location.href);
   url.searchParams.set('lang', locale);
   return url.pathname + url.search + url.hash;
@@ -147,7 +207,7 @@ function setSubtitle() {
   const parts = [];
   if (user?.first_name) parts.push(user.first_name);
   if (user?.username) parts.push('@' + user.username);
-  els.subtitle.textContent = parts.length ? parts.join(' · ') : STR.subtitleFallback;
+  els.subtitle.textContent = parts.length ? parts.join(' · ') : t().subtitleFallback;
 }
 
 // ── рендер ────────────────────────────────────────────────────────
@@ -157,7 +217,7 @@ function renderTier(subscription) {
   if (isPremium) {
     els.tierBadge.classList.remove('tier__badge--basic');
     els.tierBadgeIcon.innerHTML = PREMIUM_STAR_SVG;
-    els.tierBadgeText.textContent = STR.tierPremium;
+    els.tierBadgeText.textContent = t().tierPremium;
     const until = formatDate(subscription?.expiresAt);
     if (until) {
       els.tierExpires.textContent = until;
@@ -168,7 +228,7 @@ function renderTier(subscription) {
   } else {
     els.tierBadge.classList.add('tier__badge--basic');
     els.tierBadgeIcon.innerHTML = '';
-    els.tierBadgeText.textContent = STR.tierBasic;
+    els.tierBadgeText.textContent = t().tierBasic;
     els.tierMeta.hidden = true;
   }
 }
@@ -176,12 +236,13 @@ function renderTier(subscription) {
 const DEFAULT_GOAL_SHIFT = 300;
 
 function renderNorm(norm, goal) {
+  const s = t();
   const tdeeValue = Number(norm?.tdee);
   const hasNorm = Number.isFinite(tdeeValue);
   const tdee = formatNumber(tdeeValue);
 
   if (hasNorm) {
-    const hasCustom = Boolean(goal) && Number.isFinite(Number(goal.customCalories));
+    const hasCustom = Boolean(goal) && goal.customCalories != null && Number.isFinite(Number(goal.customCalories));
     const isDeficit = goal?.type === 'deficit';
     const isSurplus = goal?.type === 'surplus';
 
@@ -194,13 +255,13 @@ function renderNorm(norm, goal) {
       targetValue = tdeeValue + DEFAULT_GOAL_SHIFT;
     }
 
-    els.normValue.innerHTML = `${formatNumber(targetValue)} <span class="unit">${STR.unit}</span>`;
-    els.normTdee.textContent = `${tdee} ${STR.kcal}`;
+    els.normValue.innerHTML = `${formatNumber(targetValue)} <span class="unit">${s.unit}</span>`;
+    els.normTdee.textContent = `${tdee} ${s.kcal}`;
     els.normMeta.hidden = false;
     els.normEmpty.hidden = true;
 
     if (isDeficit || isSurplus) {
-      const label = isDeficit ? STR.goalDeficit : STR.goalSurplus;
+      const label = isDeficit ? s.goalDeficit : s.goalSurplus;
       const diff = targetValue - tdeeValue;
       if (diff !== 0) {
         const sign = diff > 0 ? '+' : '−';
@@ -213,15 +274,15 @@ function renderNorm(norm, goal) {
       els.goalChip.hidden = true;
     }
 
-    els.normEditLabel.textContent = STR.normEdit;
+    els.normEditLabel.textContent = s.normEdit;
     els.normEditLink.setAttribute('href', withLang('../bmr/index.html?mode=edit'));
   } else {
     // Норма ещё не рассчитана — ведём на первичный расчёт.
-    els.normValue.innerHTML = `— <span class="unit">${STR.unit}</span>`;
+    els.normValue.innerHTML = `— <span class="unit">${s.unit}</span>`;
     els.normMeta.hidden = true;
     els.goalChip.hidden = true;
     els.normEmpty.hidden = false;
-    els.normEditLabel.textContent = STR.normCalc;
+    els.normEditLabel.textContent = s.normCalc;
     els.normEditLink.setAttribute('href', withLang('../bmr/'));
   }
 }
@@ -230,20 +291,53 @@ function renderMisc(locale) {
   els.languageValue.textContent = languageName(locale) || '—';
 }
 
+// Статичные лейблы (RU отрисован в HTML до JS) — свапаем на EN при en-локали.
+// data-i18n помечает узел, текст которого нужно заменить по ключу словаря.
+function applyStaticI18n() {
+  const s = t();
+  document.documentElement.lang = resolveLocale();
+  document.title = s.pageTitle;
+  document.querySelectorAll('[data-i18n]').forEach((node) => {
+    const key = node.getAttribute('data-i18n');
+    if (key && Object.prototype.hasOwnProperty.call(s, key)) {
+      node.textContent = s[key];
+    }
+  });
+}
+
+// Пробрасываем текущий ?lang= на все ссылки нижней навигации, чтобы язык
+// сохранялся при переходах между разделами.
+function applyNavLang() {
+  ['nav-history', 'nav-stats', 'nav-profile'].forEach((id) => {
+    const link = document.getElementById(id);
+    if (!link) return;
+    const url = new URL(link.getAttribute('href'), window.location.href);
+    url.searchParams.set('lang', resolveLocale());
+    link.setAttribute('href', url.pathname + url.search + url.hash);
+  });
+}
+
 function render(profile) {
   profileLocale = profile?.locale || null;
+  // Локаль могла уточниться из профиля (когда ?lang= нет) — перерисуем статику.
+  applyStaticI18n();
+  applyNavLang();
   renderTier(profile?.subscription);
   renderNorm(profile?.norm, profile?.goal);
   renderMisc(profile?.locale);
   els.status.hidden = true;
   els.body.hidden = false;
-  // Передаём профиль модулю напоминаний (reminders.js), чтобы не делать
-  // второй такой же запрос /api/profile.
-  document.dispatchEvent(new CustomEvent('profile:loaded', { detail: profile }));
+  // Передаём профиль модулю напоминаний (reminders.js): полный профиль +
+  // резолвнутую локаль, чтобы карточка напоминаний переводилась тем же языком.
+  document.dispatchEvent(
+    new CustomEvent('profile:loaded', {
+      detail: { profile, locale: resolveLocale() }
+    })
+  );
 }
 
 function showError() {
-  els.status.textContent = STR.loadError;
+  els.status.textContent = t().loadError;
   els.status.hidden = false;
   els.body.hidden = true;
 }
@@ -280,5 +374,7 @@ async function loadProfile() {
   }
 }
 
+applyStaticI18n();
+applyNavLang();
 setSubtitle();
 loadProfile();

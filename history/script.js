@@ -1829,17 +1829,24 @@ function setupBottomNavigation() {
   
   const navHistory = document.getElementById('nav-history');
   const navStats = document.getElementById('nav-stats');
-  
+  const navProfile = document.getElementById('nav-profile');
+
   if (navHistory) {
     const historyUrl = new URL(navHistory.href, window.location.href);
     historyUrl.searchParams.set('lang', currentLang);
     navHistory.href = historyUrl.toString();
   }
-  
+
   if (navStats) {
     const statsUrl = new URL(navStats.href, window.location.href);
     statsUrl.searchParams.set('lang', currentLang);
     navStats.href = statsUrl.toString();
+  }
+
+  if (navProfile) {
+    const profileUrl = new URL(navProfile.href, window.location.href);
+    profileUrl.searchParams.set('lang', currentLang);
+    navProfile.href = profileUrl.toString();
   }
 }
 
