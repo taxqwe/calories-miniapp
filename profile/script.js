@@ -257,7 +257,8 @@ function renderNorm(norm, goal) {
 
     els.normValue.innerHTML = `${formatNumber(targetValue)} <span class="unit">${s.unit}</span>`;
     els.normTdee.textContent = `${tdee} ${s.kcal}`;
-    els.normMeta.hidden = false;
+    // «дневной расход» показываем только когда цель реально сдвигает число (иначе target == tdee и это дубль).
+    els.normMeta.hidden = targetValue === tdeeValue;
     els.normEmpty.hidden = true;
 
     if (isDeficit || isSurplus) {
