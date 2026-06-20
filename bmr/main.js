@@ -994,12 +994,54 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // ── Тема (Telegram-driven, как в history/profile/stats) ──
+  // Красим по tg.colorScheme + tg.themeParams, НЕ по prefers-color-scheme.
+  function applyTheme(themeParams = {}, colorScheme = (tg && tg.colorScheme)) {
+    const root = document.documentElement;
+    const isLight = colorScheme === 'light';
+
+    const background = themeParams.bg_color || (isLight ? '#ffffff' : '#1c1c1e');
+    const secondaryBackground = themeParams.secondary_bg_color || (isLight ? '#f3f4f6' : '#2c2c2e');
+    const textColor = themeParams.text_color || (isLight ? '#1f2933' : '#ffffff');
+    const hintColor = themeParams.hint_color || (isLight ? '#6b7a8c' : '#a0a0a0');
+    const accentColor = '#ff6422';
+    const accentContrast = '#ffffff';
+    const destructiveColor = themeParams.destructive_text_color || '#ff5c5c';
+
+    // Общий набор (совпадает с history/profile)
+    root.style.setProperty('--bg-color', background);
+    root.style.setProperty('--card-bg', secondaryBackground);
+    root.style.setProperty('--card-elevated-bg', isLight ? '#ffffff' : 'rgba(255, 255, 255, 0.05)');
+    root.style.setProperty('--text-color', textColor);
+    root.style.setProperty('--text-secondary', hintColor);
+    root.style.setProperty('--accent-color', accentColor);
+    root.style.setProperty('--accent-contrast', accentContrast);
+    root.style.setProperty('--destructive-color', destructiveColor);
+    root.style.setProperty('--separator-color', isLight ? 'rgba(15, 23, 42, 0.1)' : 'rgba(255, 255, 255, 0.08)');
+    root.style.setProperty('--border-color', isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.06)');
+    root.style.setProperty('--shadow-soft', isLight ? '0 4px 14px rgba(15, 23, 42, 0.12)' : '0 6px 16px rgba(0, 0, 0, 0.18)');
+
+    // BMR-специфичные токены (значения из прежнего :root / light-блока style.css)
+    root.style.setProperty('--accent-soft', isLight ? 'rgba(255, 100, 34, 0.12)' : 'rgba(255, 100, 34, 0.16)');
+    root.style.setProperty('--accent-border', isLight ? 'rgba(255, 100, 34, 0.3)' : 'rgba(255, 100, 34, 0.25)');
+    root.style.setProperty('--track-color', isLight ? '#d6dae0' : '#48484a');
+  }
+
   // ── Telegram init ──
   function initTelegram() {
     tg = window.Telegram && window.Telegram.WebApp;
-    if (!tg) return;
+    if (!tg) {
+      // Без Telegram остаёмся на тёмных дефолтах из :root.
+      return;
+    }
     try {
       tg.expand();
+    } catch (_) { /* noop */ }
+
+    // Тема Telegram + реакция на её смену.
+    applyTheme(tg.themeParams, tg.colorScheme);
+    try {
+      tg.onEvent('themeChanged', () => applyTheme(tg.themeParams, tg.colorScheme));
     } catch (_) { /* noop */ }
 
     const tgUser = tg.initDataUnsafe && tg.initDataUnsafe.user;

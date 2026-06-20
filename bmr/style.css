@@ -25,22 +25,6 @@
   --gap: 14px;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg-color: #ffffff;
-    --card-bg: #f3f4f6;
-    --card-elevated-bg: #ffffff;
-    --text-color: #1f2933;
-    --text-secondary: #6b7a8c;
-    --accent-soft: rgba(255, 100, 34, 0.12);
-    --accent-border: rgba(255, 100, 34, 0.3);
-    --separator-color: rgba(15, 23, 42, 0.1);
-    --border-color: rgba(15, 23, 42, 0.08);
-    --track-color: #d6dae0;
-    --shadow-soft: 0 4px 14px rgba(15, 23, 42, 0.12);
-  }
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
