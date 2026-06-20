@@ -24,25 +24,113 @@
 
   const LIMITS = { EVENING: 1, DAYTIME: 3 };
 
-  const STR = {
-    cardEmpty: 'Пока нет напоминаний. Добавьте первое.',
-    note: 'Вечерний отчёт приходит один раз в день. Дневных напоминаний — до трёх.',
-    typeEvening: 'Полный отчёт',
-    typeDaytime: 'Напоминание',
-    deleteLabel: 'Удалить напоминание',
-    addLabel: 'Добавить напоминание',
-    modalTitle: 'Новое напоминание',
-    eveningTaken: 'Вечерний отчёт можно добавить только один раз в день.',
-    daytimeFull: 'Дневных напоминаний можно не больше трёх.',
-    needTime: 'Укажите время напоминания.',
-    needType: 'Выберите тип напоминания.',
-    duplicate: 'Такое напоминание уже есть.',
-    saveError: 'Не удалось сохранить. Попробуйте ещё раз.',
-    unavailable: 'Напоминания пока недоступны. Попробуйте позже.'
+  // Паритет RU+EN: ru → ru, всё остальное → en. Локаль приходит из script.js
+  // (событие profile:loaded), плюс читаем ?lang= для рендера до загрузки.
+  const TRANSLATIONS = {
+    ru: {
+      cardEmpty: 'Пока нет напоминаний. Добавьте первое.',
+      note: 'Вечерний отчёт приходит один раз в день. Дневных напоминаний — до трёх.',
+      typeEvening: 'Полный отчёт',
+      typeDaytime: 'Напоминание',
+      typeEveningHint: 'Вечерний итог дня',
+      typeDaytimeHint: 'Подсказка в течение дня',
+      deleteLabel: 'Удалить напоминание',
+      addLabel: 'Добавить напоминание',
+      modalTitle: 'Новое напоминание',
+      modalDescription: 'Выберите время и тип напоминания.',
+      modalTimeLabel: 'Время',
+      modalTypeLabel: 'Тип',
+      typeAriaLabel: 'Тип напоминания',
+      cancel: 'Отмена',
+      add: 'Добавить',
+      confirmTitle: 'Удалить напоминание?',
+      delete: 'Удалить',
+      confirmDelete: (time) => `Удалить напоминание ${time}?`,
+      eveningTaken: 'Вечерний отчёт можно добавить только один раз в день.',
+      daytimeFull: 'Дневных напоминаний можно не больше трёх.',
+      needTime: 'Укажите время напоминания.',
+      needType: 'Выберите тип напоминания.',
+      duplicate: 'Такое напоминание уже есть.',
+      saveError: 'Не удалось сохранить. Попробуйте ещё раз.',
+      unavailable: 'Напоминания пока недоступны. Попробуйте позже.'
+    },
+    en: {
+      cardEmpty: 'No reminders yet. Add your first one.',
+      note: 'The full report arrives once a day. Up to three daytime reminders.',
+      typeEvening: 'Full report',
+      typeDaytime: 'Reminder',
+      typeEveningHint: 'Evening summary of the day',
+      typeDaytimeHint: 'A nudge during the day',
+      deleteLabel: 'Delete reminder',
+      addLabel: 'Add reminder',
+      modalTitle: 'New reminder',
+      modalDescription: 'Choose a time and reminder type.',
+      modalTimeLabel: 'Time',
+      modalTypeLabel: 'Type',
+      typeAriaLabel: 'Reminder type',
+      cancel: 'Cancel',
+      add: 'Add',
+      confirmTitle: 'Delete reminder?',
+      delete: 'Delete',
+      confirmDelete: (time) => `Delete reminder ${time}?`,
+      eveningTaken: 'The full report can be added only once a day.',
+      daytimeFull: 'You can have at most three daytime reminders.',
+      needTime: 'Enter a reminder time.',
+      needType: 'Choose a reminder type.',
+      duplicate: 'This reminder already exists.',
+      saveError: "Couldn't save. Please try again.",
+      unavailable: 'Reminders are not available yet. Please try again later.'
+    }
   };
 
+  function normalizeLocale(value) {
+    if (!value) return null;
+    const code = String(value).toLowerCase().split(/[-_]/)[0];
+    if (!code) return null;
+    return code === 'ru' ? 'ru' : 'en';
+  }
+
+  const urlLang = normalizeLocale(
+    new URLSearchParams(window.location.search || '').get('lang')
+  );
+  // До прихода profile:loaded используем ?lang= или язык аккаунта Telegram.
+  let locale =
+    urlLang ||
+    normalizeLocale(tg?.initDataUnsafe?.user?.language_code) ||
+    'en';
+  let STR = TRANSLATIONS[locale];
+
   function confirmDeleteText(item) {
-    return `Удалить напоминание ${item.time}?`;
+    return STR.confirmDelete(item.time);
+  }
+
+  // Свапаем статичные лейблы напоминаний (RU в HTML по умолчанию) на текущую
+  // локаль. data-rem-i18n="key" меняет textContent, data-rem-i18n-attr=
+  // "attr:key" меняет атрибут (напр. aria-label).
+  function applyI18n() {
+    document.querySelectorAll('[data-rem-i18n]').forEach((node) => {
+      const key = node.getAttribute('data-rem-i18n');
+      const value = STR[key];
+      if (typeof value === 'string') node.textContent = value;
+    });
+    document.querySelectorAll('[data-rem-i18n-attr]').forEach((node) => {
+      const spec = node.getAttribute('data-rem-i18n-attr') || '';
+      const [attr, key] = spec.split(':');
+      const value = STR[key];
+      if (attr && typeof value === 'string') node.setAttribute(attr, value);
+    });
+  }
+
+  // Применяем локаль, пришедшую из script.js (язык аккаунта/URL). Если она
+  // отличается от текущей — пересобираем строки и перерисовываем карточку.
+  function setLocale(next) {
+    const normalized = normalizeLocale(next);
+    if (!normalized || normalized === locale) return;
+    locale = normalized;
+    STR = TRANSLATIONS[locale];
+    applyI18n();
+    render();
+    refreshTypeAvailability();
   }
 
   const TRASH_SVG =
@@ -407,10 +495,17 @@
     render();
   }
 
-  // Слушаем профиль из script.js (общий запрос /api/profile).
+  // Слушаем профиль из script.js (общий запрос /api/profile). Деталь события —
+  // { profile, locale }; locale — уже резолвнутая (?lang= → profile.locale → tg).
   document.addEventListener('profile:loaded', (event) => {
-    init(event.detail || {});
+    const detail = event.detail || {};
+    const profile = detail.profile || detail;
+    setLocale(detail.locale || profile?.locale);
+    init(profile);
   });
+
+  // Применяем локаль из ?lang=/Telegram сразу, до загрузки профиля.
+  applyI18n();
 
   // Привязка обработчиков модалки / кнопок.
   els.add.addEventListener('click', handleAddClick);
