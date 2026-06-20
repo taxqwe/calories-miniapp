@@ -65,6 +65,9 @@ const translations = {
     tierPremium: 'Premium',
     tierBasic: 'Базовый',
     tierActiveUntil: 'активен до',
+    premiumBuy: 'Купить Premium',
+    premiumRenew: 'Продлить Premium',
+    premiumError: 'Не удалось открыть оплату. Попробуйте позже.',
     goalDeficit: 'Цель: дефицит',
     goalSurplus: 'Цель: профицит',
     normEdit: 'Изменить расчёт',
@@ -89,6 +92,9 @@ const translations = {
     tierPremium: 'Premium',
     tierBasic: 'Basic',
     tierActiveUntil: 'active until',
+    premiumBuy: 'Get Premium',
+    premiumRenew: 'Renew Premium',
+    premiumError: "Couldn't open checkout. Try again later.",
     goalDeficit: 'Goal: deficit',
     goalSurplus: 'Goal: surplus',
     normEdit: 'Edit calculation',
@@ -121,6 +127,8 @@ const els = {
   tierBadgeText: document.getElementById('tier-badge-text'),
   tierMeta: document.getElementById('tier-meta'),
   tierExpires: document.getElementById('tier-expires'),
+  premiumCta: document.getElementById('premium-cta'),
+  premiumCtaError: document.getElementById('premium-cta-error'),
   normValue: document.getElementById('norm-value'),
   normMeta: document.getElementById('norm-meta'),
   normTdee: document.getElementById('norm-tdee'),
@@ -211,8 +219,27 @@ function setSubtitle() {
 }
 
 // ── рендер ────────────────────────────────────────────────────────
+// Текущий тариф (из /api/profile.subscription.tier) — нужен, чтобы выбрать
+// лейбл CTA «Купить»/«Продлить» и при смене языка перерисовать его.
+let currentTier = null;
+
+// Premium-тарифы: для них CTA — «Продлить». Всё прочее (BASIC/NEW_USER/неизвестно)
+// → «Купить». Кнопку показываем ВСЕМ.
+function isPremiumTier(tier) {
+  return tier === 'PREMIUM' || tier === 'PREMIUM_TRIAL';
+}
+
+function renderPremiumCtaLabel() {
+  if (!els.premiumCta) return;
+  els.premiumCta.textContent = isPremiumTier(currentTier)
+    ? t().premiumRenew
+    : t().premiumBuy;
+}
+
 function renderTier(subscription) {
   const tier = subscription?.tier;
+  currentTier = tier || null;
+  renderPremiumCtaLabel();
   const isPremium = tier && tier !== 'BASIC';
   if (isPremium) {
     els.tierBadge.classList.remove('tier__badge--basic');
@@ -304,6 +331,8 @@ function applyStaticI18n() {
       node.textContent = s[key];
     }
   });
+  // CTA Premium не помечена data-i18n (лейбл зависит от тарифа) — обновляем отдельно.
+  renderPremiumCtaLabel();
 }
 
 // Пробрасываем текущий ?lang= на все ссылки нижней навигации, чтобы язык
@@ -331,6 +360,56 @@ function setupNavClickInterception() {
       e.preventDefault();
       window.location.replace(link.getAttribute('href'));
     });
+  });
+}
+
+// ── CTA покупки Premium ───────────────────────────────────────────
+// По клику: POST /api/premium {initData} → бот сам пришлёт оффер в чат →
+// при успехе закрываем мини-апп (tg.close()). При ошибке/таймауте —
+// разблокируем кнопку и показываем мягкое сообщение, НЕ закрываем.
+function setupPremiumCta() {
+  const btn = els.premiumCta;
+  if (!btn) return;
+
+  btn.addEventListener('click', async () => {
+    if (btn.disabled) return; // защита от повторных кликов
+    const label = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '…';
+    if (els.premiumCtaError) els.premiumCtaError.hidden = true;
+
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/premium`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        mode: 'cors',
+        body: JSON.stringify({ initData: getInitDataString() }),
+        signal: controller.signal
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      // Успех — бот пришлёт оффер в чат, мини-апп закрываем.
+      tg?.close();
+    } catch (error) {
+      console.error('Failed to open premium checkout', error);
+      btn.disabled = false;
+      btn.textContent = label;
+      if (els.premiumCtaError) {
+        els.premiumCtaError.textContent = t().premiumError;
+        els.premiumCtaError.hidden = false;
+      }
+    } finally {
+      window.clearTimeout(timeout);
+    }
   });
 }
 
@@ -400,5 +479,6 @@ if (tg?.BackButton) {
 applyStaticI18n();
 applyNavLang();
 setupNavClickInterception();
+setupPremiumCta();
 setSubtitle();
 loadProfile();
