@@ -318,6 +318,22 @@ function applyNavLang() {
   });
 }
 
+// Переходы по нижней навигации делаем через location.replace, чтобы webview не
+// копил историю вкладок → системный «назад» на верхнем уровне закрывает мини-апп.
+// Контентные ссылки (напр. «Изменить расчёт» → ../bmr/?mode=edit) НЕ трогаем —
+// они остаются обычным push, чтобы «назад» из BMR-edit вёл сюда через BackButton.
+// Вызывается один раз при загрузке (applyNavLang может перерисовывать href).
+function setupNavClickInterception() {
+  ['nav-history', 'nav-stats', 'nav-profile'].forEach((id) => {
+    const link = document.getElementById(id);
+    if (!link) return;
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.replace(link.getAttribute('href'));
+    });
+  });
+}
+
 function render(profile) {
   profileLocale = profile?.locale || null;
   // Локаль могла уточниться из профиля (когда ?lang= нет) — перерисуем статику.
@@ -375,7 +391,14 @@ async function loadProfile() {
   }
 }
 
+// На верхнеуровневой вкладке прячем Telegram BackButton, чтобы работало нативное
+// закрытие мини-аппа по «назад».
+if (tg?.BackButton) {
+  try { tg.BackButton.hide(); } catch (_) { /* noop */ }
+}
+
 applyStaticI18n();
 applyNavLang();
+setupNavClickInterception();
 setSubtitle();
 loadProfile();

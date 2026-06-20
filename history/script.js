@@ -1848,6 +1848,23 @@ function setupBottomNavigation() {
     profileUrl.searchParams.set('lang', currentLang);
     navProfile.href = profileUrl.toString();
   }
+
+  // Переходы по нижней навигации делаем через location.replace, чтобы webview не
+  // копил историю вкладок. Тогда системный «назад» на верхнем уровне закрывает
+  // мини-апп, а не листает вкладки. ?lang= уже проставлен в href выше — берём его.
+  [navHistory, navStats, navProfile].forEach((link) => {
+    if (!link) return;
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.replace(link.href);
+    });
+  });
+}
+
+// На верхнеуровневой вкладке прячем Telegram BackButton, чтобы работало нативное
+// закрытие мини-аппа по «назад».
+if (tg?.BackButton) {
+  try { tg.BackButton.hide(); } catch (_) { /* noop */ }
 }
 
 setupAddCaloriesModal();

@@ -623,8 +623,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Состояние ──
   const urlParams = new URLSearchParams(window.location.search || '');
+  // Точка входа: ?mode=edit означает «пришли из Профиля». Это управляет ТОЛЬКО
+  // навигацией (кнопка «Назад» → Профиль, возврат после «Сохранить»).
   const mode = urlParams.get('mode') === 'edit' ? 'edit' : 'first';
   const isEdit = mode === 'edit';
+  // Презентация (edit-вид vs онбординг) больше НЕ завязана на mode, а на наличии
+  // сохранённых данных профиля. По умолчанию рисуем онбординг, после ответа
+  // /api/profile переключаемся на edit-вид, если данные пришли.
+  let hasData = false;
   const langParam = urlParams.get('lang');
 
   function normalizeLocale(value) {
@@ -730,8 +736,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Кнопка + хинт ──
   function updateCtaState() {
     const comp = getValidComputation();
-    if (isEdit) {
-      // В режиме редактирования кнопка всегда активна; пустую/невалидную
+    if (hasData) {
+      // edit-вид (есть сохранённые данные): кнопка всегда активна; пустую/невалидную
       // форму ловим на submit с подсветкой ошибок.
       calculateButtonEl.disabled = false;
       ctaHintEl.hidden = true;
@@ -805,26 +811,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (lang === 'ar') {
       document.documentElement.dir = 'rtl';
     }
-    document.title = isEdit ? t.titleEdit : t.titleFirst;
+    // Презентация (заголовки/секции/плейсхолдеры) — по наличию данных, не по mode.
+    document.title = hasData ? t.titleEdit : t.titleFirst;
 
-    titleEl.textContent = isEdit ? t.titleEdit : t.titleFirst;
-    subtitleEl.textContent = isEdit ? t.subtitleEdit : t.subtitleFirst;
+    titleEl.textContent = hasData ? t.titleEdit : t.titleFirst;
+    subtitleEl.textContent = hasData ? t.subtitleEdit : t.subtitleFirst;
 
     backLabelEl.textContent = t.backLabel;
     onbGuideTextEl.textContent = t.onbGuide;
 
     heroLabelEl.textContent = t.heroLabel;
 
-    bodySectionTitleEl.textContent = isEdit ? t.bodySectionEdit : t.bodySectionFirst;
-    activitySectionTitleEl.textContent = isEdit ? t.activitySectionEdit : t.activitySectionFirst;
+    bodySectionTitleEl.textContent = hasData ? t.bodySectionEdit : t.bodySectionFirst;
+    activitySectionTitleEl.textContent = hasData ? t.activitySectionEdit : t.activitySectionFirst;
 
     labelHeightEl.textContent = t.labelHeight;
     labelWeightEl.textContent = t.labelWeight;
     labelAgeEl.textContent = t.labelAge;
 
-    heightEl.placeholder = isEdit ? t.heightPlaceholderEdit : t.heightPlaceholderFirst;
-    weightEl.placeholder = isEdit ? t.weightPlaceholderEdit : t.weightPlaceholderFirst;
-    ageEl.placeholder = isEdit ? t.agePlaceholderEdit : t.agePlaceholderFirst;
+    heightEl.placeholder = hasData ? t.heightPlaceholderEdit : t.heightPlaceholderFirst;
+    weightEl.placeholder = hasData ? t.weightPlaceholderEdit : t.weightPlaceholderFirst;
+    ageEl.placeholder = hasData ? t.agePlaceholderEdit : t.agePlaceholderFirst;
 
     genderMaleEl.textContent = t.genderMale;
     genderFemaleEl.textContent = t.genderFemale;
@@ -834,21 +841,27 @@ document.addEventListener('DOMContentLoaded', () => {
     goalDeficitEl.textContent = t.goalDeficit;
     goalSurplusEl.textContent = t.goalSurplus;
 
-    calculateButtonEl.textContent = isEdit ? t.ctaEdit : t.ctaFirst;
+    // CTA: «Сохранить» когда есть данные (edit-вид), иначе «Рассчитать и сохранить».
+    calculateButtonEl.textContent = hasData ? t.ctaEdit : t.ctaFirst;
     ctaHintEl.textContent = t.ctaHintFirst;
   }
 
-  // ── Режимы: онбординг vs редактирование ──
-  function applyMode() {
-    if (isEdit) {
-      backBtnEl.hidden = false;
+  // ── Презентация: онбординг (нет данных) vs edit-вид (данные есть) ──
+  // Завязана на hasData, а НЕ на точку входа. Навигацией (back-кнопка) рулит
+  // отдельно applyNavigation() по isEdit.
+  function applyPresentation() {
+    if (hasData) {
       onbGuideEl.hidden = true;
       ctaHintEl.hidden = true;
     } else {
-      backBtnEl.hidden = true;
       onbGuideEl.hidden = false;
       ctaHintEl.hidden = false;
     }
+  }
+
+  // ── Навигация: кнопка «Назад» в шапке — только при входе из Профиля ──
+  function applyNavigation() {
+    backBtnEl.hidden = !isEdit;
   }
 
   // ── Префилл из профиля (режим edit) ──
@@ -890,6 +903,12 @@ document.addEventListener('DOMContentLoaded', () => {
         activityRangeEl.value = String(inputs.activityLevel);
         updateActivityDescription();
       }
+      // Данные пришли → переключаемся с онбординга на edit-вид (заголовок
+      // «Метаболизм», CTA «Сохранить», без баннера/«Шаг 1·2»/примеров), даже если
+      // открыто из меню бота (без ?mode=edit). Навигацию это НЕ трогает.
+      hasData = true;
+      applyText();
+      applyPresentation();
     }
     const goal = data.goal;
     if (goal && (goal.type === 'deficit' || goal.type === 'surplus')) {
@@ -1124,15 +1143,20 @@ document.addEventListener('DOMContentLoaded', () => {
   function init() {
     initTelegram();
     applyText();
-    applyMode();
+    applyPresentation();
+    applyNavigation();
     updateActivityDescription();
     bindEvents();
     refresh();
 
-    if (isEdit) {
-      prefillFromProfile();
-    } else {
-      // Онбординг: автофокус на первом поле (открывает клавиатуру)
+    // Префилл — ВСЕГДА, независимо от точки входа. Если /api/profile вернёт
+    // bmrInputs — поля заполнятся, hasData=true, и вид переключится на edit.
+    prefillFromProfile();
+
+    if (!isEdit) {
+      // Вход из меню бота: автофокус на первом поле (открывает клавиатуру).
+      // Для существующего юзера фокус безвреден — данные приедут асинхронно
+      // и заполнят форму. Из Профиля (?mode=edit) фокус не навязываем.
       try { heightEl.focus({ preventScroll: false }); } catch (_) { heightEl.focus(); }
     }
   }
