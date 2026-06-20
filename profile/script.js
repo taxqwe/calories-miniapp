@@ -242,7 +242,7 @@ function renderNorm(norm, goal) {
   const tdee = formatNumber(tdeeValue);
 
   if (hasNorm) {
-    const hasCustom = Boolean(goal) && Number.isFinite(Number(goal.customCalories));
+    const hasCustom = Boolean(goal) && goal.customCalories != null && Number.isFinite(Number(goal.customCalories));
     const isDeficit = goal?.type === 'deficit';
     const isSurplus = goal?.type === 'surplus';
 
