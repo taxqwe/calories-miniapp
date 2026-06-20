@@ -1000,8 +1000,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const root = document.documentElement;
     const isLight = colorScheme === 'light';
 
-    const background = themeParams.bg_color || (isLight ? '#ffffff' : '#1c1c1e');
-    const secondaryBackground = themeParams.secondary_bg_color || (isLight ? '#f3f4f6' : '#2c2c2e');
+    // В тёмной теме поверхности задаём хардкодом, как в разделе Statistics,
+    // чтобы не зависеть от themeParams.bg_color (у некоторых тем = #000000).
+    // В светлой теме поведение прежнее: фон из themeParams или светлые дефолты.
+    const background = isLight ? (themeParams.bg_color || '#ffffff') : '#1c1c1e';
+    const secondaryBackground = isLight ? (themeParams.secondary_bg_color || '#f3f4f6') : '#2c2c2e';
     const textColor = themeParams.text_color || (isLight ? '#1f2933' : '#ffffff');
     const hintColor = themeParams.hint_color || (isLight ? '#6b7a8c' : '#a0a0a0');
     const accentColor = '#ff6422';
