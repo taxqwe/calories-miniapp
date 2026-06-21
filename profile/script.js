@@ -260,8 +260,6 @@ function renderTier(subscription) {
   }
 }
 
-const DEFAULT_GOAL_SHIFT = 300;
-
 function renderNorm(norm, goal) {
   const s = t();
   const tdeeValue = Number(norm?.tdee);
@@ -269,33 +267,27 @@ function renderNorm(norm, goal) {
   const tdee = formatNumber(tdeeValue);
 
   if (hasNorm) {
-    const hasCustom = Boolean(goal) && goal.customCalories != null && Number.isFinite(Number(goal.customCalories));
     const isDeficit = goal?.type === 'deficit';
     const isSurplus = goal?.type === 'surplus';
 
-    let targetValue = tdeeValue;
-    if (hasCustom) {
-      targetValue = Number(goal.customCalories);
-    } else if (isDeficit) {
-      targetValue = tdeeValue - DEFAULT_GOAL_SHIFT;
-    } else if (isSurplus) {
-      targetValue = tdeeValue + DEFAULT_GOAL_SHIFT;
-    }
+    const targetValue = Number(norm?.target);
+    const hasTarget = Number.isFinite(targetValue);
+    const displayValue = hasTarget ? targetValue : tdeeValue;
 
-    els.normValue.innerHTML = `${formatNumber(targetValue)} <span class="unit">${s.unit}</span>`;
+    els.normValue.innerHTML = `${formatNumber(displayValue)} <span class="unit">${s.unit}</span>`;
     els.normTdee.textContent = `${tdee} ${s.kcal}`;
     // «дневной расход» показываем только когда цель реально сдвигает число (иначе target == tdee и это дубль).
-    els.normMeta.hidden = targetValue === tdeeValue;
+    els.normMeta.hidden = !(hasTarget && targetValue !== tdeeValue);
     els.normEmpty.hidden = true;
 
-    if (isDeficit || isSurplus) {
+    if ((isDeficit || isSurplus) && hasTarget && tdeeValue > 0) {
       const label = isDeficit ? s.goalDeficit : s.goalSurplus;
-      const diff = targetValue - tdeeValue;
-      if (diff !== 0) {
-        const sign = diff > 0 ? '+' : '−';
-        els.goalChip.textContent = `${label} ${sign}${formatNumber(Math.abs(diff))}`;
-      } else {
+      const pct = Math.round((targetValue / tdeeValue - 1) * 100);
+      if (pct === 0) {
         els.goalChip.textContent = label;
+      } else {
+        const sign = pct > 0 ? '+' : '−';
+        els.goalChip.textContent = `${label} ${sign}${Math.abs(pct)}%`;
       }
       els.goalChip.hidden = false;
     } else {
