@@ -7,9 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Множители активности (Mifflin–St Jeor): уровни 1..5
   const multipliers = [1.2, 1.375, 1.55, 1.725, 1.9];
 
-  // Сдвиг по умолчанию для цели (дефицит/профицит), ккал
-  const GOAL_DELTA = 300;
-
   // Диапазоны валидации
   const validationRanges = {
     height: { min: 100, max: 250 },
@@ -52,8 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
       genderFemale: "Female",
       activityRowLabel: "Level",
       goalToggleLabel: "Set calorie goal",
-      goalDeficit: "Deficit · −300",
-      goalSurplus: "Surplus · +300",
+      goalDeficit: "Deficit · −15%",
+      goalSurplus: "Surplus · +10%",
       // cta
       ctaEdit: "Save",
       ctaFirst: "Calculate and save",
@@ -110,8 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
       genderFemale: "Женщина",
       activityRowLabel: "Уровень",
       goalToggleLabel: "Установить цель калорий",
-      goalDeficit: "Дефицит · −300",
-      goalSurplus: "Профицит · +300",
+      goalDeficit: "Дефицит · −15%",
+      goalSurplus: "Профицит · +10%",
       ctaEdit: "Сохранить",
       ctaFirst: "Рассчитать и сохранить",
       ctaHintFirst: "Заполните рост, вес, возраст и пол, чтобы продолжить",
@@ -165,8 +162,8 @@ document.addEventListener('DOMContentLoaded', () => {
       genderFemale: "Жінка",
       activityRowLabel: "Рівень",
       goalToggleLabel: "Встановити ціль калорій",
-      goalDeficit: "Дефіцит · −300",
-      goalSurplus: "Профіцит · +300",
+      goalDeficit: "Дефіцит · −15%",
+      goalSurplus: "Профіцит · +10%",
       ctaEdit: "Зберегти",
       ctaFirst: "Розрахувати і зберегти",
       ctaHintFirst: "Заповніть зріст, вагу, вік і стать, щоб продовжити",
@@ -220,8 +217,8 @@ document.addEventListener('DOMContentLoaded', () => {
       genderFemale: "Frau",
       activityRowLabel: "Niveau",
       goalToggleLabel: "Kalorienziel festlegen",
-      goalDeficit: "Defizit · −300",
-      goalSurplus: "Überschuss · +300",
+      goalDeficit: "Defizit · −15%",
+      goalSurplus: "Überschuss · +10%",
       ctaEdit: "Speichern",
       ctaFirst: "Berechnen und speichern",
       ctaHintFirst: "Gib Größe, Gewicht, Alter und Geschlecht ein, um fortzufahren",
@@ -275,8 +272,8 @@ document.addEventListener('DOMContentLoaded', () => {
       genderFemale: "Mujer",
       activityRowLabel: "Nivel",
       goalToggleLabel: "Establecer objetivo de calorías",
-      goalDeficit: "Déficit · −300",
-      goalSurplus: "Superávit · +300",
+      goalDeficit: "Déficit · −15%",
+      goalSurplus: "Superávit · +10%",
       ctaEdit: "Guardar",
       ctaFirst: "Calcular y guardar",
       ctaHintFirst: "Indica estatura, peso, edad y sexo para continuar",
@@ -330,8 +327,8 @@ document.addEventListener('DOMContentLoaded', () => {
       genderFemale: "Femme",
       activityRowLabel: "Niveau",
       goalToggleLabel: "Définir un objectif calorique",
-      goalDeficit: "Déficit · −300",
-      goalSurplus: "Surplus · +300",
+      goalDeficit: "Déficit · −15%",
+      goalSurplus: "Surplus · +10%",
       ctaEdit: "Enregistrer",
       ctaFirst: "Calculer et enregistrer",
       ctaHintFirst: "Renseignez taille, poids, âge et sexe pour continuer",
@@ -385,8 +382,8 @@ document.addEventListener('DOMContentLoaded', () => {
       genderFemale: "Mulher",
       activityRowLabel: "Nível",
       goalToggleLabel: "Definir meta de calorias",
-      goalDeficit: "Déficit · −300",
-      goalSurplus: "Superávit · +300",
+      goalDeficit: "Déficit · −15%",
+      goalSurplus: "Superávit · +10%",
       ctaEdit: "Salvar",
       ctaFirst: "Calcular e salvar",
       ctaHintFirst: "Informe altura, peso, idade e sexo para continuar",
@@ -440,8 +437,8 @@ document.addEventListener('DOMContentLoaded', () => {
       genderFemale: "Kadın",
       activityRowLabel: "Seviye",
       goalToggleLabel: "Kalori hedefi belirle",
-      goalDeficit: "Açık · −300",
-      goalSurplus: "Fazla · +300",
+      goalDeficit: "Açık · −15%",
+      goalSurplus: "Fazla · +10%",
       ctaEdit: "Kaydet",
       ctaFirst: "Hesapla ve kaydet",
       ctaHintFirst: "Devam etmek için boy, kilo, yaş ve cinsiyeti girin",
@@ -495,8 +492,8 @@ document.addEventListener('DOMContentLoaded', () => {
       genderFemale: "أنثى",
       activityRowLabel: "المستوى",
       goalToggleLabel: "تحديد هدف للسعرات",
-      goalDeficit: "عجز · −300",
-      goalSurplus: "فائض · +300",
+      goalDeficit: "عجز · −15%",
+      goalSurplus: "فائض · +10%",
       ctaEdit: "حفظ",
       ctaFirst: "احسب واحفظ",
       ctaHintFirst: "أدخل الطول والوزن والعمر والجنس للمتابعة",
@@ -550,8 +547,8 @@ document.addEventListener('DOMContentLoaded', () => {
       genderFemale: "महिला",
       activityRowLabel: "स्तर",
       goalToggleLabel: "कैलोरी लक्ष्य सेट करें",
-      goalDeficit: "डेफिसिट · −300",
-      goalSurplus: "सरप्लस · +300",
+      goalDeficit: "डेफिसिट · −15%",
+      goalSurplus: "सरप्लस · +10%",
       ctaEdit: "सहेजें",
       ctaFirst: "गणना करें और सहेजें",
       ctaHintFirst: "जारी रखने के लिए ऊँचाई, वज़न, उम्र और लिंग भरें",
@@ -720,9 +717,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const comp = getValidComputation();
     const multiplier = multipliers[parseInt(activityRangeEl.value, 10) - 1];
     if (comp) {
-      const goalTarget = goalToggleEl.checked
-        ? comp.tdee + (selectedGoalType === 'surplus' ? GOAL_DELTA : -GOAL_DELTA)
-        : comp.tdee;
+      let goalTarget = comp.tdee;
+      if (goalToggleEl.checked) {
+        goalTarget = selectedGoalType === 'surplus'
+          ? Math.round(comp.tdee * 1.10)
+          : Math.max(Math.round(comp.tdee * 0.85), comp.bmr);
+      }
       heroValueEl.textContent = formatNumber(goalTarget);
       heroUnitEl.textContent = t.heroUnit;
       heroMetaEl.innerHTML = `${t.basalLabel}<br><b>${formatNumber(comp.bmr)}</b> · ×${formatMultiplier(multiplier)}`;
