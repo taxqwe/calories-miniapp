@@ -308,26 +308,6 @@
     }
   }
 
-  // Открываем нативный пикер времени. showPicker() — предпочтительный путь
-  // (Safari iOS 16+/современные браузеры); в старых или при ошибке падаем на
-  // focus()+click(), чтобы барабан времени всё равно поднялся.
-  function openTimePicker() {
-    try {
-      if (typeof els.modalTime.showPicker === 'function') {
-        els.modalTime.showPicker();
-        return;
-      }
-    } catch (_) {
-      void 0;
-    }
-    try {
-      els.modalTime.focus();
-      els.modalTime.click();
-    } catch (_) {
-      void 0;
-    }
-  }
-
   function clearModalError() {
     els.modalError.hidden = true;
     els.modalError.textContent = '';
@@ -549,13 +529,13 @@
   els.add.addEventListener('click', handleAddClick);
   els.modalForm.addEventListener('submit', handleModalSubmit);
 
-  // Кнопка открывает нативный пикер; выбранное значение прилетает событиями
-  // change/input на скрытом инпуте и отражается на тексте кнопки.
-  els.modalTimeButton.addEventListener('click', () => {
+  // Тап по полю попадает прямо в прозрачный input[type=time] сверху — iOS сам
+  // открывает нативный барабан. Выбранное значение прилетает событиями
+  // change/input и отражается на тексте кнопки-поля.
+  els.modalTime.addEventListener('change', () => {
     clearModalError();
-    openTimePicker();
+    syncTimeButton();
   });
-  els.modalTime.addEventListener('change', syncTimeButton);
   els.modalTime.addEventListener('input', syncTimeButton);
 
   els.modalTypes.addEventListener('click', (event) => {
