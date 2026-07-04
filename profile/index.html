@@ -89,8 +89,17 @@
       <p class="modal__description" data-rem-i18n="modalDescription">Выберите время и тип напоминания.</p>
 
       <div class="modal__field">
-        <label class="modal__label" for="reminders-modal-time" data-rem-i18n="modalTimeLabel">Время</label>
-        <input class="modal__input" id="reminders-modal-time" type="time" required>
+        <span class="modal__label" id="reminders-modal-time-label" data-rem-i18n="modalTimeLabel">Время</span>
+        <!--
+          Нативный input[type=time] под iOS рендерится широким и вылезал за
+          границы модалки (#615). Прячем его как источник значения для нативного
+          пикера, а видимый контрол — кнопка, открывающая пикер по клику.
+        -->
+        <button type="button" class="modal__time-button" id="reminders-modal-time-button"
+                aria-labelledby="reminders-modal-time-label"
+                data-rem-i18n="modalTimePlaceholder">Выбрать время</button>
+        <input class="modal__time-input" id="reminders-modal-time" type="time" required
+               tabindex="-1" aria-hidden="true">
       </div>
 
       <div class="modal__field">
