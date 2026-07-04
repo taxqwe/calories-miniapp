@@ -382,8 +382,21 @@
   pointer-events: none;
 }
 
-/* ── выбор времени: кнопка-поле + скрытый нативный инпут (#615) ── */
+/* ── выбор времени: кнопка-поле + прозрачный нативный инпут-оверлей (#615) ── */
+/*
+  Контейнер задаёт габариты поля и клипует нативный контрол, чтобы его широкий
+  рендер под iOS не вылезал за границы модалки.
+*/
+.modal__time-picker {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+/* Видимая часть — только показ значения/плейсхолдера. Тапы проходят сквозь
+   неё на input, лежащий сверху (pointer-events: none). */
 .modal__time-button {
+  display: block;
   width: 100%;
   box-sizing: border-box;
   text-align: left;
@@ -395,7 +408,7 @@
   font-family: inherit;
   font-size: 16px;
   font-weight: 500;
-  cursor: pointer;
+  pointer-events: none;
   transition: border-color 0.2s ease, background-color 0.15s ease;
 }
 
@@ -405,32 +418,35 @@
   font-variant-numeric: tabular-nums;
 }
 
-.modal__time-button:active {
-  background: rgba(255, 255, 255, 0.06);
+/*
+  Настоящий input[type=time] — прозрачный оверлей на всю площадь поля. Тап
+  попадает прямо в него, iOS открывает нативный барабан без JS. opacity:0
+  прячет широкий нативный рендер; контейнер обрезает возможный overflow.
+*/
+.modal__time-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  opacity: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
 }
 
-.modal__time-button:focus-visible {
+/* Фокус с клавиатуры подсвечиваем на видимой кнопке-поле. */
+.modal__time-picker:focus-within .modal__time-button {
   outline: 2px solid var(--accent-color);
   outline-offset: 2px;
   border-color: transparent;
 }
 
-/*
-  Скрытый нативный input[type=time] — источник значения и владелец пикера.
-  Схлопываем до 1px без display:none, иначе Safari игнорирует showPicker()/focus
-  на невидимом элементе. Не даёт ширины и не влияет на верстку модалки.
-*/
-.modal__time-input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  opacity: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  pointer-events: none;
+.modal__time-picker:active .modal__time-button {
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .modal__button--danger {

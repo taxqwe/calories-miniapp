@@ -92,14 +92,18 @@
         <span class="modal__label" id="reminders-modal-time-label" data-rem-i18n="modalTimeLabel">Время</span>
         <!--
           Нативный input[type=time] под iOS рендерится широким и вылезал за
-          границы модалки (#615). Прячем его как источник значения для нативного
-          пикера, а видимый контрол — кнопка, открывающая пикер по клику.
+          границы модалки (#615). Оставляем настоящий input интерактивным, но
+          прозрачным оверлеем поверх видимой кнопки-поля: тап попадает прямо в
+          input, и iOS сам открывает нативный барабан (программный showPicker()
+          на скрытом input под iOS не срабатывает). Текст кнопки — только показ
+          выбранного значения / плейсхолдера, поверх контейнер клипует overflow.
         -->
-        <button type="button" class="modal__time-button" id="reminders-modal-time-button"
-                aria-labelledby="reminders-modal-time-label"
-                data-rem-i18n="modalTimePlaceholder">Выбрать время</button>
-        <input class="modal__time-input" id="reminders-modal-time" type="time" required
-               tabindex="-1" aria-hidden="true">
+        <div class="modal__time-picker">
+          <span class="modal__time-button" id="reminders-modal-time-button"
+                data-rem-i18n="modalTimePlaceholder" aria-hidden="true">Выбрать время</span>
+          <input class="modal__time-input" id="reminders-modal-time" type="time" required
+                 aria-labelledby="reminders-modal-time-label">
+        </div>
       </div>
 
       <div class="modal__field">
