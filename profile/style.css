@@ -145,6 +145,46 @@
   text-align: center;
 }
 
+/* ── бенефиты Premium (#613) ── */
+.premium-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.premium-benefits__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.premium-benefits__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.premium-benefits__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.premium-benefits__icon {
+  flex-shrink: 0;
+  width: 17px;
+  height: 17px;
+  margin-top: 1px;
+  fill: var(--accent-color);
+}
+
 /* ── норма / цель ── */
 .norm {
   display: flex;

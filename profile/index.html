@@ -32,6 +32,32 @@
           </span>
           <div class="tier__meta" id="tier-meta" hidden><span data-i18n="tierActiveUntil">активен до</span><b id="tier-expires"></b></div>
         </div>
+        <!--
+          Бенефиты Premium (#613). Показываем базовым пользователям как мотивацию
+          к покупке; для premium скрываем в renderTier (они уже всё получили).
+          Виден по умолчанию, чтобы у базовых не мигало до ответа /api/profile.
+        -->
+        <div class="premium-benefits" id="premium-benefits">
+          <h3 class="premium-benefits__title" data-i18n="premiumBenefitsTitle">Что даёт Premium</h3>
+          <ul class="premium-benefits__list">
+            <li class="premium-benefits__item">
+              <svg class="premium-benefits__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>
+              <span data-i18n="premiumBenefit1">Анализ блюд по фото и аудио</span>
+            </li>
+            <li class="premium-benefits__item">
+              <svg class="premium-benefits__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>
+              <span data-i18n="premiumBenefit2">Более мощная и точная AI-модель</span>
+            </li>
+            <li class="premium-benefits__item">
+              <svg class="premium-benefits__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>
+              <span data-i18n="premiumBenefit3">Точнее распознаёт блюда</span>
+            </li>
+            <li class="premium-benefits__item">
+              <svg class="premium-benefits__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>
+              <span data-i18n="premiumBenefit4">Подсчёт БЖУ (белки/жиры/углеводы)</span>
+            </li>
+          </ul>
+        </div>
         <button type="button" class="premium-cta" id="premium-cta">Купить Premium</button>
         <p class="premium-cta__error" id="premium-cta-error" role="alert" aria-live="polite" hidden></p>
       </section>
