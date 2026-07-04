@@ -68,6 +68,11 @@ const translations = {
     premiumBuy: 'Купить Premium',
     premiumRenew: 'Продлить Premium',
     premiumError: 'Не удалось открыть оплату. Попробуйте позже.',
+    premiumBenefitsTitle: 'Что даёт Premium',
+    premiumBenefit1: 'Анализ блюд по фото и аудио',
+    premiumBenefit2: 'Более мощная и точная AI-модель',
+    premiumBenefit3: 'Точнее распознаёт блюда',
+    premiumBenefit4: 'Подсчёт БЖУ (белки/жиры/углеводы)',
     goalDeficit: 'Цель: дефицит',
     goalSurplus: 'Цель: профицит',
     normEdit: 'Изменить расчёт',
@@ -95,6 +100,11 @@ const translations = {
     premiumBuy: 'Get Premium',
     premiumRenew: 'Renew Premium',
     premiumError: "Couldn't open checkout. Try again later.",
+    premiumBenefitsTitle: 'What Premium gives you',
+    premiumBenefit1: 'Meal analysis from photos and audio',
+    premiumBenefit2: 'More powerful and accurate AI model',
+    premiumBenefit3: 'More precise dish recognition',
+    premiumBenefit4: 'Macronutrient counting (protein/fat/carbs)',
     goalDeficit: 'Goal: deficit',
     goalSurplus: 'Goal: surplus',
     normEdit: 'Edit calculation',
@@ -127,6 +137,7 @@ const els = {
   tierBadgeText: document.getElementById('tier-badge-text'),
   tierMeta: document.getElementById('tier-meta'),
   tierExpires: document.getElementById('tier-expires'),
+  premiumBenefits: document.getElementById('premium-benefits'),
   premiumCta: document.getElementById('premium-cta'),
   premiumCtaError: document.getElementById('premium-cta-error'),
   normValue: document.getElementById('norm-value'),
@@ -241,6 +252,8 @@ function renderTier(subscription) {
   currentTier = tier || null;
   renderPremiumCtaLabel();
   const isPremium = tier && tier !== 'BASIC';
+  // Бенефиты — мотивация к покупке: показываем только не-premium (#613).
+  if (els.premiumBenefits) els.premiumBenefits.hidden = isPremium;
   if (isPremium) {
     els.tierBadge.classList.remove('tier__badge--basic');
     els.tierBadgeIcon.innerHTML = PREMIUM_STAR_SVG;
