@@ -39,6 +39,7 @@
       modalTitle: 'Новое напоминание',
       modalDescription: 'Выберите время и тип напоминания.',
       modalTimeLabel: 'Время',
+      modalTimePlaceholder: 'Выбрать время',
       modalTypeLabel: 'Тип',
       typeAriaLabel: 'Тип напоминания',
       cancel: 'Отмена',
@@ -66,6 +67,7 @@
       modalTitle: 'New reminder',
       modalDescription: 'Choose a time and reminder type.',
       modalTimeLabel: 'Time',
+      modalTimePlaceholder: 'Choose time',
       modalTypeLabel: 'Type',
       typeAriaLabel: 'Reminder type',
       cancel: 'Cancel',
@@ -129,6 +131,7 @@
     locale = normalized;
     STR = TRANSLATIONS[locale];
     applyI18n();
+    syncTimeButton();
     render();
     refreshTypeAvailability();
   }
@@ -145,6 +148,7 @@
     modal: document.getElementById('reminders-modal'),
     modalForm: document.getElementById('reminders-modal-form'),
     modalTime: document.getElementById('reminders-modal-time'),
+    modalTimeButton: document.getElementById('reminders-modal-time-button'),
     modalTypes: document.getElementById('reminders-modal-types'),
     modalError: document.getElementById('reminders-modal-error'),
     modalSubmit: null,
@@ -291,6 +295,39 @@
     });
   }
 
+  // Синхронизируем текст кнопки времени с текущим значением инпута: выбранное
+  // время — основным цветом (модификатор --filled), иначе плейсхолдер локали.
+  function syncTimeButton() {
+    const time = normalizeTime(els.modalTime.value);
+    if (time) {
+      els.modalTimeButton.textContent = time;
+      els.modalTimeButton.classList.add('modal__time-button--filled');
+    } else {
+      els.modalTimeButton.textContent = STR.modalTimePlaceholder;
+      els.modalTimeButton.classList.remove('modal__time-button--filled');
+    }
+  }
+
+  // Открываем нативный пикер времени. showPicker() — предпочтительный путь
+  // (Safari iOS 16+/современные браузеры); в старых или при ошибке падаем на
+  // focus()+click(), чтобы барабан времени всё равно поднялся.
+  function openTimePicker() {
+    try {
+      if (typeof els.modalTime.showPicker === 'function') {
+        els.modalTime.showPicker();
+        return;
+      }
+    } catch (_) {
+      void 0;
+    }
+    try {
+      els.modalTime.focus();
+      els.modalTime.click();
+    } catch (_) {
+      void 0;
+    }
+  }
+
   function clearModalError() {
     els.modalError.hidden = true;
     els.modalError.textContent = '';
@@ -350,6 +387,7 @@
     else if (canAdd('EVENING')) setSelectedType('EVENING');
 
     els.modalTime.value = '';
+    syncTimeButton();
     showModal(els.modal);
   }
 
@@ -510,6 +548,15 @@
   // Привязка обработчиков модалки / кнопок.
   els.add.addEventListener('click', handleAddClick);
   els.modalForm.addEventListener('submit', handleModalSubmit);
+
+  // Кнопка открывает нативный пикер; выбранное значение прилетает событиями
+  // change/input на скрытом инпуте и отражается на тексте кнопки.
+  els.modalTimeButton.addEventListener('click', () => {
+    clearModalError();
+    openTimePicker();
+  });
+  els.modalTime.addEventListener('change', syncTimeButton);
+  els.modalTime.addEventListener('input', syncTimeButton);
 
   els.modalTypes.addEventListener('click', (event) => {
     const btn = event.target.closest('.reminders-type');

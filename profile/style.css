@@ -382,6 +382,57 @@
   pointer-events: none;
 }
 
+/* ── выбор времени: кнопка-поле + скрытый нативный инпут (#615) ── */
+.modal__time-button {
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--card-elevated-bg);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.15s ease;
+}
+
+/* Выбранное время — основным цветом текста (плейсхолдер приглушён). */
+.modal__time-button--filled {
+  color: var(--text-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.modal__time-button:active {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.modal__time-button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+  border-color: transparent;
+}
+
+/*
+  Скрытый нативный input[type=time] — источник значения и владелец пикера.
+  Схлопываем до 1px без display:none, иначе Safari игнорирует showPicker()/focus
+  на невидимом элементе. Не даёт ширины и не влияет на верстку модалки.
+*/
+.modal__time-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  opacity: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  pointer-events: none;
+}
+
 .modal__button--danger {
   background: var(--destructive-color);
   color: var(--accent-contrast);
