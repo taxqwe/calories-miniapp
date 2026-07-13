@@ -32,6 +32,7 @@ function applyTheme(themeParams = {}, colorScheme = tg?.colorScheme) {
   root.style.setProperty('--accent-color', accentColor);
   root.style.setProperty('--accent-contrast', accentContrast);
   root.style.setProperty('--destructive-color', destructiveColor);
+  root.style.setProperty('--track-color', isLight ? '#d6dae0' : '#48484a');
   root.style.setProperty('--separator-color', isLight ? 'rgba(15, 23, 42, 0.1)' : 'rgba(255, 255, 255, 0.08)');
   root.style.setProperty('--border-color', isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.06)');
   root.style.setProperty('--shadow-soft', isLight ? '0 4px 14px rgba(15, 23, 42, 0.12)' : '0 6px 16px rgba(0, 0, 0, 0.18)');
@@ -58,6 +59,9 @@ const translations = {
     cardTier: 'Тариф',
     cardNorm: 'Норма и цель',
     cardReminders: 'Напоминания',
+    cardDigest: 'Еженедельный отчёт',
+    digestToggleLabel: 'Присылать раз в неделю',
+    digestNote: 'Итоги недели: калории, дни в цели и прогресс.',
     rowLanguage: 'Язык',
     navHistory: 'История',
     navStats: 'Статистика',
@@ -90,6 +94,9 @@ const translations = {
     cardTier: 'Plan',
     cardNorm: 'Norm & goal',
     cardReminders: 'Reminders',
+    cardDigest: 'Weekly digest',
+    digestToggleLabel: 'Send once a week',
+    digestNote: 'Weekly summary: calories, days on goal, and progress.',
     rowLanguage: 'Language',
     navHistory: 'History',
     navStats: 'Stats',

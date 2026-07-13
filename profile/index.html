@@ -95,6 +95,24 @@
         <p class="reminders__note" data-rem-i18n="note">Вечерний отчёт приходит один раз в день. Дневных напоминаний — до трёх.</p>
       </section>
 
+      <!--
+        ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ (weekly digest).
+        Отдельная каденция уведомлений рядом с «Напоминаниями». Тумблер рендерит
+        digest.js из profile.weeklyDigestEnabled, сохранение — POST /api/settings.
+      -->
+      <section class="card" id="digest-card" hidden>
+        <h2 class="card__title" data-i18n="cardDigest">Еженедельный отчёт</h2>
+        <div class="switch-row">
+          <label class="switch-row__label" for="digest-toggle" data-i18n="digestToggleLabel">Присылать раз в неделю</label>
+          <label class="switch">
+            <input type="checkbox" id="digest-toggle" aria-describedby="digest-note">
+            <span class="switch__slider"></span>
+          </label>
+        </div>
+        <p class="card__note" id="digest-note" data-i18n="digestNote">Итоги недели: калории, дни в цели и прогресс.</p>
+        <p class="digest__error" id="digest-error" role="alert" aria-live="polite" hidden></p>
+      </section>
+
       <!-- сохранён прежний якорь (скрытый) для совместимости с каркасом -->
       <div id="reminders-anchor" data-placeholder="reminders" hidden></div>
 
@@ -192,5 +210,6 @@
   <script src="../config.js"></script>
   <script src="script.js"></script>
   <script src="reminders.js"></script>
+  <script src="digest.js"></script>
 </body>
 </html>

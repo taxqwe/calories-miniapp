@@ -288,6 +288,84 @@
   line-height: 1.45;
 }
 
+/* ── еженедельный отчёт (weekly digest) ── */
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.switch-row__label {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch__slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background: var(--track-color);
+  border-radius: 999px;
+  transition: background-color 0.25s ease;
+}
+
+.switch__slider::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: transform 0.25s ease;
+}
+
+.switch input:checked + .switch__slider {
+  background: var(--accent-color);
+}
+
+.switch input:checked + .switch__slider::before {
+  transform: translateX(18px);
+}
+
+.switch input:disabled + .switch__slider {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.card__note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.digest__error {
+  margin: 0;
+  font-size: 13px;
+  color: var(--destructive-color);
+  line-height: 1.45;
+}
+
 .reminder {
   display: flex;
   align-items: center;
