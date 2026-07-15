@@ -1,0 +1,381 @@
+<!doctype html>
+<!--
+  ПРОТОТИП экрана «Профиль» для эпика taxqwe/caloriesv2#548.
+  Построен на дизайн-системе Calories Bot (claude.ai/design handoff):
+  токены --c-* (modern), компоненты из ui_kits/miniapp.
+  Самодостаточный статический файл — открыть в браузере для визуальной оценки.
+  Не продакшн: данные замоканы, бэкенд не подключён.
+-->
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Профиль — прототип</title>
+<style>
+:root{
+  color-scheme: dark light;
+  --c-bg:#1c1c1e; --c-card:#2c2c2e; --c-card-elevated:rgba(255,255,255,0.05);
+  --c-fg:#fff; --c-fg-secondary:#a0a0a0;
+  --c-separator:rgba(255,255,255,0.09); --c-border:rgba(255,255,255,0.07);
+  --c-accent:#ff6422; --c-accent-contrast:#fff; --c-blue:#2196f3;
+  --c-destructive:#ff5c5c; --c-success:#4caf50; --c-chart-secondary:#48484a;
+  --c-shadow-soft:0 6px 16px rgba(0,0,0,0.18); --c-shadow-nav:0 -2px 8px rgba(0,0,0,0.10);
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --inset:16px;          /* единый горизонтальный отступ */
+  --gap:14px;            /* единый вертикальный ритм между блоками */
+}
+*{box-sizing:border-box;}
+body{margin:0;background:#0f0f10;font-family:var(--font-sans);
+  display:flex;gap:48px;flex-wrap:wrap;justify-content:center;align-items:flex-start;
+  padding:40px 24px 64px;min-height:100vh;}
+.frame-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;}
+.caption{text-align:center;max-width:320px;}
+.caption b{display:block;font-size:14px;font-weight:600;color:#f3f4f6;}
+.caption span{font-size:12px;color:#8a93a0;}
+
+/* ── iOS-ish device frame ── */
+.device{width:372px;height:800px;border-radius:44px;background:#000;
+  padding:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);position:relative;}
+.screen{position:relative;width:100%;height:100%;border-radius:36px;overflow:hidden;
+  background:var(--c-bg);}
+.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  width:120px;height:28px;background:#000;border-radius:0 0 18px 18px;z-index:50;}
+
+/* ── mini app shell ── */
+.mini{background:var(--c-bg);color:var(--c-fg);min-height:100%;width:100%;
+  display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
+.mini__page{flex:1;display:flex;flex-direction:column;gap:var(--gap);
+  padding:54px 0 96px;overflow-y:auto;}
+.mini__page::-webkit-scrollbar{display:none;}
+.mini__page-header{display:flex;flex-direction:column;gap:4px;
+  padding:8px var(--inset) 4px;}
+.mini__page-title{margin:0;font-size:24px;font-weight:600;letter-spacing:-.01em;}
+.mini__page-subtitle{margin:0;font-size:14px;color:var(--c-fg-secondary);}
+
+/* ── section card ── */
+.card{margin:0 var(--inset);background:var(--c-card);border-radius:18px;
+  padding:18px;box-shadow:var(--c-shadow-soft);display:flex;flex-direction:column;gap:14px;}
+.card__title{margin:0;font-size:12px;font-weight:600;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--c-fg-secondary);}
+
+/* ── tier ── */
+.tier{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.tier__badge{display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,100,34,.16);color:var(--c-accent);
+  font-size:15px;font-weight:600;padding:7px 14px;border-radius:999px;}
+.tier__badge svg{width:16px;height:16px;fill:currentColor;}
+.tier__meta{text-align:right;font-size:13px;color:var(--c-fg-secondary);line-height:1.45;}
+.tier__meta b{display:block;color:var(--c-fg);font-weight:600;font-variant-numeric:tabular-nums;}
+.note{font-size:12px;color:var(--c-fg-secondary);line-height:1.45;}
+
+/* ── norm / goal ── */
+.norm{display:flex;flex-direction:column;gap:8px;}
+.norm__value{font-size:34px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.norm__value .unit{font-size:16px;font-weight:500;color:var(--c-fg-secondary);margin-left:6px;}
+.norm__meta{font-size:13px;color:var(--c-fg-secondary);
+  font-variant-numeric:tabular-nums;line-height:1.45;}
+.norm__meta b{color:var(--c-fg);font-weight:600;}
+.goal-chip{display:inline-flex;align-items:center;background:var(--c-card-elevated);
+  border:1px solid var(--c-border);color:var(--c-fg);
+  font-size:12px;font-weight:500;padding:5px 12px;border-radius:999px;}
+.btn-secondary{background:var(--c-card-elevated);border:1px solid var(--c-border);
+  color:var(--c-fg);border-radius:12px;padding:13px;font-family:inherit;font-size:15px;
+  font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-secondary svg{width:18px;height:18px;fill:currentColor;color:var(--c-fg-secondary);}
+.btn-secondary:active{transform:scale(.99);}
+
+/* ── reminders ── */
+.reminder{display:flex;align-items:center;gap:12px;background:var(--c-card-elevated);
+  border:1px solid var(--c-border);border-radius:12px;padding:13px 14px;}
+.reminder__time{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;min-width:60px;}
+.reminder__chip{font-size:12px;font-weight:500;padding:5px 11px;border-radius:999px;white-space:nowrap;}
+.reminder__chip--evening{background:rgba(255,100,34,.16);color:var(--c-accent);}
+.reminder__chip--daytime{background:rgba(33,150,243,.18);color:#69b6f5;}
+.reminder__spacer{flex:1;}
+.reminder__del{width:32px;height:32px;border:0;background:transparent;color:var(--c-fg-secondary);
+  border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
+.reminder__del:active{background:rgba(255,255,255,.08);color:var(--c-destructive);}
+.reminder__del svg{width:20px;height:20px;fill:currentColor;}
+.reminder-add{display:flex;align-items:center;justify-content:center;gap:8px;
+  background:transparent;border:1px dashed var(--c-border);border-radius:12px;
+  padding:13px;color:var(--c-accent);font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;}
+.reminder-add svg{width:20px;height:20px;fill:currentColor;}
+.reminder-add:active{opacity:.7;}
+
+/* ── misc row list (язык / faq — контейнер на будущее) ── */
+.rows{margin:0 var(--inset);background:var(--c-card);border-radius:18px;
+  box-shadow:var(--c-shadow-soft);overflow:hidden;}
+.row{display:flex;align-items:center;gap:12px;padding:15px 18px;cursor:pointer;
+  border-bottom:1px solid var(--c-separator);}
+.row:last-child{border-bottom:0;}
+.row:active{background:var(--c-card-elevated);}
+.row__label{font-size:15px;color:var(--c-fg);}
+.row__spacer{flex:1;}
+.row__value{font-size:14px;color:var(--c-fg-secondary);}
+.row__chev{width:18px;height:18px;fill:var(--c-fg-secondary);}
+
+/* ── bottom nav ── */
+.bottom-nav{position:absolute;bottom:0;left:0;right:0;display:flex;background:var(--c-card);
+  border-top:1px solid var(--c-border);padding-bottom:14px;box-shadow:var(--c-shadow-nav);z-index:5;}
+.bottom-nav__item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:8px 12px;color:var(--c-fg-secondary);min-height:56px;background:none;border:none;
+  font-family:inherit;cursor:pointer;}
+.bottom-nav__item--active{color:var(--c-accent);}
+.bottom-nav__icon{width:24px;height:24px;fill:currentColor;margin-bottom:4px;}
+.bottom-nav__label{font-size:12px;font-weight:500;}
+
+/* ── BMR redesign (bmr2) — для второго фрейма ── */
+.bmr2__hero{margin:0 var(--inset);background:var(--c-card);border-radius:18px;padding:20px;
+  box-shadow:var(--c-shadow-soft);display:grid;grid-template-columns:1fr auto;align-items:end;gap:8px 16px;}
+.bmr2__hero-label{font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--c-fg-secondary);grid-column:1/-1;}
+.bmr2__hero-value{font-size:38px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.bmr2__hero-value .unit{font-size:18px;font-weight:500;color:var(--c-fg-secondary);margin-left:6px;}
+.bmr2__hero-meta{font-size:13px;color:var(--c-fg-secondary);text-align:right;
+  font-variant-numeric:tabular-nums;line-height:1.45;}
+.bmr2__hero-meta b{color:var(--c-fg);font-weight:600;}
+.bmr2__rows{display:flex;flex-direction:column;gap:8px;}
+.bmr2__field{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;
+  background:var(--c-card-elevated);border:1px solid var(--c-border);border-radius:12px;padding:12px 14px;}
+.bmr2__field-label{font-size:15px;color:var(--c-fg);}
+.bmr2__field-input{background:transparent;border:0;outline:0;color:var(--c-fg);font-family:inherit;
+  font-size:18px;font-weight:600;flex:1;min-width:0;text-align:right;font-variant-numeric:tabular-nums;padding:0;}
+.bmr2__segmented{display:flex;background:var(--c-card-elevated);border:1px solid var(--c-border);
+  border-radius:10px;padding:4px;gap:4px;}
+.bmr2__segmented-item{flex:1;background:transparent;border:0;border-radius:8px;padding:10px 12px;
+  color:var(--c-fg-secondary);font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;}
+.bmr2__segmented-item--active{background:var(--c-accent);color:var(--c-accent-contrast);}
+.bmr2__activity-row{display:flex;align-items:center;justify-content:space-between;font-size:14px;}
+.bmr2__activity-level{color:var(--c-accent);font-weight:600;}
+.bmr2__range{width:100%;margin:4px 0 2px;-webkit-appearance:none;appearance:none;background:transparent;height:28px;}
+.bmr2__range::-webkit-slider-runnable-track{height:4px;background:var(--c-chart-secondary);border-radius:2px;}
+.bmr2__range::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;background:var(--c-accent);
+  border-radius:50%;margin-top:-9px;box-shadow:0 1px 3px rgba(0,0,0,.4);}
+.bmr2__ticks{display:flex;justify-content:space-between;font-size:11px;font-variant-numeric:tabular-nums;
+  color:var(--c-fg-secondary);padding:0 8px;}
+.bmr2__activity-note{font-size:13px;line-height:1.45;color:var(--c-fg-secondary);padding:12px;
+  background:var(--c-card-elevated);border-radius:12px;border:1px solid var(--c-border);}
+.bmr2__activity-note b{display:block;font-size:14px;font-weight:600;color:var(--c-fg);margin-bottom:2px;}
+.bmr2__switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.bmr2__switch-row label{font-size:15px;font-weight:500;color:var(--c-fg);}
+.bmr2__switch{position:relative;width:42px;height:24px;background:var(--c-accent);border-radius:999px;
+  border:0;cursor:pointer;flex-shrink:0;padding:0;}
+.bmr2__switch::before{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;
+  border-radius:50%;transform:translateX(18px);box-shadow:0 1px 2px rgba(0,0,0,.3);}
+.bmr2__cta{margin:0 var(--inset);background:var(--c-accent);color:var(--c-accent-contrast);border:0;
+  border-radius:14px;padding:16px;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;
+  box-shadow:0 6px 16px rgba(255,100,34,.25);}
+.hdr-back{display:flex;align-items:center;gap:6px;color:var(--c-accent);font-size:15px;font-weight:500;
+  background:none;border:0;font-family:inherit;cursor:pointer;padding:0 0 4px;}
+.hdr-back svg{width:18px;height:18px;fill:currentColor;}
+
+/* ── онбординг: ведение на первичном расчёте ── */
+.onb-guide{margin:0 var(--inset);display:flex;gap:10px;align-items:flex-start;
+  background:rgba(255,100,34,.10);border:1px solid rgba(255,100,34,.25);border-radius:14px;padding:14px;}
+.onb-guide svg{width:20px;height:20px;fill:var(--c-accent);flex-shrink:0;margin-top:1px;}
+.onb-guide p{margin:0;font-size:14px;color:var(--c-fg);line-height:1.45;}
+.bmr2__field--focus{outline:2px solid var(--c-accent);outline-offset:2px;border-color:transparent;}
+.bmr2__field-input::placeholder{color:#5a5a5e;font-weight:500;}
+.cta-hint{margin:8px var(--inset) 0;text-align:center;font-size:12px;color:var(--c-fg-secondary);}
+</style>
+</head>
+<body>
+
+<!-- ════════ FRAME 1 — ПРОФИЛЬ ════════ -->
+<div class="frame-wrap">
+  <div class="device"><div class="notch"></div><div class="screen">
+    <div class="mini"><div class="mini__page">
+
+      <header class="mini__page-header">
+        <h1 class="mini__page-title">Профиль</h1>
+        <p class="mini__page-subtitle">Алексей Петров · @alexpetrov</p>
+      </header>
+
+      <!-- TIER -->
+      <section class="card">
+        <h2 class="card__title">Тариф</h2>
+        <div class="tier">
+          <span class="tier__badge">
+            <svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 7.7l5.4-.8z"/></svg>
+            Premium
+          </span>
+          <div class="tier__meta">активен до<b>1 сентября 2026</b></div>
+        </div>
+      </section>
+
+      <!-- NORM / GOAL -->
+      <section class="card">
+        <h2 class="card__title">Норма и цель</h2>
+        <div class="norm">
+          <div class="norm__value">1 800<span class="unit">ккал/день</span></div>
+          <div class="norm__meta">дневной расход <b>2 100 ккал</b></div>
+          <span class="goal-chip">Цель: дефицит −300</span>
+        </div>
+        <button class="btn-secondary">
+          <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+          Изменить расчёт
+        </button>
+      </section>
+
+      <!-- REMINDERS -->
+      <section class="card">
+        <h2 class="card__title">Напоминания</h2>
+
+        <div class="reminder">
+          <span class="reminder__time">21:00</span>
+          <span class="reminder__chip reminder__chip--evening">Полный отчёт</span>
+          <span class="reminder__spacer"></span>
+          <button class="reminder__del"><svg viewBox="0 0 24 24"><path d="M9 3a1 1 0 0 0-.94.66L7.38 5H5a1 1 0 0 0 0 2h.17l.76 11.07A2 2 0 0 0 7.92 20h8.16a2 2 0 0 0 1.99-1.93L18.83 7H19a1 1 0 1 0 0-2h-2.38l-.68-1.34A1 1 0 0 0 15 3z"/></svg></button>
+        </div>
+
+        <div class="reminder">
+          <span class="reminder__time">13:00</span>
+          <span class="reminder__chip reminder__chip--daytime">Напоминание</span>
+          <span class="reminder__spacer"></span>
+          <button class="reminder__del"><svg viewBox="0 0 24 24"><path d="M9 3a1 1 0 0 0-.94.66L7.38 5H5a1 1 0 0 0 0 2h.17l.76 11.07A2 2 0 0 0 7.92 20h8.16a2 2 0 0 0 1.99-1.93L18.83 7H19a1 1 0 1 0 0-2h-2.38l-.68-1.34A1 1 0 0 0 15 3z"/></svg></button>
+        </div>
+
+        <div class="reminder">
+          <span class="reminder__time">17:30</span>
+          <span class="reminder__chip reminder__chip--daytime">Напоминание</span>
+          <span class="reminder__spacer"></span>
+          <button class="reminder__del"><svg viewBox="0 0 24 24"><path d="M9 3a1 1 0 0 0-.94.66L7.38 5H5a1 1 0 0 0 0 2h.17l.76 11.07A2 2 0 0 0 7.92 20h8.16a2 2 0 0 0 1.99-1.93L18.83 7H19a1 1 0 1 0 0-2h-2.38l-.68-1.34A1 1 0 0 0 15 3z"/></svg></button>
+        </div>
+
+        <button class="reminder-add">
+          <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          Добавить напоминание
+        </button>
+        <div class="note">Вечерний отчёт приходит один раз в день. Дневных напоминаний — до трёх.</div>
+      </section>
+
+      <!-- MISC (контейнер на будущее: язык, помощь) -->
+      <div class="rows">
+        <div class="row">
+          <span class="row__label">Язык</span><span class="row__spacer"></span>
+          <span class="row__value">Русский</span>
+          <svg class="row__chev" viewBox="0 0 24 24"><path d="M8.5 5.5a1 1 0 0 1 1.4 0l4.8 4.8a1 1 0 0 1 0 1.4l-4.8 4.8a1 1 0 0 1-1.4-1.4L12.6 11 8.5 6.9a1 1 0 0 1 0-1.4z"/></svg>
+        </div>
+        <div class="row">
+          <span class="row__label">Помощь и ответы</span><span class="row__spacer"></span>
+          <svg class="row__chev" viewBox="0 0 24 24"><path d="M8.5 5.5a1 1 0 0 1 1.4 0l4.8 4.8a1 1 0 0 1 0 1.4l-4.8 4.8a1 1 0 0 1-1.4-1.4L12.6 11 8.5 6.9a1 1 0 0 1 0-1.4z"/></svg>
+        </div>
+      </div>
+
+    </div>
+
+    <nav class="bottom-nav">
+      <button class="bottom-nav__item"><svg class="bottom-nav__icon" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg><span class="bottom-nav__label">История</span></button>
+      <button class="bottom-nav__item"><svg class="bottom-nav__icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg><span class="bottom-nav__label">Статистика</span></button>
+      <button class="bottom-nav__item bottom-nav__item--active"><svg class="bottom-nav__icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span class="bottom-nav__label">Профиль</span></button>
+    </nav>
+    </div>
+  </div></div>
+  <div class="caption"><b>Профиль</b><span>Тариф · норма/цель (вход в BMR) · напоминания · язык/помощь</span></div>
+</div>
+
+<!-- ════════ FRAME 2 — BMR из профиля ════════ -->
+<div class="frame-wrap">
+  <div class="device"><div class="notch"></div><div class="screen">
+    <div class="mini"><div class="mini__page">
+
+      <header class="mini__page-header">
+        <button class="hdr-back"><svg viewBox="0 0 24 24"><path d="M15.5 5.5a1 1 0 0 1 0 1.4L11.4 11l4.1 4.1a1 1 0 1 1-1.4 1.4l-4.8-4.8a1 1 0 0 1 0-1.4l4.8-4.8a1 1 0 0 1 1.4 0z"/></svg>Профиль</button>
+        <h1 class="mini__page-title">Метаболизм</h1>
+        <p class="mini__page-subtitle">Сколько энергии тело тратит за день. Формула Миффлина — Сан-Жеора.</p>
+      </header>
+
+      <section class="bmr2__hero">
+        <div class="bmr2__hero-label">Целевые калории</div>
+        <div class="bmr2__hero-value">1 800<span class="unit">ккал/день</span></div>
+        <div class="bmr2__hero-meta">базовый обмен<br><b>1 600</b> · ×1.55</div>
+      </section>
+
+      <section class="card">
+        <h2 class="card__title">Данные тела</h2>
+        <div class="bmr2__rows">
+          <label class="bmr2__field"><span class="bmr2__field-label">Рост, см</span><input class="bmr2__field-input" value="178"></label>
+          <label class="bmr2__field"><span class="bmr2__field-label">Вес, кг</span><input class="bmr2__field-input" value="72"></label>
+          <label class="bmr2__field"><span class="bmr2__field-label">Возраст</span><input class="bmr2__field-input" value="29"></label>
+        </div>
+        <div class="bmr2__segmented">
+          <button class="bmr2__segmented-item bmr2__segmented-item--active">Мужчина</button>
+          <button class="bmr2__segmented-item">Женщина</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="card__title">Активность</h2>
+        <div class="bmr2__activity-row"><span>Уровень</span><span class="bmr2__activity-level">Умеренная</span></div>
+        <input class="bmr2__range" type="range" min="1" max="5" value="3">
+        <div class="bmr2__ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+        <div class="bmr2__activity-note"><b>Умеренная</b>Умеренные упражнения или спорт 3–5 раз в неделю.</div>
+      </section>
+
+      <section class="card">
+        <div class="bmr2__switch-row"><label>Установить цель калорий</label><button class="bmr2__switch"></button></div>
+        <div class="bmr2__segmented">
+          <button class="bmr2__segmented-item bmr2__segmented-item--active">Дефицит · −300</button>
+          <button class="bmr2__segmented-item">Профицит · +300</button>
+        </div>
+      </section>
+
+      <button class="bmr2__cta">Сохранить</button>
+
+    </div>
+    <nav class="bottom-nav">
+      <button class="bottom-nav__item"><svg class="bottom-nav__icon" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg><span class="bottom-nav__label">История</span></button>
+      <button class="bottom-nav__item"><svg class="bottom-nav__icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg><span class="bottom-nav__label">Статистика</span></button>
+      <button class="bottom-nav__item bottom-nav__item--active"><svg class="bottom-nav__icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span class="bottom-nav__label">Профиль</span></button>
+    </nav>
+    </div>
+  </div></div>
+  <div class="caption"><b>Точка входа 1 · «Изменить расчёт» из Профиля</b><span>Поля предзаполнены сохранёнными данными, кнопка «Назад» в Профиль</span></div>
+</div>
+
+<!-- ════════ FRAME 3 — ПЕРВИЧНЫЙ РАСЧЁТ (онбординг) ════════ -->
+<div class="frame-wrap">
+  <div class="device"><div class="notch"></div><div class="screen">
+    <div class="mini"><div class="mini__page" style="padding-bottom:24px;">
+
+      <header class="mini__page-header">
+        <h1 class="mini__page-title">Рассчитаем норму</h1>
+        <p class="mini__page-subtitle">Это нужно один раз — потом всё считается автоматически.</p>
+      </header>
+
+      <div class="onb-guide">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        <p>Заполните рост, вес, возраст и пол — дневная норма появится здесь автоматически.</p>
+      </div>
+
+      <section class="card">
+        <h2 class="card__title">Шаг 1 · данные тела</h2>
+        <div class="bmr2__rows">
+          <label class="bmr2__field bmr2__field--focus"><span class="bmr2__field-label">Рост, см</span><input class="bmr2__field-input" placeholder="напр. 178"></label>
+          <label class="bmr2__field"><span class="bmr2__field-label">Вес, кг</span><input class="bmr2__field-input" placeholder="напр. 72"></label>
+          <label class="bmr2__field"><span class="bmr2__field-label">Возраст</span><input class="bmr2__field-input" placeholder="напр. 29"></label>
+        </div>
+        <div class="bmr2__segmented">
+          <button class="bmr2__segmented-item">Мужчина</button>
+          <button class="bmr2__segmented-item">Женщина</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="card__title">Шаг 2 · активность</h2>
+        <div class="bmr2__activity-row"><span>Уровень</span><span class="bmr2__activity-level">Умеренная</span></div>
+        <input class="bmr2__range" type="range" min="1" max="5" value="3">
+        <div class="bmr2__ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+        <div class="bmr2__activity-note"><b>Умеренная</b>Умеренные упражнения или спорт 3–5 раз в неделю.</div>
+      </section>
+
+      <button class="bmr2__cta" style="opacity:.5;">Рассчитать и сохранить</button>
+      <div class="cta-hint">Заполните рост, вес, возраст и пол, чтобы продолжить</div>
+
+    </div></div>
+  </div></div>
+  <div class="caption"><b>Точка входа 2 · Первичный расчёт (онбординг)</b><span>Пустая форма для нового пользователя, без «Назад» и нижней навигации — фокус-шаг</span></div>
+</div>
+
+</body>
+</html>

@@ -17,12 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Пищевые предпочтения — единый источник для чипсов (ключи locale-independent).
   const preferenceDefs = [
-    { key: 'more_protein', emoji: '🥩' },
-    { key: 'less_sugar', emoji: '🍬' },
-    { key: 'more_veggies', emoji: '🥗' },
-    { key: 'low_carb', emoji: '🌾' },
-    { key: 'more_water', emoji: '💧' },
-    { key: 'less_fat', emoji: '🧈' }
+    { key: 'more_protein', emoji: '🥩', dir: 'up' },
+    { key: 'less_sugar', emoji: '🍬', dir: 'down' },
+    { key: 'more_veggies', emoji: '🥗', dir: 'up' },
+    { key: 'low_carb', emoji: '🌾', dir: 'down' },
+    { key: 'more_water', emoji: '💧', dir: 'up' },
+    { key: 'less_fat', emoji: '🧈', dir: 'down' }
   ];
   const preferenceKeys = preferenceDefs.map((def) => def.key);
 
@@ -64,12 +64,12 @@ document.addEventListener('DOMContentLoaded', () => {
       goalSurplus: "Surplus · +10%",
       preferencesTitle: "Preferences",
       preferences: {
-        more_protein: "More protein",
-        less_sugar: "Less sugar",
-        more_veggies: "More veggies",
-        low_carb: "Low carb",
-        more_water: "More water",
-        less_fat: "Less fat"
+        more_protein: "Protein",
+        less_sugar: "Sugar",
+        more_veggies: "Veggies",
+        low_carb: "Carbs",
+        more_water: "Water",
+        less_fat: "Fat"
       },
       // cta
       ctaEdit: "Save",
@@ -131,12 +131,12 @@ document.addEventListener('DOMContentLoaded', () => {
       goalSurplus: "Профицит · +10%",
       preferencesTitle: "Предпочтения",
       preferences: {
-        more_protein: "Больше белка",
-        less_sugar: "Меньше сахара",
-        more_veggies: "Больше овощей",
-        low_carb: "Меньше углеводов",
-        more_water: "Больше воды",
-        less_fat: "Меньше жирного"
+        more_protein: "Белок",
+        less_sugar: "Сахар",
+        more_veggies: "Овощи",
+        low_carb: "Углеводы",
+        more_water: "Вода",
+        less_fat: "Жиры"
       },
       ctaEdit: "Сохранить",
       ctaFirst: "Рассчитать и сохранить",
@@ -195,12 +195,12 @@ document.addEventListener('DOMContentLoaded', () => {
       goalSurplus: "Профіцит · +10%",
       preferencesTitle: "Уподобання",
       preferences: {
-        more_protein: "Більше білка",
-        less_sugar: "Менше цукру",
-        more_veggies: "Більше овочів",
-        low_carb: "Менше вуглеводів",
-        more_water: "Більше води",
-        less_fat: "Менше жирного"
+        more_protein: "Білок",
+        less_sugar: "Цукор",
+        more_veggies: "Овочі",
+        low_carb: "Вуглеводи",
+        more_water: "Вода",
+        less_fat: "Жири"
       },
       ctaEdit: "Зберегти",
       ctaFirst: "Розрахувати і зберегти",
@@ -259,12 +259,12 @@ document.addEventListener('DOMContentLoaded', () => {
       goalSurplus: "Überschuss · +10%",
       preferencesTitle: "Vorlieben",
       preferences: {
-        more_protein: "Mehr Protein",
-        less_sugar: "Weniger Zucker",
-        more_veggies: "Mehr Gemüse",
-        low_carb: "Weniger Carbs",
-        more_water: "Mehr Wasser",
-        less_fat: "Weniger Fett"
+        more_protein: "Protein",
+        less_sugar: "Zucker",
+        more_veggies: "Gemüse",
+        low_carb: "Carbs",
+        more_water: "Wasser",
+        less_fat: "Fett"
       },
       ctaEdit: "Speichern",
       ctaFirst: "Berechnen und speichern",
@@ -323,12 +323,12 @@ document.addEventListener('DOMContentLoaded', () => {
       goalSurplus: "Superávit · +10%",
       preferencesTitle: "Preferencias",
       preferences: {
-        more_protein: "Más proteína",
-        less_sugar: "Menos azúcar",
-        more_veggies: "Más verduras",
-        low_carb: "Bajo en carbos",
-        more_water: "Más agua",
-        less_fat: "Menos grasa"
+        more_protein: "Proteína",
+        less_sugar: "Azúcar",
+        more_veggies: "Verduras",
+        low_carb: "Carbos",
+        more_water: "Agua",
+        less_fat: "Grasa"
       },
       ctaEdit: "Guardar",
       ctaFirst: "Calcular y guardar",
@@ -387,12 +387,12 @@ document.addEventListener('DOMContentLoaded', () => {
       goalSurplus: "Surplus · +10%",
       preferencesTitle: "Préférences",
       preferences: {
-        more_protein: "Plus de protéines",
-        less_sugar: "Moins de sucre",
-        more_veggies: "Plus de légumes",
-        low_carb: "Moins de glucides",
-        more_water: "Plus d'eau",
-        less_fat: "Moins de gras"
+        more_protein: "Protéines",
+        less_sugar: "Sucre",
+        more_veggies: "Légumes",
+        low_carb: "Glucides",
+        more_water: "Eau",
+        less_fat: "Gras"
       },
       ctaEdit: "Enregistrer",
       ctaFirst: "Calculer et enregistrer",
@@ -451,12 +451,12 @@ document.addEventListener('DOMContentLoaded', () => {
       goalSurplus: "Superávit · +10%",
       preferencesTitle: "Preferências",
       preferences: {
-        more_protein: "Mais proteína",
-        less_sugar: "Menos açúcar",
-        more_veggies: "Mais vegetais",
-        low_carb: "Baixo carbo",
-        more_water: "Mais água",
-        less_fat: "Menos gordura"
+        more_protein: "Proteína",
+        less_sugar: "Açúcar",
+        more_veggies: "Vegetais",
+        low_carb: "Carbo",
+        more_water: "Água",
+        less_fat: "Gordura"
       },
       ctaEdit: "Salvar",
       ctaFirst: "Calcular e salvar",
@@ -515,12 +515,12 @@ document.addEventListener('DOMContentLoaded', () => {
       goalSurplus: "Fazla · +10%",
       preferencesTitle: "Tercihler",
       preferences: {
-        more_protein: "Daha çok protein",
-        less_sugar: "Az şeker",
-        more_veggies: "Daha çok sebze",
-        low_carb: "Az karbonhidrat",
-        more_water: "Daha çok su",
-        less_fat: "Az yağ"
+        more_protein: "Protein",
+        less_sugar: "Şeker",
+        more_veggies: "Sebze",
+        low_carb: "Karbonhidrat",
+        more_water: "Su",
+        less_fat: "Yağ"
       },
       ctaEdit: "Kaydet",
       ctaFirst: "Hesapla ve kaydet",
@@ -579,12 +579,12 @@ document.addEventListener('DOMContentLoaded', () => {
       goalSurplus: "فائض · +10%",
       preferencesTitle: "التفضيلات",
       preferences: {
-        more_protein: "بروتين أكثر",
-        less_sugar: "سكر أقل",
-        more_veggies: "خضار أكثر",
-        low_carb: "كربوهيدرات أقل",
-        more_water: "ماء أكثر",
-        less_fat: "دهون أقل"
+        more_protein: "بروتين",
+        less_sugar: "سكر",
+        more_veggies: "خضار",
+        low_carb: "كربوهيدرات",
+        more_water: "ماء",
+        less_fat: "دهون"
       },
       ctaEdit: "حفظ",
       ctaFirst: "احسب واحفظ",
@@ -643,12 +643,12 @@ document.addEventListener('DOMContentLoaded', () => {
       goalSurplus: "सरप्लस · +10%",
       preferencesTitle: "पसंद",
       preferences: {
-        more_protein: "ज़्यादा प्रोटीन",
-        less_sugar: "कम चीनी",
-        more_veggies: "ज़्यादा सब्ज़ियाँ",
-        low_carb: "कम कार्ब",
-        more_water: "ज़्यादा पानी",
-        less_fat: "कम वसा"
+        more_protein: "प्रोटीन",
+        less_sugar: "चीनी",
+        more_veggies: "सब्ज़ियाँ",
+        low_carb: "कार्ब",
+        more_water: "पानी",
+        less_fat: "वसा"
       },
       ctaEdit: "सहेजें",
       ctaFirst: "गणना करें और सहेजें",
@@ -901,6 +901,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.type = 'button';
       btn.className = 'chip';
       btn.dataset.key = def.key;
+      btn.dataset.dir = def.dir;
       const emoji = document.createElement('span');
       emoji.className = 'chip__emoji';
       emoji.textContent = def.emoji;
@@ -984,7 +985,10 @@ document.addEventListener('DOMContentLoaded', () => {
     preferencesSectionTitleEl.textContent = t.preferencesTitle;
     preferencesChipsEl.querySelectorAll('.chip').forEach((btn) => {
       const label = btn.querySelector('.chip__label');
-      if (label) label.textContent = t.preferences[btn.dataset.key] || '';
+      if (!label) return;
+      const noun = (t.preferences && t.preferences[btn.dataset.key]) || '';
+      const arrow = btn.dataset.dir === 'down' ? ' ↓' : ' ↑';
+      label.textContent = noun ? noun + arrow : '';
     });
 
     // CTA: «Сохранить» когда есть данные (edit-вид), иначе «Рассчитать и сохранить».
