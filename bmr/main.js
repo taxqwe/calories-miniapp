@@ -15,6 +15,17 @@ document.addEventListener('DOMContentLoaded', () => {
     customCalories: { min: 1000, max: 20000 }
   };
 
+  // Пищевые предпочтения — единый источник для чипсов (ключи locale-independent).
+  const preferenceDefs = [
+    { key: 'more_protein', emoji: '🥩' },
+    { key: 'less_sugar', emoji: '🍬' },
+    { key: 'more_veggies', emoji: '🥗' },
+    { key: 'low_carb', emoji: '🌾' },
+    { key: 'more_water', emoji: '💧' },
+    { key: 'less_fat', emoji: '🧈' }
+  ];
+  const preferenceKeys = preferenceDefs.map((def) => def.key);
+
   const translations = {
     en: {
       // header
@@ -51,6 +62,15 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Set calorie goal",
       goalDeficit: "Deficit · −15%",
       goalSurplus: "Surplus · +10%",
+      preferencesTitle: "Preferences",
+      preferences: {
+        more_protein: "More protein",
+        less_sugar: "Less sugar",
+        more_veggies: "More veggies",
+        low_carb: "Low carb",
+        more_water: "More water",
+        less_fat: "Less fat"
+      },
       // cta
       ctaEdit: "Save",
       ctaFirst: "Calculate and save",
@@ -109,6 +129,15 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Установить цель калорий",
       goalDeficit: "Дефицит · −15%",
       goalSurplus: "Профицит · +10%",
+      preferencesTitle: "Предпочтения",
+      preferences: {
+        more_protein: "Больше белка",
+        less_sugar: "Меньше сахара",
+        more_veggies: "Больше овощей",
+        low_carb: "Меньше углеводов",
+        more_water: "Больше воды",
+        less_fat: "Меньше жирного"
+      },
       ctaEdit: "Сохранить",
       ctaFirst: "Рассчитать и сохранить",
       ctaHintFirst: "Заполните рост, вес, возраст и пол, чтобы продолжить",
@@ -164,6 +193,15 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Встановити ціль калорій",
       goalDeficit: "Дефіцит · −15%",
       goalSurplus: "Профіцит · +10%",
+      preferencesTitle: "Уподобання",
+      preferences: {
+        more_protein: "Більше білка",
+        less_sugar: "Менше цукру",
+        more_veggies: "Більше овочів",
+        low_carb: "Менше вуглеводів",
+        more_water: "Більше води",
+        less_fat: "Менше жирного"
+      },
       ctaEdit: "Зберегти",
       ctaFirst: "Розрахувати і зберегти",
       ctaHintFirst: "Заповніть зріст, вагу, вік і стать, щоб продовжити",
@@ -219,6 +257,15 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Kalorienziel festlegen",
       goalDeficit: "Defizit · −15%",
       goalSurplus: "Überschuss · +10%",
+      preferencesTitle: "Vorlieben",
+      preferences: {
+        more_protein: "Mehr Protein",
+        less_sugar: "Weniger Zucker",
+        more_veggies: "Mehr Gemüse",
+        low_carb: "Weniger Carbs",
+        more_water: "Mehr Wasser",
+        less_fat: "Weniger Fett"
+      },
       ctaEdit: "Speichern",
       ctaFirst: "Berechnen und speichern",
       ctaHintFirst: "Gib Größe, Gewicht, Alter und Geschlecht ein, um fortzufahren",
@@ -274,6 +321,15 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Establecer objetivo de calorías",
       goalDeficit: "Déficit · −15%",
       goalSurplus: "Superávit · +10%",
+      preferencesTitle: "Preferencias",
+      preferences: {
+        more_protein: "Más proteína",
+        less_sugar: "Menos azúcar",
+        more_veggies: "Más verduras",
+        low_carb: "Bajo en carbos",
+        more_water: "Más agua",
+        less_fat: "Menos grasa"
+      },
       ctaEdit: "Guardar",
       ctaFirst: "Calcular y guardar",
       ctaHintFirst: "Indica estatura, peso, edad y sexo para continuar",
@@ -329,6 +385,15 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Définir un objectif calorique",
       goalDeficit: "Déficit · −15%",
       goalSurplus: "Surplus · +10%",
+      preferencesTitle: "Préférences",
+      preferences: {
+        more_protein: "Plus de protéines",
+        less_sugar: "Moins de sucre",
+        more_veggies: "Plus de légumes",
+        low_carb: "Moins de glucides",
+        more_water: "Plus d'eau",
+        less_fat: "Moins de gras"
+      },
       ctaEdit: "Enregistrer",
       ctaFirst: "Calculer et enregistrer",
       ctaHintFirst: "Renseignez taille, poids, âge et sexe pour continuer",
@@ -384,6 +449,15 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Definir meta de calorias",
       goalDeficit: "Déficit · −15%",
       goalSurplus: "Superávit · +10%",
+      preferencesTitle: "Preferências",
+      preferences: {
+        more_protein: "Mais proteína",
+        less_sugar: "Menos açúcar",
+        more_veggies: "Mais vegetais",
+        low_carb: "Baixo carbo",
+        more_water: "Mais água",
+        less_fat: "Menos gordura"
+      },
       ctaEdit: "Salvar",
       ctaFirst: "Calcular e salvar",
       ctaHintFirst: "Informe altura, peso, idade e sexo para continuar",
@@ -439,6 +513,15 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Kalori hedefi belirle",
       goalDeficit: "Açık · −15%",
       goalSurplus: "Fazla · +10%",
+      preferencesTitle: "Tercihler",
+      preferences: {
+        more_protein: "Daha çok protein",
+        less_sugar: "Az şeker",
+        more_veggies: "Daha çok sebze",
+        low_carb: "Az karbonhidrat",
+        more_water: "Daha çok su",
+        less_fat: "Az yağ"
+      },
       ctaEdit: "Kaydet",
       ctaFirst: "Hesapla ve kaydet",
       ctaHintFirst: "Devam etmek için boy, kilo, yaş ve cinsiyeti girin",
@@ -494,6 +577,15 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "تحديد هدف للسعرات",
       goalDeficit: "عجز · −15%",
       goalSurplus: "فائض · +10%",
+      preferencesTitle: "التفضيلات",
+      preferences: {
+        more_protein: "بروتين أكثر",
+        less_sugar: "سكر أقل",
+        more_veggies: "خضار أكثر",
+        low_carb: "كربوهيدرات أقل",
+        more_water: "ماء أكثر",
+        less_fat: "دهون أقل"
+      },
       ctaEdit: "حفظ",
       ctaFirst: "احسب واحفظ",
       ctaHintFirst: "أدخل الطول والوزن والعمر والجنس للمتابعة",
@@ -549,6 +641,15 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "कैलोरी लक्ष्य सेट करें",
       goalDeficit: "डेफिसिट · −15%",
       goalSurplus: "सरप्लस · +10%",
+      preferencesTitle: "पसंद",
+      preferences: {
+        more_protein: "ज़्यादा प्रोटीन",
+        less_sugar: "कम चीनी",
+        more_veggies: "ज़्यादा सब्ज़ियाँ",
+        low_carb: "कम कार्ब",
+        more_water: "ज़्यादा पानी",
+        less_fat: "कम वसा"
+      },
       ctaEdit: "सहेजें",
       ctaFirst: "गणना करें और सहेजें",
       ctaHintFirst: "जारी रखने के लिए ऊँचाई, वज़न, उम्र और लिंग भरें",
@@ -614,6 +715,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const goalDeficitEl = document.getElementById('goal-deficit');
   const goalSurplusEl = document.getElementById('goal-surplus');
 
+  const preferencesSectionTitleEl = document.getElementById('preferences-section-title');
+  const preferencesChipsEl = document.getElementById('preferences-chips');
+
   const calculateButtonEl = document.getElementById('calculate-button');
   const ctaHintEl = document.getElementById('cta-hint');
   const resultEl = document.getElementById('result');
@@ -654,6 +758,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let tg = null;
   let selectedGender = null; // 'm' | 'f' | null
   let selectedGoalType = 'deficit'; // 'deficit' | 'surplus'
+  let selectedPreferences = new Set(); // канонические ключи предпочтений
 
   // ── Утилиты ──
   function digitsOnly(value, maxLen) {
@@ -788,6 +893,41 @@ document.addEventListener('DOMContentLoaded', () => {
     refresh();
   }
 
+  // ── Чипсы предпочтений ──
+  function renderPreferenceChips() {
+    preferencesChipsEl.innerHTML = '';
+    preferenceDefs.forEach((def) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip';
+      btn.dataset.key = def.key;
+      const emoji = document.createElement('span');
+      emoji.className = 'chip__emoji';
+      emoji.textContent = def.emoji;
+      const label = document.createElement('span');
+      label.className = 'chip__label';
+      btn.append(emoji, label);
+      btn.addEventListener('click', () => togglePreference(def.key));
+      preferencesChipsEl.appendChild(btn);
+    });
+    updatePreferenceChips();
+  }
+
+  function togglePreference(key) {
+    if (selectedPreferences.has(key)) {
+      selectedPreferences.delete(key);
+    } else {
+      selectedPreferences.add(key);
+    }
+    updatePreferenceChips();
+  }
+
+  function updatePreferenceChips() {
+    preferencesChipsEl.querySelectorAll('.chip').forEach((btn) => {
+      btn.classList.toggle('chip--active', selectedPreferences.has(btn.dataset.key));
+    });
+  }
+
   // ── Ошибки полей ──
   function clearFieldErrors() {
     [heightEl, weightEl, ageEl].forEach((el) => {
@@ -840,6 +980,12 @@ document.addEventListener('DOMContentLoaded', () => {
     labelGoalToggleEl.textContent = t.goalToggleLabel;
     goalDeficitEl.textContent = t.goalDeficit;
     goalSurplusEl.textContent = t.goalSurplus;
+
+    preferencesSectionTitleEl.textContent = t.preferencesTitle;
+    preferencesChipsEl.querySelectorAll('.chip').forEach((btn) => {
+      const label = btn.querySelector('.chip__label');
+      if (label) label.textContent = t.preferences[btn.dataset.key] || '';
+    });
 
     // CTA: «Сохранить» когда есть данные (edit-вид), иначе «Рассчитать и сохранить».
     calculateButtonEl.textContent = hasData ? t.ctaEdit : t.ctaFirst;
@@ -916,6 +1062,10 @@ document.addEventListener('DOMContentLoaded', () => {
       goalSegEl.hidden = false;
       setGoalType(goal.type);
     }
+    if (Array.isArray(data.preferences)) {
+      selectedPreferences = new Set(data.preferences.filter((key) => preferenceKeys.includes(key)));
+      updatePreferenceChips();
+    }
     refresh();
   }
 
@@ -970,6 +1120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tdee: Math.round(tdee) // именно tdee — как было раньше
       },
       goal: goalInfo,
+      preferences: Array.from(selectedPreferences),
       initData: (tg && tg.initData) || ''
     };
 
@@ -1142,6 +1293,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Инициализация ──
   function init() {
     initTelegram();
+    renderPreferenceChips();
     applyText();
     applyPresentation();
     applyNavigation();
