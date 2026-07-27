@@ -476,6 +476,39 @@ body {
   transform: translateX(18px);
 }
 
+/* ── Расшифровка нормы ── */
+.goal-note {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  padding: 12px;
+  background: var(--card-elevated-bg);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.goal-note__value {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 2px;
+}
+
+.goal-note__floor {
+  display: block;
+  margin-top: 6px;
+  color: var(--accent-color);
+}
+
+.goal-note__hint {
+  display: block;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
 /* ── CTA ── */
 .metab-cta {
   margin: 0 var(--inset);

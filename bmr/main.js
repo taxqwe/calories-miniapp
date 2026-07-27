@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Множители активности (Mifflin–St Jeor): уровни 1..5
   const multipliers = [1.2, 1.375, 1.55, 1.725, 1.9];
 
+  // Множители цели — зеркалят GoalCompletionPolicy в боте (deficit не опускается
+  // ниже базового обмена). Норма, посчитанная здесь, — то же число, по которому
+  // бот рисует закреп и сверяет анализ дня.
+  const GOAL_DEFICIT_FACTOR = 0.85;
+  const GOAL_SURPLUS_FACTOR = 1.10;
+
   // Диапазоны валидации
   const validationRanges = {
     height: { min: 100, max: 250 },
@@ -62,6 +68,10 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Set calorie goal",
       goalDeficit: "Deficit · −15%",
       goalSurplus: "Surplus · +10%",
+      goalMaintenanceWord: "maintenance",
+      goalNoteOff: "No goal set — your norm equals maintenance.",
+      goalNoteFloor: "We don't go below basal metabolism — raised to {bmr}.",
+      goalNoteSource: "The bot shows this number in the pinned message and checks your daily analysis against it.",
       preferencesTitle: "Preferences",
       preferences: {
         more_protein: "Protein",
@@ -129,6 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Установить цель калорий",
       goalDeficit: "Дефицит · −15%",
       goalSurplus: "Профицит · +10%",
+      goalMaintenanceWord: "поддержание",
+      goalNoteOff: "Цель не задана — норма равна поддержанию.",
+      goalNoteFloor: "Ниже базового обмена не опускаем — подняли до {bmr}.",
+      goalNoteSource: "Это число бот показывает в закрепе и с ним же сверяет «Оцени рацион».",
       preferencesTitle: "Предпочтения",
       preferences: {
         more_protein: "Белок",
@@ -193,6 +207,10 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Встановити ціль калорій",
       goalDeficit: "Дефіцит · −15%",
       goalSurplus: "Профіцит · +10%",
+      goalMaintenanceWord: "підтримання",
+      goalNoteOff: "Ціль не задана — норма дорівнює підтриманню.",
+      goalNoteFloor: "Нижче базового обміну не опускаємо — підняли до {bmr}.",
+      goalNoteSource: "Це число бот показує в закріпленому повідомленні та з ним звіряє «Оціни раціон».",
       preferencesTitle: "Уподобання",
       preferences: {
         more_protein: "Білок",
@@ -257,6 +275,10 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Kalorienziel festlegen",
       goalDeficit: "Defizit · −15%",
       goalSurplus: "Überschuss · +10%",
+      goalMaintenanceWord: "Erhaltung",
+      goalNoteOff: "Kein Ziel gesetzt — die Norm entspricht der Erhaltung.",
+      goalNoteFloor: "Wir gehen nicht unter den Grundumsatz — auf {bmr} angehoben.",
+      goalNoteSource: "Diese Zahl zeigt der Bot in der angehefteten Nachricht und vergleicht damit deine Tagesanalyse.",
       preferencesTitle: "Vorlieben",
       preferences: {
         more_protein: "Protein",
@@ -321,6 +343,10 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Establecer objetivo de calorías",
       goalDeficit: "Déficit · −15%",
       goalSurplus: "Superávit · +10%",
+      goalMaintenanceWord: "mantenimiento",
+      goalNoteOff: "Sin objetivo — tu norma es igual al mantenimiento.",
+      goalNoteFloor: "No bajamos del metabolismo basal: subido a {bmr}.",
+      goalNoteSource: "El bot muestra este número en el mensaje fijado y compara con él tu análisis del día.",
       preferencesTitle: "Preferencias",
       preferences: {
         more_protein: "Proteína",
@@ -385,6 +411,10 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Définir un objectif calorique",
       goalDeficit: "Déficit · −15%",
       goalSurplus: "Surplus · +10%",
+      goalMaintenanceWord: "maintien",
+      goalNoteOff: "Aucun objectif — votre norme est égale au maintien.",
+      goalNoteFloor: "On ne descend pas sous le métabolisme de base : relevé à {bmr}.",
+      goalNoteSource: "Le bot affiche ce nombre dans le message épinglé et y compare votre analyse du jour.",
       preferencesTitle: "Préférences",
       preferences: {
         more_protein: "Protéines",
@@ -449,6 +479,10 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Definir meta de calorias",
       goalDeficit: "Déficit · −15%",
       goalSurplus: "Superávit · +10%",
+      goalMaintenanceWord: "manutenção",
+      goalNoteOff: "Sem meta — sua norma é igual à manutenção.",
+      goalNoteFloor: "Não descemos abaixo do metabolismo basal: elevado para {bmr}.",
+      goalNoteSource: "O bot mostra este número na mensagem fixada e compara com ele a sua análise do dia.",
       preferencesTitle: "Preferências",
       preferences: {
         more_protein: "Proteína",
@@ -513,6 +547,10 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "Kalori hedefi belirle",
       goalDeficit: "Açık · −15%",
       goalSurplus: "Fazla · +10%",
+      goalMaintenanceWord: "koruma",
+      goalNoteOff: "Hedef yok — normun korumaya eşit.",
+      goalNoteFloor: "Bazal metabolizmanın altına inmiyoruz — {bmr} değerine yükseltildi.",
+      goalNoteSource: "Bot bu sayıyı sabitlenmiş mesajda gösterir ve günlük analizini onunla karşılaştırır.",
       preferencesTitle: "Tercihler",
       preferences: {
         more_protein: "Protein",
@@ -577,6 +615,10 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "تحديد هدف للسعرات",
       goalDeficit: "عجز · −15%",
       goalSurplus: "فائض · +10%",
+      goalMaintenanceWord: "الحفاظ",
+      goalNoteOff: "لا يوجد هدف — معدلك يساوي الحفاظ.",
+      goalNoteFloor: "لا ننزل تحت الأيض الأساسي — تم الرفع إلى {bmr}.",
+      goalNoteSource: "يعرض البوت هذا الرقم في الرسالة المثبتة ويقارن به تحليل يومك.",
       preferencesTitle: "التفضيلات",
       preferences: {
         more_protein: "بروتين",
@@ -641,6 +683,10 @@ document.addEventListener('DOMContentLoaded', () => {
       goalToggleLabel: "कैलोरी लक्ष्य सेट करें",
       goalDeficit: "डेफिसिट · −15%",
       goalSurplus: "सरप्लस · +10%",
+      goalMaintenanceWord: "रखरखाव",
+      goalNoteOff: "कोई लक्ष्य नहीं — आपका मान रखरखाव के बराबर है।",
+      goalNoteFloor: "बेसल मेटाबॉलिज़्म से नीचे नहीं जाते — {bmr} तक बढ़ाया गया।",
+      goalNoteSource: "बॉट यह संख्या पिन किए गए संदेश में दिखाता है और आपके दिन के विश्लेषण की तुलना इसी से करता है।",
       preferencesTitle: "पसंद",
       preferences: {
         more_protein: "प्रोटीन",
@@ -714,6 +760,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const goalSegEl = document.getElementById('goal-seg');
   const goalDeficitEl = document.getElementById('goal-deficit');
   const goalSurplusEl = document.getElementById('goal-surplus');
+  const goalNoteEl = document.getElementById('goal-note');
 
   const preferencesSectionTitleEl = document.getElementById('preferences-section-title');
   const preferencesChipsEl = document.getElementById('preferences-chips');
@@ -817,18 +864,35 @@ document.addEventListener('DOMContentLoaded', () => {
     return missing;
   }
 
+  // Дневная норма и её вывод. Считаем от округлённых bmr/tdee — именно они
+  // уходят на бэк в handleSubmit, поэтому предпросмотр совпадает с числом,
+  // которое потом посчитает бот, вплоть до килокалории.
+  function computeGoalTarget(comp) {
+    const tdee = Math.round(comp.tdee);
+    const bmr = Math.round(comp.bmr);
+    if (!goalToggleEl.checked) {
+      return { value: tdee, tdee, bmr, kind: 'maintenance', factor: null, flooredAtBmr: false };
+    }
+    if (selectedGoalType === 'surplus') {
+      return {
+        value: Math.round(tdee * GOAL_SURPLUS_FACTOR),
+        tdee, bmr, kind: 'surplus', factor: GOAL_SURPLUS_FACTOR, flooredAtBmr: false
+      };
+    }
+    const raw = Math.round(tdee * GOAL_DEFICIT_FACTOR);
+    const floored = bmr <= tdee && raw < bmr;
+    return {
+      value: floored ? bmr : raw,
+      tdee, bmr, kind: 'deficit', factor: GOAL_DEFICIT_FACTOR, flooredAtBmr: floored
+    };
+  }
+
   // ── Живой пересчёт / hero ──
   function updateHero() {
     const comp = getValidComputation();
     const multiplier = multipliers[parseInt(activityRangeEl.value, 10) - 1];
     if (comp) {
-      let goalTarget = comp.tdee;
-      if (goalToggleEl.checked) {
-        goalTarget = selectedGoalType === 'surplus'
-          ? Math.round(comp.tdee * 1.10)
-          : Math.max(Math.round(comp.tdee * 0.85), comp.bmr);
-      }
-      heroValueEl.textContent = formatNumber(goalTarget);
+      heroValueEl.textContent = formatNumber(computeGoalTarget(comp).value);
       heroUnitEl.textContent = t.heroUnit;
       heroMetaEl.innerHTML = `${t.basalLabel}<br><b>${formatNumber(comp.bmr)}</b> · ×${formatMultiplier(multiplier)}`;
     } else {
@@ -836,6 +900,33 @@ document.addEventListener('DOMContentLoaded', () => {
       heroUnitEl.textContent = '';
       heroMetaEl.innerHTML = `${t.basalLabel}<br><span>${t.heroMetaWaiting}</span>`;
     }
+  }
+
+  // ── Расшифровка нормы под выбором цели ──
+  function updateGoalNote() {
+    const comp = getValidComputation();
+    if (!comp) {
+      goalNoteEl.innerHTML = '';
+      goalNoteEl.hidden = true;
+      return;
+    }
+    const goal = computeGoalTarget(comp);
+    const parts = [`<b class="goal-note__value">${formatNumber(goal.value)} ${t.heroUnit}</b>`];
+    if (goal.kind === 'maintenance') {
+      parts.push(`<span>${t.goalNoteOff}</span>`);
+    } else {
+      parts.push(
+        `<span>${t.goalMaintenanceWord} ${formatNumber(goal.tdee)} × ${formatMultiplier(goal.factor)}</span>`
+      );
+    }
+    if (goal.flooredAtBmr) {
+      parts.push(
+        `<span class="goal-note__floor">${t.goalNoteFloor.replace('{bmr}', formatNumber(goal.bmr))}</span>`
+      );
+    }
+    parts.push(`<span class="goal-note__hint">${t.goalNoteSource}</span>`);
+    goalNoteEl.innerHTML = parts.join('');
+    goalNoteEl.hidden = false;
   }
 
   // ── Кнопка + хинт ──
@@ -867,6 +958,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function refresh() {
     updateHero();
+    updateGoalNote();
     updateCtaState();
   }
 
