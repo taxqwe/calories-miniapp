@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
       titleFirst: "Let's calculate your norm",
       subtitleEdit: "How much energy your body spends per day. Mifflin–St Jeor formula.",
       subtitleFirst: "This is needed once — then everything is counted automatically.",
-      backLabel: "Profile",
       onbGuide: "Fill in height, weight, age and sex — your daily norm will appear here automatically.",
       // hero
       heroLabel: "Target calories",
@@ -113,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
       titleFirst: "Рассчитаем норму",
       subtitleEdit: "Сколько энергии тело тратит за день. Формула Миффлина — Сан-Жеора.",
       subtitleFirst: "Это нужно один раз — потом всё считается автоматически.",
-      backLabel: "Профиль",
       onbGuide: "Заполните рост, вес, возраст и пол — дневная норма появится здесь автоматически.",
       heroLabel: "Целевые калории",
       heroUnit: "ккал/день",
@@ -181,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
       titleFirst: "Розрахуємо норму",
       subtitleEdit: "Скільки енергії тіло витрачає за день. Формула Міффліна — Сан-Жеора.",
       subtitleFirst: "Це потрібно один раз — потім усе рахується автоматично.",
-      backLabel: "Профіль",
       onbGuide: "Заповніть зріст, вагу, вік і стать — денна норма з’явиться тут автоматично.",
       heroLabel: "Цільові калорії",
       heroUnit: "ккал/день",
@@ -249,7 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
       titleFirst: "Lass uns deinen Bedarf berechnen",
       subtitleEdit: "Wie viel Energie dein Körper pro Tag verbraucht. Mifflin–St-Jeor-Formel.",
       subtitleFirst: "Das ist nur einmal nötig — danach wird alles automatisch berechnet.",
-      backLabel: "Profil",
       onbGuide: "Gib Größe, Gewicht, Alter und Geschlecht ein — dein Tagesbedarf erscheint hier automatisch.",
       heroLabel: "Zielkalorien",
       heroUnit: "kcal/Tag",
@@ -317,7 +313,6 @@ document.addEventListener('DOMContentLoaded', () => {
       titleFirst: "Calculemos tu norma",
       subtitleEdit: "Cuánta energía gasta tu cuerpo al día. Fórmula de Mifflin–St Jeor.",
       subtitleFirst: "Solo se hace una vez — luego todo se calcula automáticamente.",
-      backLabel: "Perfil",
       onbGuide: "Indica estatura, peso, edad y sexo — tu norma diaria aparecerá aquí automáticamente.",
       heroLabel: "Calorías objetivo",
       heroUnit: "kcal/día",
@@ -385,7 +380,6 @@ document.addEventListener('DOMContentLoaded', () => {
       titleFirst: "Calculons votre besoin",
       subtitleEdit: "Combien d'énergie votre corps dépense par jour. Formule de Mifflin–St Jeor.",
       subtitleFirst: "C'est nécessaire une seule fois — ensuite tout est calculé automatiquement.",
-      backLabel: "Profil",
       onbGuide: "Renseignez taille, poids, âge et sexe — votre besoin journalier apparaîtra ici automatiquement.",
       heroLabel: "Calories cibles",
       heroUnit: "kcal/jour",
@@ -453,7 +447,6 @@ document.addEventListener('DOMContentLoaded', () => {
       titleFirst: "Vamos calcular sua meta",
       subtitleEdit: "Quanta energia seu corpo gasta por dia. Fórmula de Mifflin–St Jeor.",
       subtitleFirst: "Isto é necessário uma vez — depois tudo é calculado automaticamente.",
-      backLabel: "Perfil",
       onbGuide: "Informe altura, peso, idade e sexo — sua meta diária aparecerá aqui automaticamente.",
       heroLabel: "Calorias-alvo",
       heroUnit: "kcal/dia",
@@ -521,7 +514,6 @@ document.addEventListener('DOMContentLoaded', () => {
       titleFirst: "Normunu hesaplayalım",
       subtitleEdit: "Vücudunuzun günde harcadığı enerji. Mifflin–St Jeor formülü.",
       subtitleFirst: "Bu yalnızca bir kez gerekir — sonra her şey otomatik hesaplanır.",
-      backLabel: "Profil",
       onbGuide: "Boy, kilo, yaş ve cinsiyeti girin — günlük normunuz burada otomatik görünecek.",
       heroLabel: "Hedef kalori",
       heroUnit: "kcal/gün",
@@ -589,7 +581,6 @@ document.addEventListener('DOMContentLoaded', () => {
       titleFirst: "لنحسب احتياجك",
       subtitleEdit: "كمية الطاقة التي يحرقها جسمك يوميًا. معادلة ميفلين–سان جور.",
       subtitleFirst: "هذا مطلوب مرة واحدة — بعدها يُحسب كل شيء تلقائيًا.",
-      backLabel: "الملف الشخصي",
       onbGuide: "أدخل الطول والوزن والعمر والجنس — ستظهر احتياجك اليومي هنا تلقائيًا.",
       heroLabel: "السعرات المستهدفة",
       heroUnit: "سعرة/يوم",
@@ -657,7 +648,6 @@ document.addEventListener('DOMContentLoaded', () => {
       titleFirst: "आइए आपकी ज़रूरत निकालें",
       subtitleEdit: "आपका शरीर रोज़ कितनी ऊर्जा खर्च करता है। मिफ़्लिन–सेंट जॉर फ़ॉर्मूला।",
       subtitleFirst: "यह एक बार करना होता है — फिर सब अपने आप गिना जाता है।",
-      backLabel: "प्रोफ़ाइल",
       onbGuide: "ऊँचाई, वज़न, उम्र और लिंग भरें — आपकी दैनिक ज़रूरत यहाँ अपने आप दिखेगी।",
       heroLabel: "लक्ष्य कैलोरी",
       heroUnit: "कैलोरी/दिन",
@@ -724,8 +714,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── DOM ──
   const pageEl = document.getElementById('page');
-  const backBtnEl = document.getElementById('back-btn');
-  const backLabelEl = document.getElementById('back-label');
   const titleEl = document.getElementById('page-title');
   const subtitleEl = document.getElementById('page-subtitle');
   const onbGuideEl = document.getElementById('onb-guide');
@@ -1050,7 +1038,6 @@ document.addEventListener('DOMContentLoaded', () => {
     titleEl.textContent = hasData ? t.titleEdit : t.titleFirst;
     subtitleEl.textContent = hasData ? t.subtitleEdit : t.subtitleFirst;
 
-    backLabelEl.textContent = t.backLabel;
     onbGuideTextEl.textContent = t.onbGuide;
 
     heroLabelEl.textContent = t.heroLabel;
@@ -1089,8 +1076,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ── Презентация: онбординг (нет данных) vs edit-вид (данные есть) ──
-  // Завязана на hasData, а НЕ на точку входа. Навигацией (back-кнопка) рулит
-  // отдельно applyNavigation() по isEdit.
+  // Завязана на hasData, а НЕ на точку входа. Возвратом назад рулит системная
+  // кнопка Telegram, которую показываем только в режиме edit.
   function applyPresentation() {
     if (hasData) {
       onbGuideEl.hidden = true;
@@ -1099,11 +1086,6 @@ document.addEventListener('DOMContentLoaded', () => {
       onbGuideEl.hidden = false;
       ctaHintEl.hidden = false;
     }
-  }
-
-  // ── Навигация: кнопка «Назад» в шапке — только при входе из Профиля ──
-  function applyNavigation() {
-    backBtnEl.hidden = !isEdit;
   }
 
   // ── Префилл из профиля (режим edit) ──
@@ -1381,8 +1363,6 @@ document.addEventListener('DOMContentLoaded', () => {
     goalDeficitEl.addEventListener('click', () => setGoalType('deficit'));
     goalSurplusEl.addEventListener('click', () => setGoalType('surplus'));
 
-    backBtnEl.addEventListener('click', () => { window.location.href = '../profile/'; });
-
     document.getElementById('bmr-form').addEventListener('submit', handleSubmit);
   }
 
@@ -1392,7 +1372,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderPreferenceChips();
     applyText();
     applyPresentation();
-    applyNavigation();
     updateActivityDescription();
     bindEvents();
     refresh();
