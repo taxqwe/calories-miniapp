@@ -60,7 +60,6 @@ const REQUEST_TIMEOUT_MS = 15000;
 const translations = {
   ru: {
     pageTitle: 'Уведомления',
-    backLabel: 'Профиль',
     statusLoading: 'Загружаем настройки…',
     loadError: 'Не удалось загрузить настройки. Попробуйте позже.',
     cardReminders: 'Напоминания',
@@ -73,7 +72,6 @@ const translations = {
   },
   en: {
     pageTitle: 'Notifications',
-    backLabel: 'Profile',
     statusLoading: 'Loading settings…',
     loadError: "Couldn't load settings. Please try again later.",
     cardReminders: 'Reminders',
@@ -88,8 +86,7 @@ const translations = {
 
 const els = {
   status: document.getElementById('profile-status'),
-  body: document.getElementById('profile-body'),
-  back: document.getElementById('back-btn')
+  body: document.getElementById('profile-body')
 };
 
 function getInitDataString() {
@@ -160,20 +157,18 @@ function setupNavClickInterception() {
   });
 }
 
-// Это подстраница Профиля, поэтому «назад» ведёт на Профиль: и своей кнопкой
-// в шапке, и системной кнопкой Telegram.
+// Возврат с подстраницы — ТОЛЬКО системной кнопкой Telegram, своей кнопки
+// «назад» в шапке быть не должно (см. AGENTS.md, «Навигация назад»).
 function goBackToProfile() {
   window.location.replace(withLang('../index.html'));
 }
 
 function setupBack() {
-  els.back?.addEventListener('click', goBackToProfile);
-  if (tg?.BackButton) {
-    try {
-      tg.BackButton.show();
-      tg.BackButton.onClick(goBackToProfile);
-    } catch (_) { /* noop */ }
-  }
+  if (!tg?.BackButton) return;
+  try {
+    tg.BackButton.show();
+    tg.BackButton.onClick(goBackToProfile);
+  } catch (_) { /* noop */ }
 }
 
 function render(profile) {
