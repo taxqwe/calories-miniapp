@@ -72,31 +72,6 @@ body {
   line-height: 1.4;
 }
 
-.hdr-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  align-self: flex-start;
-  background: none;
-  border: 0;
-  padding: 0 0 4px;
-  color: var(--accent-color);
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.hdr-back svg {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
-}
-
-.hdr-back:active {
-  opacity: 0.7;
-}
-
 [hidden] {
   display: none !important;
 }
