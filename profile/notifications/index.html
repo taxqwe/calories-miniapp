@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Уведомления</title>
+  <link rel="stylesheet" href="../../history/style.css">
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <main class="page">
+    <header class="page__header">
+      <button type="button" class="hdr-back" id="back-btn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5.5a1 1 0 0 1 0 1.4L11.4 11l4.1 4.1a1 1 0 1 1-1.4 1.4l-4.8-4.8a1 1 0 0 1 0-1.4l4.8-4.8a1 1 0 0 1 1.4 0z"/></svg>
+        <span data-i18n="backLabel">Профиль</span>
+      </button>
+      <h1 class="page__title" data-i18n="pageTitle">Уведомления</h1>
+    </header>
+
+    <!-- Статус загрузки / ошибки -->
+    <p class="profile__status" id="profile-status" data-i18n="statusLoading">Загружаем настройки…</p>
+
+    <div class="profile__body" id="profile-body" hidden>
+      <!--
+        НАПОМИНАНИЯ (#42).
+        Карточка рендерится reminders.js из данных профиля (поле reminders),
+        сохранение — POST /api/reminders (REPLACE-семантика).
+      -->
+      <section class="card" id="reminders-card" hidden>
+        <h2 class="card__title" data-i18n="cardReminders">Напоминания</h2>
+        <div class="reminders__list" id="reminders-list"></div>
+        <p class="reminders__empty" id="reminders-empty" data-rem-i18n="cardEmpty" hidden>Пока нет напоминаний. Добавьте первое.</p>
+        <button type="button" class="reminder-add" id="reminders-add">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          <span data-rem-i18n="addLabel">Добавить напоминание</span>
+        </button>
+        <p class="reminders__error" id="reminders-error" role="alert" aria-live="polite" hidden></p>
+        <p class="reminders__note" data-rem-i18n="note">Вечерний отчёт приходит один раз в день. Дневных напоминаний — до трёх.</p>
+      </section>
+
+      <!--
+        ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ (weekly digest).
+        Отдельная каденция уведомлений рядом с «Напоминаниями». Тумблер рендерит
+        digest.js из profile.weeklyDigestEnabled, сохранение — POST /api/settings.
+      -->
+      <section class="card" id="digest-card" hidden>
+        <h2 class="card__title" data-i18n="cardDigest">Еженедельный отчёт</h2>
+        <div class="switch-row">
+          <label class="switch-row__label" for="digest-toggle" data-i18n="digestToggleLabel">Присылать раз в неделю</label>
+          <label class="switch">
+            <input type="checkbox" id="digest-toggle" aria-describedby="digest-note">
+            <span class="switch__slider"></span>
+          </label>
+        </div>
+        <p class="card__note" id="digest-note" data-i18n="digestNote">Итоги недели: калории, дни в цели и прогресс.</p>
+        <p class="digest__error" id="digest-error" role="alert" aria-live="polite" hidden></p>
+      </section>
+    </div>
+  </main>
+
+  <!-- МОДАЛКА: добавить напоминание (#42) -->
+  <div class="modal reminders-modal" id="reminders-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="reminders-modal-title">
+    <form class="modal__dialog reminders-modal__form" id="reminders-modal-form">
+      <h2 class="modal__title" id="reminders-modal-title" data-rem-i18n="modalTitle">Новое напоминание</h2>
+      <p class="modal__description" data-rem-i18n="modalDescription">Выберите время и тип напоминания.</p>
+
+      <div class="modal__field">
+        <span class="modal__label" id="reminders-modal-time-label" data-rem-i18n="modalTimeLabel">Время</span>
+        <!--
+          Нативный input[type=time] под iOS рендерится широким и вылезал за
+          границы модалки (#615). Оставляем настоящий input интерактивным, но
+          прозрачным оверлеем поверх видимой кнопки-поля: тап попадает прямо в
+          input, и iOS сам открывает нативный барабан (программный showPicker()
+          на скрытом input под iOS не срабатывает). Текст кнопки — только показ
+          выбранного значения / плейсхолдера, поверх контейнер клипует overflow.
+        -->
+        <div class="modal__time-picker">
+          <span class="modal__time-button" id="reminders-modal-time-button"
+                data-rem-i18n="modalTimePlaceholder" aria-hidden="true">Выбрать время</span>
+          <input class="modal__time-input" id="reminders-modal-time" type="time" required
+                 aria-labelledby="reminders-modal-time-label">
+        </div>
+      </div>
+
+      <div class="modal__field">
+        <span class="modal__label" data-rem-i18n="modalTypeLabel">Тип</span>
+        <div class="reminders-modal__types" id="reminders-modal-types" role="radiogroup" data-rem-i18n-attr="aria-label:typeAriaLabel" aria-label="Тип напоминания">
+          <button type="button" class="reminders-type" data-type="EVENING" role="radio" aria-checked="false">
+            <span class="reminder__chip reminder__chip--evening" data-rem-i18n="typeEvening">Полный отчёт</span>
+            <span class="reminders-type__hint" data-rem-i18n="typeEveningHint">Вечерний итог дня</span>
+          </button>
+          <button type="button" class="reminders-type" data-type="DAYTIME" role="radio" aria-checked="false">
+            <span class="reminder__chip reminder__chip--daytime" data-rem-i18n="typeDaytime">Напоминание</span>
+            <span class="reminders-type__hint" data-rem-i18n="typeDaytimeHint">Подсказка в течение дня</span>
+          </button>
+        </div>
+      </div>
+
+      <p class="modal__error reminders-modal__error" id="reminders-modal-error" role="alert" hidden></p>
+
+      <div class="modal__actions">
+        <button type="button" class="modal__button modal__button--secondary" data-action="cancel" data-rem-i18n="cancel">Отмена</button>
+        <button type="submit" class="modal__button modal__button--primary" data-action="submit" data-rem-i18n="add">Добавить</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- МОДАЛКА: подтверждение удаления (#42) -->
+  <div class="modal reminders-confirm" id="reminders-confirm" hidden aria-hidden="true" role="alertdialog" aria-modal="true" aria-labelledby="reminders-confirm-title">
+    <div class="modal__dialog">
+      <h2 class="modal__title" id="reminders-confirm-title" data-rem-i18n="confirmTitle">Удалить напоминание?</h2>
+      <p class="modal__description" id="reminders-confirm-text"></p>
+
+      <div class="modal__actions">
+        <button type="button" class="modal__button modal__button--secondary" data-action="cancel" data-rem-i18n="cancel">Отмена</button>
+        <button type="button" class="modal__button modal__button--danger" data-action="confirm" data-rem-i18n="delete">Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav" role="navigation" aria-label="Основная навигация">
+    <a href="../../history/index.html" class="bottom-nav__item" id="nav-history">
+      <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+      </svg>
+      <span class="bottom-nav__label" data-i18n="navHistory">История</span>
+    </a>
+    <a href="../../stats/index.html" class="bottom-nav__item" id="nav-stats">
+      <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+      </svg>
+      <span class="bottom-nav__label" data-i18n="navStats">Статистика</span>
+    </a>
+    <a href="../index.html" class="bottom-nav__item bottom-nav__item--active" aria-current="page" id="nav-profile">
+      <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+      <span class="bottom-nav__label" data-i18n="navProfile">Профиль</span>
+    </a>
+  </nav>
+
+  <script src="../../config.js"></script>
+  <script src="script.js"></script>
+  <script src="reminders.js"></script>
+  <script src="digest.js"></script>
+</body>
+</html>

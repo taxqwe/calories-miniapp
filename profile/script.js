@@ -58,10 +58,12 @@ const translations = {
     statusLoading: 'Загружаем профиль…',
     cardTier: 'Тариф',
     cardNorm: 'Норма и цель',
-    cardReminders: 'Напоминания',
-    cardDigest: 'Еженедельный отчёт',
-    digestToggleLabel: 'Присылать раз в неделю',
-    digestNote: 'Итоги недели: калории, дни в цели и прогресс.',
+    rowNotifications: 'Уведомления',
+    notificationsNone: 'Выключены',
+    notificationsDigestOnly: 'Только отчёт за неделю',
+    remindersOne: 'напоминание',
+    remindersFew: 'напоминания',
+    remindersMany: 'напоминаний',
     cardMacros: 'Показ БЖУ',
     macrosPercent: 'Проценты',
     macrosGrams: 'Граммы',
@@ -97,10 +99,12 @@ const translations = {
     statusLoading: 'Loading profile…',
     cardTier: 'Plan',
     cardNorm: 'Norm & goal',
-    cardReminders: 'Reminders',
-    cardDigest: 'Weekly digest',
-    digestToggleLabel: 'Send once a week',
-    digestNote: 'Weekly summary: calories, days on goal, and progress.',
+    rowNotifications: 'Notifications',
+    notificationsNone: 'Off',
+    notificationsDigestOnly: 'Weekly digest only',
+    remindersOne: 'reminder',
+    remindersFew: 'reminders',
+    remindersMany: 'reminders',
     cardMacros: 'Macros display',
     macrosPercent: 'Percent',
     macrosGrams: 'Grams',
@@ -162,6 +166,8 @@ const els = {
   normEmpty: document.getElementById('norm-empty'),
   normEditLink: document.getElementById('norm-edit-link'),
   normEditLabel: document.getElementById('norm-edit-label'),
+  notificationsLink: document.getElementById('row-notifications'),
+  notificationsValue: document.getElementById('notifications-value'),
   languageValue: document.getElementById('language-value')
 };
 
@@ -335,6 +341,33 @@ function renderNorm(norm, goal) {
   }
 }
 
+// Сводка для строки «Уведомления»: сколько слотов напоминаний настроено.
+// Когда слотов нет — показываем состояние еженедельного отчёта, чтобы строка
+// не выглядела пустой у тех, кто напоминаниями не пользуется.
+function notificationsSummary(profile) {
+  const s = t();
+  const count = Array.isArray(profile?.reminders) ? profile.reminders.length : 0;
+  if (count > 0) return count + ' ' + pluralReminders(count);
+  return profile?.weeklyDigestEnabled === false ? s.notificationsNone : s.notificationsDigestOnly;
+}
+
+// ru: 1 напоминание / 2 напоминания / 5 напоминаний; en: 1 reminder / 2 reminders.
+function pluralReminders(count) {
+  const s = t();
+  if (resolveLocale() !== 'ru') return count === 1 ? s.remindersOne : s.remindersFew;
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 === 1 && mod100 !== 11) return s.remindersOne;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return s.remindersFew;
+  return s.remindersMany;
+}
+
+function renderNotifications(profile) {
+  if (!els.notificationsValue) return;
+  els.notificationsValue.textContent = notificationsSummary(profile);
+  els.notificationsLink?.setAttribute('href', withLang('notifications/index.html'));
+}
+
 function renderMisc(locale) {
   els.languageValue.textContent = languageName(locale) || '—';
 }
@@ -440,11 +473,12 @@ function render(profile) {
   applyNavLang();
   renderTier(profile?.subscription);
   renderNorm(profile?.norm, profile?.goal);
+  renderNotifications(profile);
   renderMisc(profile?.locale);
   els.status.hidden = true;
   els.body.hidden = false;
-  // Передаём профиль модулю напоминаний (reminders.js): полный профиль +
-  // резолвнутую локаль, чтобы карточка напоминаний переводилась тем же языком.
+  // Передаём профиль модулям карточек (macros.js): полный профиль +
+  // резолвнутую локаль, чтобы карточка переводилась тем же языком.
   document.dispatchEvent(
     new CustomEvent('profile:loaded', {
       detail: { profile, locale: resolveLocale() }

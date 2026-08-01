@@ -78,42 +78,6 @@
       </section>
 
       <!--
-        НАПОМИНАНИЯ (#42).
-        Якорь между «Норма и цель» и списком «Прочее». Карточка рендерится
-        скриптом reminders.js из данных профиля (поле reminders),
-        сохранение — POST /api/reminders (REPLACE-семантика).
-      -->
-      <section class="card" id="reminders-card" hidden>
-        <h2 class="card__title" data-i18n="cardReminders">Напоминания</h2>
-        <div class="reminders__list" id="reminders-list"></div>
-        <p class="reminders__empty" id="reminders-empty" data-rem-i18n="cardEmpty" hidden>Пока нет напоминаний. Добавьте первое.</p>
-        <button type="button" class="reminder-add" id="reminders-add">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-          <span data-rem-i18n="addLabel">Добавить напоминание</span>
-        </button>
-        <p class="reminders__error" id="reminders-error" role="alert" aria-live="polite" hidden></p>
-        <p class="reminders__note" data-rem-i18n="note">Вечерний отчёт приходит один раз в день. Дневных напоминаний — до трёх.</p>
-      </section>
-
-      <!--
-        ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ (weekly digest).
-        Отдельная каденция уведомлений рядом с «Напоминаниями». Тумблер рендерит
-        digest.js из profile.weeklyDigestEnabled, сохранение — POST /api/settings.
-      -->
-      <section class="card" id="digest-card" hidden>
-        <h2 class="card__title" data-i18n="cardDigest">Еженедельный отчёт</h2>
-        <div class="switch-row">
-          <label class="switch-row__label" for="digest-toggle" data-i18n="digestToggleLabel">Присылать раз в неделю</label>
-          <label class="switch">
-            <input type="checkbox" id="digest-toggle" aria-describedby="digest-note">
-            <span class="switch__slider"></span>
-          </label>
-        </div>
-        <p class="card__note" id="digest-note" data-i18n="digestNote">Итоги недели: калории, дни в цели и прогресс.</p>
-        <p class="digest__error" id="digest-error" role="alert" aria-live="polite" hidden></p>
-      </section>
-
-      <!--
         ПОКАЗ БЖУ (проценты или граммы).
         Стоит рядом с настройками уведомлений: это тоже настройка того, что
         приходит в бот. Рендерит macros.js из profile.macrosDisplayMode,
@@ -131,11 +95,18 @@
         <p class="digest__error" id="macros-error" role="alert" aria-live="polite" hidden></p>
       </section>
 
-      <!-- сохранён прежний якорь (скрытый) для совместимости с каркасом -->
-      <div id="reminders-anchor" data-placeholder="reminders" hidden></div>
-
       <!-- ПРОЧЕЕ -->
       <div class="rows">
+        <!--
+          Настройки уведомлений (напоминания + еженедельный отчёт) живут на
+          подстранице notifications/ — на Профиле от них остаётся строка со
+          сводкой, которую заполняет script.js из данных профиля.
+        -->
+        <a class="row" id="row-notifications" href="notifications/index.html">
+          <span class="row__label" data-i18n="rowNotifications">Уведомления</span><span class="row__spacer"></span>
+          <span class="row__value" id="notifications-value">—</span>
+          <svg class="row__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.3 6.3a1 1 0 0 1 1.4 0l4.8 4.8a1 1 0 0 1 0 1.4l-4.8 4.8a1 1 0 1 1-1.4-1.4l4.1-4.1-4.1-4.1a1 1 0 0 1 0-1.4z"/></svg>
+        </a>
         <div class="row row--static" id="row-language">
           <span class="row__label" data-i18n="rowLanguage">Язык</span><span class="row__spacer"></span>
           <span class="row__value" id="language-value">—</span>
@@ -143,66 +114,6 @@
       </div>
     </div>
   </main>
-
-  <!-- МОДАЛКА: добавить напоминание (#42) -->
-  <div class="modal reminders-modal" id="reminders-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="reminders-modal-title">
-    <form class="modal__dialog reminders-modal__form" id="reminders-modal-form">
-      <h2 class="modal__title" id="reminders-modal-title" data-rem-i18n="modalTitle">Новое напоминание</h2>
-      <p class="modal__description" data-rem-i18n="modalDescription">Выберите время и тип напоминания.</p>
-
-      <div class="modal__field">
-        <span class="modal__label" id="reminders-modal-time-label" data-rem-i18n="modalTimeLabel">Время</span>
-        <!--
-          Нативный input[type=time] под iOS рендерится широким и вылезал за
-          границы модалки (#615). Оставляем настоящий input интерактивным, но
-          прозрачным оверлеем поверх видимой кнопки-поля: тап попадает прямо в
-          input, и iOS сам открывает нативный барабан (программный showPicker()
-          на скрытом input под iOS не срабатывает). Текст кнопки — только показ
-          выбранного значения / плейсхолдера, поверх контейнер клипует overflow.
-        -->
-        <div class="modal__time-picker">
-          <span class="modal__time-button" id="reminders-modal-time-button"
-                data-rem-i18n="modalTimePlaceholder" aria-hidden="true">Выбрать время</span>
-          <input class="modal__time-input" id="reminders-modal-time" type="time" required
-                 aria-labelledby="reminders-modal-time-label">
-        </div>
-      </div>
-
-      <div class="modal__field">
-        <span class="modal__label" data-rem-i18n="modalTypeLabel">Тип</span>
-        <div class="reminders-modal__types" id="reminders-modal-types" role="radiogroup" data-rem-i18n-attr="aria-label:typeAriaLabel" aria-label="Тип напоминания">
-          <button type="button" class="reminders-type" data-type="EVENING" role="radio" aria-checked="false">
-            <span class="reminder__chip reminder__chip--evening" data-rem-i18n="typeEvening">Полный отчёт</span>
-            <span class="reminders-type__hint" data-rem-i18n="typeEveningHint">Вечерний итог дня</span>
-          </button>
-          <button type="button" class="reminders-type" data-type="DAYTIME" role="radio" aria-checked="false">
-            <span class="reminder__chip reminder__chip--daytime" data-rem-i18n="typeDaytime">Напоминание</span>
-            <span class="reminders-type__hint" data-rem-i18n="typeDaytimeHint">Подсказка в течение дня</span>
-          </button>
-        </div>
-      </div>
-
-      <p class="modal__error reminders-modal__error" id="reminders-modal-error" role="alert" hidden></p>
-
-      <div class="modal__actions">
-        <button type="button" class="modal__button modal__button--secondary" data-action="cancel" data-rem-i18n="cancel">Отмена</button>
-        <button type="submit" class="modal__button modal__button--primary" data-action="submit" data-rem-i18n="add">Добавить</button>
-      </div>
-    </form>
-  </div>
-
-  <!-- МОДАЛКА: подтверждение удаления (#42) -->
-  <div class="modal reminders-confirm" id="reminders-confirm" hidden aria-hidden="true" role="alertdialog" aria-modal="true" aria-labelledby="reminders-confirm-title">
-    <div class="modal__dialog">
-      <h2 class="modal__title" id="reminders-confirm-title" data-rem-i18n="confirmTitle">Удалить напоминание?</h2>
-      <p class="modal__description" id="reminders-confirm-text"></p>
-
-      <div class="modal__actions">
-        <button type="button" class="modal__button modal__button--secondary" data-action="cancel" data-rem-i18n="cancel">Отмена</button>
-        <button type="button" class="modal__button modal__button--danger" data-action="confirm" data-rem-i18n="delete">Удалить</button>
-      </div>
-    </div>
-  </div>
 
   <nav class="bottom-nav" role="navigation" aria-label="Основная навигация">
     <a href="../history/index.html" class="bottom-nav__item" id="nav-history">
@@ -228,8 +139,6 @@
   <script src="../config.js"></script>
   <script src="../timezone-sync.js"></script>
   <script src="script.js"></script>
-  <script src="reminders.js"></script>
-  <script src="digest.js"></script>
   <script src="macros.js"></script>
 </body>
 </html>
