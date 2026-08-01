@@ -113,6 +113,24 @@
         <p class="digest__error" id="digest-error" role="alert" aria-live="polite" hidden></p>
       </section>
 
+      <!--
+        ПОКАЗ БЖУ (проценты или граммы).
+        Стоит рядом с настройками уведомлений: это тоже настройка того, что
+        приходит в бот. Рендерит macros.js из profile.macrosDisplayMode,
+        сохранение — POST /api/settings (поле macrosDisplayMode).
+      -->
+      <section class="card" id="macros-card" hidden>
+        <h2 class="card__title" id="macros-card-title" data-i18n="cardMacros">Показ БЖУ</h2>
+        <div class="segmented" id="macros-options" role="radiogroup" aria-labelledby="macros-card-title">
+          <button type="button" class="segmented__option" id="macros-option-percent"
+                  data-mode="PERCENT" role="radio" aria-checked="true" data-i18n="macrosPercent">Проценты</button>
+          <button type="button" class="segmented__option" id="macros-option-grams"
+                  data-mode="GRAMS" role="radio" aria-checked="false" data-i18n="macrosGrams">Граммы</button>
+        </div>
+        <p class="card__note" id="macros-note" data-i18n="macrosNote">Строка БЖУ в закреплённом сообщении, /calories и вечернем отчёте.</p>
+        <p class="digest__error" id="macros-error" role="alert" aria-live="polite" hidden></p>
+      </section>
+
       <!-- сохранён прежний якорь (скрытый) для совместимости с каркасом -->
       <div id="reminders-anchor" data-placeholder="reminders" hidden></div>
 
@@ -212,5 +230,6 @@
   <script src="script.js"></script>
   <script src="reminders.js"></script>
   <script src="digest.js"></script>
+  <script src="macros.js"></script>
 </body>
 </html>
