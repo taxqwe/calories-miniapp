@@ -28,6 +28,18 @@
       -->
       <section class="card" id="reminders-card" hidden>
         <h2 class="card__title" data-i18n="cardReminders">Напоминания</h2>
+        <!--
+          Мастер-тумблер: тот самый флаг, которым раньше рулила кнопка в /settings
+          бота. Выключенный гасит все слоты сразу, сохранение — POST /api/settings
+          (поле remindersEnabled).
+        -->
+        <div class="switch-row">
+          <label class="switch-row__label" for="reminders-toggle" data-rem-i18n="masterLabel">Присылать напоминания</label>
+          <label class="switch">
+            <input type="checkbox" id="reminders-toggle">
+            <span class="switch__slider"></span>
+          </label>
+        </div>
         <div class="reminders__list" id="reminders-list"></div>
         <p class="reminders__empty" id="reminders-empty" data-rem-i18n="cardEmpty" hidden>Пока нет напоминаний. Добавьте первое.</p>
         <button type="button" class="reminder-add" id="reminders-add">
@@ -54,6 +66,23 @@
         </div>
         <p class="card__note" id="digest-note" data-i18n="digestNote">Итоги недели: калории, дни в цели и прогресс.</p>
         <p class="digest__error" id="digest-error" role="alert" aria-live="polite" hidden></p>
+      </section>
+
+      <!--
+        ПОКАЗ БЖУ. Живёт рядом с уведомлениями, потому что управляет строкой БЖУ
+        в закреплённом сообщении — постоянном уведомлении бота. Рендерит
+        macros.js из profile.macrosDisplayMode, сохранение — POST /api/settings.
+      -->
+      <section class="card" id="macros-card" hidden>
+        <h2 class="card__title" id="macros-card-title" data-i18n="cardMacros">Показ БЖУ</h2>
+        <div class="segmented" id="macros-options" role="radiogroup" aria-labelledby="macros-card-title">
+          <button type="button" class="segmented__option" id="macros-option-percent"
+                  data-mode="PERCENT" role="radio" aria-checked="true" data-i18n="macrosPercent">Проценты</button>
+          <button type="button" class="segmented__option" id="macros-option-grams"
+                  data-mode="GRAMS" role="radio" aria-checked="false" data-i18n="macrosGrams">Граммы</button>
+        </div>
+        <p class="card__note" id="macros-note" data-i18n="macrosNote">Строка БЖУ в закреплённом сообщении, /calories и вечернем отчёте.</p>
+        <p class="digest__error" id="macros-error" role="alert" aria-live="polite" hidden></p>
       </section>
     </div>
   </main>
@@ -143,5 +172,6 @@
   <script src="script.js"></script>
   <script src="reminders.js"></script>
   <script src="digest.js"></script>
+  <script src="macros.js"></script>
 </body>
 </html>

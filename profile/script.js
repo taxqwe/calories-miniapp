@@ -64,10 +64,6 @@ const translations = {
     remindersOne: 'напоминание',
     remindersFew: 'напоминания',
     remindersMany: 'напоминаний',
-    cardMacros: 'Показ БЖУ',
-    macrosPercent: 'Проценты',
-    macrosGrams: 'Граммы',
-    macrosNote: 'Строка БЖУ в закреплённом сообщении, /calories и вечернем отчёте.',
     rowLanguage: 'Язык',
     navHistory: 'История',
     navStats: 'Статистика',
@@ -105,10 +101,6 @@ const translations = {
     remindersOne: 'reminder',
     remindersFew: 'reminders',
     remindersMany: 'reminders',
-    cardMacros: 'Macros display',
-    macrosPercent: 'Percent',
-    macrosGrams: 'Grams',
-    macrosNote: 'The macro line in the pinned message, /calories, and the evening report.',
     rowLanguage: 'Language',
     navHistory: 'History',
     navStats: 'Stats',
@@ -346,7 +338,9 @@ function renderNorm(norm, goal) {
 // не выглядела пустой у тех, кто напоминаниями не пользуется.
 function notificationsSummary(profile) {
   const s = t();
-  const count = Array.isArray(profile?.reminders) ? profile.reminders.length : 0;
+  // Выключенный мастер-тумблер гасит слоты целиком — считаем их нулём.
+  const remindersOn = profile?.remindersEnabled !== false;
+  const count = remindersOn && Array.isArray(profile?.reminders) ? profile.reminders.length : 0;
   if (count > 0) return count + ' ' + pluralReminders(count);
   return profile?.weeklyDigestEnabled === false ? s.notificationsNone : s.notificationsDigestOnly;
 }
@@ -477,8 +471,8 @@ function render(profile) {
   renderMisc(profile?.locale);
   els.status.hidden = true;
   els.body.hidden = false;
-  // Передаём профиль модулям карточек (macros.js): полный профиль +
-  // резолвнутую локаль, чтобы карточка переводилась тем же языком.
+  // Событие оставляем для возможных модулей-карточек Профиля: полный профиль +
+  // резолвнутая локаль, чтобы карточка переводилась тем же языком.
   document.dispatchEvent(
     new CustomEvent('profile:loaded', {
       detail: { profile, locale: resolveLocale() }

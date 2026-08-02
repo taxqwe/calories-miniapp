@@ -80,7 +80,7 @@ if (tg?.BackButton) {
 
 ## 5. Модули-настройки внутри страницы
 
-Паттерн (см. `profile/notifications/reminders.js`, `digest.js`, `profile/macros.js`):
+Паттерн (см. `profile/notifications/reminders.js`, `digest.js`, `macros.js`):
 IIFE слушает событие `profile:loaded`, которое диспатчит скрипт страницы после
 `POST /api/profile`, читает своё поле, рисует контрол и сохраняет изменения
 оптимистично — с откатом и текстом ошибки при неудачном запросе.
