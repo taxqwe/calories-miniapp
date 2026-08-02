@@ -11,6 +11,10 @@
   (caloriesv2#568); если 404 — мягко деградируем (откатываем локальное состояние
   и показываем сообщение), реальный вызов оставляем.
 
+  Мастер-тумблер (profile.remindersEnabled) — общий флаг, гасящий все слоты
+  сразу; раньше им рулила кнопка в /settings бота. Сохранение — POST
+  {apiBaseUrl}/api/settings с телом { initData, remindersEnabled }.
+
   Лимиты на клиенте (бэкенд дублирует): ≤1 EVENING, ≤3 DAYTIME.
 */
 (function () {
@@ -28,6 +32,7 @@
   // (событие profile:loaded), плюс читаем ?lang= для рендера до загрузки.
   const TRANSLATIONS = {
     ru: {
+      masterLabel: 'Присылать напоминания',
       cardEmpty: 'Пока нет напоминаний. Добавьте первое.',
       note: 'Вечерний отчёт приходит один раз в день. Дневных напоминаний — до трёх.',
       typeEvening: 'Полный отчёт',
@@ -56,6 +61,7 @@
       unavailable: 'Напоминания пока недоступны. Попробуйте позже.'
     },
     en: {
+      masterLabel: 'Send reminders',
       cardEmpty: 'No reminders yet. Add your first one.',
       note: 'The full report arrives once a day. Up to three daytime reminders.',
       typeEvening: 'Full report',
@@ -141,6 +147,7 @@
 
   const els = {
     card: document.getElementById('reminders-card'),
+    master: document.getElementById('reminders-toggle'),
     list: document.getElementById('reminders-list'),
     empty: document.getElementById('reminders-empty'),
     add: document.getElementById('reminders-add'),
@@ -163,6 +170,8 @@
   // ── состояние ──────────────────────────────────────────────────
   /** @type {{time:string, type:'EVENING'|'DAYTIME'}[]} */
   let reminders = [];
+  let masterEnabled = true;
+  let savingMaster = false;
   let selectedType = null;
   let saving = false;
   let pendingDelete = null;
@@ -238,6 +247,7 @@
 
   function render() {
     els.card.hidden = false;
+    renderMaster();
     els.list.innerHTML = '';
 
     const sorted = sortReminders(reminders);
@@ -261,6 +271,7 @@
       del.className = 'reminder__del';
       del.setAttribute('aria-label', STR.deleteLabel);
       del.innerHTML = TRASH_SVG;
+      del.disabled = !masterEnabled;
       del.addEventListener('click', () => handleDelete(item));
 
       row.append(time, chip, spacer, del);
@@ -269,9 +280,19 @@
 
     els.empty.hidden = reminders.length > 0;
 
-    // Кнопка «Добавить» недоступна, если оба типа исчерпаны.
+    // Кнопка «Добавить» недоступна, если оба типа исчерпаны или всё выключено.
     const anyAvailable = canAdd('EVENING') || canAdd('DAYTIME');
-    els.add.disabled = !anyAvailable;
+    els.add.disabled = !anyAvailable || !masterEnabled;
+  }
+
+  // Мастер-тумблер гасит список целиком: слоты остаются в базе, но ничего не
+  // приходит, поэтому выключенный список показываем приглушённым.
+  function renderMaster() {
+    if (!els.master) return;
+    els.master.checked = masterEnabled;
+    els.master.disabled = savingMaster;
+    els.list.classList.toggle('reminders__list--off', !masterEnabled);
+    els.empty.classList.toggle('reminders__empty--off', !masterEnabled);
   }
 
   // ── модалка ─────────────────────────────────────────────────────
@@ -507,8 +528,57 @@
     }
   }
 
+  // ── мастер-тумблер ──────────────────────────────────────────────
+  async function persistMaster(next) {
+    const prev = masterEnabled;
+    masterEnabled = next;
+    savingMaster = true;
+    render();
+    clearError();
+
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/settings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        mode: 'cors',
+        body: JSON.stringify({
+          initData: getInitDataString(),
+          remindersEnabled: next
+        }),
+        signal: controller.signal
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      let body = null;
+      try {
+        body = await response.json();
+      } catch (_) {
+        body = null;
+      }
+      if (body && typeof body.remindersEnabled === 'boolean') {
+        masterEnabled = body.remindersEnabled;
+      }
+    } catch (error) {
+      console.error('Failed to save reminders master switch', error);
+      masterEnabled = prev;
+      showError(STR.saveError);
+    } finally {
+      window.clearTimeout(timeout);
+      savingMaster = false;
+      render();
+    }
+  }
+
   // ── инициализация ───────────────────────────────────────────────
   function init(profile) {
+    // Дефолт true: старый бэкенд без поля не должен выглядеть выключенным.
+    masterEnabled = profile?.remindersEnabled !== false;
     reminders = sortReminders(sanitize(profile?.reminders));
     render();
   }
@@ -526,6 +596,13 @@
   applyI18n();
 
   // Привязка обработчиков модалки / кнопок.
+  els.master?.addEventListener('change', () => {
+    if (savingMaster) {
+      els.master.checked = masterEnabled;
+      return;
+    }
+    persistMaster(els.master.checked);
+  });
   els.add.addEventListener('click', handleAddClick);
   els.modalForm.addEventListener('submit', handleModalSubmit);
 

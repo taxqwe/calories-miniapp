@@ -2,9 +2,9 @@
   Уведомления — подстраница Профиля.
 
   Собирает только каркас: тема, язык, загрузка профиля и событие
-  `profile:loaded`. Сами карточки рисуют reminders.js (POST /api/reminders) и
-  digest.js (POST /api/settings) — те же модули, что раньше жили на Профиле,
-  поэтому разметка карточек и модалок перенесена сюда без изменений.
+  `profile:loaded`. Сами карточки рисуют reminders.js (слоты + мастер-тумблер),
+  digest.js и macros.js (POST /api/settings) — те же модули, что раньше жили на
+  Профиле, поэтому разметка карточек и модалок перенесена сюда без изменений.
 */
 const tg = window.Telegram?.WebApp;
 
@@ -66,6 +66,10 @@ const translations = {
     cardDigest: 'Еженедельный отчёт',
     digestToggleLabel: 'Присылать раз в неделю',
     digestNote: 'Итоги недели: калории, дни в цели и прогресс.',
+    cardMacros: 'Показ БЖУ',
+    macrosPercent: 'Проценты',
+    macrosGrams: 'Граммы',
+    macrosNote: 'Строка БЖУ в закреплённом сообщении, /calories и вечернем отчёте.',
     navHistory: 'История',
     navStats: 'Статистика',
     navProfile: 'Профиль'
@@ -78,6 +82,10 @@ const translations = {
     cardDigest: 'Weekly digest',
     digestToggleLabel: 'Send once a week',
     digestNote: 'Weekly summary: calories, days on goal, and progress.',
+    cardMacros: 'Macros display',
+    macrosPercent: 'Percent',
+    macrosGrams: 'Grams',
+    macrosNote: 'The macro line in the pinned message, /calories, and the evening report.',
     navHistory: 'History',
     navStats: 'Stats',
     navProfile: 'Profile'

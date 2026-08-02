@@ -274,6 +274,11 @@
   line-height: 1.45;
 }
 
+.reminders__list--off,
+.reminders__empty--off {
+  opacity: 0.4;
+}
+
 .reminders__note {
   margin: 0;
   font-size: 12px;
