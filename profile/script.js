@@ -81,6 +81,15 @@ const translations = {
     premiumBenefit4: 'Подсчёт БЖУ (белки/жиры/углеводы)',
     goalDeficit: 'Цель: дефицит',
     goalSurplus: 'Цель: профицит',
+    preferencesTitle: 'Предпочтения',
+    preferences: {
+      more_protein: 'Белок',
+      less_sugar: 'Сахар',
+      more_veggies: 'Овощи',
+      low_carb: 'Углеводы',
+      more_water: 'Вода',
+      less_fat: 'Жиры'
+    },
     normEdit: 'Изменить расчёт',
     normCalc: 'Рассчитать норму',
     normEmpty: 'Норма ещё не рассчитана. Рассчитайте дневную норму калорий.',
@@ -118,6 +127,15 @@ const translations = {
     premiumBenefit4: 'Macronutrient counting (protein/fat/carbs)',
     goalDeficit: 'Goal: deficit',
     goalSurplus: 'Goal: surplus',
+    preferencesTitle: 'Preferences',
+    preferences: {
+      more_protein: 'Protein',
+      less_sugar: 'Sugar',
+      more_veggies: 'Veggies',
+      low_carb: 'Carbs',
+      more_water: 'Water',
+      less_fat: 'Fat'
+    },
     normEdit: 'Edit calculation',
     normCalc: 'Calculate norm',
     normEmpty: 'Norm not calculated yet. Calculate your daily calorie norm.',
@@ -155,6 +173,8 @@ const els = {
   normMeta: document.getElementById('norm-meta'),
   normTdee: document.getElementById('norm-tdee'),
   goalChip: document.getElementById('goal-chip'),
+  prefsBlock: document.getElementById('prefs-block'),
+  prefChips: document.getElementById('pref-chips'),
   normEmpty: document.getElementById('norm-empty'),
   normEditLink: document.getElementById('norm-edit-link'),
   normEditLabel: document.getElementById('norm-edit-label'),
@@ -162,6 +182,15 @@ const els = {
   notificationsValue: document.getElementById('notifications-value'),
   languageValue: document.getElementById('language-value')
 };
+
+const PREFERENCE_DEFS = [
+  { key: 'more_protein', emoji: '🥩', dir: 'up' },
+  { key: 'less_sugar', emoji: '🍬', dir: 'down' },
+  { key: 'more_veggies', emoji: '🥗', dir: 'up' },
+  { key: 'low_carb', emoji: '🌾', dir: 'down' },
+  { key: 'more_water', emoji: '💧', dir: 'up' },
+  { key: 'less_fat', emoji: '🧈', dir: 'down' }
+];
 
 const PREMIUM_STAR_SVG =
   '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 7.7l5.4-.8z"/></svg>';
@@ -333,6 +362,36 @@ function renderNorm(norm, goal) {
   }
 }
 
+function renderPreferences(preferences) {
+  if (!els.prefsBlock || !els.prefChips) return;
+  const allowed = Array.isArray(preferences)
+    ? PREFERENCE_DEFS.filter((def) => preferences.includes(def.key))
+    : [];
+
+  els.prefChips.innerHTML = '';
+  if (!allowed.length) {
+    els.prefsBlock.hidden = true;
+    return;
+  }
+
+  const labels = t().preferences || {};
+  allowed.forEach((def) => {
+    const chip = document.createElement('span');
+    chip.className = 'pref-chip';
+
+    const emoji = document.createElement('span');
+    emoji.className = 'pref-chip__emoji';
+    emoji.textContent = def.emoji;
+
+    const label = document.createElement('span');
+    label.textContent = (labels[def.key] || def.key) + (def.dir === 'down' ? ' ↓' : ' ↑');
+
+    chip.append(emoji, label);
+    els.prefChips.appendChild(chip);
+  });
+  els.prefsBlock.hidden = false;
+}
+
 // Сводка для строки «Уведомления»: сколько слотов напоминаний настроено.
 // Когда слотов нет — показываем состояние еженедельного отчёта, чтобы строка
 // не выглядела пустой у тех, кто напоминаниями не пользуется.
@@ -467,6 +526,7 @@ function render(profile) {
   applyNavLang();
   renderTier(profile?.subscription);
   renderNorm(profile?.norm, profile?.goal);
+  renderPreferences(profile?.preferences);
   renderNotifications(profile);
   renderMisc(profile?.locale);
   els.status.hidden = true;
