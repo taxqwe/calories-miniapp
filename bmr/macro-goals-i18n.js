@@ -6,6 +6,7 @@ window.MacroGoalsI18n = {
     refDesired: "desired weight",
     unitKg: "kg",
     needDesired: "Enter your desired weight",
+    desiredWeightRange: "Desired weight must be between {min} and {max} kg",
     presets: {
       recommended: "Recommended",
       high_protein: "High protein",
@@ -34,6 +35,7 @@ window.MacroGoalsI18n = {
     refDesired: "желаемого веса",
     unitKg: "кг",
     needDesired: "Укажите желаемый вес",
+    desiredWeightRange: "Желаемый вес должен быть от {min} до {max} кг",
     presets: {
       recommended: "Рекомендованный",
       high_protein: "Высокий белок",
@@ -62,6 +64,7 @@ window.MacroGoalsI18n = {
     refDesired: "бажаної ваги",
     unitKg: "кг",
     needDesired: "Вкажіть бажану вагу",
+    desiredWeightRange: "Бажана вага має бути від {min} до {max} кг",
     presets: {
       recommended: "Рекомендований",
       high_protein: "Багато білка",
@@ -90,6 +93,7 @@ window.MacroGoalsI18n = {
     refDesired: "Wunschgewicht",
     unitKg: "kg",
     needDesired: "Wunschgewicht eingeben",
+    desiredWeightRange: "Das Wunschgewicht muss zwischen {min} und {max} kg liegen",
     presets: {
       recommended: "Empfohlen",
       high_protein: "Viel Protein",
@@ -118,6 +122,7 @@ window.MacroGoalsI18n = {
     refDesired: "peso deseado",
     unitKg: "kg",
     needDesired: "Indica tu peso deseado",
+    desiredWeightRange: "El peso deseado debe estar entre {min} y {max} kg",
     presets: {
       recommended: "Recomendado",
       high_protein: "Alto en proteína",
@@ -146,6 +151,7 @@ window.MacroGoalsI18n = {
     refDesired: "poids souhaité",
     unitKg: "kg",
     needDesired: "Indiquez votre poids souhaité",
+    desiredWeightRange: "Le poids souhaité doit être entre {min} et {max} kg",
     presets: {
       recommended: "Recommandé",
       high_protein: "Riche en protéines",
@@ -174,6 +180,7 @@ window.MacroGoalsI18n = {
     refDesired: "peso desejado",
     unitKg: "kg",
     needDesired: "Informe o peso desejado",
+    desiredWeightRange: "O peso desejado deve estar entre {min} e {max} kg",
     presets: {
       recommended: "Recomendado",
       high_protein: "Rico em proteína",
@@ -202,6 +209,7 @@ window.MacroGoalsI18n = {
     refDesired: "istenen kilo",
     unitKg: "kg",
     needDesired: "İstediğiniz kiloyu girin",
+    desiredWeightRange: "İstenen kilo {min} ile {max} kg arasında olmalı",
     presets: {
       recommended: "Önerilen",
       high_protein: "Yüksek protein",
@@ -230,6 +238,7 @@ window.MacroGoalsI18n = {
     refDesired: "الوزن المرغوب",
     unitKg: "كجم",
     needDesired: "أدخل وزنك المرغوب",
+    desiredWeightRange: "يجب أن يكون الوزن المرغوب بين {min} و{max} كجم",
     presets: {
       recommended: "موصى به",
       high_protein: "بروتين عالٍ",
@@ -258,6 +267,7 @@ window.MacroGoalsI18n = {
     refDesired: "इच्छित वज़न",
     unitKg: "किग्रा",
     needDesired: "अपना इच्छित वज़न भरें",
+    desiredWeightRange: "इच्छित वज़न {min} से {max} किग्रा के बीच होना चाहिए",
     presets: {
       recommended: "अनुशंसित",
       high_protein: "हाई प्रोटीन",

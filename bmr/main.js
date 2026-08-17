@@ -832,6 +832,7 @@ document.addEventListener('DOMContentLoaded', () => {
     enabled: false,
     ref: 'current',
     desiredWeight: null,
+    desiredWeightRaw: '',
     presetId: null,
     custom: { protein: null, fat: null, carbs: null }
   };
@@ -1090,6 +1091,21 @@ document.addEventListener('DOMContentLoaded', () => {
     return macro.ref === 'desired' ? macro.desiredWeight : getCurrentWeightKg();
   }
 
+  // Границы желаемого веса те же, что у веса тела (validationRanges.weight):
+  // бот молча очищает поле вне 30..300, поэтому такое значение не отправляем.
+  function setDesiredWeightRaw(raw) {
+    macro.desiredWeightRaw = raw;
+    const v = parseInt(raw, 10);
+    const inRange = !isNaN(v)
+      && v >= validationRanges.weight.min
+      && v <= validationRanges.weight.max;
+    macro.desiredWeight = inRange ? v : null;
+  }
+
+  function isDesiredWeightInvalid() {
+    return macro.desiredWeightRaw !== '' && macro.desiredWeight == null;
+  }
+
   function recommendedPerKg() {
     const rec = macro.recommended;
     if (!rec || !(rec.basisWeightKg > 0)) return null;
@@ -1338,13 +1354,24 @@ document.addEventListener('DOMContentLoaded', () => {
     macroRefDesiredEl.checked = macro.ref === 'desired';
     macroRefDesiredEl.disabled = !macro.desiredWeight && macro.ref !== 'desired';
     if (document.activeElement !== desiredWeightEl) {
-      desiredWeightEl.value = macro.desiredWeight != null ? String(macro.desiredWeight) : '';
+      desiredWeightEl.value = macro.desiredWeightRaw;
     }
 
     const res = resolveMacroPreview();
 
-    macroDesiredHintEl.textContent = mt.needDesired;
-    macroDesiredHintEl.hidden = !res.needDesired;
+    const badDesired = isDesiredWeightInvalid();
+    desiredWeightEl.classList.toggle('macro-ref__weight--error', badDesired);
+    if (badDesired) {
+      macroDesiredHintEl.textContent = (mt.desiredWeightRange || '')
+        .replace('{min}', String(validationRanges.weight.min))
+        .replace('{max}', String(validationRanges.weight.max));
+      macroDesiredHintEl.classList.add('macro-ref__hint--error');
+      macroDesiredHintEl.hidden = false;
+    } else {
+      macroDesiredHintEl.textContent = mt.needDesired;
+      macroDesiredHintEl.classList.remove('macro-ref__hint--error');
+      macroDesiredHintEl.hidden = !res.needDesired;
+    }
 
     applyMacroChipLabels();
 
@@ -1423,7 +1450,7 @@ document.addEventListener('DOMContentLoaded', () => {
       : null;
     macro.normTarget = (data.norm && typeof data.norm.target === 'number') ? data.norm.target : null;
     if (typeof data.desiredWeight === 'number' && data.desiredWeight > 0) {
-      macro.desiredWeight = Math.round(data.desiredWeight);
+      setDesiredWeightRaw(String(Math.round(data.desiredWeight)));
     }
 
     const saved = data.macroGoals;
@@ -1649,7 +1676,7 @@ document.addEventListener('DOMContentLoaded', () => {
       genderSegEl.classList.remove('metab-field--error');
     }
 
-    if (macro.available && macro.enabled && macroHasZeroGoal()) {
+    if (macro.available && macro.enabled && (macroHasZeroGoal() || isDesiredWeightInvalid())) {
       hasErrors = true;
     }
 
@@ -1874,8 +1901,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     desiredWeightEl.addEventListener('input', () => {
       desiredWeightEl.value = digitsOnly(desiredWeightEl.value, 3);
-      const v = parseInt(desiredWeightEl.value, 10);
-      macro.desiredWeight = (isNaN(v) || v <= 0) ? null : v;
+      setDesiredWeightRaw(desiredWeightEl.value);
       updateMacroSection();
     });
 
