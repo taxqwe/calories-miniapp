@@ -484,6 +484,231 @@ body {
   border-top: 1px solid var(--border-color);
 }
 
+/* ── Цели по БЖУ ── */
+.macro-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.macro-ref {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.macro-ref__caption {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.macro-ref__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.macro-ref__option input[type="radio"] {
+  accent-color: var(--accent-color);
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.macro-ref__option input[type="radio"]:disabled ~ * {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.macro-ref__desired-label {
+  cursor: pointer;
+}
+
+.macro-ref__weight {
+  width: 56px;
+  background: var(--card-elevated-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 6px 8px;
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+}
+
+.macro-ref__weight:focus {
+  border-color: var(--accent-color);
+}
+
+.macro-ref__unit {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.macro-ref__hint {
+  font-size: 12px;
+  color: var(--accent-color);
+}
+
+.macro-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--card-elevated-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+.macro-preview__line {
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.macro-preview__formula {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.macro-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--track-color);
+  overflow: hidden;
+}
+
+.macro-bar__fill {
+  height: 100%;
+  background: var(--accent-color);
+  border-radius: 3px;
+  transition: width 0.2s ease;
+}
+
+.macro-bar--warn .macro-bar__fill {
+  background: #ff9f0a;
+}
+
+.macro-bar__caption {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.macro-custom {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.macro-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.macro-row__name {
+  flex: 1;
+  font-size: 14px;
+  min-width: 0;
+}
+
+.macro-row--warn .macro-row__name {
+  color: var(--destructive-color);
+}
+
+.macro-row--error .macro-row__input {
+  border-color: var(--destructive-color);
+}
+
+.macro-row__input {
+  width: 58px;
+  background: var(--card-elevated-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 6px 8px;
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.macro-row__input:focus {
+  border-color: var(--accent-color);
+}
+
+.macro-row__input--auto {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.macro-row__unit {
+  font-size: 12px;
+  color: var(--text-secondary);
+  min-width: 26px;
+  flex-shrink: 0;
+}
+
+.macro-row__auto {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.macro-row__auto--active {
+  border-color: var(--accent-border);
+  color: var(--accent-color);
+  background: var(--accent-soft);
+}
+
+.macro-zero-note {
+  font-size: 12px;
+  color: var(--destructive-color);
+}
+
+.macro-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(255, 159, 10, 0.14);
+  border: 1px solid rgba(255, 159, 10, 0.35);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-color);
+}
+
+.macro-banner__btn {
+  align-self: flex-start;
+  background: transparent;
+  border: 1px solid rgba(255, 159, 10, 0.5);
+  border-radius: 999px;
+  padding: 6px 12px;
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 /* ── CTA ── */
 .metab-cta {
   margin: 0 var(--inset);

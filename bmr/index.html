@@ -91,6 +91,47 @@
         <div class="goal-note" id="goal-note" hidden></div>
       </section>
 
+      <!-- ── Цели по БЖУ ── -->
+      <section class="card" id="macro-card" hidden>
+        <div class="switch-row">
+          <label for="macro-toggle" id="label-macro-toggle"></label>
+          <label class="switch">
+            <input type="checkbox" id="macro-toggle">
+            <span class="switch__slider"></span>
+          </label>
+        </div>
+        <div class="macro-body" id="macro-body" hidden>
+          <div class="macro-ref" role="radiogroup">
+            <span class="macro-ref__caption" id="macro-ref-label"></span>
+            <label class="macro-ref__option">
+              <input type="radio" name="macro-ref" id="macro-ref-current" value="current" checked>
+              <span id="macro-ref-current-label"></span>
+            </label>
+            <div class="macro-ref__option">
+              <input type="radio" name="macro-ref" id="macro-ref-desired" value="desired">
+              <label class="macro-ref__desired-label" for="desired-weight" id="macro-ref-desired-label"></label>
+              <input class="macro-ref__weight" type="text" id="desired-weight"
+                inputmode="numeric" autocomplete="off" placeholder="—">
+              <span class="macro-ref__unit" id="macro-desired-unit"></span>
+            </div>
+            <div class="macro-ref__hint" id="macro-desired-hint" hidden></div>
+          </div>
+          <div class="chips" id="macro-chips" role="group"></div>
+          <div class="macro-custom" id="macro-custom" hidden></div>
+          <div class="macro-zero-note" id="macro-zero-note" hidden></div>
+          <div class="macro-preview" id="macro-preview" hidden>
+            <div class="macro-preview__line" id="macro-preview-line"></div>
+            <div class="macro-preview__formula" id="macro-preview-formula" hidden></div>
+            <div class="macro-bar" id="macro-bar" hidden><div class="macro-bar__fill" id="macro-bar-fill"></div></div>
+            <div class="macro-bar__caption" id="macro-bar-caption" hidden></div>
+          </div>
+          <div class="macro-banner" id="macro-banner" hidden>
+            <span id="macro-banner-text"></span>
+            <button type="button" class="macro-banner__btn" id="macro-banner-btn" hidden></button>
+          </div>
+        </div>
+      </section>
+
       <!-- ── Предпочтения ── -->
       <section class="card" id="preferences-card">
         <h2 class="card__title" id="preferences-section-title"></h2>
@@ -106,6 +147,7 @@
 
   <script src="../config.js"></script>
   <script src="../timezone-sync.js"></script>
+  <script src="macro-goals-i18n.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
