@@ -753,6 +753,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const preferencesSectionTitleEl = document.getElementById('preferences-section-title');
   const preferencesChipsEl = document.getElementById('preferences-chips');
 
+  const macroCardEl = document.getElementById('macro-card');
+  const macroToggleEl = document.getElementById('macro-toggle');
+  const labelMacroToggleEl = document.getElementById('label-macro-toggle');
+  const macroBodyEl = document.getElementById('macro-body');
+  const macroRefLabelEl = document.getElementById('macro-ref-label');
+  const macroRefCurrentEl = document.getElementById('macro-ref-current');
+  const macroRefCurrentLabelEl = document.getElementById('macro-ref-current-label');
+  const macroRefDesiredEl = document.getElementById('macro-ref-desired');
+  const macroRefDesiredLabelEl = document.getElementById('macro-ref-desired-label');
+  const desiredWeightEl = document.getElementById('desired-weight');
+  const macroDesiredUnitEl = document.getElementById('macro-desired-unit');
+  const macroDesiredHintEl = document.getElementById('macro-desired-hint');
+  const macroChipsEl = document.getElementById('macro-chips');
+  const macroCustomEl = document.getElementById('macro-custom');
+  const macroZeroNoteEl = document.getElementById('macro-zero-note');
+  const macroPreviewEl = document.getElementById('macro-preview');
+  const macroPreviewLineEl = document.getElementById('macro-preview-line');
+  const macroFormulaEl = document.getElementById('macro-preview-formula');
+  const macroBarEl = document.getElementById('macro-bar');
+  const macroBarFillEl = document.getElementById('macro-bar-fill');
+  const macroBarCaptionEl = document.getElementById('macro-bar-caption');
+  const macroBannerEl = document.getElementById('macro-banner');
+  const macroBannerTextEl = document.getElementById('macro-banner-text');
+  const macroBannerBtnEl = document.getElementById('macro-banner-btn');
+
   const calculateButtonEl = document.getElementById('calculate-button');
   const ctaHintEl = document.getElementById('cta-hint');
   const resultEl = document.getElementById('result');
@@ -794,6 +819,25 @@ document.addEventListener('DOMContentLoaded', () => {
   let selectedGender = null; // 'm' | 'f' | null
   let selectedGoalType = 'deficit'; // 'deficit' | 'surplus'
   let selectedPreferences = new Set(); // канонические ключи предпочтений
+
+  // Цели по БЖУ: секция появляется только если /api/profile вернул macroPresets
+  // (deploy-безопасность: старый бот без B2 → секции нет и ключи не шлются).
+  const macroMetrics = ['protein', 'fat', 'carbs'];
+  const macro = {
+    available: false,
+    presets: [],
+    recommended: null,
+    normTarget: null,
+    savedHadGoals: false,
+    enabled: false,
+    ref: 'current',
+    desiredWeight: null,
+    desiredWeightRaw: '',
+    presetId: null,
+    custom: { protein: null, fat: null, carbs: null }
+  };
+  const macroRowEls = {};
+  const MACRO_BALANCE_TOLERANCE_KCAL = 20;
 
   // ── Утилиты ──
   function digitsOnly(value, maxLen) {
@@ -948,6 +992,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateHero();
     updateGoalNote();
     updateCtaState();
+    updateMacroSection();
   }
 
   // ── Активность ──
@@ -1007,6 +1052,456 @@ document.addEventListener('DOMContentLoaded', () => {
     preferencesChipsEl.querySelectorAll('.chip').forEach((btn) => {
       btn.classList.toggle('chip--active', selectedPreferences.has(btn.dataset.key));
     });
+  }
+
+  // ── Цели по БЖУ ──
+  function mtDict() {
+    const dicts = window.MacroGoalsI18n || {};
+    return dicts[lang] || dicts.en || {};
+  }
+
+  function round1(v) {
+    return Math.round(v * 10) / 10;
+  }
+
+  function round2(v) {
+    return Math.round(v * 100) / 100;
+  }
+
+  function decimalOnly(value) {
+    let clean = String(value).replace(',', '.').replace(/[^\d.]/g, '');
+    const parts = clean.split('.');
+    if (parts.length > 2) clean = parts[0] + '.' + parts.slice(1).join('');
+    return clean.slice(0, 5);
+  }
+
+  function getCurrentWeightKg() {
+    const w = parseFloat(weightEl.value);
+    if (w >= validationRanges.weight.min && w <= validationRanges.weight.max) return w;
+    return null;
+  }
+
+  function getTargetCalories() {
+    const comp = getValidComputation();
+    if (comp) return computeGoalTarget(comp).value;
+    return macro.normTarget;
+  }
+
+  function macroBaseWeight() {
+    return macro.ref === 'desired' ? macro.desiredWeight : getCurrentWeightKg();
+  }
+
+  // Границы желаемого веса те же, что у веса тела (validationRanges.weight):
+  // бот молча очищает поле вне 30..300, поэтому такое значение не отправляем.
+  function setDesiredWeightRaw(raw) {
+    macro.desiredWeightRaw = raw;
+    const v = parseInt(raw, 10);
+    const inRange = !isNaN(v)
+      && v >= validationRanges.weight.min
+      && v <= validationRanges.weight.max;
+    macro.desiredWeight = inRange ? v : null;
+  }
+
+  function isDesiredWeightInvalid() {
+    return macro.desiredWeightRaw !== '' && macro.desiredWeight == null;
+  }
+
+  function recommendedPerKg() {
+    const rec = macro.recommended;
+    if (!rec || !(rec.basisWeightKg > 0)) return null;
+    return { protein: rec.proteinG / rec.basisWeightKg, fat: rec.fatG / rec.basisWeightKg };
+  }
+
+  function activePresetPerKg() {
+    if (macro.presetId === 'recommended') return recommendedPerKg();
+    const preset = macro.presets.find((p) => p.id === macro.presetId);
+    if (!preset || !(preset.proteinPerKg > 0) || !(preset.fatPerKg > 0)) return null;
+    return { protein: preset.proteinPerKg, fat: preset.fatPerKg };
+  }
+
+  function resolveMacroGoalGrams(goal, baseW) {
+    if (!goal) return null;
+    if (goal.basis === 'absolute') return Math.round(goal.value);
+    return baseW ? Math.round(goal.value * baseW) : null;
+  }
+
+  function resolveMacroPreview() {
+    const target = getTargetCalories();
+    const baseW = macroBaseWeight();
+    const res = {
+      target,
+      proteinG: null,
+      fatG: null,
+      carbsG: null,
+      carbsAuto: true,
+      carbsZero: false,
+      impliedKcal: null,
+      diffKcal: 0,
+      perKg: null,
+      needDesired: false
+    };
+    if (macro.presetId === 'custom') {
+      res.proteinG = resolveMacroGoalGrams(macro.custom.protein, baseW);
+      res.fatG = resolveMacroGoalGrams(macro.custom.fat, baseW);
+      res.carbsAuto = !macro.custom.carbs;
+      if (macro.custom.carbs) res.carbsG = resolveMacroGoalGrams(macro.custom.carbs, baseW);
+      const usesPerKg = macroMetrics.some((m) => macro.custom[m] && macro.custom[m].basis === 'per_kg');
+      res.needDesired = usesPerKg && macro.ref === 'desired' && !macro.desiredWeight;
+    } else {
+      const pk = activePresetPerKg();
+      res.perKg = pk;
+      if (pk && baseW) {
+        res.proteinG = Math.round(pk.protein * baseW);
+        res.fatG = Math.round(pk.fat * baseW);
+      }
+      res.needDesired = macro.ref === 'desired' && !macro.desiredWeight;
+    }
+    if (res.carbsAuto && target != null && res.proteinG != null && res.fatG != null) {
+      const rest = Math.round((target - 4 * res.proteinG - 9 * res.fatG) / 4);
+      res.carbsG = Math.max(0, rest);
+      if (rest <= 0) res.carbsZero = true;
+    }
+    if (target != null && res.proteinG != null && res.fatG != null && res.carbsG != null) {
+      res.impliedKcal = 4 * res.proteinG + 9 * res.fatG + 4 * res.carbsG;
+      res.diffKcal = res.impliedKcal - target;
+    }
+    return res;
+  }
+
+  function macroChipDefs() {
+    const defs = [];
+    if (recommendedPerKg()) defs.push({ id: 'recommended', emoji: '⭐' });
+    macro.presets.forEach((p) => {
+      const emoji = p.id === 'high_protein' ? '🥩' : p.id === 'moderate' ? '⚖️' : '•';
+      defs.push({ id: p.id, emoji });
+    });
+    defs.push({ id: 'custom', emoji: '✎' });
+    return defs;
+  }
+
+  function renderMacroChips() {
+    macroChipsEl.innerHTML = '';
+    macroChipDefs().forEach((def) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip';
+      btn.dataset.key = def.id;
+      const emoji = document.createElement('span');
+      emoji.className = 'chip__emoji';
+      emoji.textContent = def.emoji;
+      const label = document.createElement('span');
+      label.className = 'chip__label';
+      btn.append(emoji, label);
+      btn.addEventListener('click', () => selectMacroPreset(def.id));
+      macroChipsEl.appendChild(btn);
+    });
+    applyMacroChipLabels();
+  }
+
+  function applyMacroChipLabels() {
+    const mt = mtDict();
+    macroChipsEl.querySelectorAll('.chip').forEach((btn) => {
+      const label = btn.querySelector('.chip__label');
+      if (label) label.textContent = (mt.presets && mt.presets[btn.dataset.key]) || btn.dataset.key;
+      btn.classList.toggle('chip--active', macro.presetId === btn.dataset.key);
+    });
+  }
+
+  function prefillCustomFromPreset() {
+    if (macro.custom.protein || macro.custom.fat || macro.custom.carbs) return;
+    const pk = activePresetPerKg();
+    if (!pk) return;
+    macro.custom.protein = { basis: 'per_kg', value: round1(pk.protein) };
+    macro.custom.fat = { basis: 'per_kg', value: round1(pk.fat) };
+  }
+
+  function selectMacroPreset(id) {
+    if (id === 'custom' && macro.presetId !== 'custom') prefillCustomFromPreset();
+    macro.presetId = id;
+    updateMacroSection();
+  }
+
+  function buildMacroRows() {
+    macroCustomEl.innerHTML = '';
+    macroMetrics.forEach((metric) => {
+      const row = document.createElement('div');
+      row.className = 'macro-row';
+      row.dataset.metric = metric;
+      const name = document.createElement('span');
+      name.className = 'macro-row__name';
+      const grams = document.createElement('input');
+      grams.className = 'macro-row__input';
+      grams.type = 'text';
+      grams.inputMode = 'numeric';
+      grams.autocomplete = 'off';
+      const gramsUnit = document.createElement('span');
+      gramsUnit.className = 'macro-row__unit';
+      row.append(name, grams, gramsUnit);
+      const refs = { row, name, grams, gramsUnit };
+      if (metric === 'carbs') {
+        const autoBtn = document.createElement('button');
+        autoBtn.type = 'button';
+        autoBtn.className = 'macro-row__auto';
+        autoBtn.addEventListener('click', () => {
+          macro.custom.carbs = null;
+          updateMacroSection();
+        });
+        row.append(autoBtn);
+        refs.autoBtn = autoBtn;
+      } else {
+        const perKg = document.createElement('input');
+        perKg.className = 'macro-row__input';
+        perKg.type = 'text';
+        perKg.inputMode = 'decimal';
+        perKg.autocomplete = 'off';
+        const perKgUnit = document.createElement('span');
+        perKgUnit.className = 'macro-row__unit';
+        row.append(perKg, perKgUnit);
+        refs.perKg = perKg;
+        refs.perKgUnit = perKgUnit;
+        perKg.addEventListener('input', () => {
+          perKg.value = decimalOnly(perKg.value);
+          const v = parseFloat(perKg.value);
+          macro.custom[metric] = perKg.value === ''
+            ? null
+            : { basis: 'per_kg', value: isNaN(v) ? 0 : v };
+          updateMacroSection();
+        });
+        perKg.addEventListener('blur', () => updateMacroSection());
+      }
+      grams.addEventListener('input', () => {
+        grams.value = digitsOnly(grams.value, 3);
+        const v = parseInt(grams.value, 10);
+        macro.custom[metric] = grams.value === ''
+          ? null
+          : { basis: 'absolute', value: isNaN(v) ? 0 : v };
+        updateMacroSection();
+      });
+      grams.addEventListener('blur', () => updateMacroSection());
+      macroCustomEl.appendChild(row);
+      macroRowEls[metric] = refs;
+    });
+  }
+
+  function macroBoundsIssue(metric, gramsVal, perKgVal) {
+    if (gramsVal != null && gramsVal > 600) return true;
+    if (perKgVal != null) {
+      if (metric === 'protein' && (perKgVal < 0.5 || perKgVal > 3.5)) return true;
+      if (metric === 'fat' && perKgVal < 0.5) return true;
+    }
+    return false;
+  }
+
+  function macroHasZeroGoal() {
+    return macro.presetId === 'custom'
+      && macroMetrics.some((m) => macro.custom[m] && macro.custom[m].value === 0);
+  }
+
+  function syncCustomRows(res) {
+    const mt = mtDict();
+    const baseW = macroBaseWeight();
+    macroMetrics.forEach((metric) => {
+      const refs = macroRowEls[metric];
+      if (!refs) return;
+      const goal = macro.custom[metric];
+      refs.name.textContent = mt[metric] || metric;
+      refs.gramsUnit.textContent = mt.unitG;
+      if (refs.perKgUnit) refs.perKgUnit.textContent = mt.unitPerKg;
+      if (refs.autoBtn) {
+        refs.autoBtn.textContent = '⟲ ' + (mt.auto || '');
+        refs.autoBtn.classList.toggle('macro-row__auto--active', !goal);
+      }
+      let grams = null;
+      if (goal) {
+        grams = resolveMacroGoalGrams(goal, baseW);
+      } else if (metric === 'carbs') {
+        grams = res.carbsG;
+      }
+      if (document.activeElement !== refs.grams) {
+        refs.grams.value = grams != null ? String(grams) : '';
+      }
+      refs.grams.classList.toggle('macro-row__input--auto', metric === 'carbs' && !goal);
+      let perKgVal = null;
+      if (goal) {
+        perKgVal = goal.basis === 'per_kg' ? goal.value : (baseW ? round1(goal.value / baseW) : null);
+      }
+      if (refs.perKg && document.activeElement !== refs.perKg) {
+        refs.perKg.value = perKgVal != null ? String(perKgVal) : '';
+      }
+      refs.row.classList.toggle('macro-row--error', !!(goal && goal.value === 0));
+      refs.row.classList.toggle('macro-row--warn', !!goal && macroBoundsIssue(metric, grams, perKgVal));
+    });
+  }
+
+  function updateMacroSection() {
+    if (!macro.available || !hasData) {
+      macroCardEl.hidden = true;
+      return;
+    }
+    const mt = mtDict();
+    macroCardEl.hidden = false;
+    labelMacroToggleEl.textContent = mt.title;
+    macroToggleEl.checked = macro.enabled;
+    macroBodyEl.hidden = !macro.enabled;
+    if (!macro.enabled) return;
+
+    macroRefLabelEl.textContent = mt.refLabel;
+    const w = getCurrentWeightKg();
+    macroRefCurrentLabelEl.textContent = (mt.refCurrent || '').replace('{w}', w != null ? String(w) : '—');
+    macroRefDesiredLabelEl.textContent = mt.refDesired;
+    macroDesiredUnitEl.textContent = mt.unitKg;
+    macroRefCurrentEl.checked = macro.ref === 'current';
+    macroRefDesiredEl.checked = macro.ref === 'desired';
+    macroRefDesiredEl.disabled = !macro.desiredWeight && macro.ref !== 'desired';
+    if (document.activeElement !== desiredWeightEl) {
+      desiredWeightEl.value = macro.desiredWeightRaw;
+    }
+
+    const res = resolveMacroPreview();
+
+    const badDesired = isDesiredWeightInvalid();
+    desiredWeightEl.classList.toggle('macro-ref__weight--error', badDesired);
+    if (badDesired) {
+      macroDesiredHintEl.textContent = (mt.desiredWeightRange || '')
+        .replace('{min}', String(validationRanges.weight.min))
+        .replace('{max}', String(validationRanges.weight.max));
+      macroDesiredHintEl.classList.add('macro-ref__hint--error');
+      macroDesiredHintEl.hidden = false;
+    } else {
+      macroDesiredHintEl.textContent = mt.needDesired;
+      macroDesiredHintEl.classList.remove('macro-ref__hint--error');
+      macroDesiredHintEl.hidden = !res.needDesired;
+    }
+
+    applyMacroChipLabels();
+
+    const isCustom = macro.presetId === 'custom';
+    macroCustomEl.hidden = !isCustom;
+    if (isCustom) syncCustomRows(res);
+
+    const hasZero = macroHasZeroGoal();
+    macroZeroNoteEl.textContent = mt.zeroForbidden;
+    macroZeroNoteEl.hidden = !hasZero;
+
+    macroPreviewEl.hidden = false;
+    if (isCustom) {
+      macroPreviewLineEl.hidden = true;
+    } else {
+      const fmt = (v) => (v != null ? formatNumber(v) : '—');
+      macroPreviewLineEl.textContent =
+        `${mt.protein} ${fmt(res.proteinG)} ${mt.unitG} · ` +
+        `${mt.fat} ${fmt(res.fatG)} ${mt.unitG} · ` +
+        `${mt.carbs} ${fmt(res.carbsG)} ${mt.unitG}`;
+      macroPreviewLineEl.hidden = false;
+    }
+    if (res.perKg) {
+      const baseText = macro.ref === 'desired' ? mt.formulaDesired : mt.formulaCurrent;
+      macroFormulaEl.textContent =
+        `${formatMultiplier(round1(res.perKg.protein))} / ${formatMultiplier(round1(res.perKg.fat))} ${baseText}`;
+      macroFormulaEl.hidden = false;
+    } else {
+      macroFormulaEl.hidden = true;
+    }
+
+    const balanced = res.impliedKcal != null && Math.abs(res.diffKcal) < MACRO_BALANCE_TOLERANCE_KCAL;
+    if (res.impliedKcal != null && res.target) {
+      const ratio = Math.max(0, Math.min(1, res.impliedKcal / res.target));
+      macroBarFillEl.style.width = `${Math.round(ratio * 100)}%`;
+      macroBarEl.classList.toggle('macro-bar--warn', !balanced || res.carbsZero);
+      macroBarEl.hidden = false;
+      macroBarCaptionEl.textContent =
+        `${formatNumber(res.impliedKcal)} / ${formatNumber(res.target)}` +
+        (balanced && !res.carbsZero ? ` · ${mt.balanceOk}` : '');
+      macroBarCaptionEl.hidden = false;
+    } else {
+      macroBarEl.hidden = true;
+      macroBarCaptionEl.hidden = true;
+    }
+
+    let bannerText = null;
+    let showFit = false;
+    if (res.carbsZero) {
+      bannerText = mt.carbsZero;
+    } else if (res.impliedKcal != null && !balanced) {
+      bannerText = (res.diffKcal > 0 ? mt.balanceOver : mt.balanceUnder)
+        .replace('{n}', formatNumber(Math.abs(res.diffKcal)));
+      showFit = isCustom && !!macro.custom.carbs;
+    }
+    if (bannerText) {
+      macroBannerTextEl.textContent = bannerText;
+      macroBannerBtnEl.textContent = mt.fitCarbs;
+      macroBannerBtnEl.hidden = !showFit;
+      macroBannerEl.hidden = false;
+    } else {
+      macroBannerEl.hidden = true;
+    }
+  }
+
+  function macroApplyProfile(data) {
+    if (!Array.isArray(data.macroPresets)) {
+      macro.available = false;
+      updateMacroSection();
+      return;
+    }
+    macro.available = true;
+    macro.presets = data.macroPresets.filter((p) => p && typeof p.id === 'string');
+    macro.recommended = (data.recommendedMacros && typeof data.recommendedMacros === 'object')
+      ? data.recommendedMacros
+      : null;
+    macro.normTarget = (data.norm && typeof data.norm.target === 'number') ? data.norm.target : null;
+    if (typeof data.desiredWeight === 'number' && data.desiredWeight > 0) {
+      setDesiredWeightRaw(String(Math.round(data.desiredWeight)));
+    }
+
+    const saved = data.macroGoals;
+    const goals = (saved && Array.isArray(saved.goals)) ? saved.goals : [];
+    if (goals.length) {
+      macro.savedHadGoals = true;
+      macro.enabled = true;
+      const perKgGoal = goals.find((g) => g && g.basis === 'per_kg');
+      macro.ref = (perKgGoal && perKgGoal.ref === 'desired') ? 'desired' : 'current';
+      if (saved.source === 'recommended' && recommendedPerKg()) {
+        macro.presetId = 'recommended';
+      } else if (saved.source === 'preset' && saved.presetId
+          && macro.presets.some((p) => p.id === saved.presetId)) {
+        macro.presetId = saved.presetId;
+      } else {
+        macro.presetId = 'custom';
+        goals.forEach((g) => {
+          if (!g || !macroMetrics.includes(g.metric) || !(typeof g.value === 'number')) return;
+          if (g.basis === 'absolute') {
+            macro.custom[g.metric] = { basis: 'absolute', value: Math.round(g.value) };
+          } else if (g.basis === 'per_kg') {
+            macro.custom[g.metric] = { basis: 'per_kg', value: g.value };
+          }
+        });
+      }
+    }
+    renderMacroChips();
+    updateMacroSection();
+  }
+
+  function buildMacroGoalsPayload() {
+    const goals = [];
+    if (macro.presetId === 'custom') {
+      macroMetrics.forEach((metric) => {
+        const g = macro.custom[metric];
+        if (!g || !(g.value > 0)) return;
+        if (g.basis === 'absolute') {
+          goals.push({ metric, basis: 'absolute', value: g.value });
+        } else {
+          goals.push({ metric, basis: 'per_kg', value: g.value, ref: macro.ref });
+        }
+      });
+      return { v: 1, source: 'manual', goals };
+    }
+    const pk = activePresetPerKg();
+    if (pk) {
+      goals.push({ metric: 'protein', basis: 'per_kg', value: round2(pk.protein), ref: macro.ref });
+      goals.push({ metric: 'fat', basis: 'per_kg', value: round2(pk.fat), ref: macro.ref });
+    }
+    if (macro.presetId === 'recommended') return { v: 1, source: 'recommended', goals };
+    return { v: 1, source: 'preset', presetId: macro.presetId, goals };
   }
 
   // ── Ошибки полей ──
@@ -1073,6 +1568,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // CTA: «Сохранить» когда есть данные (edit-вид), иначе «Рассчитать и сохранить».
     calculateButtonEl.textContent = hasData ? t.ctaEdit : t.ctaFirst;
     ctaHintEl.textContent = t.ctaHintFirst;
+
+    updateMacroSection();
   }
 
   // ── Презентация: онбординг (нет данных) vs edit-вид (данные есть) ──
@@ -1144,6 +1641,7 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedPreferences = new Set(data.preferences.filter((key) => preferenceKeys.includes(key)));
       updatePreferenceChips();
     }
+    macroApplyProfile(data);
     refresh();
   }
 
@@ -1178,6 +1676,10 @@ document.addEventListener('DOMContentLoaded', () => {
       genderSegEl.classList.remove('metab-field--error');
     }
 
+    if (macro.available && macro.enabled && (macroHasZeroGoal() || isDesiredWeightInvalid())) {
+      hasErrors = true;
+    }
+
     if (hasErrors) {
       refresh();
       return;
@@ -1201,6 +1703,17 @@ document.addEventListener('DOMContentLoaded', () => {
       preferences: Array.from(selectedPreferences),
       initData: (tg && tg.initData) || ''
     };
+
+    // Ключи macroGoals/desiredWeight шлём только когда бот отдал macroPresets:
+    // отсутствие ключа = «не трогать сохранённое» на стороне бота.
+    if (macro.available) {
+      if (macro.enabled) {
+        payload.macroGoals = buildMacroGoalsPayload();
+        payload.desiredWeight = macro.desiredWeight != null ? macro.desiredWeight : null;
+      } else if (macro.savedHadGoals) {
+        payload.macroGoals = null;
+      }
+    }
 
     if (typeof chatId === 'number' && chatId > 0) {
       payload.data.chatId = chatId;
@@ -1363,6 +1876,40 @@ document.addEventListener('DOMContentLoaded', () => {
     goalDeficitEl.addEventListener('click', () => setGoalType('deficit'));
     goalSurplusEl.addEventListener('click', () => setGoalType('surplus'));
 
+    macroToggleEl.addEventListener('change', () => {
+      macro.enabled = macroToggleEl.checked;
+      if (macro.enabled && !macro.presetId) {
+        const defs = macroChipDefs();
+        macro.presetId = defs.length ? defs[0].id : 'custom';
+      }
+      updateMacroSection();
+    });
+
+    macroRefCurrentEl.addEventListener('change', () => {
+      if (macroRefCurrentEl.checked) {
+        macro.ref = 'current';
+        updateMacroSection();
+      }
+    });
+
+    macroRefDesiredEl.addEventListener('change', () => {
+      if (macroRefDesiredEl.checked) {
+        macro.ref = 'desired';
+        updateMacroSection();
+      }
+    });
+
+    desiredWeightEl.addEventListener('input', () => {
+      desiredWeightEl.value = digitsOnly(desiredWeightEl.value, 3);
+      setDesiredWeightRaw(desiredWeightEl.value);
+      updateMacroSection();
+    });
+
+    macroBannerBtnEl.addEventListener('click', () => {
+      macro.custom.carbs = null;
+      updateMacroSection();
+    });
+
     document.getElementById('bmr-form').addEventListener('submit', handleSubmit);
   }
 
@@ -1370,6 +1917,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function init() {
     initTelegram();
     renderPreferenceChips();
+    buildMacroRows();
     applyText();
     applyPresentation();
     updateActivityDescription();
