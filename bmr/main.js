@@ -1352,7 +1352,6 @@ document.addEventListener('DOMContentLoaded', () => {
     macroDesiredUnitEl.textContent = mt.unitKg;
     macroRefCurrentEl.checked = macro.ref === 'current';
     macroRefDesiredEl.checked = macro.ref === 'desired';
-    macroRefDesiredEl.disabled = !macro.desiredWeight && macro.ref !== 'desired';
     if (document.activeElement !== desiredWeightEl) {
       desiredWeightEl.value = macro.desiredWeightRaw;
     }
