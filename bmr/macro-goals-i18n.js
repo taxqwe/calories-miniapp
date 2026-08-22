@@ -26,7 +26,11 @@ window.MacroGoalsI18n = {
     auto: "auto",
     unitG: "g",
     unitPerKg: "g/kg",
-    zeroForbidden: "0 is not allowed — clear the field to remove the goal"
+    zeroForbidden: "0 is not allowed — clear the field to remove the goal",
+    dirLabel: "Direction",
+    dirAtLeast: "at least",
+    dirAtMost: "at most",
+    dirAround: "about"
   },
   ru: {
     title: "Цели по БЖУ",
@@ -55,7 +59,11 @@ window.MacroGoalsI18n = {
     auto: "авто",
     unitG: "г",
     unitPerKg: "г/кг",
-    zeroForbidden: "0 нельзя — очистите поле, чтобы снять цель"
+    zeroForbidden: "0 нельзя — очистите поле, чтобы снять цель",
+    dirLabel: "Направление",
+    dirAtLeast: "минимум",
+    dirAtMost: "максимум",
+    dirAround: "около"
   },
   uk: {
     title: "Цілі по БЖВ",
@@ -84,7 +92,11 @@ window.MacroGoalsI18n = {
     auto: "авто",
     unitG: "г",
     unitPerKg: "г/кг",
-    zeroForbidden: "0 не можна — очистіть поле, щоб зняти ціль"
+    zeroForbidden: "0 не можна — очистіть поле, щоб зняти ціль",
+    dirLabel: "Напрямок",
+    dirAtLeast: "мінімум",
+    dirAtMost: "максимум",
+    dirAround: "близько"
   },
   de: {
     title: "Makro-Ziele",
@@ -113,7 +125,11 @@ window.MacroGoalsI18n = {
     auto: "auto",
     unitG: "g",
     unitPerKg: "g/kg",
-    zeroForbidden: "0 ist nicht erlaubt — Feld leeren, um das Ziel zu entfernen"
+    zeroForbidden: "0 ist nicht erlaubt — Feld leeren, um das Ziel zu entfernen",
+    dirLabel: "Richtung",
+    dirAtLeast: "mind.",
+    dirAtMost: "max.",
+    dirAround: "ca."
   },
   es: {
     title: "Objetivos de macros",
@@ -142,7 +158,11 @@ window.MacroGoalsI18n = {
     auto: "auto",
     unitG: "g",
     unitPerKg: "g/kg",
-    zeroForbidden: "0 no está permitido — vacía el campo para quitar el objetivo"
+    zeroForbidden: "0 no está permitido — vacía el campo para quitar el objetivo",
+    dirLabel: "Dirección",
+    dirAtLeast: "mínimo",
+    dirAtMost: "máximo",
+    dirAround: "aprox."
   },
   fr: {
     title: "Objectifs de macros",
@@ -171,7 +191,11 @@ window.MacroGoalsI18n = {
     auto: "auto",
     unitG: "g",
     unitPerKg: "g/kg",
-    zeroForbidden: "0 interdit — videz le champ pour retirer l'objectif"
+    zeroForbidden: "0 interdit — videz le champ pour retirer l'objectif",
+    dirLabel: "Sens",
+    dirAtLeast: "min.",
+    dirAtMost: "max.",
+    dirAround: "env."
   },
   pt: {
     title: "Metas de macros",
@@ -200,7 +224,11 @@ window.MacroGoalsI18n = {
     auto: "auto",
     unitG: "g",
     unitPerKg: "g/kg",
-    zeroForbidden: "0 não é permitido — limpe o campo para remover a meta"
+    zeroForbidden: "0 não é permitido — limpe o campo para remover a meta",
+    dirLabel: "Direção",
+    dirAtLeast: "mínimo",
+    dirAtMost: "máximo",
+    dirAround: "aprox."
   },
   tr: {
     title: "Makro hedefleri",
@@ -229,7 +257,11 @@ window.MacroGoalsI18n = {
     auto: "oto",
     unitG: "g",
     unitPerKg: "g/kg",
-    zeroForbidden: "0 girilemez — hedefi kaldırmak için alanı boşaltın"
+    zeroForbidden: "0 girilemez — hedefi kaldırmak için alanı boşaltın",
+    dirLabel: "Yön",
+    dirAtLeast: "en az",
+    dirAtMost: "en fazla",
+    dirAround: "yaklaşık"
   },
   ar: {
     title: "أهداف الماكروز",
@@ -258,7 +290,11 @@ window.MacroGoalsI18n = {
     auto: "تلقائي",
     unitG: "غ",
     unitPerKg: "غ/كغ",
-    zeroForbidden: "لا يُسمح بـ 0 — أفرغ الحقل لإزالة الهدف"
+    zeroForbidden: "لا يُسمح بـ 0 — أفرغ الحقل لإزالة الهدف",
+    dirLabel: "الاتجاه",
+    dirAtLeast: "الحد الأدنى",
+    dirAtMost: "الحد الأقصى",
+    dirAround: "تقريبًا"
   },
   hi: {
     title: "मैक्रो लक्ष्य",
@@ -287,6 +323,10 @@ window.MacroGoalsI18n = {
     auto: "ऑटो",
     unitG: "ग्रा",
     unitPerKg: "ग्रा/किग्रा",
-    zeroForbidden: "0 मान्य नहीं — लक्ष्य हटाने के लिए फ़ील्ड खाली करें"
+    zeroForbidden: "0 मान्य नहीं — लक्ष्य हटाने के लिए फ़ील्ड खाली करें",
+    dirLabel: "दिशा",
+    dirAtLeast: "कम से कम",
+    dirAtMost: "ज़्यादा से ज़्यादा",
+    dirAround: "लगभग"
   }
 };

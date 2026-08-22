@@ -103,6 +103,33 @@ body {
   line-height: 1.45;
 }
 
+.profile-banner {
+  margin: 0 var(--inset);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(255, 92, 92, 0.12);
+  border: 1px solid rgba(255, 92, 92, 0.35);
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text-color);
+}
+
+.profile-banner__btn {
+  align-self: flex-start;
+  background: transparent;
+  border: 1px solid rgba(255, 92, 92, 0.5);
+  border-radius: 999px;
+  padding: 6px 12px;
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 /* ── Hero: целевые калории ── */
 .metab-hero {
   margin: 0 var(--inset);
@@ -620,7 +647,32 @@ body {
 .macro-row {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 6px;
+}
+
+.macro-row__dir {
+  flex: 0 0 100%;
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.macro-row__dir-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 4px 9px;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.macro-row__dir-btn--active {
+  border-color: var(--accent-border);
+  color: var(--accent-color);
+  background: var(--accent-soft);
 }
 
 .macro-row__name {
