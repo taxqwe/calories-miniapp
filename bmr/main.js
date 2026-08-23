@@ -93,6 +93,9 @@ document.addEventListener('DOMContentLoaded', () => {
       sending: "Sending data…",
       success: "✅ Data saved!",
       error: "❌ Error: ",
+      profileLoading: "Loading your profile…",
+      profileErrorText: "Couldn't load your profile. Saving is off so your goal isn't overwritten.",
+      profileErrorRetry: "Retry",
       // validation
       validation: {
         heightRange: "Height must be between 100 and 250 cm",
@@ -161,6 +164,9 @@ document.addEventListener('DOMContentLoaded', () => {
       sending: "Отправка данных…",
       success: "✅ Данные сохранены!",
       error: "❌ Ошибка: ",
+      profileLoading: "Загружаем профиль…",
+      profileErrorText: "Не удалось загрузить профиль. Сохранение отключено, чтобы не стереть вашу цель.",
+      profileErrorRetry: "Повторить",
       validation: {
         heightRange: "Рост должен быть от 100 до 250 см",
         weightRange: "Вес должен быть от 30 до 300 кг",
@@ -228,6 +234,9 @@ document.addEventListener('DOMContentLoaded', () => {
       sending: "Відправлення даних…",
       success: "✅ Дані збережено!",
       error: "❌ Помилка: ",
+      profileLoading: "Завантажуємо профіль…",
+      profileErrorText: "Не вдалося завантажити профіль. Збереження вимкнено, щоб не стерти вашу ціль.",
+      profileErrorRetry: "Повторити",
       validation: {
         heightRange: "Зріст має бути від 100 до 250 см",
         weightRange: "Вага має бути від 30 до 300 кг",
@@ -295,6 +304,9 @@ document.addEventListener('DOMContentLoaded', () => {
       sending: "Daten werden gesendet…",
       success: "✅ Daten gespeichert!",
       error: "❌ Fehler: ",
+      profileLoading: "Profil wird geladen…",
+      profileErrorText: "Profil konnte nicht geladen werden. Speichern ist aus, damit dein Ziel nicht überschrieben wird.",
+      profileErrorRetry: "Erneut versuchen",
       validation: {
         heightRange: "Die Größe muss zwischen 100 und 250 cm liegen",
         weightRange: "Das Gewicht muss zwischen 30 und 300 kg liegen",
@@ -362,6 +374,9 @@ document.addEventListener('DOMContentLoaded', () => {
       sending: "Enviando datos…",
       success: "✅ ¡Datos guardados!",
       error: "❌ Error: ",
+      profileLoading: "Cargando tu perfil…",
+      profileErrorText: "No se pudo cargar el perfil. Guardar está desactivado para no borrar tu objetivo.",
+      profileErrorRetry: "Reintentar",
       validation: {
         heightRange: "La estatura debe estar entre 100 y 250 cm",
         weightRange: "El peso debe estar entre 30 y 300 kg",
@@ -429,6 +444,9 @@ document.addEventListener('DOMContentLoaded', () => {
       sending: "Envoi des données…",
       success: "✅ Données enregistrées !",
       error: "❌ Erreur : ",
+      profileLoading: "Chargement du profil…",
+      profileErrorText: "Impossible de charger le profil. L'enregistrement est désactivé pour ne pas effacer votre objectif.",
+      profileErrorRetry: "Réessayer",
       validation: {
         heightRange: "La taille doit être entre 100 et 250 cm",
         weightRange: "Le poids doit être entre 30 et 300 kg",
@@ -496,6 +514,9 @@ document.addEventListener('DOMContentLoaded', () => {
       sending: "Enviando dados…",
       success: "✅ Dados salvos!",
       error: "❌ Erro: ",
+      profileLoading: "Carregando seu perfil…",
+      profileErrorText: "Não foi possível carregar o perfil. Salvar está desativado para não apagar sua meta.",
+      profileErrorRetry: "Tentar de novo",
       validation: {
         heightRange: "A altura deve estar entre 100 e 250 cm",
         weightRange: "O peso deve estar entre 30 e 300 kg",
@@ -563,6 +584,9 @@ document.addEventListener('DOMContentLoaded', () => {
       sending: "Veriler gönderiliyor…",
       success: "✅ Veriler kaydedildi!",
       error: "❌ Hata: ",
+      profileLoading: "Profil yükleniyor…",
+      profileErrorText: "Profil yüklenemedi. Hedefinizin silinmemesi için kaydetme kapalı.",
+      profileErrorRetry: "Tekrar dene",
       validation: {
         heightRange: "Boy 100 ile 250 cm arasında olmalı",
         weightRange: "Kilo 30 ile 300 kg arasında olmalı",
@@ -630,6 +654,9 @@ document.addEventListener('DOMContentLoaded', () => {
       sending: "جارٍ إرسال البيانات…",
       success: "✅ تم حفظ البيانات!",
       error: "❌ خطأ: ",
+      profileLoading: "جارٍ تحميل الملف الشخصي…",
+      profileErrorText: "تعذر تحميل الملف الشخصي. تم تعطيل الحفظ حتى لا يُمحى هدفك.",
+      profileErrorRetry: "إعادة المحاولة",
       validation: {
         heightRange: "يجب أن يكون الطول بين 100 و250 سم",
         weightRange: "يجب أن يكون الوزن بين 30 و300 كجم",
@@ -697,6 +724,9 @@ document.addEventListener('DOMContentLoaded', () => {
       sending: "डेटा भेजा जा रहा है…",
       success: "✅ डेटा सहेजा गया!",
       error: "❌ त्रुटि: ",
+      profileLoading: "प्रोफ़ाइल लोड हो रही है…",
+      profileErrorText: "प्रोफ़ाइल लोड नहीं हो सकी। आपका लक्ष्य मिटने से बचाने के लिए सेव बंद है।",
+      profileErrorRetry: "फिर से कोशिश करें",
       validation: {
         heightRange: "ऊँचाई 100 से 250 सेमी के बीच होनी चाहिए",
         weightRange: "वज़न 30 से 300 किग्रा के बीच होना चाहिए",
@@ -778,6 +808,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const macroBannerTextEl = document.getElementById('macro-banner-text');
   const macroBannerBtnEl = document.getElementById('macro-banner-btn');
 
+  const profileBannerEl = document.getElementById('profile-banner');
+  const profileBannerTextEl = document.getElementById('profile-banner-text');
+  const profileBannerBtnEl = document.getElementById('profile-banner-btn');
+
   const calculateButtonEl = document.getElementById('calculate-button');
   const ctaHintEl = document.getElementById('cta-hint');
   const resultEl = document.getElementById('result');
@@ -792,6 +826,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // сохранённых данных профиля. По умолчанию рисуем онбординг, после ответа
   // /api/profile переключаемся на edit-вид, если данные пришли.
   let hasData = false;
+  let profileState = 'loading';
   const langParam = urlParams.get('lang');
 
   function normalizeLocale(value) {
@@ -834,8 +869,11 @@ document.addEventListener('DOMContentLoaded', () => {
     desiredWeight: null,
     desiredWeightRaw: '',
     presetId: null,
-    custom: { protein: null, fat: null, carbs: null }
+    custom: { protein: null, fat: null, carbs: null },
+    direction: { protein: null, fat: null, carbs: null }
   };
+  const macroDirections = ['at_least', 'at_most', 'around'];
+  const macroDirectionSigns = { at_least: '≥', at_most: '≤', around: '≈' };
   const macroRowEls = {};
   const MACRO_BALANCE_TOLERANCE_KCAL = 20;
 
@@ -961,8 +999,25 @@ document.addEventListener('DOMContentLoaded', () => {
     goalNoteEl.hidden = false;
   }
 
+  // ── Готовность профиля ──
+  function isProfileReady() {
+    return profileState === 'ready';
+  }
+
+  function updateProfileBanner() {
+    profileBannerTextEl.textContent = t.profileErrorText;
+    profileBannerBtnEl.textContent = t.profileErrorRetry;
+    profileBannerEl.hidden = profileState !== 'error';
+  }
+
   // ── Кнопка + хинт ──
   function updateCtaState() {
+    if (!isProfileReady()) {
+      calculateButtonEl.disabled = true;
+      ctaHintEl.textContent = profileState === 'error' ? t.profileErrorText : t.profileLoading;
+      ctaHintEl.hidden = false;
+      return;
+    }
     const comp = getValidComputation();
     if (hasData) {
       // edit-вид (есть сохранённые данные): кнопка всегда активна; пустую/невалидную
@@ -991,6 +1046,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function refresh() {
     updateHero();
     updateGoalNote();
+    updateProfileBanner();
     updateCtaState();
     updateMacroSection();
   }
@@ -1117,6 +1173,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const preset = macro.presets.find((p) => p.id === macro.presetId);
     if (!preset || !(preset.proteinPerKg > 0) || !(preset.fatPerKg > 0)) return null;
     return { protein: preset.proteinPerKg, fat: preset.fatPerKg };
+  }
+
+  function isDeficitGoal() {
+    return goalToggleEl.checked && selectedGoalType === 'deficit';
+  }
+
+  function presetDirection(metric) {
+    if (metric === 'protein') return 'at_least';
+    if (metric === 'fat') return 'at_most';
+    return isDeficitGoal() ? 'at_most' : 'around';
+  }
+
+  function effectiveDirection(metric) {
+    return macro.direction[metric] || presetDirection(metric);
+  }
+
+  function directionSign(metric) {
+    return macroDirectionSigns[effectiveDirection(metric)] || '';
+  }
+
+  function setMacroDirection(metric, direction) {
+    macro.direction[metric] = direction;
+    updateMacroSection();
   }
 
   function resolveMacroGoalGrams(goal, baseW) {
@@ -1278,6 +1357,20 @@ document.addEventListener('DOMContentLoaded', () => {
         updateMacroSection();
       });
       grams.addEventListener('blur', () => updateMacroSection());
+      const dir = document.createElement('div');
+      dir.className = 'macro-row__dir';
+      dir.setAttribute('role', 'group');
+      refs.dirBtns = {};
+      macroDirections.forEach((direction) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'macro-row__dir-btn';
+        btn.dataset.direction = direction;
+        btn.addEventListener('click', () => setMacroDirection(metric, direction));
+        dir.appendChild(btn);
+        refs.dirBtns[direction] = btn;
+      });
+      row.append(dir);
       macroCustomEl.appendChild(row);
       macroRowEls[metric] = refs;
     });
@@ -1330,6 +1423,20 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       refs.row.classList.toggle('macro-row--error', !!(goal && goal.value === 0));
       refs.row.classList.toggle('macro-row--warn', !!goal && macroBoundsIssue(metric, grams, perKgVal));
+      if (refs.dirBtns) {
+        const active = effectiveDirection(metric);
+        const labels = {
+          at_least: mt.dirAtLeast,
+          at_most: mt.dirAtMost,
+          around: mt.dirAround
+        };
+        macroDirections.forEach((direction) => {
+          const btn = refs.dirBtns[direction];
+          if (!btn) return;
+          btn.textContent = `${macroDirectionSigns[direction]} ${labels[direction] || direction}`;
+          btn.classList.toggle('macro-row__dir-btn--active', direction === active);
+        });
+      }
     });
   }
 
@@ -1386,11 +1493,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isCustom) {
       macroPreviewLineEl.hidden = true;
     } else {
-      const fmt = (v) => (v != null ? formatNumber(v) : '—');
+      const fmt = (metric, v) =>
+        (v != null ? `${directionSign(metric)} ${formatNumber(v)}` : '—');
       macroPreviewLineEl.textContent =
-        `${mt.protein} ${fmt(res.proteinG)} ${mt.unitG} · ` +
-        `${mt.fat} ${fmt(res.fatG)} ${mt.unitG} · ` +
-        `${mt.carbs} ${fmt(res.carbsG)} ${mt.unitG}`;
+        `${mt.protein} ${fmt('protein', res.proteinG)} ${mt.unitG} · ` +
+        `${mt.fat} ${fmt('fat', res.fatG)} ${mt.unitG} · ` +
+        `${mt.carbs} ${fmt('carbs', res.carbsG)} ${mt.unitG}`;
       macroPreviewLineEl.hidden = false;
     }
     if (res.perKg) {
@@ -1468,6 +1576,7 @@ document.addEventListener('DOMContentLoaded', () => {
         macro.presetId = 'custom';
         goals.forEach((g) => {
           if (!g || !macroMetrics.includes(g.metric) || !(typeof g.value === 'number')) return;
+          if (macroDirections.includes(g.direction)) macro.direction[g.metric] = g.direction;
           if (g.basis === 'absolute') {
             macro.custom[g.metric] = { basis: 'absolute', value: Math.round(g.value) };
           } else if (g.basis === 'per_kg') {
@@ -1486,18 +1595,30 @@ document.addEventListener('DOMContentLoaded', () => {
       macroMetrics.forEach((metric) => {
         const g = macro.custom[metric];
         if (!g || !(g.value > 0)) return;
-        if (g.basis === 'absolute') {
-          goals.push({ metric, basis: 'absolute', value: g.value });
-        } else {
-          goals.push({ metric, basis: 'per_kg', value: g.value, ref: macro.ref });
-        }
+        const goal = g.basis === 'absolute'
+          ? { metric, basis: 'absolute', value: g.value }
+          : { metric, basis: 'per_kg', value: g.value, ref: macro.ref };
+        if (macro.direction[metric]) goal.direction = macro.direction[metric];
+        goals.push(goal);
       });
       return { v: 1, source: 'manual', goals };
     }
     const pk = activePresetPerKg();
     if (pk) {
-      goals.push({ metric: 'protein', basis: 'per_kg', value: round2(pk.protein), ref: macro.ref });
-      goals.push({ metric: 'fat', basis: 'per_kg', value: round2(pk.fat), ref: macro.ref });
+      goals.push({
+        metric: 'protein',
+        basis: 'per_kg',
+        value: round2(pk.protein),
+        ref: macro.ref,
+        direction: presetDirection('protein')
+      });
+      goals.push({
+        metric: 'fat',
+        basis: 'per_kg',
+        value: round2(pk.fat),
+        ref: macro.ref,
+        direction: presetDirection('fat')
+      });
     }
     if (macro.presetId === 'recommended') return { v: 1, source: 'recommended', goals };
     return { v: 1, source: 'preset', presetId: macro.presetId, goals };
@@ -1586,6 +1707,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Префилл из профиля (режим edit) ──
   async function prefillFromProfile() {
+    profileState = 'loading';
+    refresh();
     try {
       const initData = (tg && tg.initData) || '';
       const url = `${API_BASE_URL}/api/profile`;
@@ -1598,12 +1721,15 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ initData }),
         mode: 'cors'
       });
-      if (!response.ok) return;
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
+      profileState = 'ready';
       applyPrefill(data);
+      refresh();
     } catch (error) {
-      // Тихо: пустая форма допустима, если профиль недоступен
+      profileState = 'error';
       console.warn('Не удалось получить профиль для префилла:', error);
+      refresh();
     }
   }
 
@@ -1651,6 +1777,11 @@ document.addEventListener('DOMContentLoaded', () => {
       document.activeElement.blur();
     }
 
+    if (!isProfileReady()) {
+      refresh();
+      return;
+    }
+
     clearFieldErrors();
 
     const { height, weight, age, activityLevel } = getInputs();
@@ -1686,8 +1817,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const { bmr, tdee } = computeBmrTdee(height, weight, age, selectedGender, activityLevel);
 
-    const goalInfo = goalToggleEl.checked ? { type: selectedGoalType } : null;
-
     const payload = {
       data: {
         height: height,
@@ -1698,14 +1827,17 @@ document.addEventListener('DOMContentLoaded', () => {
         bmr: Math.round(bmr),
         tdee: Math.round(tdee) // именно tdee — как было раньше
       },
-      goal: goalInfo,
       preferences: Array.from(selectedPreferences),
       initData: (tg && tg.initData) || ''
     };
 
-    // Ключи macroGoals/desiredWeight шлём только когда бот отдал macroPresets:
+    // Ключи goal/macroGoals/desiredWeight шлём только по готовности профиля:
     // отсутствие ключа = «не трогать сохранённое» на стороне бота.
-    if (macro.available) {
+    if (isProfileReady()) {
+      payload.goal = goalToggleEl.checked ? { type: selectedGoalType } : null;
+    }
+
+    if (isProfileReady() && macro.available) {
       if (macro.enabled) {
         payload.macroGoals = buildMacroGoalsPayload();
         payload.desiredWeight = macro.desiredWeight != null ? macro.desiredWeight : null;
@@ -1902,6 +2034,10 @@ document.addEventListener('DOMContentLoaded', () => {
       desiredWeightEl.value = digitsOnly(desiredWeightEl.value, 3);
       setDesiredWeightRaw(desiredWeightEl.value);
       updateMacroSection();
+    });
+
+    profileBannerBtnEl.addEventListener('click', () => {
+      prefillFromProfile();
     });
 
     macroBannerBtnEl.addEventListener('click', () => {
