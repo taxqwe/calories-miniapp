@@ -1598,7 +1598,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const goal = g.basis === 'absolute'
           ? { metric, basis: 'absolute', value: g.value }
           : { metric, basis: 'per_kg', value: g.value, ref: macro.ref };
-        if (macro.direction[metric]) goal.direction = macro.direction[metric];
+        goal.direction = effectiveDirection(metric);
         goals.push(goal);
       });
       return { v: 1, source: 'manual', goals };
