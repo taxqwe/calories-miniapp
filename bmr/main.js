@@ -797,6 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const macroDesiredHintEl = document.getElementById('macro-desired-hint');
   const macroChipsEl = document.getElementById('macro-chips');
   const macroCustomEl = document.getElementById('macro-custom');
+  const macroToleranceNoteEl = document.getElementById('macro-tolerance-note');
   const macroZeroNoteEl = document.getElementById('macro-zero-note');
   const macroPreviewEl = document.getElementById('macro-preview');
   const macroPreviewLineEl = document.getElementById('macro-preview-line');
@@ -1258,6 +1259,13 @@ document.addEventListener('DOMContentLoaded', () => {
     return defs;
   }
 
+  function macroDirectionBadgeText(mt) {
+    const shortLabels = mt.dirShort || {};
+    return macroMetrics
+      .map((metric) => `${shortLabels[metric] || ''} ${macroDirectionSigns[presetDirection(metric)] || ''}`.trim())
+      .join(' · ');
+  }
+
   function renderMacroChips() {
     macroChipsEl.innerHTML = '';
     macroChipDefs().forEach((def) => {
@@ -1265,12 +1273,21 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.type = 'button';
       btn.className = 'chip';
       btn.dataset.key = def.id;
+      const row = document.createElement('span');
+      row.className = 'chip__row';
       const emoji = document.createElement('span');
       emoji.className = 'chip__emoji';
       emoji.textContent = def.emoji;
       const label = document.createElement('span');
       label.className = 'chip__label';
-      btn.append(emoji, label);
+      row.append(emoji, label);
+      btn.append(row);
+      if (def.id !== 'custom') {
+        btn.classList.add('chip--macro');
+        const dir = document.createElement('span');
+        dir.className = 'chip__dir';
+        btn.append(dir);
+      }
       btn.addEventListener('click', () => selectMacroPreset(def.id));
       macroChipsEl.appendChild(btn);
     });
@@ -1279,9 +1296,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function applyMacroChipLabels() {
     const mt = mtDict();
+    const dirText = macroDirectionBadgeText(mt);
     macroChipsEl.querySelectorAll('.chip').forEach((btn) => {
       const label = btn.querySelector('.chip__label');
       if (label) label.textContent = (mt.presets && mt.presets[btn.dataset.key]) || btn.dataset.key;
+      const dir = btn.querySelector('.chip__dir');
+      if (dir) dir.textContent = dirText;
       btn.classList.toggle('chip--active', macro.presetId === btn.dataset.key);
     });
   }
@@ -1484,6 +1504,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const isCustom = macro.presetId === 'custom';
     macroCustomEl.hidden = !isCustom;
     if (isCustom) syncCustomRows(res);
+
+    macroToleranceNoteEl.textContent = mt.customTolerance;
+    macroToleranceNoteEl.hidden = !isCustom;
 
     const hasZero = macroHasZeroGoal();
     macroZeroNoteEl.textContent = mt.zeroForbidden;

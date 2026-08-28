@@ -333,6 +333,25 @@ body {
   border-color: transparent;
 }
 
+.chip--macro {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.chip__row {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.chip__dir {
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.72;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ── Активность ── */
 .activity-row {
   display: flex;
@@ -742,6 +761,11 @@ body {
 .macro-zero-note {
   font-size: 12px;
   color: var(--destructive-color);
+}
+
+.macro-tolerance-note {
+  font-size: 12px;
+  color: var(--text-secondary);
 }
 
 .macro-banner {
