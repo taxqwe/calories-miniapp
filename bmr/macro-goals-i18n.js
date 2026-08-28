@@ -30,7 +30,9 @@ window.MacroGoalsI18n = {
     dirLabel: "Direction",
     dirAtLeast: "at least",
     dirAtMost: "at most",
-    dirAround: "about"
+    dirAround: "about",
+    dirShort: { protein: "P", fat: "F", carbs: "C" },
+    customTolerance: "The goal counts as met within ±10% tolerance (at least ±5 g)."
   },
   ru: {
     title: "Цели по БЖУ",
@@ -63,7 +65,9 @@ window.MacroGoalsI18n = {
     dirLabel: "Направление",
     dirAtLeast: "минимум",
     dirAtMost: "максимум",
-    dirAround: "около"
+    dirAround: "около",
+    dirShort: { protein: "Б", fat: "Ж", carbs: "У" },
+    customTolerance: "Цель засчитывается с допуском ±10% (но не меньше ±5 г)."
   },
   uk: {
     title: "Цілі по БЖВ",
@@ -96,7 +100,9 @@ window.MacroGoalsI18n = {
     dirLabel: "Напрямок",
     dirAtLeast: "мінімум",
     dirAtMost: "максимум",
-    dirAround: "близько"
+    dirAround: "близько",
+    dirShort: { protein: "Б", fat: "Ж", carbs: "В" },
+    customTolerance: "Ціль зараховується з допуском ±10% (але не менше ±5 г)."
   },
   de: {
     title: "Makro-Ziele",
@@ -129,7 +135,9 @@ window.MacroGoalsI18n = {
     dirLabel: "Richtung",
     dirAtLeast: "mind.",
     dirAtMost: "max.",
-    dirAround: "ca."
+    dirAround: "ca.",
+    dirShort: { protein: "P", fat: "F", carbs: "K" },
+    customTolerance: "Das Ziel gilt mit einer Toleranz von ±10 % als erreicht (mindestens ±5 g)."
   },
   es: {
     title: "Objetivos de macros",
@@ -162,7 +170,9 @@ window.MacroGoalsI18n = {
     dirLabel: "Dirección",
     dirAtLeast: "mínimo",
     dirAtMost: "máximo",
-    dirAround: "aprox."
+    dirAround: "aprox.",
+    dirShort: { protein: "P", fat: "G", carbs: "C" },
+    customTolerance: "El objetivo se cuenta como cumplido con una tolerancia de ±10 % (al menos ±5 g)."
   },
   fr: {
     title: "Objectifs de macros",
@@ -195,7 +205,9 @@ window.MacroGoalsI18n = {
     dirLabel: "Sens",
     dirAtLeast: "min.",
     dirAtMost: "max.",
-    dirAround: "env."
+    dirAround: "env.",
+    dirShort: { protein: "P", fat: "L", carbs: "G" },
+    customTolerance: "L'objectif est validé avec une tolérance de ±10 % (au moins ±5 g)."
   },
   pt: {
     title: "Metas de macros",
@@ -228,7 +240,9 @@ window.MacroGoalsI18n = {
     dirLabel: "Direção",
     dirAtLeast: "mínimo",
     dirAtMost: "máximo",
-    dirAround: "aprox."
+    dirAround: "aprox.",
+    dirShort: { protein: "P", fat: "G", carbs: "C" },
+    customTolerance: "A meta é considerada cumprida com tolerância de ±10% (no mínimo ±5 g)."
   },
   tr: {
     title: "Makro hedefleri",
@@ -261,7 +275,9 @@ window.MacroGoalsI18n = {
     dirLabel: "Yön",
     dirAtLeast: "en az",
     dirAtMost: "en fazla",
-    dirAround: "yaklaşık"
+    dirAround: "yaklaşık",
+    dirShort: { protein: "P", fat: "Y", carbs: "K" },
+    customTolerance: "Hedef ±%10 tolerans ile sayılır (en az ±5 g)."
   },
   ar: {
     title: "أهداف الماكروز",
@@ -294,7 +310,9 @@ window.MacroGoalsI18n = {
     dirLabel: "الاتجاه",
     dirAtLeast: "الحد الأدنى",
     dirAtMost: "الحد الأقصى",
-    dirAround: "تقريبًا"
+    dirAround: "تقريبًا",
+    dirShort: { protein: "ب", fat: "د", carbs: "ك" },
+    customTolerance: "يُعتبر الهدف محققًا بهامش ±10٪ (لا يقل عن ±5 غ)."
   },
   hi: {
     title: "मैक्रो लक्ष्य",
@@ -327,6 +345,8 @@ window.MacroGoalsI18n = {
     dirLabel: "दिशा",
     dirAtLeast: "कम से कम",
     dirAtMost: "ज़्यादा से ज़्यादा",
-    dirAround: "लगभग"
+    dirAround: "लगभग",
+    dirShort: { protein: "प्रो", fat: "वसा", carbs: "कार्ब" },
+    customTolerance: "लक्ष्य ±10% सहनशीलता के साथ पूरा माना जाता है (कम से कम ±5 ग्राम)।"
   }
 };
