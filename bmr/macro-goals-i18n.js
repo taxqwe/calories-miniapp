@@ -32,7 +32,10 @@ window.MacroGoalsI18n = {
     dirAtMost: "at most",
     dirAround: "about",
     dirShort: { protein: "P", fat: "F", carbs: "C" },
-    customTolerance: "The goal counts as met within ±10% tolerance (at least ±5 g)."
+    customTolerance: "The goal counts as met within ±10% tolerance (at least ±5 g).",
+    premiumLockTitle: "Premium feature",
+    premiumLockText: "Macro goals can be set up with Premium. Without it, a day counts by calories only.",
+    premiumLockTextSaved: "Your macro goals are saved, but editing them requires Premium. For now a day counts by calories only."
   },
   ru: {
     title: "Цели по БЖУ",
@@ -67,7 +70,10 @@ window.MacroGoalsI18n = {
     dirAtMost: "максимум",
     dirAround: "около",
     dirShort: { protein: "Б", fat: "Ж", carbs: "У" },
-    customTolerance: "Цель засчитывается с допуском ±10% (но не меньше ±5 г)."
+    customTolerance: "Цель засчитывается с допуском ±10% (но не меньше ±5 г).",
+    premiumLockTitle: "Доступно с Premium",
+    premiumLockText: "Цели по БЖУ настраиваются только с Premium. Без него день засчитывается по калориям.",
+    premiumLockTextSaved: "Ваши цели по БЖУ сохранены, но менять их можно только с Premium. Сейчас день засчитывается по калориям."
   },
   uk: {
     title: "Цілі по БЖВ",
@@ -102,7 +108,10 @@ window.MacroGoalsI18n = {
     dirAtMost: "максимум",
     dirAround: "близько",
     dirShort: { protein: "Б", fat: "Ж", carbs: "В" },
-    customTolerance: "Ціль зараховується з допуском ±10% (але не менше ±5 г)."
+    customTolerance: "Ціль зараховується з допуском ±10% (але не менше ±5 г).",
+    premiumLockTitle: "Доступно з Premium",
+    premiumLockText: "Цілі по БЖВ налаштовуються лише з Premium. Без нього день зараховується за калоріями.",
+    premiumLockTextSaved: "Ваші цілі по БЖВ збережені, але змінювати їх можна лише з Premium. Зараз день зараховується за калоріями."
   },
   de: {
     title: "Makro-Ziele",
@@ -137,7 +146,10 @@ window.MacroGoalsI18n = {
     dirAtMost: "max.",
     dirAround: "ca.",
     dirShort: { protein: "P", fat: "F", carbs: "K" },
-    customTolerance: "Das Ziel gilt mit einer Toleranz von ±10 % als erreicht (mindestens ±5 g)."
+    customTolerance: "Das Ziel gilt mit einer Toleranz von ±10 % als erreicht (mindestens ±5 g).",
+    premiumLockTitle: "Premium-Funktion",
+    premiumLockText: "Makro-Ziele lassen sich nur mit Premium einstellen. Ohne Premium zählt ein Tag nur über die Kalorien.",
+    premiumLockTextSaved: "Deine Makro-Ziele sind gespeichert, ändern geht aber nur mit Premium. Aktuell zählt ein Tag nur über die Kalorien."
   },
   es: {
     title: "Objetivos de macros",
@@ -172,7 +184,10 @@ window.MacroGoalsI18n = {
     dirAtMost: "máximo",
     dirAround: "aprox.",
     dirShort: { protein: "P", fat: "G", carbs: "C" },
-    customTolerance: "El objetivo se cuenta como cumplido con una tolerancia de ±10 % (al menos ±5 g)."
+    customTolerance: "El objetivo se cuenta como cumplido con una tolerancia de ±10 % (al menos ±5 g).",
+    premiumLockTitle: "Disponible con Premium",
+    premiumLockText: "Los objetivos de macros se configuran solo con Premium. Sin él, el día cuenta solo por calorías.",
+    premiumLockTextSaved: "Tus objetivos de macros están guardados, pero cambiarlos requiere Premium. Por ahora el día cuenta solo por calorías."
   },
   fr: {
     title: "Objectifs de macros",
@@ -207,7 +222,10 @@ window.MacroGoalsI18n = {
     dirAtMost: "max.",
     dirAround: "env.",
     dirShort: { protein: "P", fat: "L", carbs: "G" },
-    customTolerance: "L'objectif est validé avec une tolérance de ±10 % (au moins ±5 g)."
+    customTolerance: "L'objectif est validé avec une tolérance de ±10 % (au moins ±5 g).",
+    premiumLockTitle: "Disponible avec Premium",
+    premiumLockText: "Les objectifs de macros se configurent uniquement avec Premium. Sans lui, la journée compte seulement selon les calories.",
+    premiumLockTextSaved: "Vos objectifs de macros sont enregistrés, mais les modifier nécessite Premium. Pour l'instant, la journée compte seulement selon les calories."
   },
   pt: {
     title: "Metas de macros",
@@ -242,7 +260,10 @@ window.MacroGoalsI18n = {
     dirAtMost: "máximo",
     dirAround: "aprox.",
     dirShort: { protein: "P", fat: "G", carbs: "C" },
-    customTolerance: "A meta é considerada cumprida com tolerância de ±10% (no mínimo ±5 g)."
+    customTolerance: "A meta é considerada cumprida com tolerância de ±10% (no mínimo ±5 g).",
+    premiumLockTitle: "Disponível no Premium",
+    premiumLockText: "As metas de macros só podem ser configuradas com Premium. Sem ele, o dia conta apenas pelas calorias.",
+    premiumLockTextSaved: "Suas metas de macros estão salvas, mas alterá-las exige Premium. Por enquanto o dia conta apenas pelas calorias."
   },
   tr: {
     title: "Makro hedefleri",
@@ -277,7 +298,10 @@ window.MacroGoalsI18n = {
     dirAtMost: "en fazla",
     dirAround: "yaklaşık",
     dirShort: { protein: "P", fat: "Y", carbs: "K" },
-    customTolerance: "Hedef ±%10 tolerans ile sayılır (en az ±5 g)."
+    customTolerance: "Hedef ±%10 tolerans ile sayılır (en az ±5 g).",
+    premiumLockTitle: "Premium ile kullanılabilir",
+    premiumLockText: "Makro hedefleri yalnızca Premium ile ayarlanır. Premium olmadan gün yalnızca kaloriye göre sayılır.",
+    premiumLockTextSaved: "Makro hedefleriniz kayıtlı, ancak değiştirmek için Premium gerekir. Şimdilik gün yalnızca kaloriye göre sayılıyor."
   },
   ar: {
     title: "أهداف الماكروز",
@@ -312,7 +336,10 @@ window.MacroGoalsI18n = {
     dirAtMost: "الحد الأقصى",
     dirAround: "تقريبًا",
     dirShort: { protein: "ب", fat: "د", carbs: "ك" },
-    customTolerance: "يُعتبر الهدف محققًا بهامش ±10٪ (لا يقل عن ±5 غ)."
+    customTolerance: "يُعتبر الهدف محققًا بهامش ±10٪ (لا يقل عن ±5 غ).",
+    premiumLockTitle: "متاح مع Premium",
+    premiumLockText: "يمكن ضبط أهداف الماكروز مع Premium فقط. بدونه يُحتسب اليوم بالسعرات فقط.",
+    premiumLockTextSaved: "أهداف الماكروز محفوظة، لكن تغييرها يتطلب Premium. حاليًا يُحتسب اليوم بالسعرات فقط."
   },
   hi: {
     title: "मैक्रो लक्ष्य",
@@ -347,6 +374,9 @@ window.MacroGoalsI18n = {
     dirAtMost: "ज़्यादा से ज़्यादा",
     dirAround: "लगभग",
     dirShort: { protein: "प्रो", fat: "वसा", carbs: "कार्ब" },
-    customTolerance: "लक्ष्य ±10% सहनशीलता के साथ पूरा माना जाता है (कम से कम ±5 ग्राम)।"
+    customTolerance: "लक्ष्य ±10% सहनशीलता के साथ पूरा माना जाता है (कम से कम ±5 ग्राम)।",
+    premiumLockTitle: "Premium में उपलब्ध",
+    premiumLockText: "मैक्रो लक्ष्य केवल Premium के साथ सेट किए जा सकते हैं। इसके बिना दिन सिर्फ़ कैलोरी से गिना जाता है।",
+    premiumLockTextSaved: "आपके मैक्रो लक्ष्य सहेजे गए हैं, लेकिन उन्हें बदलने के लिए Premium चाहिए। फ़िलहाल दिन सिर्फ़ कैलोरी से गिना जाता है।"
   }
 };
