@@ -808,6 +808,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const macroBannerEl = document.getElementById('macro-banner');
   const macroBannerTextEl = document.getElementById('macro-banner-text');
   const macroBannerBtnEl = document.getElementById('macro-banner-btn');
+  const macroLockEl = document.getElementById('macro-lock');
+  const macroLockTitleEl = document.getElementById('macro-lock-title');
+  const macroLockTextEl = document.getElementById('macro-lock-text');
 
   const profileBannerEl = document.getElementById('profile-banner');
   const profileBannerTextEl = document.getElementById('profile-banner-text');
@@ -871,7 +874,8 @@ document.addEventListener('DOMContentLoaded', () => {
     desiredWeightRaw: '',
     presetId: null,
     custom: { protein: null, fat: null, carbs: null },
-    direction: { protein: null, fat: null, carbs: null }
+    direction: { protein: null, fat: null, carbs: null },
+    locked: false
   };
   const macroDirections = ['at_least', 'at_most', 'around'];
   const macroDirectionSigns = { at_least: '≥', at_most: '≤', around: '≈' };
@@ -1115,6 +1119,29 @@ document.addEventListener('DOMContentLoaded', () => {
   function mtDict() {
     const dicts = window.MacroGoalsI18n || {};
     return dicts[lang] || dicts.en || {};
+  }
+
+  function isMacroLockedByTier(subscription) {
+    const tier = (subscription && typeof subscription.tier === 'string')
+      ? subscription.tier.trim().toUpperCase()
+      : '';
+    return tier === 'BASIC';
+  }
+
+  function renderMacroLock() {
+    const mt = mtDict();
+    macroLockEl.hidden = !macro.locked;
+    if (macro.locked) {
+      macroLockTitleEl.textContent = mt.premiumLockTitle || '';
+      macroLockTextEl.textContent = macro.savedHadGoals
+        ? (mt.premiumLockTextSaved || '')
+        : (mt.premiumLockText || '');
+    }
+    macroToggleEl.disabled = macro.locked;
+    macroBodyEl.classList.toggle('macro-body--locked', macro.locked);
+    macroBodyEl.querySelectorAll('input, button').forEach((el) => {
+      el.disabled = macro.locked;
+    });
   }
 
   function round1(v) {
@@ -1470,7 +1497,10 @@ document.addEventListener('DOMContentLoaded', () => {
     labelMacroToggleEl.textContent = mt.title;
     macroToggleEl.checked = macro.enabled;
     macroBodyEl.hidden = !macro.enabled;
-    if (!macro.enabled) return;
+    if (!macro.enabled) {
+      renderMacroLock();
+      return;
+    }
 
     macroRefLabelEl.textContent = mt.refLabel;
     const w = getCurrentWeightKg();
@@ -1565,9 +1595,12 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       macroBannerEl.hidden = true;
     }
+
+    renderMacroLock();
   }
 
   function macroApplyProfile(data) {
+    macro.locked = isMacroLockedByTier(data.subscription);
     if (!Array.isArray(data.macroPresets)) {
       macro.available = false;
       updateMacroSection();
