@@ -435,38 +435,42 @@
     .goals-metrics-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
     .goals-metric-row {
       display: flex;
       flex-direction: column;
+      gap: 6px;
     }
     .goals-metric-top {
       display: flex;
-      align-items: center;
+      align-items: baseline;
       justify-content: space-between;
       gap: 8px;
       font-size: 14px;
-      margin-bottom: 4px;
     }
     .goals-metric-name {
-      display: flex;
-      align-items: center;
+      display: inline-flex;
+      align-items: baseline;
       gap: 6px;
       color: var(--text-color);
+      min-width: 0;
     }
     .goals-metric-icon {
       font-size: 15px;
       line-height: 1;
     }
     .goals-metric-target {
+      font-size: 12px;
       color: var(--text-light);
       white-space: nowrap;
     }
-    .goals-metric-progress-text {
+    .goals-metric-count {
       font-size: 13px;
-      color: var(--text-light);
-      margin-bottom: 6px;
+      font-weight: 600;
+      color: var(--text-color);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
     }
     .goals-metric-bar {
       position: relative;

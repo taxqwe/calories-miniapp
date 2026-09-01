@@ -512,10 +512,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
           <div class="goals-metric-row">
             <div class="goals-metric-top">
-              <span class="goals-metric-name"><span class="goals-metric-icon">${GOALS_METRIC_ICONS[metric]}</span>${nameText}</span>
-              <span class="goals-metric-target">${targetText}</span>
+              <span class="goals-metric-name"><span class="goals-metric-icon">${GOALS_METRIC_ICONS[metric]}</span>${nameText}${targetText ? `<span class="goals-metric-target">${targetText}</span>` : ''}</span>
+              <span class="goals-metric-count">${progressText}</span>
             </div>
-            <div class="goals-metric-progress-text">${progressText}</div>
             <div class="goals-metric-bar">
               <div class="goals-metric-bar-fill" style="width: ${percent.toFixed(1)}%"></div>
             </div>
@@ -739,6 +738,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateCollections(data, tdee) {
     const parts = [];
 
+    parts.push('<div id="goals-collection-card"></div>');
+
     parts.push(buildActiveBlock(data, tdee));
     parts.push(buildStaticBlock(getWeekData()));
     parts.push(buildMonthComparisonBlock());
@@ -750,8 +751,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     parts.push(buildStreakRow());
-
-    parts.push('<div id="goals-collection-card"></div>');
 
     collectionsContainer.innerHTML = parts.join('');
 
