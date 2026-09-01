@@ -448,6 +448,213 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+  const GOALS_METRIC_ORDER = ['calories', 'protein', 'fat', 'carbs'];
+  const GOALS_METRIC_ICONS = { calories: '🔥', protein: '🥚', fat: '🧈', carbs: '🍞' };
+  const GOALS_METRIC_NAME_KEYS = {
+    calories: 'goalsMetricCalories',
+    protein: 'goalsMetricProtein',
+    fat: 'goalsMetricFat',
+    carbs: 'goalsMetricCarbs'
+  };
+  const GOALS_DIRECTION_SYMBOLS = { at_least: '≥', at_most: '≤', around: '≈' };
+
+  function buildGoalsBlock(daysArray) {
+    const days = Array.isArray(daysArray) ? daysArray.slice() : [];
+    days.sort((a, b) => {
+      const dateA = a && a.date ? a.date : '';
+      const dateB = b && b.date ? b.date : '';
+      return dateA < dateB ? -1 : dateA > dateB ? 1 : 0;
+    });
+
+    const stats = {};
+    GOALS_METRIC_ORDER.forEach(metric => {
+      stats[metric] = { scored: 0, met: 0, target: null, direction: null };
+    });
+
+    days.forEach(day => {
+      if (!day || !Array.isArray(day.byMetric)) return;
+      day.byMetric.forEach(entry => {
+        if (!entry || !stats[entry.metric]) return;
+        const s = stats[entry.metric];
+        s.target = entry.target;
+        s.direction = entry.direction;
+        if (entry.status !== 'no_data') {
+          s.scored += 1;
+          if (entry.status === 'met') s.met += 1;
+        }
+      });
+    });
+
+    const totalScored = GOALS_METRIC_ORDER.reduce((sum, metric) => sum + stats[metric].scored, 0);
+    if (totalScored === 0) return '';
+
+    const loc = (typeof window !== 'undefined' && window.localization) || {};
+    const kcalUnit = loc.kilocalories || 'kcal';
+    const gramsUnit = loc.goalsUnitGrams || 'g';
+    const numberFormatterFn = typeof formatNumber === 'function' ? formatNumber : (n => String(n));
+
+    const rows = GOALS_METRIC_ORDER
+      .filter(metric => stats[metric].scored > 0)
+      .map(metric => {
+        const s = stats[metric];
+        const percent = s.scored > 0 ? (s.met / s.scored * 100) : 0;
+        const unit = metric === 'calories' ? kcalUnit : gramsUnit;
+        const symbol = GOALS_DIRECTION_SYMBOLS[s.direction] || '';
+        const targetText = s.target != null ? `${symbol}${numberFormatterFn(s.target)} ${unit}` : '';
+        const nameText = loc[GOALS_METRIC_NAME_KEYS[metric]] || metric;
+        const daysWord = typeof loc.pluralizeDays === 'function' ? loc.pluralizeDays(s.scored) : 'days';
+        const progressTemplate = loc.goalsProgress || '{met} of {total} {daysWord}';
+        const progressText = progressTemplate
+          .replace('{met}', numberFormatterFn(s.met))
+          .replace('{total}', numberFormatterFn(s.scored))
+          .replace('{daysWord}', daysWord);
+
+        return `
+          <div class="goals-metric-row">
+            <div class="goals-metric-top">
+              <span class="goals-metric-name"><span class="goals-metric-icon">${GOALS_METRIC_ICONS[metric]}</span>${nameText}</span>
+              <span class="goals-metric-target">${targetText}</span>
+            </div>
+            <div class="goals-metric-progress-text">${progressText}</div>
+            <div class="goals-metric-bar">
+              <div class="goals-metric-bar-fill" style="width: ${percent.toFixed(1)}%"></div>
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+
+    const title = loc.goalsCardTitle || 'Goal Completion';
+
+    return `
+      <div class="collection-card goals-completion-block">
+        <div class="collection-header">
+          ${createFireIcon()}
+          <span class="collection-title">${title}</span>
+        </div>
+        <div class="goals-metrics-list">
+          ${rows}
+        </div>
+      </div>
+    `;
+  }
+
+  window.buildGoalsBlock = buildGoalsBlock;
+
+  const goalsVerdictsCache = {};
+  let goalsRequestSeq = 0;
+  const GOALS_MAX_CHUNK_DAYS = 92;
+
+  function formatDateKey(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  function getGoalsPeriodRange(period) {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    let from;
+    switch (period) {
+      case 'month':
+        from = new Date(now);
+        from.setDate(now.getDate() - 29);
+        break;
+      case '6month':
+        from = new Date(now);
+        from.setDate(now.getDate() - 179);
+        break;
+      case 'year':
+        from = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
+        break;
+      case 'week':
+      default:
+        from = new Date(now);
+        from.setDate(now.getDate() - 6);
+        break;
+    }
+    return { from, to: now };
+  }
+
+  // Бьёт диапазон на чанки не больше maxDays дней (сервер отклоняет диапазон > 92 дней).
+  function splitDateRangeIntoChunks(from, to, maxDays) {
+    const chunks = [];
+    let chunkStart = new Date(from);
+    while (chunkStart <= to) {
+      const chunkEnd = new Date(chunkStart);
+      chunkEnd.setDate(chunkEnd.getDate() + maxDays - 1);
+      if (chunkEnd > to) chunkEnd.setTime(to.getTime());
+      chunks.push({ from: new Date(chunkStart), to: new Date(chunkEnd) });
+      chunkStart = new Date(chunkEnd);
+      chunkStart.setDate(chunkStart.getDate() + 1);
+    }
+    return chunks;
+  }
+
+  async function fetchGoalsVerdictsChunk(fromKey, toKey) {
+    const API_BASE_URL = window.CaloriesMiniAppConfig?.apiBaseUrl || 'https://caloriesai.duckdns.org';
+    const tg = window.Telegram?.WebApp;
+    const initData = tg?.initData || '';
+
+    const response = await fetch(`${API_BASE_URL}/api/history/verdicts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      mode: 'cors',
+      body: JSON.stringify({ initData, from: fromKey, to: toKey })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Сервер вернул статус ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  async function fetchGoalsVerdicts(period) {
+    const { from, to } = getGoalsPeriodRange(period);
+    const chunks = splitDateRangeIntoChunks(from, to, GOALS_MAX_CHUNK_DAYS);
+    const responses = await Promise.all(
+      chunks.map(chunk => fetchGoalsVerdictsChunk(formatDateKey(chunk.from), formatDateKey(chunk.to)))
+    );
+
+    const days = [];
+    responses.forEach(response => {
+      if (response && Array.isArray(response.days)) {
+        days.push(...response.days);
+      }
+    });
+    return days;
+  }
+
+  function renderGoalsCardHtml(days) {
+    const container = document.getElementById('goals-collection-card');
+    if (!container) return;
+    container.innerHTML = buildGoalsBlock(days);
+  }
+
+  function loadGoalsCard(period) {
+    const requestId = ++goalsRequestSeq;
+
+    if (goalsVerdictsCache[period]) {
+      renderGoalsCardHtml(goalsVerdictsCache[period]);
+      return;
+    }
+
+    fetchGoalsVerdicts(period)
+      .then(days => {
+        goalsVerdictsCache[period] = days;
+        if (requestId !== goalsRequestSeq) return;
+        renderGoalsCardHtml(days);
+      })
+      .catch(error => {
+        console.log('Не удалось получить вердикты целей:', error);
+      });
+  }
+
   function buildLoggedStreakCard() {
     const current = window.userCurrentLoggedStreak || 0;
     const max = window.userMaxLoggedStreak || 0;
@@ -544,6 +751,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     parts.push(buildStreakRow());
 
+    parts.push('<div id="goals-collection-card"></div>');
+
     collectionsContainer.innerHTML = parts.join('');
 
     // Назначаем классы блокам по порядку
@@ -554,6 +763,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hasYearBlock && blocks.length > i) blocks[i++].classList.add('year-comparison-block');
     if (blocks.length > i) blocks[i++].classList.add('streak-block');
     if (blocks.length > i) blocks[i++].classList.add('goal-streak-block');
+
+    const currentPeriod = document.querySelector('.period-button.active')?.dataset.period || 'week';
+    loadGoalsCard(currentPeriod);
   }
 
   // Экспортируем функцию updateCollections в глобальную область видимости
