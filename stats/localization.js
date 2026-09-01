@@ -55,7 +55,15 @@
       textMaxStreak: "Макс. серия: {value} {unit}.",
       titleGoalStreak: "Выполнение цели",
       textCurrentGoalStreak: "Текущая серия: {value} {unit}.",
-      textMaxGoalStreak: "Макс. серия: {value} {unit}."
+      textMaxGoalStreak: "Макс. серия: {value} {unit}.",
+
+      goalsCardTitle: "Выполнение целей",
+      goalsMetricCalories: "Калории",
+      goalsMetricProtein: "Белки",
+      goalsMetricFat: "Жиры",
+      goalsMetricCarbs: "Углеводы",
+      goalsProgress: "{met} из {total} {daysWord}",
+      goalsUnitGrams: "г"
     },
     en: {
       averageLabel: "Average<br>per day",
@@ -102,7 +110,15 @@
       textMaxStreak: "Max streak: {value} {unit}.",
       titleGoalStreak: "Goal completion",
       textCurrentGoalStreak: "Current goal streak: {value} {unit}.",
-      textMaxGoalStreak: "Max goal streak: {value} {unit}."
+      textMaxGoalStreak: "Max goal streak: {value} {unit}.",
+
+      goalsCardTitle: "Goal Completion",
+      goalsMetricCalories: "Calories",
+      goalsMetricProtein: "Protein",
+      goalsMetricFat: "Fat",
+      goalsMetricCarbs: "Carbs",
+      goalsProgress: "{met} of {total} {daysWord}",
+      goalsUnitGrams: "g"
     },
     ar: {
       averageLabel: "متوسط<br>في اليوم",
@@ -147,7 +163,15 @@
       textMaxStreak: "أطول سلسلة: {value} {unit}.",
       titleGoalStreak: "تحقيق الهدف",
       textCurrentGoalStreak: "السلسلة الحالية: {value} {unit}.",
-      textMaxGoalStreak: "أطول سلسلة: {value} {unit}."
+      textMaxGoalStreak: "أطول سلسلة: {value} {unit}.",
+
+      goalsCardTitle: "Goal Completion",
+      goalsMetricCalories: "Calories",
+      goalsMetricProtein: "Protein",
+      goalsMetricFat: "Fat",
+      goalsMetricCarbs: "Carbs",
+      goalsProgress: "{met} of {total} {daysWord}",
+      goalsUnitGrams: "g"
     },
 
     de: {
@@ -193,7 +217,15 @@
       textMaxStreak: "Beste Serie: {value} {unit}.",
       titleGoalStreak: "Zielerfüllung",
       textCurrentGoalStreak: "Aktuelle Serie: {value} {unit}.",
-      textMaxGoalStreak: "Beste Serie: {value} {unit}."
+      textMaxGoalStreak: "Beste Serie: {value} {unit}.",
+
+      goalsCardTitle: "Goal Completion",
+      goalsMetricCalories: "Calories",
+      goalsMetricProtein: "Protein",
+      goalsMetricFat: "Fat",
+      goalsMetricCarbs: "Carbs",
+      goalsProgress: "{met} of {total} {daysWord}",
+      goalsUnitGrams: "g"
     },
 
     es: {
@@ -239,7 +271,15 @@
       textMaxStreak: "Racha máxima: {value} {unit}.",
       titleGoalStreak: "Cumplimiento de la meta",
       textCurrentGoalStreak: "Racha actual: {value} {unit}.",
-      textMaxGoalStreak: "Racha máxima: {value} {unit}."
+      textMaxGoalStreak: "Racha máxima: {value} {unit}.",
+
+      goalsCardTitle: "Goal Completion",
+      goalsMetricCalories: "Calories",
+      goalsMetricProtein: "Protein",
+      goalsMetricFat: "Fat",
+      goalsMetricCarbs: "Carbs",
+      goalsProgress: "{met} of {total} {daysWord}",
+      goalsUnitGrams: "g"
     },
 
     fr: {
@@ -285,7 +325,15 @@
       textMaxStreak: "Meilleure série : {value} {unit}.",
       titleGoalStreak: "Atteinte de l'objectif",
       textCurrentGoalStreak: "Série en cours : {value} {unit}.",
-      textMaxGoalStreak: "Meilleure série : {value} {unit}."
+      textMaxGoalStreak: "Meilleure série : {value} {unit}.",
+
+      goalsCardTitle: "Goal Completion",
+      goalsMetricCalories: "Calories",
+      goalsMetricProtein: "Protein",
+      goalsMetricFat: "Fat",
+      goalsMetricCarbs: "Carbs",
+      goalsProgress: "{met} of {total} {daysWord}",
+      goalsUnitGrams: "g"
     },
 
     hi: {
@@ -331,7 +379,15 @@
       textMaxStreak: "अधिकतम स्ट्रीक: {value} {unit}.",
       titleGoalStreak: "लक्ष्य पूर्ण",
       textCurrentGoalStreak: "वर्तमान स्ट्रीक: {value} {unit}.",
-      textMaxGoalStreak: "अधिकतम स्ट्रीक: {value} {unit}."
+      textMaxGoalStreak: "अधिकतम स्ट्रीक: {value} {unit}.",
+
+      goalsCardTitle: "Goal Completion",
+      goalsMetricCalories: "Calories",
+      goalsMetricProtein: "Protein",
+      goalsMetricFat: "Fat",
+      goalsMetricCarbs: "Carbs",
+      goalsProgress: "{met} of {total} {daysWord}",
+      goalsUnitGrams: "g"
     },
 
     pt: {
@@ -377,7 +433,15 @@
       textMaxStreak: "Máxima: {value} {unit}.",
       titleGoalStreak: "Cumprimento da meta",
       textCurrentGoalStreak: "Sequência atual: {value} {unit}.",
-      textMaxGoalStreak: "Máxima: {value} {unit}."
+      textMaxGoalStreak: "Máxima: {value} {unit}.",
+
+      goalsCardTitle: "Goal Completion",
+      goalsMetricCalories: "Calories",
+      goalsMetricProtein: "Protein",
+      goalsMetricFat: "Fat",
+      goalsMetricCarbs: "Carbs",
+      goalsProgress: "{met} of {total} {daysWord}",
+      goalsUnitGrams: "g"
     },
 
     tr: {
@@ -423,7 +487,15 @@
       textMaxStreak: "En uzun seri: {value} {unit}.",
       titleGoalStreak: "Hedef Tamamlama",
       textCurrentGoalStreak: "Mevcut seri: {value} {unit}.",
-      textMaxGoalStreak: "En uzun seri: {value} {unit}."
+      textMaxGoalStreak: "En uzun seri: {value} {unit}.",
+
+      goalsCardTitle: "Goal Completion",
+      goalsMetricCalories: "Calories",
+      goalsMetricProtein: "Protein",
+      goalsMetricFat: "Fat",
+      goalsMetricCarbs: "Carbs",
+      goalsProgress: "{met} of {total} {daysWord}",
+      goalsUnitGrams: "g"
     },
 
     uk: {
@@ -469,7 +541,15 @@
       textMaxStreak: "Макс. серія: {value} {unit}.",
       titleGoalStreak: "Виконання цілі",
       textCurrentGoalStreak: "Поточна серія: {value} {unit}.",
-      textMaxGoalStreak: "Макс. серія: {value} {unit}."
+      textMaxGoalStreak: "Макс. серія: {value} {unit}.",
+
+      goalsCardTitle: "Goal Completion",
+      goalsMetricCalories: "Calories",
+      goalsMetricProtein: "Protein",
+      goalsMetricFat: "Fat",
+      goalsMetricCarbs: "Carbs",
+      goalsProgress: "{met} of {total} {daysWord}",
+      goalsUnitGrams: "g"
     }
   };
 
