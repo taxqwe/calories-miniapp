@@ -401,7 +401,7 @@
       textStaticCalories: "Soʻnggi 7 kunda siz kuniga oʻrtacha {value} kkal isteʼmol qildingiz.",
 
       titleActiveCalories: "Faollik kaloriyalari",
-      textActiveCalories: "{countAndUnit} davomida umumiy kunlik energiya sarfingizdan ({tdee} kkal) {aboveAndUnit} koʻp isteʼmol qildingiz.",
+      textActiveCalories: "{countAndUnit} ichida {aboveAndUnit} davomida hisoblangan kunlik energiya sarfingizdan ({tdee} kkal) koʻproq kaloriya isteʼmol qildingiz.",
 
       titleMonthComparison: "Oylik taqqoslash",
       titleYearComparison: "Yillik taqqoslash",
@@ -417,29 +417,29 @@
       textYearComparisonLower: "Bu yil oʻrtacha oʻtgan yildagidan kamroq kaloriya isteʼmol qilyapsiz.",
 
       dailyAverageLabel: "KUNLIK OʻRTACHA",
-      trendButton: "Trend",
+      trendButton: "Oʻzgarish",
       periodButtonWeek: "HAFTA",
       periodButtonMonth: "OY",
       periodButtonSixMonth: "6 OY",
       periodButtonYear: "YIL",
-      textActiveCaloriesNoTDEE: "Avval energiya sarfingizni hisoblang: botga qayting va /calories menyusidan «Metabolizm»ni tanlang.",
+      textActiveCaloriesNoTDEE: "Avval energiya sarfingizni hisoblang: botga qayting va /calories menyusidan «Metabolizmni hisoblash» tugmasini tanlang.",
 
       loading: "Yuklanmoqda...",
       loadingError: "Maʼlumotlarni yuklashda xatolik",
       retryButton: "Qayta urinish",
       titleStreak: "Tanaffussiz",
-      textCurrentStreak: "Joriy ketma-ketlik: {value} {unit}.",
-      textMaxStreak: "Eng uzun ketma-ketlik: {value} {unit}.",
-      titleGoalStreak: "Maqsad bajarilishi",
-      textCurrentGoalStreak: "Joriy maqsad ketma-ketligi: {value} {unit}.",
-      textMaxGoalStreak: "Eng uzun maqsad ketma-ketligi: {value} {unit}.",
+      textCurrentStreak: "Hozirgi natija: ketma-ket {value} {unit}.",
+      textMaxStreak: "Eng uzoq davom etgani: ketma-ket {value} {unit}.",
+      titleGoalStreak: "Maqsadga erishish",
+      textCurrentGoalStreak: "Maqsadga ketma-ket {value} {unit} erishdingiz.",
+      textMaxGoalStreak: "Eng yaxshi natija: maqsadga ketma-ket {value} {unit} erishdingiz.",
 
-      goalsCardTitle: "Maqsad bajarilishi",
+      goalsCardTitle: "Maqsadga erishish",
       goalsMetricCalories: "Kaloriya",
       goalsMetricProtein: "Oqsil",
       goalsMetricFat: "Yogʻ",
       goalsMetricCarbs: "Uglevod",
-      goalsProgress: "{total} kundan {met} tasi",
+      goalsProgress: "{total} {daysWord}dan {met} tasi",
       goalsUnitGrams: "g"
     },
     uk: {
@@ -519,6 +519,7 @@
    * @returns {string} Склоненное слово
    */
   window.localization.pluralizeDays = function(num) {
+    if (window.localization._lang === 'uz') return 'kun';
     if (window.localization._lang === 'ru') {
       const abs = Math.abs(num);
       const lastDigit = abs % 10;
@@ -547,6 +548,7 @@
    * @returns {string} Склоненное слово
    */
   window.localization.pluralizeWeeks = function(num) {
+    if (window.localization._lang === 'uz') return 'hafta';
     if (window.localization._lang === 'ru') {
       const abs = Math.abs(num);
       const lastDigit = abs % 10;
@@ -575,6 +577,7 @@
    * @returns {string} Склоненное слово
    */
   window.localization.pluralizeMonths = function(num) {
+    if (window.localization._lang === 'uz') return 'oy';
     if (window.localization._lang === 'ru') {
       const abs = Math.abs(num);
       const lastDigit = abs % 10;

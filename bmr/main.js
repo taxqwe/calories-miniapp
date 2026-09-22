@@ -181,15 +181,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     },
     uz: {
-      titleEdit: "Moddalar almashinuvi",
+      titleEdit: "Metabolizm",
       titleFirst: "Keling, meʼyoringizni hisoblaymiz",
-      subtitleEdit: "Tanangiz bir kunda sarflaydigan energiya. Mifflin — San Jeor formulasi.",
+      subtitleEdit: "Tanangiz bir kunda sarflaydigan energiya. Mifflin–St Jeor formulasi.",
       subtitleFirst: "Buni bir marta toʻldirasiz — keyin hammasi avtomatik hisoblanadi.",
-      onbGuide: "Boʻy, vazn, yosh va jinsni kiriting — kunlik meʼyoringiz shu yerda avtomatik chiqadi.",
-      heroLabel: "Maqsad kaloriya",
+      onbGuide: "Boʻy, vazn, yosh va jinsni kiriting — kunlik meʼyoringiz shu yerda avtomatik koʻrinadi.",
+      heroLabel: "Maqsadli kaloriya",
       heroUnit: "kkal/kun",
       heroEmpty: "—",
-      basalLabel: "bazaviy almashinuv",
+      basalLabel: "bazaviy metabolizm",
       heroMetaWaiting: "maʼlumotlarni toʻldiring",
       bodySectionEdit: "Tana maʼlumotlari",
       bodySectionFirst: "1-qadam · tana maʼlumotlari",
@@ -207,14 +207,14 @@ document.addEventListener('DOMContentLoaded', () => {
       genderMale: "Erkak",
       genderFemale: "Ayol",
       activityRowLabel: "Daraja",
-      goalToggleLabel: "Kaloriya maqsadini belgilang",
+      goalToggleLabel: "Kaloriya maqsadini belgilash",
       goalDeficit: "Tanqislik · −15%",
-      goalSurplus: "Ortiqcha · +10%",
-      goalMaintenanceWord: "saqlash",
-      goalNoteOff: "Maqsad belgilanmagan — meʼyoringiz saqlash darajasiga teng.",
-      goalNoteFloor: "Bazaviy almashinuvdan pastga tushirmaymiz — {bmr} gacha oshirildi.",
-      goalNoteSource: "Bot bu sonni mahkamlangan xabarda koʻrsatadi va kunlik tahlilingiz bilan solishtiradi.",
-      preferencesTitle: "Afzalliklar",
+      goalSurplus: "Ortiqcha kaloriya · +10%",
+      goalMaintenanceWord: "vaznni saqlash",
+      goalNoteOff: "Maqsad belgilanmagan — meʼyoringiz vaznni saqlash uchun kerakli miqdorga teng.",
+      goalNoteFloor: "Bazaviy metabolizmdan kam belgilamaymiz — {bmr} gacha oshirildi.",
+      goalNoteSource: "Bot bu sonni biriktirilgan xabarda koʻrsatadi va kunlik tahlilingizni shu son bilan solishtiradi.",
+      preferencesTitle: "Ovqatlanish istaklari",
       preferences: {
         more_protein: "Oqsil",
         less_sugar: "Shakar",
@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
       success: "✅ Maʼlumotlar saqlandi!",
       error: "❌ Xatolik: ",
       profileLoading: "Profilingiz yuklanmoqda…",
-      profileErrorText: "Profilni yuklab boʻlmadi. Maqsadingiz oʻchib ketmasligi uchun saqlash oʻchirildi.",
+      profileErrorText: "Profilni yuklab boʻlmadi. Maqsadingiz oʻchib ketmasligi uchun saqlash vaqtincha toʻxtatildi.",
       profileErrorRetry: "Qayta urinish",
       validation: {
         heightRange: "Boʻy 100 dan 250 sm gacha boʻlishi kerak",
@@ -243,11 +243,11 @@ document.addEventListener('DOMContentLoaded', () => {
         ageRange: "Yosh 14 dan 120 gacha boʻlishi kerak"
       },
       activityLevels: {
-        1: { title: "Kamharakat turmush", details: "Kunning koʻp qismini oʻtirib oʻtkazasiz va kamdan-kam mashq qilasiz." },
+        1: { title: "Kamharakat turmush tarzi", details: "Kunning koʻp qismini oʻtirib oʻtkazasiz va kamdan-kam mashq qilasiz." },
         2: { title: "Yengil faollik", details: "Haftada bir necha marta yengil mashq yoki piyoda yurish." },
-        3: { title: "Oʻrtacha faollik", details: "Haftada 3–5 marta oʻrtacha mashq yoki sport." },
+        3: { title: "Oʻrtacha faollik", details: "Haftada 3–5 marta oʻrtacha jadallikdagi mashq yoki sport mashgʻulotlari." },
         4: { title: "Yuqori faollik", details: "Haftada 6–7 marta jadal mashgʻulot." },
-        5: { title: "Juda yuqori faollik", details: "Juda jadal mashgʻulotlar, ehtimol kuniga ikki marta." }
+        5: { title: "Juda yuqori faollik", details: "Juda jadal mashgʻulotlar, baʼzan kuniga ikki marta." }
       }
     },
     uk: {

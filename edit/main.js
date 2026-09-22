@@ -101,9 +101,9 @@ const translations = {
     }
   },
   uz: {
-    mainTitle: "Kaloriya tahrirlash",
+    mainTitle: "Kaloriyalarni tahrirlash",
     tooltipMain: "Kunlar boʻyicha isteʼmol qilingan kaloriyalarni tahrirlang. Taqvimdan sanani tanlang va tezkor tahrirlash tugmalari bilan kaloriya miqdorini kiriting yoki oʻzgartiring.",
-    caloriesPlaceholder: "Kaloriyani kiriting",
+    caloriesPlaceholder: "Kaloriya miqdorini kiriting",
     monthNames: ["Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun", "Iyul", "Avgust", "Sentabr", "Oktabr", "Noyabr", "Dekabr"],
     weekdays: ["Du", "Se", "Ch", "Pa", "Ju", "Sh", "Ya"],
     cal: "kkal",
