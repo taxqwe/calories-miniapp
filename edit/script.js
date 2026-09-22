@@ -19,7 +19,7 @@
   let initDataRaw = null;
 
   // Получаем доступ к переводам и локаль из URL
-  const supportedLocales = ["ar", "de", "es", "fr", "hi", "ru", "tr", "uk", "en", "pt"];
+  const supportedLocales = ["ar", "de", "es", "fr", "ru", "tr", "uk", "uz", "en"];
   const urlParams = new URLSearchParams(window.location.search || '');
   const langParam = urlParams.get('lang');
   const currentLang = (langParam && supportedLocales.includes(langParam)) ? langParam : "en";

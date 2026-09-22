@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const API_BASE_URL = window.CaloriesMiniAppConfig?.apiBaseUrl || 'https://caloriesai.duckdns.org';
 
   // Поддерживаемые локали
-  const supportedLocales = ["ar", "de", "es", "fr", "hi", "ru", "tr", "uk", "en", "pt"];
+  const supportedLocales = ["ar", "de", "es", "fr", "ru", "tr", "uk", "uz", "en"];
 
   // Множители активности (Mifflin–St Jeor): уровни 1..5
   const multipliers = [1.2, 1.375, 1.55, 1.725, 1.9];
@@ -178,6 +178,76 @@ document.addEventListener('DOMContentLoaded', () => {
         3: { title: "Умеренная активность", details: "Умеренные упражнения или спорт 3–5 раз в неделю." },
         4: { title: "Высокая активность", details: "Интенсивные тренировки 6–7 раз в неделю." },
         5: { title: "Очень высокая активность", details: "Очень интенсивный режим, возможно, по две тренировки в день." }
+      }
+    },
+    uz: {
+      titleEdit: "Moddalar almashinuvi",
+      titleFirst: "Keling, meʼyoringizni hisoblaymiz",
+      subtitleEdit: "Tanangiz bir kunda sarflaydigan energiya. Mifflin — San Jeor formulasi.",
+      subtitleFirst: "Buni bir marta toʻldirasiz — keyin hammasi avtomatik hisoblanadi.",
+      onbGuide: "Boʻy, vazn, yosh va jinsni kiriting — kunlik meʼyoringiz shu yerda avtomatik chiqadi.",
+      heroLabel: "Maqsad kaloriya",
+      heroUnit: "kkal/kun",
+      heroEmpty: "—",
+      basalLabel: "bazaviy almashinuv",
+      heroMetaWaiting: "maʼlumotlarni toʻldiring",
+      bodySectionEdit: "Tana maʼlumotlari",
+      bodySectionFirst: "1-qadam · tana maʼlumotlari",
+      activitySectionEdit: "Faollik",
+      activitySectionFirst: "2-qadam · faollik",
+      labelHeight: "Boʻy, sm",
+      labelWeight: "Vazn, kg",
+      labelAge: "Yosh",
+      heightPlaceholderEdit: "175",
+      weightPlaceholderEdit: "70",
+      agePlaceholderEdit: "30",
+      heightPlaceholderFirst: "masalan, 178",
+      weightPlaceholderFirst: "masalan, 72",
+      agePlaceholderFirst: "masalan, 29",
+      genderMale: "Erkak",
+      genderFemale: "Ayol",
+      activityRowLabel: "Daraja",
+      goalToggleLabel: "Kaloriya maqsadini belgilang",
+      goalDeficit: "Tanqislik · −15%",
+      goalSurplus: "Ortiqcha · +10%",
+      goalMaintenanceWord: "saqlash",
+      goalNoteOff: "Maqsad belgilanmagan — meʼyoringiz saqlash darajasiga teng.",
+      goalNoteFloor: "Bazaviy almashinuvdan pastga tushirmaymiz — {bmr} gacha oshirildi.",
+      goalNoteSource: "Bot bu sonni mahkamlangan xabarda koʻrsatadi va kunlik tahlilingiz bilan solishtiradi.",
+      preferencesTitle: "Afzalliklar",
+      preferences: {
+        more_protein: "Oqsil",
+        less_sugar: "Shakar",
+        more_veggies: "Sabzavotlar",
+        low_carb: "Uglevod",
+        more_water: "Suv",
+        less_fat: "Yogʻ"
+      },
+      ctaEdit: "Saqlash",
+      ctaFirst: "Hisoblash va saqlash",
+      ctaHintFirst: "Davom etish uchun boʻy, vazn, yosh va jinsni kiriting",
+      ctaHintMissing: "Toʻldiring: ",
+      missingHeight: "boʻy",
+      missingWeight: "vazn",
+      missingAge: "yosh",
+      missingGender: "jins",
+      sending: "Maʼlumotlar yuborilmoqda…",
+      success: "✅ Maʼlumotlar saqlandi!",
+      error: "❌ Xatolik: ",
+      profileLoading: "Profilingiz yuklanmoqda…",
+      profileErrorText: "Profilni yuklab boʻlmadi. Maqsadingiz oʻchib ketmasligi uchun saqlash oʻchirildi.",
+      profileErrorRetry: "Qayta urinish",
+      validation: {
+        heightRange: "Boʻy 100 dan 250 sm gacha boʻlishi kerak",
+        weightRange: "Vazn 30 dan 300 kg gacha boʻlishi kerak",
+        ageRange: "Yosh 14 dan 120 gacha boʻlishi kerak"
+      },
+      activityLevels: {
+        1: { title: "Kamharakat turmush", details: "Kunning koʻp qismini oʻtirib oʻtkazasiz va kamdan-kam mashq qilasiz." },
+        2: { title: "Yengil faollik", details: "Haftada bir necha marta yengil mashq yoki piyoda yurish." },
+        3: { title: "Oʻrtacha faollik", details: "Haftada 3–5 marta oʻrtacha mashq yoki sport." },
+        4: { title: "Yuqori faollik", details: "Haftada 6–7 marta jadal mashgʻulot." },
+        5: { title: "Juda yuqori faollik", details: "Juda jadal mashgʻulotlar, ehtimol kuniga ikki marta." }
       }
     },
     uk: {
@@ -460,76 +530,6 @@ document.addEventListener('DOMContentLoaded', () => {
         5: { title: "Activité très élevée", details: "Entraînement très intense, parfois deux fois par jour." }
       }
     },
-    pt: {
-      titleEdit: "Metabolismo",
-      titleFirst: "Vamos calcular sua meta",
-      subtitleEdit: "Quanta energia seu corpo gasta por dia. Fórmula de Mifflin–St Jeor.",
-      subtitleFirst: "Isto é necessário uma vez — depois tudo é calculado automaticamente.",
-      onbGuide: "Informe altura, peso, idade e sexo — sua meta diária aparecerá aqui automaticamente.",
-      heroLabel: "Calorias-alvo",
-      heroUnit: "kcal/dia",
-      heroEmpty: "—",
-      basalLabel: "metabolismo basal",
-      heroMetaWaiting: "preencha os dados",
-      bodySectionEdit: "Dados corporais",
-      bodySectionFirst: "Passo 1 · dados corporais",
-      activitySectionEdit: "Atividade",
-      activitySectionFirst: "Passo 2 · atividade",
-      labelHeight: "Altura, cm",
-      labelWeight: "Peso, kg",
-      labelAge: "Idade",
-      heightPlaceholderEdit: "175",
-      weightPlaceholderEdit: "70",
-      agePlaceholderEdit: "30",
-      heightPlaceholderFirst: "ex. 178",
-      weightPlaceholderFirst: "ex. 72",
-      agePlaceholderFirst: "ex. 29",
-      genderMale: "Homem",
-      genderFemale: "Mulher",
-      activityRowLabel: "Nível",
-      goalToggleLabel: "Definir meta de calorias",
-      goalDeficit: "Déficit · −15%",
-      goalSurplus: "Superávit · +10%",
-      goalMaintenanceWord: "manutenção",
-      goalNoteOff: "Sem meta — sua norma é igual à manutenção.",
-      goalNoteFloor: "Não descemos abaixo do metabolismo basal: elevado para {bmr}.",
-      goalNoteSource: "O bot mostra este número na mensagem fixada e compara com ele a sua análise do dia.",
-      preferencesTitle: "Preferências",
-      preferences: {
-        more_protein: "Proteína",
-        less_sugar: "Açúcar",
-        more_veggies: "Vegetais",
-        low_carb: "Carbo",
-        more_water: "Água",
-        less_fat: "Gordura"
-      },
-      ctaEdit: "Salvar",
-      ctaFirst: "Calcular e salvar",
-      ctaHintFirst: "Informe altura, peso, idade e sexo para continuar",
-      ctaHintMissing: "Preencha: ",
-      missingHeight: "altura",
-      missingWeight: "peso",
-      missingAge: "idade",
-      missingGender: "sexo",
-      sending: "Enviando dados…",
-      success: "✅ Dados salvos!",
-      error: "❌ Erro: ",
-      profileLoading: "Carregando seu perfil…",
-      profileErrorText: "Não foi possível carregar o perfil. Salvar está desativado para não apagar sua meta.",
-      profileErrorRetry: "Tentar de novo",
-      validation: {
-        heightRange: "A altura deve estar entre 100 e 250 cm",
-        weightRange: "O peso deve estar entre 30 e 300 kg",
-        ageRange: "A idade deve estar entre 14 e 120 anos"
-      },
-      activityLevels: {
-        1: { title: "Sedentário", details: "Você passa a maior parte do dia sentado e raramente se exercita." },
-        2: { title: "Atividade leve", details: "Exercício leve ou caminhadas algumas vezes por semana." },
-        3: { title: "Atividade moderada", details: "Exercício ou esporte moderado 3–5 vezes por semana." },
-        4: { title: "Atividade alta", details: "Treino intenso 6–7 vezes por semana." },
-        5: { title: "Atividade muito alta", details: "Treino muito intenso, possivelmente duas vezes ao dia." }
-      }
-    },
     tr: {
       titleEdit: "Metabolizma",
       titleFirst: "Normunu hesaplayalım",
@@ -670,76 +670,6 @@ document.addEventListener('DOMContentLoaded', () => {
         5: { title: "نشاط مرتفع جدًا", details: "نظام تدريب مكثف جدًا، ربما مرتين يوميًا." }
       }
     },
-    hi: {
-      titleEdit: "मेटाबॉलिज़्म",
-      titleFirst: "आइए आपकी ज़रूरत निकालें",
-      subtitleEdit: "आपका शरीर रोज़ कितनी ऊर्जा खर्च करता है। मिफ़्लिन–सेंट जॉर फ़ॉर्मूला।",
-      subtitleFirst: "यह एक बार करना होता है — फिर सब अपने आप गिना जाता है।",
-      onbGuide: "ऊँचाई, वज़न, उम्र और लिंग भरें — आपकी दैनिक ज़रूरत यहाँ अपने आप दिखेगी।",
-      heroLabel: "लक्ष्य कैलोरी",
-      heroUnit: "कैलोरी/दिन",
-      heroEmpty: "—",
-      basalLabel: "बेसल मेटाबॉलिज़्म",
-      heroMetaWaiting: "डेटा भरें",
-      bodySectionEdit: "शरीर का डेटा",
-      bodySectionFirst: "चरण 1 · शरीर का डेटा",
-      activitySectionEdit: "गतिविधि",
-      activitySectionFirst: "चरण 2 · गतिविधि",
-      labelHeight: "ऊँचाई, सेमी",
-      labelWeight: "वज़न, किग्रा",
-      labelAge: "उम्र",
-      heightPlaceholderEdit: "175",
-      weightPlaceholderEdit: "70",
-      agePlaceholderEdit: "30",
-      heightPlaceholderFirst: "उदा. 178",
-      weightPlaceholderFirst: "उदा. 72",
-      agePlaceholderFirst: "उदा. 29",
-      genderMale: "पुरुष",
-      genderFemale: "महिला",
-      activityRowLabel: "स्तर",
-      goalToggleLabel: "कैलोरी लक्ष्य सेट करें",
-      goalDeficit: "डेफिसिट · −15%",
-      goalSurplus: "सरप्लस · +10%",
-      goalMaintenanceWord: "रखरखाव",
-      goalNoteOff: "कोई लक्ष्य नहीं — आपका मान रखरखाव के बराबर है।",
-      goalNoteFloor: "बेसल मेटाबॉलिज़्म से नीचे नहीं जाते — {bmr} तक बढ़ाया गया।",
-      goalNoteSource: "बॉट यह संख्या पिन किए गए संदेश में दिखाता है और आपके दिन के विश्लेषण की तुलना इसी से करता है।",
-      preferencesTitle: "पसंद",
-      preferences: {
-        more_protein: "प्रोटीन",
-        less_sugar: "चीनी",
-        more_veggies: "सब्ज़ियाँ",
-        low_carb: "कार्ब",
-        more_water: "पानी",
-        less_fat: "वसा"
-      },
-      ctaEdit: "सहेजें",
-      ctaFirst: "गणना करें और सहेजें",
-      ctaHintFirst: "जारी रखने के लिए ऊँचाई, वज़न, उम्र और लिंग भरें",
-      ctaHintMissing: "भरें: ",
-      missingHeight: "ऊँचाई",
-      missingWeight: "वज़न",
-      missingAge: "उम्र",
-      missingGender: "लिंग",
-      sending: "डेटा भेजा जा रहा है…",
-      success: "✅ डेटा सहेजा गया!",
-      error: "❌ त्रुटि: ",
-      profileLoading: "प्रोफ़ाइल लोड हो रही है…",
-      profileErrorText: "प्रोफ़ाइल लोड नहीं हो सकी। आपका लक्ष्य मिटने से बचाने के लिए सेव बंद है।",
-      profileErrorRetry: "फिर से कोशिश करें",
-      validation: {
-        heightRange: "ऊँचाई 100 से 250 सेमी के बीच होनी चाहिए",
-        weightRange: "वज़न 30 से 300 किग्रा के बीच होना चाहिए",
-        ageRange: "उम्र 14 से 120 वर्ष के बीच होनी चाहिए"
-      },
-      activityLevels: {
-        1: { title: "गतिहीन", details: "आप दिन का अधिकांश समय बैठे रहते हैं और शायद ही व्यायाम करते हैं।" },
-        2: { title: "हल्की गतिविधि", details: "सप्ताह में कुछ बार हल्का व्यायाम या टहलना।" },
-        3: { title: "मध्यम गतिविधि", details: "सप्ताह में 3–5 बार मध्यम व्यायाम या खेल।" },
-        4: { title: "उच्च गतिविधि", details: "सप्ताह में 6–7 बार कठिन व्यायाम।" },
-        5: { title: "बहुत उच्च गतिविधि", details: "बहुत गहन प्रशिक्षण, शायद दिन में दो बार।" }
-      }
-    }
   };
 
   // ── DOM ──

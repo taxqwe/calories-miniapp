@@ -1,5 +1,5 @@
 // Поддерживаемые локали
-const supportedLocales = ["ar", "de", "es", "fr", "hi", "ru", "tr", "uk", "en", "pt"];
+const supportedLocales = ["ar", "de", "es", "fr", "ru", "tr", "uk", "uz", "en"];
 
 const translations = {
   en: {
@@ -72,20 +72,6 @@ const translations = {
       update: "Échec de la mise à jour des données"
     }
   },
-  hi: {
-    mainTitle: "कैलोरी संपादक",
-    tooltipMain: "दिन के अनुसार खाई गई कैलोरी का संपादन करें। कैलेंडर में एक तारीख चुनें और त्वरित संपादन बटनों का उपयोग करके कैलोरी की संख्या दर्ज करें या समायोजित करें।",
-    caloriesPlaceholder: "कैलोरी दर्ज करें",
-    monthNames: ["जनवरी", "फरवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"],
-    weekdays: ["सो", "मं", "बु", "गु", "शु", "श", "र"],
-    cal: "कैलोरी",
-    loading: "लोड हो रहा है...",
-    error: {
-      init: "एप्लिकेशन शुरू करने में त्रुटि",
-      load: "डेटा लोड करने में विफल",
-      update: "डेटा अपडेट करने में विफल"
-    }
-  },
   tr: {
     mainTitle: "Kalori Düzenleyici",
     tooltipMain: "Günlük tüketilen kalorileri düzenleyin. Takvimde bir tarih seçin ve hızlı düzenleme düğmelerini kullanarak kalori miktarını girin veya ayarlayın.",
@@ -114,6 +100,20 @@ const translations = {
       update: "Не вдалося оновити дані"
     }
   },
+  uz: {
+    mainTitle: "Kaloriya tahrirlash",
+    tooltipMain: "Kunlar boʻyicha isteʼmol qilingan kaloriyalarni tahrirlang. Taqvimdan sanani tanlang va tezkor tahrirlash tugmalari bilan kaloriya miqdorini kiriting yoki oʻzgartiring.",
+    caloriesPlaceholder: "Kaloriyani kiriting",
+    monthNames: ["Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun", "Iyul", "Avgust", "Sentabr", "Oktabr", "Noyabr", "Dekabr"],
+    weekdays: ["Du", "Se", "Ch", "Pa", "Ju", "Sh", "Ya"],
+    cal: "kkal",
+    loading: "Yuklanmoqda...",
+    error: {
+      init: "Ilovani ishga tushirishda xatolik",
+      load: "Maʼlumotlarni yuklab boʻlmadi",
+      update: "Maʼlumotlarni yangilab boʻlmadi"
+    }
+  },
   ar: {
     mainTitle: "محرر السعرات الحرارية",
     tooltipMain: "تحرير السعرات الحرارية المستهلكة يوميًا. حدد تاريخًا في التقويم وأدخل أو عدل عدد السعرات الحرارية باستخدام أزرار التحرير السريع.",
@@ -126,20 +126,6 @@ const translations = {
       init: "خطأ في تهيئة التطبيق",
       load: "فشل في تحميل البيانات",
       update: "فشل في تحديث البيانات"
-    }
-  },
-  pt: {
-    mainTitle: "Editor de Calorias",
-    tooltipMain: "Edite as calorias consumidas por dia. Selecione uma data no calendário e insira ou ajuste o número de calorias usando os botões de edição rápida.",
-    caloriesPlaceholder: "Insira as calorias",
-    monthNames: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
-    weekdays: ["Sg", "Tr", "Qr", "Qt", "Sx", "Sb", "Dm"],
-    cal: "cal",
-    loading: "Carregando...",
-    error: {
-      init: "Erro de inicialização do aplicativo",
-      load: "Falha ao carregar dados",
-      update: "Falha ao atualizar dados"
     }
   }
 };
@@ -188,4 +174,4 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Вызываем функцию обновления текста
   updateText();
-}); 
+});

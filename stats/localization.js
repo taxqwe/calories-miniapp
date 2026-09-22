@@ -335,115 +335,6 @@
       goalsProgress: "{met} of {total} {daysWord}",
       goalsUnitGrams: "g"
     },
-
-    hi: {
-      averageLabel: "औसत<br>प्रति दिन",
-      kilocalories: "कैलोरी",
-      noData: "कोई डेटा नहीं",
-      dailyKcalLabel: "कैलोरी/दिन",
-      tdeeThreshold: "TDEE",
-      dayShort: "दि",
-      
-      titleStaticCalories: "पिछले 7 दिन",
-      textStaticCalories: "पिछले 7 दिनों में औसतन, आपने {value} कैलोरी प्रति दिन उपभोग की हैं।",
-      
-      titleActiveCalories: "सक्रिय कैलोरी",
-      textActiveCalories: "{countAndUnit} के दौरान, आपने अपने कुल दैनिक ऊर्जा व्यय ({tdee} कैलोरी) को {aboveAndUnit} से पार कर लिया।",
-      
-      titleMonthComparison: "मासिक तुलना",
-      titleYearComparison: "वार्षिक तुलना",
-      
-      textNoPrevMonthData: "तुलना के लिए कोई डेटा नहीं है।",
-      textMonthComparisonIdentical: "इस महीने और पिछले महीने, आपने लगभग समान मात्रा में कैलोरी का सेवन किया।",
-      textMonthComparisonHigher: "इस महीने, आप पिछले महीने की तुलना में औसतन अधिक कैलोरी का सेवन कर रहे हैं।",
-      textMonthComparisonLower: "इस महीने, आप पिछले महीने की तुलना में औसतन कम कैलोरी का सेवन कर रहे हैं।",
-      
-      textNoPrevYearData: "तुलना के लिए कोई डेटा नहीं है।",
-      textYearComparisonIdentical: "इस वर्ष और पिछले वर्ष, आपने लगभग समान मात्रा में कैलोरी का सेवन किया।",
-      textYearComparisonHigher: "इस वर्ष, आप पिछले वर्ष की तुलना में औसतन अधिक कैलोरी का सेवन कर रहे हैं।",
-      textYearComparisonLower: "इस वर्ष, आप पिछले वर्ष की तुलना में औसतन कम कैलोरी का सेवन कर रहे हैं।",
-      
-      dailyAverageLabel: "प्रति दिन औसत",
-      trendButton: "रुझान",
-      periodButtonWeek: "सप्ताह",
-      periodButtonMonth: "महीना",
-      periodButtonSixMonth: "6 महीने",
-      periodButtonYear: "साल",
-      textActiveCaloriesNoTDEE: "पहले अपनी ऊर्जा खपत की गणना करें: बॉट पर वापस जाएँ और /calories मेनू में 'Metabolism' चुनें.",
-      
-      loading: "लोड हो रहा है...",
-      loadingError: "डेटा लोड करते समय त्रुटि",
-      retryButton: "पुनः प्रयास करें",
-      titleStreak: "बिना चूक",
-      textCurrentStreak: "वर्तमान स्ट्रीक: {value} {unit}.",
-      textMaxStreak: "अधिकतम स्ट्रीक: {value} {unit}.",
-      titleGoalStreak: "लक्ष्य पूर्ण",
-      textCurrentGoalStreak: "वर्तमान स्ट्रीक: {value} {unit}.",
-      textMaxGoalStreak: "अधिकतम स्ट्रीक: {value} {unit}.",
-
-      goalsCardTitle: "Goal Completion",
-      goalsMetricCalories: "Calories",
-      goalsMetricProtein: "Protein",
-      goalsMetricFat: "Fat",
-      goalsMetricCarbs: "Carbs",
-      goalsProgress: "{met} of {total} {daysWord}",
-      goalsUnitGrams: "g"
-    },
-
-    pt: {
-      averageLabel: "Média<br>por dia",
-      kilocalories: "kcal",
-      noData: "Nenhum dado",
-      dailyKcalLabel: "kcal/dia",
-      tdeeThreshold: "TDEE",
-      dayShort: "d",
-      
-      titleStaticCalories: "Últimos 7 dias",
-      textStaticCalories: "Em média, nos últimos 7 dias, você consumiu {value} kcal por dia.",
-      
-      titleActiveCalories: "Calorias de atividade",
-      textActiveCalories: "Durante {countAndUnit}, você excedeu seu gasto energético diário total ({tdee} kcal) em {aboveAndUnit}.",
-      
-      titleMonthComparison: "Comparação mensal",
-      titleYearComparison: "Comparação anual",
-      
-      textNoPrevMonthData: "Nenhum dado para comparar.",
-      textMonthComparisonIdentical: "Neste mês e no mês passado, você consumiu aproximadamente a mesma quantidade de calorias.",
-      textMonthComparisonHigher: "Neste mês, você está consumindo mais calorias em média do que no mês passado.",
-      textMonthComparisonLower: "Neste mês, você está consumindo menos calorias em média do que no mês passado.",
-      
-      textNoPrevYearData: "Nenhum dado para comparar.",
-      textYearComparisonIdentical: "Neste ano e no ano passado, você consumiu aproximadamente a mesma quantidade de calorias.",
-      textYearComparisonHigher: "Neste ano, você está consumindo mais calorias em média do que no ano passado.",
-      textYearComparisonLower: "Neste ano, você está consumindo menos calorias em média do que no ano passado.",
-      
-      dailyAverageLabel: "MÉDIA POR DIA",
-      trendButton: "Tendência",
-      periodButtonWeek: "SEM",
-      periodButtonMonth: "MÊS",
-      periodButtonSixMonth: "6 MESES",
-      periodButtonYear: "ANO",
-      textActiveCaloriesNoTDEE: "Primeiro, calcule seu gasto de energia: volte ao bot e selecione 'Metabolismo' no menu /calories.",
-      
-      loading: "Carregando...",
-      loadingError: "Erro ao carregar os dados",
-      retryButton: "Tentar novamente",
-      titleStreak: "Sem falhas",
-      textCurrentStreak: "Sequência atual: {value} {unit}.",
-      textMaxStreak: "Máxima: {value} {unit}.",
-      titleGoalStreak: "Cumprimento da meta",
-      textCurrentGoalStreak: "Sequência atual: {value} {unit}.",
-      textMaxGoalStreak: "Máxima: {value} {unit}.",
-
-      goalsCardTitle: "Goal Completion",
-      goalsMetricCalories: "Calories",
-      goalsMetricProtein: "Protein",
-      goalsMetricFat: "Fat",
-      goalsMetricCarbs: "Carbs",
-      goalsProgress: "{met} of {total} {daysWord}",
-      goalsUnitGrams: "g"
-    },
-
     tr: {
       averageLabel: "Günlük<br>ortalama",
       kilocalories: "kcal",
@@ -498,6 +389,59 @@
       goalsUnitGrams: "g"
     },
 
+    uz: {
+      averageLabel: "Kunlik<br>oʻrtacha",
+      kilocalories: "kkal",
+      noData: "Maʼlumot yoʻq",
+      dailyKcalLabel: "kkal/kun",
+      tdeeThreshold: "TDEE",
+      dayShort: "kun",
+
+      titleStaticCalories: "Soʻnggi 7 kun",
+      textStaticCalories: "Soʻnggi 7 kunda siz kuniga oʻrtacha {value} kkal isteʼmol qildingiz.",
+
+      titleActiveCalories: "Faollik kaloriyalari",
+      textActiveCalories: "{countAndUnit} davomida umumiy kunlik energiya sarfingizdan ({tdee} kkal) {aboveAndUnit} koʻp isteʼmol qildingiz.",
+
+      titleMonthComparison: "Oylik taqqoslash",
+      titleYearComparison: "Yillik taqqoslash",
+
+      textNoPrevMonthData: "Taqqoslash uchun maʼlumot yoʻq.",
+      textMonthComparisonIdentical: "Bu oy va oʻtgan oy deyarli bir xil miqdorda kaloriya isteʼmol qildingiz.",
+      textMonthComparisonHigher: "Bu oy oʻrtacha oʻtgan oydagidan koʻproq kaloriya isteʼmol qilyapsiz.",
+      textMonthComparisonLower: "Bu oy oʻrtacha oʻtgan oydagidan kamroq kaloriya isteʼmol qilyapsiz.",
+
+      textNoPrevYearData: "Taqqoslash uchun maʼlumot yoʻq.",
+      textYearComparisonIdentical: "Bu yil va oʻtgan yil deyarli bir xil miqdorda kaloriya isteʼmol qildingiz.",
+      textYearComparisonHigher: "Bu yil oʻrtacha oʻtgan yildagidan koʻproq kaloriya isteʼmol qilyapsiz.",
+      textYearComparisonLower: "Bu yil oʻrtacha oʻtgan yildagidan kamroq kaloriya isteʼmol qilyapsiz.",
+
+      dailyAverageLabel: "KUNLIK OʻRTACHA",
+      trendButton: "Trend",
+      periodButtonWeek: "HAFTA",
+      periodButtonMonth: "OY",
+      periodButtonSixMonth: "6 OY",
+      periodButtonYear: "YIL",
+      textActiveCaloriesNoTDEE: "Avval energiya sarfingizni hisoblang: botga qayting va /calories menyusidan «Metabolizm»ni tanlang.",
+
+      loading: "Yuklanmoqda...",
+      loadingError: "Maʼlumotlarni yuklashda xatolik",
+      retryButton: "Qayta urinish",
+      titleStreak: "Tanaffussiz",
+      textCurrentStreak: "Joriy ketma-ketlik: {value} {unit}.",
+      textMaxStreak: "Eng uzun ketma-ketlik: {value} {unit}.",
+      titleGoalStreak: "Maqsad bajarilishi",
+      textCurrentGoalStreak: "Joriy maqsad ketma-ketligi: {value} {unit}.",
+      textMaxGoalStreak: "Eng uzun maqsad ketma-ketligi: {value} {unit}.",
+
+      goalsCardTitle: "Maqsad bajarilishi",
+      goalsMetricCalories: "Kaloriya",
+      goalsMetricProtein: "Oqsil",
+      goalsMetricFat: "Yogʻ",
+      goalsMetricCarbs: "Uglevod",
+      goalsProgress: "{total} kundan {met} tasi",
+      goalsUnitGrams: "g"
+    },
     uk: {
       averageLabel: "Середнє<br>за день",
       kilocalories: "ккал",
@@ -652,4 +596,4 @@
       return num === 1 ? 'month' : 'months';
     }
   };
-})(); 
+})();
