@@ -152,8 +152,8 @@ const LANG_NAMES = {
   es: 'Español',
   de: 'Deutsch',
   fr: 'Français',
-  pt: 'Português',
-  uk: 'Українська'
+  uk: 'Українська',
+  uz: 'Oʻzbekcha'
 };
 
 // ── элементы ──────────────────────────────────────────────────────
