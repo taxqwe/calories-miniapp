@@ -23,7 +23,7 @@
   }
 
   function getApiBaseUrl() {
-    return window.CaloriesMiniAppConfig?.apiBaseUrl || 'https://caloriesai.duckdns.org';
+    return window.CaloriesMiniAppConfig.apiBaseUrl;
   }
 
   function sendTimezone() {

@@ -42,10 +42,7 @@ if (tg) {
   tg.onEvent('themeChanged', () => applyTheme(tg.themeParams, tg.colorScheme));
 }
 
-const API_BASE_URL =
-  window.__CALORIES_HISTORY_API_BASE__ ||
-  window.CaloriesMiniAppConfig?.apiBaseUrl ||
-  'https://caloriesai.duckdns.org';
+const API_BASE_URL = window.CaloriesMiniAppConfig.apiBaseUrl;
 
 const historyState = {
   days: [],

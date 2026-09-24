@@ -9,7 +9,7 @@
   const editSection = document.getElementById('editSection');
   const caloriesInput = document.getElementById('caloriesInput');
   const loadingElement = document.getElementById('loading');
-  const API_BASE_URL = window.CaloriesMiniAppConfig?.apiBaseUrl || 'https://caloriesai.duckdns.org';
+  const API_BASE_URL = window.CaloriesMiniAppConfig.apiBaseUrl;
 
   // Состояние
   let currentDate = new Date();
