@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Инициализация Telegram WebApp
   const tg = window.Telegram.WebApp;
-  const API_BASE_URL = window.CaloriesMiniAppConfig?.apiBaseUrl || 'https://caloriesai.duckdns.org';
+  const API_BASE_URL = window.CaloriesMiniAppConfig.apiBaseUrl;
   tg.ready();
   tg.expand();
 

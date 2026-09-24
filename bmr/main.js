@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const API_BASE_URL = window.CaloriesMiniAppConfig?.apiBaseUrl || 'https://caloriesai.duckdns.org';
+  const API_BASE_URL = window.CaloriesMiniAppConfig.apiBaseUrl;
 
   // Поддерживаемые локали
   const supportedLocales = ["ar", "de", "es", "fr", "ru", "tr", "uk", "uz", "en"];

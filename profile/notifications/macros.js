@@ -17,8 +17,7 @@
 
   const tg = window.Telegram?.WebApp;
 
-  const API_BASE_URL =
-    window.CaloriesMiniAppConfig?.apiBaseUrl || 'https://caloriesai.duckdns.org';
+  const API_BASE_URL = window.CaloriesMiniAppConfig.apiBaseUrl;
   const REQUEST_TIMEOUT_MS = 15000;
 
   const MODES = ['PERCENT', 'GRAMS'];

@@ -15,7 +15,7 @@ Always respond in Русский
   1–3 минуты. Ни CI, ни ревью-бота в репозитории нет: `@claude review` тут некому обработать,
   PR-флоу сводится к «push → PR ботом → мерж». Проверять выкладку — запросом нового файла
   (`curl -o /dev/null -w %{http_code}`), а не по времени.
-- Бэкенд — `window.CaloriesMiniAppConfig.apiBaseUrl` из `config.js` (прод: `caloriesai.duckdns.org`).
+- Бэкенд — `window.CaloriesMiniAppConfig.apiBaseUrl` из `config.js` (прод: `caloriesai.duckdns.org`); адрес API задаётся только там, fallback-хосты в скриптах запрещены.
   Все ручки — `POST` с `initData` в теле JSON, не REST GET/PATCH.
 
 ## 1. Навигация назад

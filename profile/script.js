@@ -43,9 +43,7 @@ if (tg) {
   tg.onEvent('themeChanged', () => applyTheme(tg.themeParams, tg.colorScheme));
 }
 
-const API_BASE_URL =
-  window.CaloriesMiniAppConfig?.apiBaseUrl ||
-  'https://caloriesai.duckdns.org';
+const API_BASE_URL = window.CaloriesMiniAppConfig.apiBaseUrl;
 
 const REQUEST_TIMEOUT_MS = 15000;
 
