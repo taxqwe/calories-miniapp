@@ -787,6 +787,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let tg = null;
   let selectedGender = null; // 'm' | 'f' | null
   let selectedGoalType = 'deficit'; // 'deficit' | 'surplus'
+  let goalToggleChangedByUser = false;
   let selectedPreferences = new Set(); // канонические ключи предпочтений
 
   // Цели по БЖУ: секция появляется только если /api/profile вернул macroPresets
@@ -1820,7 +1821,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ключи goal/macroGoals/desiredWeight шлём только по готовности профиля:
     // отсутствие ключа = «не трогать сохранённое» на стороне бота.
     if (isProfileReady()) {
-      payload.goal = goalToggleEl.checked ? { type: selectedGoalType } : null;
+      if (goalToggleEl.checked) {
+        payload.goal = { type: selectedGoalType };
+      } else if (goalToggleChangedByUser) {
+        payload.goal = null;
+      }
     }
 
     if (isProfileReady() && macro.available) {
@@ -1981,6 +1986,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     goalToggleEl.addEventListener('change', () => {
+      goalToggleChangedByUser = true;
       goalSegEl.hidden = !goalToggleEl.checked;
       if (goalToggleEl.checked && !goalDeficitEl.classList.contains('segmented__item--active')
           && !goalSurplusEl.classList.contains('segmented__item--active')) {
