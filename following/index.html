@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Подписки</title>
+  <link rel="stylesheet" href="../history/style.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <main class="page">
+    <div id="view-list">
+      <header class="page__header">
+        <h1 class="page__title" data-i18n="pageTitle">Подписки</h1>
+        <p class="page__subtitle" id="list-subtitle">Итоги дня людей, которые тебе разрешили</p>
+      </header>
+
+      <div class="tabs" role="tablist">
+        <button type="button" class="tabs__item tabs__item--active" id="tab-watching" role="tab" aria-selected="true">Смотрю</button>
+        <button type="button" class="tabs__item" id="tab-sharing" role="tab" aria-selected="false">Меня видят</button>
+      </div>
+
+      <div class="stack" id="pane-watching" role="tabpanel">
+        <p class="follow__status" id="watching-status" data-i18n="loading">Загружаем…</p>
+        <div class="stack" id="watching-body" hidden></div>
+      </div>
+
+      <div class="stack" id="pane-sharing" role="tabpanel" hidden>
+        <p class="follow__status" id="sharing-status" data-i18n="loading">Загружаем…</p>
+        <div class="stack" id="sharing-body" hidden>
+          <section class="card card--flush" id="viewers-card">
+            <div id="viewers"></div>
+            <p class="follow__empty" id="viewers-empty" data-i18n="sharingEmpty" hidden>Пока никто не видит твои итоги дня</p>
+          </section>
+          <section class="card">
+            <h2 class="card__title" data-i18n="whatSeen">Что видно</h2>
+            <div class="li"><svg class="li__icon li__icon--yes" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span data-i18n="seen1">Калории за день против твоей нормы</span></div>
+            <div class="li"><svg class="li__icon li__icon--yes" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span data-i18n="seen2">Были ли записи за день и серию дней</span></div>
+            <div class="card__divider"></div>
+            <h2 class="card__title" data-i18n="whatHidden">Что не видно</h2>
+            <div class="li"><svg class="li__icon li__icon--no" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.71 12 12.01l-6.3-6.3-1.41 1.41 6.3 6.3-6.3 6.3 1.41 1.41 6.3-6.3 6.3 6.3 1.41-1.41-6.3-6.3 6.3-6.3z"/></svg><span data-i18n="hidden1">Блюда, БЖУ, фото и переписку с ботом</span></div>
+            <div class="li"><svg class="li__icon li__icon--no" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.71 12 12.01l-6.3-6.3-1.41 1.41 6.3 6.3-6.3 6.3 1.41 1.41 6.3-6.3 6.3 6.3 1.41-1.41-6.3-6.3 6.3-6.3z"/></svg><span data-i18n="hidden2">Вес и данные анкеты</span></div>
+          </section>
+          <p class="follow__note" data-i18n="sharingNote">Закрыть доступ можно в любой момент. Человек не получит уведомления — ты просто пропадёшь из его списка.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-day" hidden>
+      <div class="stack">
+        <header class="person">
+          <div class="avatar avatar--lg" id="day-avatar"></div>
+          <div class="person__info">
+            <h1 class="person__name" id="day-name"></h1>
+            <p class="person__meta" id="day-meta"></p>
+          </div>
+        </header>
+
+        <div class="days" id="day-strip"></div>
+
+        <p class="follow__status" id="day-status" hidden></p>
+
+        <div class="stack" id="day-body" hidden>
+          <section class="card">
+            <h2 class="card__title" data-i18n="dayTitle">Итог дня</h2>
+            <div class="total">
+              <span class="total__value" id="day-total"></span>
+              <span class="total__norm" id="day-total-norm"></span>
+            </div>
+            <div class="bar bar--lg" id="day-bar"><div class="bar__fill" id="day-bar-fill"></div></div>
+            <p class="total__hint" id="day-hint"></p>
+          </section>
+
+          <section class="card">
+            <div class="card__head">
+              <h2 class="card__title" data-i18n="weekTitle">7 дней</h2>
+              <span class="card__aside" id="week-count"></span>
+            </div>
+            <div class="week" id="week"></div>
+            <div class="legend">
+              <span class="legend__item" id="legend-norm"><span class="legend__line"></span><span data-i18n="legendNorm">норма</span></span>
+              <span class="legend__item"><span class="legend__box"></span><span data-i18n="legendNone">нет записей</span></span>
+            </div>
+          </section>
+
+          <p class="follow__note follow__note--center" data-i18n="dayNote">Видны только калории за день — без блюд, БЖУ, фото и веса.</p>
+          <button type="button" class="btn-ghost-danger" id="unfollow-btn" data-i18n="unfollow">Перестать смотреть</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-noaccess" hidden>
+      <section class="card card--center">
+        <div class="empty-icon empty-icon--muted">
+          <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="currentColor" d="M12 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm6-9h-1V6A5 5 0 0 0 7 6v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zM8.9 6a3.1 3.1 0 0 1 6.2 0v2H8.9V6zM18 20H6V10h12v10z"/></svg>
+        </div>
+        <h1 class="card__headline" data-i18n="noAccessTitle">Итоги недоступны</h1>
+        <p class="card__text" data-i18n="noAccessText">Человек закрыл доступ к своим итогам. Если это ошибка — попроси его снова открыть твою ссылку.</p>
+        <button type="button" class="btn-primary" id="noaccess-back" data-i18n="toList">К списку</button>
+      </section>
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <nav class="bottom-nav" role="navigation" aria-label="Основная навигация" id="bottom-nav">
+    <a href="../history/index.html" class="bottom-nav__item" id="nav-history">
+      <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+      </svg>
+      <span class="bottom-nav__label" data-i18n="navHistory">История</span>
+    </a>
+    <a href="../stats/index.html" class="bottom-nav__item" id="nav-stats">
+      <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+      </svg>
+      <span class="bottom-nav__label" data-i18n="navStats">Статистика</span>
+    </a>
+    <a href="../profile/index.html" class="bottom-nav__item bottom-nav__item--active" aria-current="page" id="nav-profile">
+      <svg class="bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+      <span class="bottom-nav__label" data-i18n="navProfile">Профиль</span>
+    </a>
+  </nav>
+
+  <script src="../config.js"></script>
+  <script src="../timezone-sync.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
