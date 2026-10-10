@@ -572,6 +572,41 @@ button.prow:active {
   font-size: 13px;
 }
 
+.macros {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.macro {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.macro__label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.macro__value {
+  font-size: 17px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.macro__norm {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.macro .bar {
+  margin-top: 0;
+}
+
 .legend {
   display: flex;
   gap: 16px;
