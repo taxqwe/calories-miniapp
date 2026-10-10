@@ -67,7 +67,7 @@ const translations = {
     streakShort: 'серия {n} дн.',
     overNorm: '+{n} к норме',
     emptyTitle: 'Пока никого',
-    emptyText: 'Смотри, как клиенты или друзья ведут дневник: калории против нормы, пропуски, серии.',
+    emptyText: 'Смотри, как клиенты или друзья ведут дневник: калории и БЖУ против нормы, пропуски, серии.',
     step1: 'Отправь человеку свою ссылку',
     step2: 'Он откроет бота и подтвердит доступ одной кнопкой',
     step3: 'Его итоги появятся здесь, а по понедельникам придёт сводка',
@@ -86,10 +86,10 @@ const translations = {
     closeError: 'Не удалось закрыть доступ. Попробуй позже.',
     sharingEmpty: 'Пока никто не видит твои итоги дня',
     whatSeen: 'Что видно',
-    seen1: 'Калории за день против твоей нормы',
+    seen1: 'Калории и БЖУ за день против твоей нормы',
     seen2: 'Были ли записи за день и серию дней',
     whatHidden: 'Что не видно',
-    hidden1: 'Блюда, БЖУ, фото и переписку с ботом',
+    hidden1: 'Блюда, фото и переписку с ботом',
     hidden2: 'Вес и данные анкеты',
     sharingNote: 'Закрыть доступ можно в любой момент. Человек не получит уведомления — ты просто пропадёшь из его списка.',
     dayTitle: 'Итог дня',
@@ -97,7 +97,14 @@ const translations = {
     weekCount: 'записи {n} из 7 дней',
     legendNorm: 'норма',
     legendNone: 'нет записей',
-    dayNote: 'Видны только калории за день — без блюд, БЖУ, фото и веса.',
+    dayNote: 'Видны только итоги дня: калории и БЖУ. Блюда, фото и вес не видны.',
+    macroProtein: 'Белки',
+    macroFat: 'Жиры',
+    macroCarbs: 'Углеводы',
+    macroShortProtein: 'Б',
+    macroShortFat: 'Ж',
+    macroShortCarbs: 'У',
+    gramsUnit: 'г',
     unfollow: 'Перестать смотреть',
     unfollowConfirm: 'Перестать смотреть итоги {name}?',
     unfollowError: 'Не удалось выполнить. Попробуй позже.',
@@ -138,7 +145,7 @@ const translations = {
     streakShort: '{n}-day streak',
     overNorm: '+{n} over norm',
     emptyTitle: 'No one yet',
-    emptyText: 'See how clients or friends keep their diary: calories vs. norm, gaps, streaks.',
+    emptyText: 'See how clients or friends keep their diary: calories and macros vs. norm, gaps, streaks.',
     step1: 'Send your link to a person',
     step2: 'They open the bot and confirm access with one button',
     step3: 'Their summaries show up here, and a digest arrives on Mondays',
@@ -157,10 +164,10 @@ const translations = {
     closeError: "Couldn't revoke access. Please try again later.",
     sharingEmpty: 'No one can see your daily summaries yet',
     whatSeen: 'What they see',
-    seen1: 'Calories for the day vs. your norm',
+    seen1: 'Calories and macros for the day vs. your norm',
     seen2: 'Whether you logged that day, and your streak',
     whatHidden: 'What they don’t see',
-    hidden1: 'Dishes, macros, photos and your chat with the bot',
+    hidden1: 'Dishes, photos and your chat with the bot',
     hidden2: 'Weight and questionnaire data',
     sharingNote: 'You can revoke access any time. The person won’t be notified — you simply disappear from their list.',
     dayTitle: 'Day total',
@@ -168,7 +175,14 @@ const translations = {
     weekCount: 'logged {n} of 7 days',
     legendNorm: 'norm',
     legendNone: 'no entries',
-    dayNote: 'Only the day’s calories are visible — no dishes, macros, photos or weight.',
+    dayNote: 'Only the day’s totals are visible: calories and macros. Dishes, photos and weight are not visible.',
+    macroProtein: 'Protein',
+    macroFat: 'Fat',
+    macroCarbs: 'Carbs',
+    macroShortProtein: 'P',
+    macroShortFat: 'F',
+    macroShortCarbs: 'C',
+    gramsUnit: 'g',
     unfollow: 'Stop watching',
     unfollowConfirm: 'Stop watching {name}?',
     unfollowError: "Couldn't complete. Please try again later.",
@@ -215,6 +229,8 @@ const els = {
   dayBar: document.getElementById('day-bar'),
   dayBarFill: document.getElementById('day-bar-fill'),
   dayHint: document.getElementById('day-hint'),
+  dayMacros: document.getElementById('day-macros'),
+  dayMacrosDivider: document.getElementById('day-macros-divider'),
   weekCount: document.getElementById('week-count'),
   week: document.getElementById('week'),
   legendNorm: document.getElementById('legend-norm'),
@@ -354,6 +370,31 @@ function nameLine(person) {
 function hasNormValue(value) {
   const n = Number(value);
   return value !== null && value !== undefined && Number.isFinite(n) && n > 0;
+}
+
+const MACRO_KEYS = [
+  { key: 'protein', short: 'macroShortProtein', long: 'macroProtein' },
+  { key: 'fat', short: 'macroShortFat', long: 'macroFat' },
+  { key: 'carbs', short: 'macroShortCarbs', long: 'macroCarbs' }
+];
+
+function macroNorm(norms, key) {
+  const value = norms ? norms[key] : null;
+  return hasNormValue(value) ? Number(value) : null;
+}
+
+function macroFill(value, norm) {
+  return Math.min(100, Math.round(((Number(value) || 0) / norm) * 100));
+}
+
+function macrosLine(macros, norms) {
+  const s = t();
+  const parts = MACRO_KEYS.map(({ key, short }) => {
+    const norm = macroNorm(norms, key);
+    const value = formatNumber(macros[key]);
+    return norm === null ? `${s[short]} ${value}` : `${s[short]} ${value}/${formatNumber(norm)}`;
+  });
+  return `${parts.join(' · ')} ${s.gramsUnit}`;
 }
 
 async function postJson(path, body) {
@@ -545,6 +586,9 @@ function personRow(person) {
   const info = el('div', 'prow__info');
   info.appendChild(nameLine(person));
   info.appendChild(el('div', 'prow__meta', personMeta(person)));
+  if (person.todayMacros) {
+    info.appendChild(el('div', 'prow__meta', macrosLine(person.todayMacros, person.normMacros)));
+  }
   if (showBar) {
     const bar = el('div', 'bar');
     const fill = el('div', 'bar__fill');
@@ -909,11 +953,41 @@ function renderDay(day) {
     els.dayHint.textContent = fmt(s.toNorm, { n: formatNumber(norm - cal) });
   }
 
+  renderDayMacros(day);
   renderWeek(day, hasNorm ? norm : null);
   renderDayStrip(day);
 
   els.dayStatus.hidden = true;
   els.dayBody.hidden = false;
+}
+
+function renderDayMacros(day) {
+  const s = t();
+  const macros = day.macros || null;
+  els.dayMacros.hidden = !macros;
+  els.dayMacrosDivider.hidden = !macros;
+  els.dayMacros.textContent = '';
+  if (!macros) return;
+  MACRO_KEYS.forEach(({ key, long }) => {
+    const norm = macroNorm(day.normMacros, key);
+    const cell = el('div', 'macro');
+    cell.appendChild(el('span', 'macro__label', s[long]));
+    const value = el('span', 'macro__value', formatNumber(macros[key]));
+    if (norm !== null) {
+      value.appendChild(el('span', 'macro__norm', ` / ${formatNumber(norm)} ${s.gramsUnit}`));
+    } else {
+      value.appendChild(el('span', 'macro__norm', ` ${s.gramsUnit}`));
+    }
+    cell.appendChild(value);
+    if (norm !== null) {
+      const bar = el('div', 'bar');
+      const fill = el('div', 'bar__fill');
+      fill.style.width = macroFill(macros[key], norm) + '%';
+      bar.appendChild(fill);
+      cell.appendChild(bar);
+    }
+    els.dayMacros.appendChild(cell);
+  });
 }
 
 function renderWeek(day, norm) {

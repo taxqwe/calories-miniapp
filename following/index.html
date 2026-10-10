@@ -38,11 +38,11 @@
           </section>
           <section class="card">
             <h2 class="card__title" data-i18n="whatSeen">Что видно</h2>
-            <div class="li"><svg class="li__icon li__icon--yes" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span data-i18n="seen1">Калории за день против твоей нормы</span></div>
+            <div class="li"><svg class="li__icon li__icon--yes" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span data-i18n="seen1">Калории и БЖУ за день против твоей нормы</span></div>
             <div class="li"><svg class="li__icon li__icon--yes" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span data-i18n="seen2">Были ли записи за день и серию дней</span></div>
             <div class="card__divider"></div>
             <h2 class="card__title" data-i18n="whatHidden">Что не видно</h2>
-            <div class="li"><svg class="li__icon li__icon--no" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.71 12 12.01l-6.3-6.3-1.41 1.41 6.3 6.3-6.3 6.3 1.41 1.41 6.3-6.3 6.3 6.3 1.41-1.41-6.3-6.3 6.3-6.3z"/></svg><span data-i18n="hidden1">Блюда, БЖУ, фото и переписку с ботом</span></div>
+            <div class="li"><svg class="li__icon li__icon--no" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.71 12 12.01l-6.3-6.3-1.41 1.41 6.3 6.3-6.3 6.3 1.41 1.41 6.3-6.3 6.3 6.3 1.41-1.41-6.3-6.3 6.3-6.3z"/></svg><span data-i18n="hidden1">Блюда, фото и переписку с ботом</span></div>
             <div class="li"><svg class="li__icon li__icon--no" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.71 12 12.01l-6.3-6.3-1.41 1.41 6.3 6.3-6.3 6.3 1.41 1.41 6.3-6.3 6.3 6.3 1.41-1.41-6.3-6.3 6.3-6.3z"/></svg><span data-i18n="hidden2">Вес и данные анкеты</span></div>
           </section>
           <p class="follow__note" data-i18n="sharingNote">Закрыть доступ можно в любой момент. Человек не получит уведомления — ты просто пропадёшь из его списка.</p>
@@ -73,6 +73,8 @@
             </div>
             <div class="bar bar--lg" id="day-bar"><div class="bar__fill" id="day-bar-fill"></div></div>
             <p class="total__hint" id="day-hint"></p>
+            <div class="card__divider" id="day-macros-divider" hidden></div>
+            <div class="macros" id="day-macros" hidden></div>
           </section>
 
           <section class="card">
@@ -87,7 +89,7 @@
             </div>
           </section>
 
-          <p class="follow__note follow__note--center" data-i18n="dayNote">Видны только калории за день — без блюд, БЖУ, фото и веса.</p>
+          <p class="follow__note follow__note--center" data-i18n="dayNote">Видны только итоги дня: калории и БЖУ. Блюда, фото и вес не видны.</p>
           <button type="button" class="btn-ghost-danger" id="unfollow-btn" data-i18n="unfollow">Перестать смотреть</button>
         </div>
       </div>
