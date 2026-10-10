@@ -56,6 +56,9 @@ const translations = {
     statusLoading: 'Загружаем профиль…',
     cardTier: 'Тариф',
     cardNorm: 'Норма и цель',
+    rowFollowing: 'Подписки',
+    followingWatching: 'смотрю',
+    followingSharing: 'видят',
     rowNotifications: 'Уведомления',
     notificationsNone: 'Выключены',
     notificationsDigestOnly: 'Только отчёт за неделю',
@@ -102,6 +105,9 @@ const translations = {
     statusLoading: 'Loading profile…',
     cardTier: 'Plan',
     cardNorm: 'Norm & goal',
+    rowFollowing: 'Following',
+    followingWatching: 'watching',
+    followingSharing: 'watching me',
     rowNotifications: 'Notifications',
     notificationsNone: 'Off',
     notificationsDigestOnly: 'Weekly digest only',
@@ -176,6 +182,8 @@ const els = {
   normEmpty: document.getElementById('norm-empty'),
   normEditLink: document.getElementById('norm-edit-link'),
   normEditLabel: document.getElementById('norm-edit-label'),
+  followingLink: document.getElementById('row-following'),
+  followingValue: document.getElementById('following-value'),
   notificationsLink: document.getElementById('row-notifications'),
   notificationsValue: document.getElementById('notifications-value'),
   languageValue: document.getElementById('language-value')
@@ -419,6 +427,58 @@ function renderNotifications(profile) {
   els.notificationsLink?.setAttribute('href', withLang('notifications/index.html'));
 }
 
+let followingCounts = null;
+
+function renderFollowing() {
+  els.followingLink?.setAttribute('href', withLang('../following/index.html'));
+  if (!els.followingValue) return;
+  if (!followingCounts || (followingCounts.watching === 0 && followingCounts.sharing === 0)) {
+    els.followingValue.hidden = true;
+    return;
+  }
+  const s = t();
+  els.followingValue.textContent =
+    `${s.followingWatching} ${followingCounts.watching} · ${s.followingSharing} ${followingCounts.sharing}`;
+  els.followingValue.hidden = false;
+}
+
+async function postFollow(path) {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      mode: 'cors',
+      body: JSON.stringify({ initData: getInitDataString() }),
+      signal: controller.signal
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
+
+async function loadFollowingCounts() {
+  try {
+    const [list, sharing] = await Promise.all([
+      postFollow('/api/follow/list'),
+      postFollow('/api/follow/sharing')
+    ]);
+    followingCounts = {
+      watching: Array.isArray(list?.people) ? list.people.length : 0,
+      sharing: Array.isArray(sharing?.viewers) ? sharing.viewers.length : 0
+    };
+    renderFollowing();
+  } catch (error) {
+    console.error('Failed to load following counts', error);
+  }
+}
+
 function renderMisc(locale) {
   els.languageValue.textContent = languageName(locale) || '—';
 }
@@ -526,6 +586,7 @@ function render(profile) {
   renderNorm(profile?.norm, profile?.goal);
   renderPreferences(profile?.preferences);
   renderNotifications(profile);
+  renderFollowing();
   renderMisc(profile?.locale);
   els.status.hidden = true;
   els.body.hidden = false;
@@ -568,6 +629,7 @@ async function loadProfile() {
 
     const profile = await response.json();
     render(profile);
+    loadFollowingCounts();
   } catch (error) {
     console.error('Failed to load profile', error);
     showError();

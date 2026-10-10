@@ -705,3 +705,9 @@
   fill: var(--text-secondary);
 }
 
+.row__icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  fill: var(--accent-color);
+}
