@@ -20,16 +20,16 @@
       </header>
 
       <div class="tabs" role="tablist">
-        <button type="button" class="tabs__item tabs__item--active" id="tab-watching" role="tab" aria-selected="true">Смотрю</button>
-        <button type="button" class="tabs__item" id="tab-sharing" role="tab" aria-selected="false">Меня видят</button>
+        <button type="button" class="tabs__item tabs__item--active" id="tab-watching" role="tab" aria-selected="true" aria-controls="pane-watching" tabindex="0">Смотрю</button>
+        <button type="button" class="tabs__item" id="tab-sharing" role="tab" aria-selected="false" aria-controls="pane-sharing" tabindex="-1">Меня видят</button>
       </div>
 
-      <div class="stack" id="pane-watching" role="tabpanel">
+      <div class="stack" id="pane-watching" role="tabpanel" aria-labelledby="tab-watching">
         <p class="follow__status" id="watching-status" data-i18n="loading">Загружаем…</p>
         <div class="stack" id="watching-body" hidden></div>
       </div>
 
-      <div class="stack" id="pane-sharing" role="tabpanel" hidden>
+      <div class="stack" id="pane-sharing" role="tabpanel" aria-labelledby="tab-sharing" hidden>
         <p class="follow__status" id="sharing-status" data-i18n="loading">Загружаем…</p>
         <div class="stack" id="sharing-body" hidden>
           <section class="card card--flush" id="viewers-card">
@@ -53,14 +53,14 @@
     <div id="view-day" hidden>
       <div class="stack">
         <header class="person">
-          <div class="avatar avatar--lg" id="day-avatar"></div>
+          <div class="avatar avatar--lg" id="day-avatar" aria-hidden="true"></div>
           <div class="person__info">
             <h1 class="person__name" id="day-name"></h1>
             <p class="person__meta" id="day-meta"></p>
           </div>
         </header>
 
-        <div class="days" id="day-strip"></div>
+        <div class="days" id="day-strip" role="group"></div>
 
         <p class="follow__status" id="day-status" hidden></p>
 
