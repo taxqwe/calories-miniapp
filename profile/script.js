@@ -422,8 +422,10 @@ function renderNotifications(profile) {
   els.notificationsLink?.setAttribute('href', withLang('notifications/index.html'));
 }
 
-function renderFollowing() {
-  els.followingLink?.setAttribute('href', withLang('../following/index.html?src=profile'));
+function renderFollowing(profile) {
+  if (!els.followingLink) return;
+  els.followingLink.hidden = !(profile?.followsEnabled === true || profile?.hasFollows === true);
+  els.followingLink.setAttribute('href', withLang('../following/index.html?src=profile'));
 }
 
 function renderMisc(locale) {
@@ -533,7 +535,7 @@ function render(profile) {
   renderNorm(profile?.norm, profile?.goal);
   renderPreferences(profile?.preferences);
   renderNotifications(profile);
-  renderFollowing();
+  renderFollowing(profile);
   renderMisc(profile?.locale);
   els.status.hidden = true;
   els.body.hidden = false;
