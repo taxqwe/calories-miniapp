@@ -464,6 +464,18 @@ button.prow:active {
   cursor: pointer;
 }
 
+.day--locked,
+.day:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.is-loading {
+  opacity: 0.55;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+
 .day--active {
   border-color: var(--accent-color);
   background: rgba(255, 100, 34, 0.12);
@@ -561,6 +573,15 @@ button.prow:active {
 .week__fill {
   width: 100%;
   background: var(--accent-color);
+}
+
+.week__col--locked {
+  opacity: 0.45;
+}
+
+.week__bar--locked {
+  background: var(--card-elevated-bg);
+  opacity: 0.6;
 }
 
 .week__bar--empty {

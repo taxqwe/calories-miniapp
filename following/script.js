@@ -81,8 +81,10 @@ const translations = {
     linkReset: 'Новая ссылка готова, старая больше не работает',
     linkError: 'Не удалось получить ссылку. Попробуй позже.',
     linksDisabled: 'Приглашения сейчас недоступны.',
+    linksOffText: 'Приглашения по ссылке сейчас отключены. Когда их включат, здесь можно будет пригласить человека.',
     sinceDate: 'Видит с {date}',
     close: 'Закрыть',
+    closeConfirm: 'Закрыть доступ для {name}? Этот человек не сможет получить доступ снова по новой ссылке.',
     closeError: 'Не удалось закрыть доступ. Попробуй позже.',
     sharingEmpty: 'Пока никто не видит твои итоги дня',
     whatSeen: 'Что видно',
@@ -97,6 +99,8 @@ const translations = {
     weekCount: 'записи {n} из 7 дней',
     legendNorm: 'норма',
     legendNone: 'нет записей',
+    dayLogged: 'есть записи',
+    daysAria: 'Дни',
     dayNote: 'Видны только итоги дня: калории и БЖУ. Блюда, фото и вес не видны.',
     macroProtein: 'Белки',
     macroFat: 'Жиры',
@@ -159,8 +163,10 @@ const translations = {
     linkReset: 'New link is ready, the old one no longer works',
     linkError: "Couldn't get the link. Please try again later.",
     linksDisabled: 'Invitations are unavailable right now.',
+    linksOffText: 'Invitations by link are turned off right now. Once they are back, you will be able to invite a person here.',
     sinceDate: 'Can see since {date}',
     close: 'Revoke',
+    closeConfirm: 'Revoke access for {name}? This person won’t be able to get access again with a new link.',
     closeError: "Couldn't revoke access. Please try again later.",
     sharingEmpty: 'No one can see your daily summaries yet',
     whatSeen: 'What they see',
@@ -175,6 +181,8 @@ const translations = {
     weekCount: 'logged {n} of 7 days',
     legendNorm: 'norm',
     legendNone: 'no entries',
+    dayLogged: 'has entries',
+    daysAria: 'Days',
     dayNote: 'Only the day’s totals are visible: calories and macros. Dishes, photos and weight are not visible.',
     macroProtein: 'Protein',
     macroFat: 'Fat',
@@ -360,11 +368,21 @@ function initialOf(name) {
 }
 
 function nameLine(person) {
-  const line = el('div', 'prow__name', person.name || '');
+  const line = el('div', 'prow__name');
+  line.setAttribute('dir', 'auto');
+  line.appendChild(el('bdi', null, person.name || ''));
   if (person.username) {
-    line.appendChild(el('span', 'prow__user', ' @' + person.username));
+    const user = el('span', 'prow__user', ' ');
+    user.appendChild(el('bdi', null, '@' + person.username));
+    line.appendChild(user);
   }
   return line;
+}
+
+function avatarNode(name, className) {
+  const node = el('div', className, initialOf(name));
+  node.setAttribute('aria-hidden', 'true');
+  return node;
 }
 
 function hasNormValue(value) {
@@ -447,6 +465,18 @@ function confirmAction(message) {
   });
 }
 
+const inFlight = new Set();
+
+async function runExclusive(key, task) {
+  if (inFlight.has(key)) return;
+  inFlight.add(key);
+  try {
+    await task();
+  } finally {
+    inFlight.delete(key);
+  }
+}
+
 const state = {
   tab: 'watching',
   view: 'list',
@@ -457,7 +487,9 @@ const state = {
   currentPerson: null,
   currentDay: null,
   knownDays: {},
-  dayRequestId: 0
+  dayRequestId: 0,
+  dayLoading: false,
+  requestedDate: null
 };
 
 function setView(view) {
@@ -473,8 +505,10 @@ function applyStaticI18n() {
   const s = t();
   document.documentElement.lang = resolveLocale();
   document.title = s.pageTitle;
+  els.dayStrip.setAttribute('aria-label', s.daysAria);
   document.querySelectorAll('[data-i18n]').forEach((node) => {
     const key = node.getAttribute('data-i18n');
+    if (node.dataset.state === 'error') return;
     if (key && Object.prototype.hasOwnProperty.call(s, key)) {
       node.textContent = s[key];
     }
@@ -515,6 +549,8 @@ function renderTabs() {
   els.tabSharing.classList.toggle('tabs__item--active', !isWatching);
   els.tabWatching.setAttribute('aria-selected', String(isWatching));
   els.tabSharing.setAttribute('aria-selected', String(!isWatching));
+  els.tabWatching.tabIndex = isWatching ? 0 : -1;
+  els.tabSharing.tabIndex = isWatching ? -1 : 0;
   els.paneWatching.hidden = !isWatching;
   els.paneSharing.hidden = isWatching;
   els.listSubtitle.textContent = isWatching ? s.subtitleWatching : s.subtitleSharing;
@@ -526,6 +562,8 @@ function selectTab(tab) {
 }
 
 function showStatusWithRetry(statusEl, bodyEl, onRetry) {
+  statusEl.dataset.state = 'error';
+  statusEl.retryHandler = onRetry;
   statusEl.textContent = '';
   statusEl.appendChild(document.createTextNode(t().loadError));
   const retry = el('button', 'btn-secondary', t().retry);
@@ -533,13 +571,32 @@ function showStatusWithRetry(statusEl, bodyEl, onRetry) {
   retry.addEventListener('click', onRetry);
   statusEl.appendChild(retry);
   statusEl.hidden = false;
-  bodyEl.hidden = true;
+  if (bodyEl) bodyEl.hidden = true;
 }
 
 function showLoading(statusEl, bodyEl) {
+  statusEl.dataset.state = 'loading';
+  statusEl.retryHandler = null;
   statusEl.textContent = t().loading;
   statusEl.hidden = false;
-  bodyEl.hidden = true;
+  if (bodyEl) bodyEl.hidden = true;
+}
+
+function hideStatus(statusEl) {
+  statusEl.hidden = true;
+  statusEl.dataset.state = '';
+  statusEl.retryHandler = null;
+}
+
+function refreshStatuses() {
+  [els.watchingStatus, els.sharingStatus, els.dayStatus].forEach((statusEl) => {
+    if (statusEl.hidden) return;
+    if (statusEl.dataset.state === 'error' && statusEl.retryHandler) {
+      showStatusWithRetry(statusEl, null, statusEl.retryHandler);
+    } else if (statusEl.dataset.state === 'loading') {
+      statusEl.textContent = t().loading;
+    }
+  });
 }
 
 function personMeta(person) {
@@ -581,7 +638,7 @@ function personRow(person) {
 
   const row = el('button', 'prow');
   row.type = 'button';
-  row.appendChild(el('div', stale || !person.loggedToday ? 'avatar avatar--muted' : 'avatar', initialOf(person.name)));
+  row.appendChild(avatarNode(person.name, stale || !person.loggedToday ? 'avatar avatar--muted' : 'avatar'));
 
   const info = el('div', 'prow__info');
   info.appendChild(nameLine(person));
@@ -639,6 +696,8 @@ function buildEmptyCard() {
     card.appendChild(buildStep(3, s.step3));
     card.appendChild(actionButton(s.invite, 'btn-primary', shareInvite));
     card.appendChild(actionButton(s.copyLink, 'btn-secondary', copyInvite));
+  } else {
+    card.appendChild(el('p', 'card__text', s.linksOffText));
   }
   return card;
 }
@@ -668,7 +727,7 @@ function renderWatching() {
     if (rest.length) els.watchingBody.appendChild(personsSection(s.sectionToday, rest));
     if (state.linksEnabled) els.watchingBody.appendChild(buildInviteCard());
   }
-  els.watchingStatus.hidden = true;
+  hideStatus(els.watchingStatus);
   els.watchingBody.hidden = false;
   renderTabs();
 }
@@ -678,7 +737,7 @@ function renderSharing() {
   els.viewers.textContent = '';
   viewers.forEach((viewer) => {
     const row = el('div', 'prow');
-    row.appendChild(el('div', 'avatar', initialOf(viewer.name)));
+    row.appendChild(avatarNode(viewer.name, 'avatar'));
     const info = el('div', 'prow__info');
     info.appendChild(nameLine(viewer));
     if (viewer.since) {
@@ -692,7 +751,7 @@ function renderSharing() {
     els.viewers.appendChild(row);
   });
   els.viewersEmpty.hidden = viewers.length > 0;
-  els.sharingStatus.hidden = true;
+  hideStatus(els.sharingStatus);
   els.sharingBody.hidden = false;
   renderTabs();
 }
@@ -724,9 +783,18 @@ async function loadSharing() {
   }
 }
 
-async function revokeViewer(viewer, button) {
+function revokeViewer(viewer, button) {
+  return runExclusive('revoke', () => performRevoke(viewer, button));
+}
+
+async function performRevoke(viewer, button) {
   button.disabled = true;
   try {
+    const confirmed = await confirmAction(fmt(t().closeConfirm, { name: viewer.name || '' }));
+    if (!confirmed) {
+      button.disabled = false;
+      return;
+    }
     const result = await postJson('/api/follow/revoke', { viewerChatId: viewer.viewerChatId });
     if (!result.ok || !result.data || result.data.ok !== true) throw new Error(`HTTP ${result.status}`);
     state.viewers = (state.viewers || []).filter((v) => v.viewerChatId !== viewer.viewerChatId);
@@ -817,16 +885,21 @@ async function copyInvite(button) {
   }
 }
 
-async function resetInvite(button) {
-  const confirmed = await confirmAction(t().resetConfirm);
-  if (!confirmed) return;
+function resetInvite(button) {
+  return runExclusive('reset', () => performReset(button));
+}
+
+async function performReset(button) {
   button.disabled = true;
   try {
+    const confirmed = await confirmAction(t().resetConfirm);
+    if (!confirmed) return;
     const url = await fetchInviteUrl(true);
     if (url) showToast(t().linkReset);
   } catch (error) {
     console.error('Failed to reset invite', error);
     showToast(t().linkError);
+  } finally {
     button.disabled = false;
   }
 }
@@ -844,35 +917,63 @@ function openPerson(person) {
   state.currentPerson = person;
   state.currentDay = null;
   state.knownDays = {};
+  state.dayLoading = false;
+  state.requestedDate = null;
   els.dayAvatar.textContent = initialOf(person.name);
   els.dayName.textContent = '';
-  els.dayName.appendChild(document.createTextNode(person.name || ''));
+  els.dayName.appendChild(el('bdi', null, person.name || ''));
   if (person.username) {
-    els.dayName.appendChild(el('span', 'person__user', ' @' + person.username));
+    const user = el('span', 'person__user', ' ');
+    user.appendChild(el('bdi', null, '@' + person.username));
+    els.dayName.appendChild(user);
   }
   els.dayMeta.textContent = '';
   els.dayStrip.textContent = '';
   els.dayBody.hidden = true;
+  els.dayBody.classList.remove('is-loading');
   setView('day');
-  loadDay(toIsoDate(new Date()), true);
+  loadDay(isoDateOrNull(person.today) || toIsoDate(new Date()));
+}
+
+function isoDateOrNull(value) {
+  return parseIsoDate(value) ? String(value) : null;
 }
 
 function renderDayStrip(day) {
+  const s = t();
   els.dayStrip.textContent = '';
-  const minDate = day.minDate || day.date;
   const maxDate = day.maxDate || day.date;
+  let minDate = day.minDate || day.date;
+  const visibleFrom = state.currentPerson && isoDateOrNull(state.currentPerson.visibleFrom);
+  if (visibleFrom && visibleFrom > minDate) minDate = visibleFrom;
   let activeNode = null;
   for (let iso = minDate, guard = 0; iso <= maxDate && guard < 400; iso = addDays(iso, 1), guard += 1) {
-    const button = el('button', iso === day.date ? 'day day--active' : 'day');
-    button.type = 'button';
-    const label = iso === maxDate ? t().today : `${weekdayShort(iso)} ${Number(iso.slice(8, 10))}`;
-    button.appendChild(el('span', null, label));
+    const isActive = iso === day.date;
     const known = state.knownDays[iso];
-    button.appendChild(el('span', known ? (known.logged ? 'day__dot day__dot--yes' : 'day__dot day__dot--no') : 'day__dot'));
-    if (iso === day.date) activeNode = button;
-    button.addEventListener('click', () => {
-      if (iso !== day.date) loadDay(iso, false);
-    });
+    const locked = Boolean(known && known.beforeAccess);
+    const classes = ['day'];
+    if (isActive) classes.push('day--active');
+    if (locked) classes.push('day--locked');
+    const button = el('button', classes.join(' '));
+    button.type = 'button';
+    const label = iso === maxDate ? s.today : `${weekdayShort(iso)} ${Number(iso.slice(8, 10))}`;
+    button.appendChild(el('span', null, label));
+    const dotClass = known && !locked ? (known.logged ? 'day__dot day__dot--yes' : 'day__dot day__dot--no') : 'day__dot';
+    const dot = el('span', dotClass);
+    dot.setAttribute('aria-hidden', 'true');
+    button.appendChild(dot);
+    const ariaParts = [formatDayMonth(iso)];
+    if (known && !locked) ariaParts.push(known.logged ? s.dayLogged : s.legendNone);
+    button.setAttribute('aria-label', ariaParts.join(', '));
+    if (isActive) {
+      button.setAttribute('aria-current', 'date');
+      activeNode = button;
+    }
+    if (locked) {
+      button.disabled = true;
+    } else {
+      button.addEventListener('click', () => selectDay(iso));
+    }
     els.dayStrip.appendChild(button);
   }
   if (activeNode) {
@@ -880,21 +981,40 @@ function renderDayStrip(day) {
   }
 }
 
+function selectDay(iso) {
+  const current = state.dayLoading ? state.requestedDate : (state.currentDay && state.currentDay.date);
+  if (iso === current) return;
+  loadDay(iso);
+}
+
 function requestDay(date) {
   return postJson('/api/follow/day', { ownerChatId: state.currentPerson.ownerChatId, date });
 }
 
-async function loadDay(date, isInitial) {
+function showDayLoading() {
+  if (state.currentDay) {
+    els.dayBody.classList.add('is-loading');
+    els.dayBody.setAttribute('aria-busy', 'true');
+    return;
+  }
+  showLoading(els.dayStatus, els.dayBody);
+}
+
+function clearDayLoading() {
+  els.dayBody.classList.remove('is-loading');
+  els.dayBody.removeAttribute('aria-busy');
+}
+
+async function loadDay(date) {
   const requestId = ++state.dayRequestId;
-  els.dayStatus.textContent = t().loading;
-  els.dayStatus.hidden = false;
-  els.dayBody.hidden = true;
+  state.dayLoading = true;
+  state.requestedDate = date;
+  showDayLoading();
   try {
-    let result = await requestDay(date);
-    if (isInitial && result.status === 400 && result.data?.error === 'date_out_of_range') {
-      result = await requestDay(addDays(date, -1));
-    }
+    const result = await requestDay(date);
     if (requestId !== state.dayRequestId) return;
+    state.dayLoading = false;
+    clearDayLoading();
     if (result.status === 403) {
       setView('noaccess');
       return;
@@ -903,15 +1023,14 @@ async function loadDay(date, isInitial) {
     renderDay(result.data);
   } catch (error) {
     if (requestId !== state.dayRequestId) return;
+    state.dayLoading = false;
+    clearDayLoading();
     console.error('Failed to load follow day', error);
-    els.dayStatus.textContent = '';
-    els.dayStatus.appendChild(document.createTextNode(t().loadError));
-    const retry = el('button', 'btn-secondary', t().retry);
-    retry.type = 'button';
-    retry.addEventListener('click', () => loadDay(date, isInitial));
-    els.dayStatus.appendChild(retry);
-    els.dayStatus.hidden = false;
-    els.dayBody.hidden = true;
+    if (state.currentDay) {
+      showToast(t().loadError);
+      return;
+    }
+    showStatusWithRetry(els.dayStatus, els.dayBody, () => loadDay(date));
   }
 }
 
@@ -919,9 +1038,9 @@ function renderDay(day) {
   const s = t();
   state.currentDay = day;
   (Array.isArray(day.week) ? day.week : []).forEach((entry) => {
-    state.knownDays[entry.date] = { logged: Boolean(entry.logged) };
+    state.knownDays[entry.date] = { logged: Boolean(entry.logged), beforeAccess: entry.beforeAccess === true };
   });
-  state.knownDays[day.date] = { logged: Boolean(day.logged) };
+  state.knownDays[day.date] = { logged: Boolean(day.logged), beforeAccess: false };
 
   els.dayMeta.textContent = Number(day.streakDays) > 0 ? fmt(s.streakLong, { n: day.streakDays }) : '';
 
@@ -957,7 +1076,7 @@ function renderDay(day) {
   renderWeek(day, hasNorm ? norm : null);
   renderDayStrip(day);
 
-  els.dayStatus.hidden = true;
+  hideStatus(els.dayStatus);
   els.dayBody.hidden = false;
 }
 
@@ -993,11 +1112,11 @@ function renderDayMacros(day) {
 function renderWeek(day, norm) {
   const s = t();
   const week = Array.isArray(day.week) ? day.week : [];
-  const loggedCount = week.filter((entry) => entry.logged).length;
+  const loggedCount = week.filter((entry) => entry.logged && entry.beforeAccess !== true).length;
   els.weekCount.textContent = fmt(s.weekCount, { n: loggedCount });
   els.week.textContent = '';
 
-  const maxCal = week.reduce((max, entry) => (entry.logged ? Math.max(max, Number(entry.calories) || 0) : max), 0);
+  const maxCal = week.reduce((max, entry) => (entry.logged && entry.beforeAccess !== true ? Math.max(max, Number(entry.calories) || 0) : max), 0);
   const scaleMax = Math.max(maxCal, norm || 0) * 1.1 || 1;
   const barHeight = 84;
 
@@ -1010,8 +1129,16 @@ function renderWeek(day, norm) {
   els.legendNorm.hidden = !norm;
 
   week.forEach((entry) => {
-    const col = el('div', entry.date === day.date ? 'week__col week__col--active' : 'week__col');
-    if (entry.logged) {
+    const locked = entry.beforeAccess === true;
+    const colClass = ['week__col'];
+    if (entry.date === day.date) colClass.push('week__col--active');
+    if (locked) colClass.push('week__col--locked');
+    const col = el('div', colClass.join(' '));
+    if (locked) {
+      const bar = el('div', 'week__bar week__bar--locked');
+      bar.setAttribute('aria-hidden', 'true');
+      col.appendChild(bar);
+    } else if (entry.logged) {
       const bar = el('div', 'week__bar');
       const fill = el('div', 'week__fill');
       fill.style.height = Math.max(4, Math.round(((Number(entry.calories) || 0) / scaleMax) * 100)) + '%';
@@ -1025,14 +1152,22 @@ function renderWeek(day, norm) {
   });
 }
 
-async function unfollowCurrent() {
+function unfollowCurrent() {
+  return runExclusive('unfollow', performUnfollow);
+}
+
+async function performUnfollow() {
   const person = state.currentPerson;
   if (!person) return;
-  const confirmed = await confirmAction(fmt(t().unfollowConfirm, { name: person.name || '' }));
-  if (!confirmed) return;
   els.unfollowBtn.disabled = true;
   try {
+    const confirmed = await confirmAction(fmt(t().unfollowConfirm, { name: person.name || '' }));
+    if (!confirmed) return;
     const result = await postJson('/api/follow/unfollow', { ownerChatId: person.ownerChatId });
+    if (result.status === 403) {
+      showList();
+      return;
+    }
     if (!result.ok || !result.data || result.data.ok !== true) throw new Error(`HTTP ${result.status}`);
     showList();
   } catch (error) {
@@ -1063,9 +1198,10 @@ function rerenderAll() {
   applyStaticI18n();
   applyNavLang();
   renderTabs();
-  if (state.people) renderWatching();
-  if (state.viewers) renderSharing();
+  if (state.people && !els.watchingStatus.dataset.state) renderWatching();
+  if (state.viewers && !els.sharingStatus.dataset.state) renderSharing();
   if (state.view === 'day' && state.currentDay && !els.dayBody.hidden) renderDay(state.currentDay);
+  refreshStatuses();
 }
 
 async function loadLocaleFromProfile() {
@@ -1082,6 +1218,15 @@ async function loadLocaleFromProfile() {
 
 els.tabWatching.addEventListener('click', () => selectTab('watching'));
 els.tabSharing.addEventListener('click', () => selectTab('sharing'));
+[els.tabWatching, els.tabSharing].forEach((tab) => {
+  tab.addEventListener('keydown', (event) => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    const next = tab === els.tabWatching ? els.tabSharing : els.tabWatching;
+    selectTab(next === els.tabSharing ? 'sharing' : 'watching');
+    next.focus();
+  });
+});
 els.unfollowBtn.addEventListener('click', unfollowCurrent);
 els.noAccessBack.addEventListener('click', showList);
 
