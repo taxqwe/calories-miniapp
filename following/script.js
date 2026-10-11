@@ -756,10 +756,13 @@ function renderSharing() {
   renderTabs();
 }
 
+const LIST_SOURCES = ['profile', 'digest', 'direct'];
+let listSource = LIST_SOURCES.includes(urlParams.get('src')) ? urlParams.get('src') : 'direct';
+
 async function loadWatching() {
   showLoading(els.watchingStatus, els.watchingBody);
   try {
-    const result = await postJson('/api/follow/list');
+    const result = await postJson('/api/follow/list', { src: listSource, tab: state.tab });
     if (!result.ok || !result.data) throw new Error(`HTTP ${result.status}`);
     state.people = Array.isArray(result.data.people) ? result.data.people : [];
     state.linksEnabled = result.data.linksEnabled !== false;
@@ -806,8 +809,10 @@ async function performRevoke(viewer, button) {
   }
 }
 
-async function fetchInviteUrl(reset) {
-  const result = await postJson('/api/follow/link', { reset: Boolean(reset) });
+async function fetchInviteUrl(reset, action) {
+  const body = { reset: Boolean(reset) };
+  if (action) body.action = action;
+  const result = await postJson('/api/follow/link', body);
   if (!result.ok || !result.data) throw new Error(`HTTP ${result.status}`);
   if (result.data.linksEnabled === false || !result.data.url) {
     state.linksEnabled = false;
@@ -820,15 +825,18 @@ async function fetchInviteUrl(reset) {
   return state.inviteUrl;
 }
 
-async function ensureInviteUrl() {
-  if (state.inviteUrl) return state.inviteUrl;
-  return fetchInviteUrl(false);
+async function ensureInviteUrl(action) {
+  if (state.inviteUrl) {
+    postJson('/api/follow/link', { reset: false, action }).catch(() => {});
+    return state.inviteUrl;
+  }
+  return fetchInviteUrl(false, action);
 }
 
 async function shareInvite(button) {
   button.disabled = true;
   try {
-    const url = await ensureInviteUrl();
+    const url = await ensureInviteUrl('share');
     if (!url) return;
     const shareUrl = 'https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(t().shareText);
     if (tg && typeof tg.openTelegramLink === 'function') {
@@ -873,7 +881,7 @@ async function copyText(text) {
 async function copyInvite(button) {
   button.disabled = true;
   try {
-    const url = await ensureInviteUrl();
+    const url = await ensureInviteUrl('copy');
     if (!url) return;
     const ok = await copyText(url);
     showToast(ok ? t().linkCopied : t().linkError);
@@ -894,7 +902,7 @@ async function performReset(button) {
   try {
     const confirmed = await confirmAction(t().resetConfirm);
     if (!confirmed) return;
-    const url = await fetchInviteUrl(true);
+    const url = await fetchInviteUrl(true, 'reset');
     if (url) showToast(t().linkReset);
   } catch (error) {
     console.error('Failed to reset invite', error);
@@ -909,6 +917,7 @@ function showList() {
   setView('list');
   state.currentPerson = null;
   state.currentDay = null;
+  listSource = 'back';
   loadWatching();
   loadSharing();
 }
@@ -932,7 +941,7 @@ function openPerson(person) {
   els.dayBody.hidden = true;
   els.dayBody.classList.remove('is-loading');
   setView('day');
-  loadDay(isoDateOrNull(person.today) || toIsoDate(new Date()));
+  loadDay(isoDateOrNull(person.today) || toIsoDate(new Date()), true);
 }
 
 function isoDateOrNull(value) {
@@ -987,8 +996,8 @@ function selectDay(iso) {
   loadDay(iso);
 }
 
-function requestDay(date) {
-  return postJson('/api/follow/day', { ownerChatId: state.currentPerson.ownerChatId, date });
+function requestDay(date, initial) {
+  return postJson('/api/follow/day', { ownerChatId: state.currentPerson.ownerChatId, date, initial: Boolean(initial) });
 }
 
 function showDayLoading() {
@@ -1005,13 +1014,13 @@ function clearDayLoading() {
   els.dayBody.removeAttribute('aria-busy');
 }
 
-async function loadDay(date) {
+async function loadDay(date, initial) {
   const requestId = ++state.dayRequestId;
   state.dayLoading = true;
   state.requestedDate = date;
   showDayLoading();
   try {
-    const result = await requestDay(date);
+    const result = await requestDay(date, initial);
     if (requestId !== state.dayRequestId) return;
     state.dayLoading = false;
     clearDayLoading();
@@ -1030,7 +1039,7 @@ async function loadDay(date) {
       showToast(t().loadError);
       return;
     }
-    showStatusWithRetry(els.dayStatus, els.dayBody, () => loadDay(date));
+    showStatusWithRetry(els.dayStatus, els.dayBody, () => loadDay(date, initial));
   }
 }
 

@@ -423,7 +423,7 @@ function renderNotifications(profile) {
 }
 
 function renderFollowing() {
-  els.followingLink?.setAttribute('href', withLang('../following/index.html'));
+  els.followingLink?.setAttribute('href', withLang('../following/index.html?src=profile'));
 }
 
 function renderMisc(locale) {
