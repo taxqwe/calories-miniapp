@@ -10,7 +10,7 @@ Always respond in Русский
 - Чистый HTML + vanilla JS, **без сборки**: нет `package.json`, бандлера, TypeScript.
   Что лежит в репозитории — то и раздаётся.
 - Multi-page: каждый раздел — своя папка со своими `index.html` / `script.js` / `style.css`
-  (`bmr/`, `edit/`, `history/`, `stats/`, `profile/`, `profile/notifications/`, `other/`).
+  (`bmr/`, `edit/`, `following/`, `history/`, `stats/`, `profile/`, `profile/notifications/`, `other/`).
 - Деплой — **GitHub Pages из `main`**, автоматически после мержа, публикация занимает
   1–3 минуты. Ни CI, ни ревью-бота в репозитории нет: `@claude review` тут некому обработать,
   PR-флоу сводится к «push → PR ботом → мерж». Проверять выкладку — запросом нового файла
