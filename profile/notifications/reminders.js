@@ -171,6 +171,7 @@
   let reminders = [];
   let masterEnabled = true;
   let savingMaster = false;
+  let announcedMaster = null;
   let selectedType = null;
   let saving = false;
   let pendingDelete = null;
@@ -288,6 +289,12 @@
   // приходит, поэтому выключенный список показываем приглушённым.
   function renderMaster() {
     if (!els.master) return;
+    if (announcedMaster !== masterEnabled) {
+      announcedMaster = masterEnabled;
+      document.dispatchEvent(
+        new CustomEvent('reminders:master', { detail: { enabled: masterEnabled } })
+      );
+    }
     els.master.checked = masterEnabled;
     els.master.disabled = savingMaster;
     els.list.classList.toggle('reminders__list--off', !masterEnabled);
