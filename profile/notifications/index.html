@@ -50,6 +50,18 @@
         <p class="reminders__note" data-rem-i18n="note">Вечерний отчёт приходит один раз в день. Дневных напоминаний — до трёх.</p>
       </section>
 
+      <section class="card" id="daytime-card" hidden>
+        <div class="switch-row">
+          <label class="switch-row__label" for="daytime-toggle" data-i18n="daytimeToggleLabel">Дневное напоминание</label>
+          <label class="switch">
+            <input type="checkbox" id="daytime-toggle" aria-describedby="daytime-note">
+            <span class="switch__slider"></span>
+          </label>
+        </div>
+        <p class="card__note" id="daytime-note">Напомним в 12:00 по вашему времени, если к полудню нет записей о еде. Не приходит, если вы настроили свои дневные напоминания.</p>
+        <p class="digest__error" id="daytime-error" role="alert" aria-live="polite" hidden></p>
+      </section>
+
       <!--
         ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ (weekly digest).
         Отдельная каденция уведомлений рядом с «Напоминаниями». Тумблер рендерит
@@ -171,6 +183,7 @@
   <script src="../../config.js"></script>
   <script src="script.js"></script>
   <script src="reminders.js"></script>
+  <script src="daytime.js"></script>
   <script src="digest.js"></script>
   <script src="macros.js"></script>
 </body>
