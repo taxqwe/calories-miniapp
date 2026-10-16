@@ -62,6 +62,18 @@
         <p class="digest__error" id="daytime-error" role="alert" aria-live="polite" hidden></p>
       </section>
 
+      <section class="card" id="daytips-card" hidden>
+        <div class="switch-row">
+          <label class="switch-row__label" for="daytips-toggle" data-i18n="daytipsToggleLabel">Дневные советы</label>
+          <label class="switch">
+            <input type="checkbox" id="daytips-toggle" aria-describedby="daytips-note">
+            <span class="switch__slider"></span>
+          </label>
+        </div>
+        <p class="card__note" id="daytips-note">Иногда днём бот подсказывает, как добрать белок.</p>
+        <p class="digest__error" id="daytips-error" role="alert" aria-live="polite" hidden></p>
+      </section>
+
       <!--
         ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ (weekly digest).
         Отдельная каденция уведомлений рядом с «Напоминаниями». Тумблер рендерит
@@ -184,6 +196,7 @@
   <script src="script.js"></script>
   <script src="reminders.js"></script>
   <script src="daytime.js"></script>
+  <script src="daytips.js"></script>
   <script src="digest.js"></script>
   <script src="macros.js"></script>
 </body>
