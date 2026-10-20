@@ -5,7 +5,6 @@
   }
 
   const langParam = getURLParameter('lang');
-  const lang = typeof langParam === 'string' && langParam.length > 0 ? langParam.toLowerCase() : 'en';
 
   const localizations = {
     ru: {
@@ -93,6 +92,11 @@
       deleteMealAriaLabel: 'Delete meal'
     }
   };
+
+  const telegramLang = String(window.Telegram?.WebApp?.initDataUnsafe?.user?.language_code || '').toLowerCase().split(/[-_]/)[0];
+  const lang = typeof langParam === 'string' && langParam.length > 0
+    ? langParam.toLowerCase()
+    : (localizations[telegramLang] ? telegramLang : 'en');
 
   const fallbackLang = 'en';
   const fallback = localizations[fallbackLang];
