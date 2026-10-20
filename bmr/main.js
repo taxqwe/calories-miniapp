@@ -762,6 +762,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let hasData = false;
   let profileState = 'loading';
   const langParam = urlParams.get('lang');
+  const ctaSource = urlParams.get('source');
 
   function normalizeLocale(value) {
     if (typeof value !== 'string') return null;
@@ -1839,6 +1840,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (typeof chatId === 'number' && chatId > 0) {
       payload.data.chatId = chatId;
+    }
+
+    if (ctaSource) {
+      payload.source = ctaSource;
     }
 
     resultEl.innerHTML = `<p class="status--sending">${t.sending}</p>`;
