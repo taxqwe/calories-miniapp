@@ -698,7 +698,7 @@ function renderNorm(norm, goal) {
     }
 
     els.normEditLabel.textContent = s.normEdit;
-    els.normEditLink.setAttribute('href', withLang('../bmr/index.html?mode=edit'));
+    els.normEditLink.setAttribute('href', withLang('../bmr/index.html?mode=edit&source=profile'));
   } else {
     // Норма ещё не рассчитана — ведём на первичный расчёт.
     els.normValue.innerHTML = `— <span class="unit">${s.unit}</span>`;
@@ -706,7 +706,7 @@ function renderNorm(norm, goal) {
     els.goalChip.hidden = true;
     els.normEmpty.hidden = false;
     els.normEditLabel.textContent = s.normCalc;
-    els.normEditLink.setAttribute('href', withLang('../bmr/'));
+    els.normEditLink.setAttribute('href', withLang('../bmr/?source=profile'));
   }
 }
 
