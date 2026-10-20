@@ -31,13 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function openSource() {
     try {
       if (document.referrer && new URL(document.referrer).origin === window.location.origin) {
-        return { src: 'in_app', startParam: null };
+        return 'in_app';
       }
     } catch (e) {}
-    return {
-      src: urlParams.get('src'),
-      startParam: (tg.initDataUnsafe && tg.initDataUnsafe.start_param) || null
-    };
+    return urlParams.get('src');
   }
   const statsOpenSource = openSource();
 
@@ -159,8 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
             initData: initData,
             userId: userId,
             timezone: userTimezone,  // Добавляем таймзону в формате "Europe/Moscow", "Europe/London" и т.д.
-            src: statsOpenSource.src,
-            startParam: statsOpenSource.startParam
+            src: statsOpenSource
           })
         });
 
