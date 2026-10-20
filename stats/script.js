@@ -12,6 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('period-year').textContent = window.localization.periodButtonYear;
   document.getElementById('daily-average-label').textContent = window.localization.dailyAverageLabel;
   document.getElementById('trend-button').textContent = window.localization.trendButton;
+  document.documentElement.setAttribute('lang', window.localization.getLocale());
+  document.querySelectorAll('.bottom-nav [data-i18n]').forEach((element) => {
+    const value = window.localization[element.getAttribute('data-i18n')];
+    if (value) element.textContent = value;
+  });
+  const bottomNav = document.getElementById('bottom-nav');
+  if (bottomNav && window.localization.navAriaLabel) {
+    bottomNav.setAttribute('aria-label', window.localization.navAriaLabel);
+  }
 
   // Читаем параметры URL
   const urlParams = new URLSearchParams(window.location.search);

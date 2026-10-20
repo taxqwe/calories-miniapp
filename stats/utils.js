@@ -68,17 +68,17 @@ function formatPeriodDate(period) {
     case 'week':
       start = new Date(now);
       start.setDate(now.getDate() - 7);
-      return `${start.getDate()} ${start.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} — ${now.getDate()} ${now.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${now.getFullYear()}г.`;
+      return `${start.getDate()} ${start.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} — ${now.getDate()} ${now.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${now.getFullYear()}${window.localization.yearSuffix || ''}`;
     case 'month':
       start = new Date(now);
       start.setDate(now.getDate() - 30);
-      return `${start.getDate()} ${start.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} — ${now.getDate()} ${now.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${now.getFullYear()}г.`;
+      return `${start.getDate()} ${start.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} — ${now.getDate()} ${now.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${now.getFullYear()}${window.localization.yearSuffix || ''}`;
     case '6month':
       start = new Date(now.getFullYear(), now.getMonth() - 5, 1);
-      return `1 ${start.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${start.getFullYear()} — ${now.getDate()} ${now.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${now.getFullYear()}г.`;
+      return `1 ${start.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${start.getFullYear()} — ${now.getDate()} ${now.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${now.getFullYear()}${window.localization.yearSuffix || ''}`;
     case 'year':
       start = new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
-      return `${start.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${start.getFullYear()} — ${now.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${now.getFullYear()}г.`;
+      return `${start.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${start.getFullYear()} — ${now.toLocaleDateString(window.localization.getLocale(), { month: 'short' })} ${now.getFullYear()}${window.localization.yearSuffix || ''}`;
   }
 }
 
@@ -95,13 +95,13 @@ function formatWeekInterval(startDate) {
     // Если даты в одном месяце: 17-23 марта 2025 г.
     return `${startDate.getDate()}-${endDate.getDate()} ${
       startDate.toLocaleDateString(window.localization.getLocale(), { month: 'long' })
-    } ${startDate.getFullYear()} г.`;
+    } ${startDate.getFullYear()}${window.localization.yearSuffix || ''}`;
   } else {
     // Если в разных месяцах: 31 янв. - 6 марта 2025 г.
     return `${startDate.getDate()} ${
       startDate.toLocaleDateString(window.localization.getLocale(), { month: 'short' })
     } - ${endDate.getDate()} ${
       endDate.toLocaleDateString(window.localization.getLocale(), { month: 'short' })
-    } ${endDate.getFullYear()} г.`;
+    } ${endDate.getFullYear()}${window.localization.yearSuffix || ''}`;
   }
 } 
