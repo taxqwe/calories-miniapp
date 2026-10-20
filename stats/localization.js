@@ -12,6 +12,11 @@
   // Объект локализаций для разных языков
   const localizations = {
     ru: {
+      navHistory: "История",
+      navStats: "Статистика",
+      navProfile: "Профиль",
+      navAriaLabel: "Основная навигация",
+      yearSuffix: " г.",
       averageLabel: "Среднее<br>за день",
       kilocalories: "ккал",
       noData: "Нет данных",
@@ -66,6 +71,11 @@
       goalsUnitGrams: "г"
     },
     en: {
+      navHistory: "History",
+      navStats: "Stats",
+      navProfile: "Profile",
+      navAriaLabel: "Main navigation",
+      yearSuffix: "",
       averageLabel: "Average<br>per day",
       kilocalories: "kcal",
       noData: "No data",
@@ -121,6 +131,11 @@
       goalsUnitGrams: "g"
     },
     ar: {
+      navHistory: "السجل",
+      navStats: "الإحصاءات",
+      navProfile: "الملف الشخصي",
+      navAriaLabel: "التنقل الرئيسي",
+      yearSuffix: "",
       averageLabel: "متوسط<br>في اليوم",
       kilocalories: "سعرة حرارية",
       noData: "لا توجد بيانات",
@@ -175,6 +190,11 @@
     },
 
     de: {
+      navHistory: "Verlauf",
+      navStats: "Statistik",
+      navProfile: "Profil",
+      navAriaLabel: "Hauptnavigation",
+      yearSuffix: "",
       averageLabel: "Durchschnitt<br>pro Tag",
       kilocalories: "kcal",
       noData: "Keine Daten",
@@ -229,6 +249,11 @@
     },
 
     es: {
+      navHistory: "Historial",
+      navStats: "Estadísticas",
+      navProfile: "Perfil",
+      navAriaLabel: "Navegación principal",
+      yearSuffix: "",
       averageLabel: "Promedio<br>por día",
       kilocalories: "kcal",
       noData: "No hay datos",
@@ -283,6 +308,11 @@
     },
 
     fr: {
+      navHistory: "Historique",
+      navStats: "Statistiques",
+      navProfile: "Profil",
+      navAriaLabel: "Navigation principale",
+      yearSuffix: "",
       averageLabel: "Moyenne<br>par jour",
       kilocalories: "kcal",
       noData: "Pas de données",
@@ -336,6 +366,11 @@
       goalsUnitGrams: "g"
     },
     tr: {
+      navHistory: "Geçmiş",
+      navStats: "İstatistikler",
+      navProfile: "Profil",
+      navAriaLabel: "Ana gezinme",
+      yearSuffix: "",
       averageLabel: "Günlük<br>ortalama",
       kilocalories: "kcal",
       noData: "Veri yok",
@@ -390,6 +425,11 @@
     },
 
     uz: {
+      navHistory: "Tarix",
+      navStats: "Statistika",
+      navProfile: "Profil",
+      navAriaLabel: "Asosiy navigatsiya",
+      yearSuffix: "",
       averageLabel: "Kunlik<br>oʻrtacha",
       kilocalories: "kkal",
       noData: "Maʼlumot yoʻq",
@@ -443,6 +483,11 @@
       goalsUnitGrams: "g"
     },
     uk: {
+      navHistory: "Історія",
+      navStats: "Статистика",
+      navProfile: "Профіль",
+      navAriaLabel: "Основна навігація",
+      yearSuffix: " р.",
       averageLabel: "Середнє<br>за день",
       kilocalories: "ккал",
       noData: "Немає даних",

@@ -770,8 +770,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const langFromUrl = normalizeLocale(langParam);
-  let lang = langFromUrl || 'ru';
-  let t = translations[lang] || translations.ru;
+  let lang = langFromUrl || 'en';
+  let t = translations[lang] || translations.en;
   let langLocked = Boolean(langFromUrl);
 
   function setLocale(value) {
@@ -779,7 +779,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const next = normalizeLocale(value);
     if (!next || next === lang) return false;
     lang = next;
-    t = translations[lang] || translations.ru;
+    t = translations[lang] || translations.en;
     return true;
   }
 
