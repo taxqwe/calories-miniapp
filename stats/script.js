@@ -28,6 +28,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Параметр loading используется для показа спиннера, если он не равен "false"
   const showLoadingOverlay = urlParams.get('loading') !== 'false';
 
+  function openSource() {
+    try {
+      if (document.referrer && new URL(document.referrer).origin === window.location.origin) {
+        return 'in_app';
+      }
+    } catch (e) {}
+    return urlParams.get('src');
+  }
+  const statsOpenSource = openSource();
+
   // Задаем значение текущего периода до вызова updateChart
   let currentPeriod = 'week';
 
@@ -145,7 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify({
             initData: initData,
             userId: userId,
-            timezone: userTimezone  // Добавляем таймзону в формате "Europe/Moscow", "Europe/London" и т.д.
+            timezone: userTimezone,  // Добавляем таймзону в формате "Europe/Moscow", "Europe/London" и т.д.
+            src: statsOpenSource
           })
         });
 
