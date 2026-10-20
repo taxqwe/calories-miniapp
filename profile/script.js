@@ -47,8 +47,7 @@ const API_BASE_URL = window.CaloriesMiniAppConfig.apiBaseUrl;
 
 const REQUEST_TIMEOUT_MS = 15000;
 
-// ── строки (RU + EN) ──────────────────────────────────────────────
-// Паритет только RU+EN: ru → ru, всё остальное → en (по решению владельца).
+// ── строки (9 локалей бота) ───────────────────────────────────────
 const translations = {
   ru: {
     pageTitle: 'Профиль',
@@ -67,6 +66,7 @@ const translations = {
     navHistory: 'История',
     navStats: 'Статистика',
     navProfile: 'Профиль',
+    navAriaLabel: 'Основная навигация',
     tierPremium: 'Premium',
     tierBasic: 'Базовый',
     tierActiveUntil: 'активен до',
@@ -114,6 +114,7 @@ const translations = {
     navHistory: 'History',
     navStats: 'Stats',
     navProfile: 'Profile',
+    navAriaLabel: 'Main navigation',
     tierPremium: 'Premium',
     tierBasic: 'Basic',
     tierActiveUntil: 'active until',
@@ -143,6 +144,339 @@ const translations = {
     unit: 'kcal/day',
     expend: 'daily expenditure',
     kcal: 'kcal'
+  },
+  ar: {
+    pageTitle: 'الملف الشخصي',
+    subtitleFallback: 'ملفك الشخصي',
+    statusLoading: 'جارٍ تحميل الملف الشخصي…',
+    cardTier: 'الخطة',
+    cardNorm: 'السعرات المعيارية والهدف',
+    rowFollowing: 'من أتابعهم',
+    rowNotifications: 'الإشعارات',
+    notificationsNone: 'متوقفة',
+    notificationsDigestOnly: 'الملخص الأسبوعي فقط',
+    remindersOne: 'تذكير',
+    remindersTwo: 'تذكيران',
+    remindersFew: 'تذكيرات',
+    remindersMany: 'تذكيرًا',
+    remindersOther: 'تذكير',
+    rowLanguage: 'اللغة',
+    navHistory: 'السجل',
+    navStats: 'الإحصاءات',
+    navProfile: 'الملف الشخصي',
+    navAriaLabel: 'التنقل الرئيسي',
+    tierPremium: 'Premium',
+    tierBasic: 'أساسية',
+    tierActiveUntil: 'نشط حتى',
+    premiumBuy: 'احصل على Premium',
+    premiumRenew: 'تمديد Premium',
+    premiumError: 'تعذّر فتح صفحة الدفع. حاول لاحقًا.',
+    premiumBenefitsTitle: 'ماذا يمنحك Premium',
+    premiumBenefit1: 'تحليل الأطباق من الصور والصوت',
+    premiumBenefit2: 'نموذج ذكاء اصطناعي أقوى وأدق',
+    premiumBenefit3: 'تعرّف أدق على الأطباق',
+    premiumBenefit4: 'حساب المغذيات الكبرى (بروتين/دهون/كربوهيدرات)',
+    goalDeficit: 'الهدف: عجز',
+    goalSurplus: 'الهدف: فائض',
+    preferencesTitle: 'التفضيلات',
+    preferences: {
+      more_protein: 'بروتين',
+      less_sugar: 'سكر',
+      more_veggies: 'خضار',
+      low_carb: 'كربوهيدرات',
+      more_water: 'ماء',
+      less_fat: 'دهون'
+    },
+    normEdit: 'تعديل الحساب',
+    normCalc: 'احسب السعرات المعيارية',
+    normEmpty: 'لم تُحسب السعرات المعيارية بعد. احسب معدل السعرات اليومي.',
+    loadError: 'تعذّر تحميل الملف الشخصي. حاول لاحقًا.',
+    unit: 'سعرة حرارية/يوم',
+    expend: 'الإنفاق اليومي',
+    kcal: 'سعرة حرارية'
+  },
+  de: {
+    pageTitle: 'Profil',
+    subtitleFallback: 'Dein Profil',
+    statusLoading: 'Profil wird geladen…',
+    cardTier: 'Tarif',
+    cardNorm: 'Kaloriennorm und Ziel',
+    rowFollowing: 'Wem ich folge',
+    rowNotifications: 'Benachrichtigungen',
+    notificationsNone: 'Aus',
+    notificationsDigestOnly: 'Nur Wochenbericht',
+    remindersOne: 'Erinnerung',
+    remindersOther: 'Erinnerungen',
+    rowLanguage: 'Sprache',
+    navHistory: 'Verlauf',
+    navStats: 'Statistik',
+    navProfile: 'Profil',
+    navAriaLabel: 'Hauptnavigation',
+    tierPremium: 'Premium',
+    tierBasic: 'Basis',
+    tierActiveUntil: 'aktiv bis',
+    premiumBuy: 'Premium holen',
+    premiumRenew: 'Premium verlängern',
+    premiumError: 'Die Bezahlung konnte nicht geöffnet werden. Versuche es später erneut.',
+    premiumBenefitsTitle: 'Das bietet Premium',
+    premiumBenefit1: 'Analyse von Gerichten per Foto und Audio',
+    premiumBenefit2: 'Leistungsstärkeres und genaueres KI-Modell',
+    premiumBenefit3: 'Genauere Speiseerkennung',
+    premiumBenefit4: 'Makronährstoffe zählen (Eiweiß/Fett/Kohlenhydrate)',
+    goalDeficit: 'Ziel: Defizit',
+    goalSurplus: 'Ziel: Überschuss',
+    preferencesTitle: 'Vorlieben',
+    preferences: {
+      more_protein: 'Protein',
+      less_sugar: 'Zucker',
+      more_veggies: 'Gemüse',
+      low_carb: 'Carbs',
+      more_water: 'Wasser',
+      less_fat: 'Fett'
+    },
+    normEdit: 'Berechnung ändern',
+    normCalc: 'Norm berechnen',
+    normEmpty: 'Die Norm ist noch nicht berechnet. Berechne deine tägliche Kaloriennorm.',
+    loadError: 'Profil konnte nicht geladen werden. Versuche es später erneut.',
+    unit: 'kcal/Tag',
+    expend: 'Tagesverbrauch',
+    kcal: 'kcal'
+  },
+  es: {
+    pageTitle: 'Perfil',
+    subtitleFallback: 'Tu perfil',
+    statusLoading: 'Cargando el perfil…',
+    cardTier: 'Plan',
+    cardNorm: 'Norma calórica y objetivo',
+    rowFollowing: 'Siguiendo',
+    rowNotifications: 'Notificaciones',
+    notificationsNone: 'Desactivadas',
+    notificationsDigestOnly: 'Solo el resumen semanal',
+    remindersOne: 'recordatorio',
+    remindersOther: 'recordatorios',
+    rowLanguage: 'Idioma',
+    navHistory: 'Historial',
+    navStats: 'Estadísticas',
+    navProfile: 'Perfil',
+    navAriaLabel: 'Navegación principal',
+    tierPremium: 'Premium',
+    tierBasic: 'Básico',
+    tierActiveUntil: 'activo hasta',
+    premiumBuy: 'Obtener Premium',
+    premiumRenew: 'Renovar Premium',
+    premiumError: 'No se pudo abrir el pago. Inténtalo más tarde.',
+    premiumBenefitsTitle: 'Qué te da Premium',
+    premiumBenefit1: 'Análisis de platos por foto y audio',
+    premiumBenefit2: 'Modelo de IA más potente y preciso',
+    premiumBenefit3: 'Reconocimiento de platos más preciso',
+    premiumBenefit4: 'Cálculo de macronutrientes (proteínas/grasas/carbohidratos)',
+    goalDeficit: 'Objetivo: déficit',
+    goalSurplus: 'Objetivo: superávit',
+    preferencesTitle: 'Preferencias',
+    preferences: {
+      more_protein: 'Proteína',
+      less_sugar: 'Azúcar',
+      more_veggies: 'Verduras',
+      low_carb: 'Carbos',
+      more_water: 'Agua',
+      less_fat: 'Grasa'
+    },
+    normEdit: 'Cambiar el cálculo',
+    normCalc: 'Calcular la norma',
+    normEmpty: 'La norma aún no está calculada. Calcula tu norma calórica diaria.',
+    loadError: 'No se pudo cargar el perfil. Inténtalo más tarde.',
+    unit: 'kcal/día',
+    expend: 'gasto diario',
+    kcal: 'kcal'
+  },
+  fr: {
+    pageTitle: 'Profil',
+    subtitleFallback: 'Ton profil',
+    statusLoading: 'Chargement du profil…',
+    cardTier: 'Forfait',
+    cardNorm: 'Norme calorique et objectif',
+    rowFollowing: 'Mes abonnements',
+    rowNotifications: 'Notifications',
+    notificationsNone: 'Désactivées',
+    notificationsDigestOnly: 'Seulement le bilan de la semaine',
+    remindersOne: 'rappel',
+    remindersOther: 'rappels',
+    rowLanguage: 'Langue',
+    navHistory: 'Historique',
+    navStats: 'Statistiques',
+    navProfile: 'Profil',
+    navAriaLabel: 'Navigation principale',
+    tierPremium: 'Premium',
+    tierBasic: 'De base',
+    tierActiveUntil: 'actif jusqu’au',
+    premiumBuy: 'Passer à Premium',
+    premiumRenew: 'Prolonger Premium',
+    premiumError: 'Impossible d’ouvrir le paiement. Réessaie plus tard.',
+    premiumBenefitsTitle: 'Ce que Premium t’apporte',
+    premiumBenefit1: 'Analyse des plats par photo et audio',
+    premiumBenefit2: 'Modèle d’IA plus performant et plus précis',
+    premiumBenefit3: 'Reconnaissance des plats plus précise',
+    premiumBenefit4: 'Calcul des macronutriments (protéines/lipides/glucides)',
+    goalDeficit: 'Objectif : déficit',
+    goalSurplus: 'Objectif : surplus',
+    preferencesTitle: 'Préférences',
+    preferences: {
+      more_protein: 'Protéines',
+      less_sugar: 'Sucre',
+      more_veggies: 'Légumes',
+      low_carb: 'Glucides',
+      more_water: 'Eau',
+      less_fat: 'Gras'
+    },
+    normEdit: 'Modifier le calcul',
+    normCalc: 'Calculer la norme',
+    normEmpty: 'La norme n’est pas encore calculée. Calcule ta norme calorique quotidienne.',
+    loadError: 'Impossible de charger le profil. Réessaie plus tard.',
+    unit: 'kcal/jour',
+    expend: 'dépense quotidienne',
+    kcal: 'kcal'
+  },
+  tr: {
+    pageTitle: 'Profil',
+    subtitleFallback: 'Profilin',
+    statusLoading: 'Profil yükleniyor…',
+    cardTier: 'Plan',
+    cardNorm: 'Kalori normu ve hedef',
+    rowFollowing: 'Takip ettiklerim',
+    rowNotifications: 'Bildirimler',
+    notificationsNone: 'Kapalı',
+    notificationsDigestOnly: 'Yalnızca haftalık özet',
+    remindersOne: 'hatırlatma',
+    remindersOther: 'hatırlatma',
+    rowLanguage: 'Dil',
+    navHistory: 'Geçmiş',
+    navStats: 'İstatistikler',
+    navProfile: 'Profil',
+    navAriaLabel: 'Ana gezinme',
+    tierPremium: 'Premium',
+    tierBasic: 'Temel',
+    tierActiveUntil: 'Bitiş tarihi:',
+    premiumBuy: 'Premium’a geç',
+    premiumRenew: 'Premium’u uzat',
+    premiumError: 'Ödeme açılamadı. Daha sonra tekrar dene.',
+    premiumBenefitsTitle: 'Premium ne sağlar',
+    premiumBenefit1: 'Yemekleri fotoğraf ve sesle analiz etme',
+    premiumBenefit2: 'Daha güçlü ve daha doğru yapay zekâ modeli',
+    premiumBenefit3: 'Daha doğru yemek tanıma',
+    premiumBenefit4: 'Makro besin hesabı (protein/yağ/karbonhidrat)',
+    goalDeficit: 'Hedef: açık',
+    goalSurplus: 'Hedef: fazla',
+    preferencesTitle: 'Tercihler',
+    preferences: {
+      more_protein: 'Protein',
+      less_sugar: 'Şeker',
+      more_veggies: 'Sebze',
+      low_carb: 'Karbonhidrat',
+      more_water: 'Su',
+      less_fat: 'Yağ'
+    },
+    normEdit: 'Hesabı değiştir',
+    normCalc: 'Normu hesapla',
+    normEmpty: 'Norm henüz hesaplanmadı. Günlük kalori normunu hesapla.',
+    loadError: 'Profil yüklenemedi. Daha sonra tekrar dene.',
+    unit: 'kcal/gün',
+    expend: 'günlük harcama',
+    kcal: 'kcal'
+  },
+  uk: {
+    pageTitle: 'Профіль',
+    subtitleFallback: 'Ваш профіль',
+    statusLoading: 'Завантажуємо профіль…',
+    cardTier: 'Тариф',
+    cardNorm: 'Норма та мета',
+    rowFollowing: 'Підписки',
+    rowNotifications: 'Сповіщення',
+    notificationsNone: 'Вимкнено',
+    notificationsDigestOnly: 'Лише звіт за тиждень',
+    remindersOne: 'нагадування',
+    remindersFew: 'нагадування',
+    remindersMany: 'нагадувань',
+    rowLanguage: 'Мова',
+    navHistory: 'Історія',
+    navStats: 'Статистика',
+    navProfile: 'Профіль',
+    navAriaLabel: 'Основна навігація',
+    tierPremium: 'Premium',
+    tierBasic: 'Базовий',
+    tierActiveUntil: 'активний до',
+    premiumBuy: 'Придбати Premium',
+    premiumRenew: 'Продовжити Premium',
+    premiumError: 'Не вдалося відкрити оплату. Спробуйте пізніше.',
+    premiumBenefitsTitle: 'Що дає Premium',
+    premiumBenefit1: 'Аналіз страв за фото та аудіо',
+    premiumBenefit2: 'Потужніша й точніша AI-модель',
+    premiumBenefit3: 'Точніше розпізнає страви',
+    premiumBenefit4: 'Підрахунок БЖВ (білки/жири/вуглеводи)',
+    goalDeficit: 'Мета: дефіцит',
+    goalSurplus: 'Мета: профіцит',
+    preferencesTitle: 'Уподобання',
+    preferences: {
+      more_protein: 'Білок',
+      less_sugar: 'Цукор',
+      more_veggies: 'Овочі',
+      low_carb: 'Вуглеводи',
+      more_water: 'Вода',
+      less_fat: 'Жири'
+    },
+    normEdit: 'Змінити розрахунок',
+    normCalc: 'Розрахувати норму',
+    normEmpty: 'Норму ще не розраховано. Розрахуйте денну норму калорій.',
+    loadError: 'Не вдалося завантажити профіль. Спробуйте пізніше.',
+    unit: 'ккал/день',
+    expend: 'денні витрати',
+    kcal: 'ккал'
+  },
+  uz: {
+    pageTitle: 'Profil',
+    subtitleFallback: 'Profilingiz',
+    statusLoading: 'Profil yuklanmoqda…',
+    cardTier: 'Tarif',
+    cardNorm: 'Meʼyor va maqsad',
+    rowFollowing: 'Obunalarim',
+    rowNotifications: 'Bildirishnomalar',
+    notificationsNone: 'Oʻchirilgan',
+    notificationsDigestOnly: 'Faqat haftalik hisobot',
+    remindersOne: 'eslatma',
+    remindersOther: 'eslatma',
+    rowLanguage: 'Til',
+    navHistory: 'Tarix',
+    navStats: 'Statistika',
+    navProfile: 'Profil',
+    navAriaLabel: 'Asosiy navigatsiya',
+    tierPremium: 'Premium',
+    tierBasic: 'Asosiy',
+    tierActiveUntil: 'Amal qilish muddati:',
+    premiumBuy: 'Premium olish',
+    premiumRenew: 'Premiumni uzaytirish',
+    premiumError: 'Toʻlovni ochib boʻlmadi. Keyinroq urinib koʻring.',
+    premiumBenefitsTitle: 'Premium nima beradi',
+    premiumBenefit1: 'Taomlarni surat va audio orqali tahlil qilish',
+    premiumBenefit2: 'Kuchliroq va aniqroq AI modeli',
+    premiumBenefit3: 'Taomlarni aniqroq aniqlash',
+    premiumBenefit4: 'OYU hisobi (oqsil/yogʻ/uglevod)',
+    goalDeficit: 'Maqsad: tanqislik',
+    goalSurplus: 'Maqsad: ortiqcha kaloriya',
+    preferencesTitle: 'Ovqatlanish istaklari',
+    preferences: {
+      more_protein: 'Oqsil',
+      less_sugar: 'Shakar',
+      more_veggies: 'Sabzavotlar',
+      low_carb: 'Uglevod',
+      more_water: 'Suv',
+      less_fat: 'Yogʻ'
+    },
+    normEdit: 'Hisobni oʻzgartirish',
+    normCalc: 'Meʼyorni hisoblash',
+    normEmpty: 'Meʼyor hali hisoblanmagan. Kunlik kaloriya meʼyorini hisoblang.',
+    loadError: 'Profilni yuklab boʻlmadi. Keyinroq urinib koʻring.',
+    unit: 'kkal/kun',
+    expend: 'kunlik sarf',
+    kcal: 'kkal'
   }
 };
 
@@ -153,7 +487,21 @@ const LANG_NAMES = {
   de: 'Deutsch',
   fr: 'Français',
   uk: 'Українська',
-  uz: 'Oʻzbekcha'
+  uz: 'Oʻzbekcha',
+  tr: 'Türkçe',
+  ar: 'العربية'
+};
+
+const INTL_LOCALES = {
+  ru: 'ru-RU',
+  en: 'en-US',
+  ar: 'ar',
+  de: 'de-DE',
+  es: 'es-ES',
+  fr: 'fr-FR',
+  tr: 'tr-TR',
+  uk: 'uk-UA',
+  uz: 'uz-UZ'
 };
 
 // ── элементы ──────────────────────────────────────────────────────
@@ -201,9 +549,8 @@ function getInitDataString() {
   return tg?.initData || window.Telegram?.WebApp?.initData || '';
 }
 
-// Локаль форматирования чисел/дат: ru → ru-RU, en → en-US.
 function intlLocale() {
-  return resolveLocale() === 'ru' ? 'ru-RU' : 'en-US';
+  return INTL_LOCALES[resolveLocale()] || INTL_LOCALES.en;
 }
 
 function formatNumber(value) {
@@ -233,12 +580,12 @@ function languageName(locale) {
 const urlLangParam = new URLSearchParams(window.location.search || '').get('lang');
 let profileLocale = null;
 
-// Нормализуем до 2-букв; паритет RU+EN: ru → ru, всё остальное → en.
+// Нормализуем до 2-букв; неподдерживаемые языки → en.
 function normalizeLocale(value) {
   if (!value) return null;
   const code = String(value).toLowerCase().split(/[-_]/)[0];
   if (!code) return null;
-  return code === 'ru' ? 'ru' : 'en';
+  return Object.prototype.hasOwnProperty.call(translations, code) ? code : 'en';
 }
 
 // Приоритет источников языка (как в остальных разделах):
@@ -405,15 +752,17 @@ function notificationsSummary(profile) {
   return profile?.weeklyDigestEnabled === false ? s.notificationsNone : s.notificationsDigestOnly;
 }
 
-// ru: 1 напоминание / 2 напоминания / 5 напоминаний; en: 1 reminder / 2 reminders.
 function pluralReminders(count) {
   const s = t();
-  if (resolveLocale() !== 'ru') return count === 1 ? s.remindersOne : s.remindersFew;
-  const mod10 = count % 10;
-  const mod100 = count % 100;
-  if (mod10 === 1 && mod100 !== 11) return s.remindersOne;
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return s.remindersFew;
-  return s.remindersMany;
+  const category = new Intl.PluralRules(intlLocale()).select(count);
+  const keyByCategory = {
+    one: 'remindersOne',
+    two: 'remindersTwo',
+    few: 'remindersFew',
+    many: 'remindersMany',
+    other: 'remindersOther'
+  };
+  return s[keyByCategory[category]] || s.remindersOther || s.remindersMany || s.remindersFew;
 }
 
 function renderNotifications(profile) {
@@ -432,12 +781,14 @@ function renderMisc(locale) {
   els.languageValue.textContent = languageName(locale) || '—';
 }
 
-// Статичные лейблы (RU отрисован в HTML до JS) — свапаем на EN при en-локали.
+// Статичные лейблы (RU отрисован в HTML до JS) — свапаем на язык пользователя.
 // data-i18n помечает узел, текст которого нужно заменить по ключу словаря.
 function applyStaticI18n() {
   const s = t();
   document.documentElement.lang = resolveLocale();
+  document.documentElement.dir = resolveLocale() === 'ar' ? 'rtl' : 'ltr';
   document.title = s.pageTitle;
+  document.querySelector('.bottom-nav')?.setAttribute('aria-label', s.navAriaLabel);
   document.querySelectorAll('[data-i18n]').forEach((node) => {
     const key = node.getAttribute('data-i18n');
     if (key && Object.prototype.hasOwnProperty.call(s, key)) {

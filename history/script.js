@@ -268,6 +268,7 @@ function applyStaticLocalization() {
     ? window.historyLanguage
     : 'en';
   document.documentElement.setAttribute('lang', htmlLang);
+  document.documentElement.setAttribute('dir', htmlLang === 'ar' ? 'rtl' : 'ltr');
 
   document.querySelectorAll('[data-i18n]').forEach((element) => {
     const key = element.getAttribute('data-i18n');
