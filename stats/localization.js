@@ -6,8 +6,7 @@
     return urlParams.get(name);
   }
 
-  // Извлекаем параметр lang (если не передан — по умолчанию 'en')
-  const lang = getURLParameter('lang') || 'en';
+  const urlLang = getURLParameter('lang');
 
   // Объект локализаций для разных языков
   const localizations = {
@@ -541,6 +540,9 @@
       goalsUnitGrams: "g"
     }
   };
+
+  const telegramLang = String(window.Telegram?.WebApp?.initDataUnsafe?.user?.language_code || '').toLowerCase().split(/[-_]/)[0];
+  const lang = urlLang || (localizations[telegramLang] ? telegramLang : 'en');
 
   // Устанавливаем глобальный объект локализации для текущего языка.
   window.localization = localizations[lang] || localizations['en'];
