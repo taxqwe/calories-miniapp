@@ -921,7 +921,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function formatNumber(n) {
     // Пробел-разделитель тысяч (узкий неразрывный)
-    return Math.round(n).toLocaleString('ru-RU').replace(/ /g, ' ');
+    const text = Math.round(n).toLocaleString('ru-RU').replace(/ /g, ' ');
+    return lang === 'ar' ? '⁦' + text + '⁩' : text;
   }
 
   function formatMultiplier(n) {
