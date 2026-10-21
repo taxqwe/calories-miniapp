@@ -711,3 +711,99 @@
   flex-shrink: 0;
   fill: var(--accent-color);
 }
+
+.weight-card {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  gap: 10px;
+}
+
+.weight-card:active {
+  transform: scale(0.99);
+}
+
+.weight-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.weight-card__chev {
+  width: 18px;
+  height: 18px;
+  fill: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+[dir="rtl"] .weight-card__chev {
+  transform: scaleX(-1);
+}
+
+.weight-card__body {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.weight-card__summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.weight-card__value {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.weight-card__value .unit {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-inline-start: 6px;
+}
+
+.weight-card__trend {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.weight-spark {
+  flex: 1;
+  min-width: 0;
+}
+
+.weight-spark svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+.weight-spark__area {
+  fill: var(--accent-color);
+  fill-opacity: 0.14;
+  stroke: none;
+}
+
+.weight-spark__line {
+  fill: none;
+  stroke: var(--accent-color);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.weight-spark__dot {
+  fill: var(--accent-color);
+  stroke: var(--card-bg);
+  stroke-width: 2;
+}

@@ -46,6 +46,10 @@ if (tg) {
 const API_BASE_URL = window.CaloriesMiniAppConfig.apiBaseUrl;
 
 const REQUEST_TIMEOUT_MS = 15000;
+const WEIGHT_SOURCE = 'profile_weight';
+const WEIGHT_SPARK_HEIGHT = 48;
+const SVG_NS = 'http://www.w3.org/2000/svg';
+let weightRequest = null;
 
 // ── строки (9 локалей бота) ───────────────────────────────────────
 const translations = {
@@ -95,7 +99,13 @@ const translations = {
     loadError: 'Не удалось загрузить профиль. Попробуйте позже.',
     unit: 'ккал/день',
     expend: 'дневной расход',
-    kcal: 'ккал'
+    kcal: 'ккал',
+    weightTitle: 'Вес',
+    weightUnit: 'кг',
+    weightTrend: '{v} кг в неделю',
+    weightHint: 'График появится после следующего замера.',
+    weightEmpty: 'Отметьте вес — здесь появится график.',
+    weightChartLabel: 'График веса'
   },
   en: {
     pageTitle: 'Profile',
@@ -143,7 +153,13 @@ const translations = {
     loadError: "Couldn't load profile. Please try again later.",
     unit: 'kcal/day',
     expend: 'daily expenditure',
-    kcal: 'kcal'
+    kcal: 'kcal',
+    weightTitle: 'Weight',
+    weightUnit: 'kg',
+    weightTrend: '{v} kg per week',
+    weightHint: 'The chart will appear after your next weigh-in.',
+    weightEmpty: 'Log your weight to see the chart here.',
+    weightChartLabel: 'Weight chart'
   },
   ar: {
     pageTitle: 'الملف الشخصي',
@@ -193,7 +209,13 @@ const translations = {
     loadError: 'تعذّر تحميل الملف الشخصي. حاول لاحقًا.',
     unit: 'سعرة حرارية/يوم',
     expend: 'الإنفاق اليومي',
-    kcal: 'سعرة حرارية'
+    kcal: 'سعرة حرارية',
+    weightTitle: 'الوزن',
+    weightUnit: 'كغ',
+    weightTrend: '{v} كغ في الأسبوع',
+    weightHint: 'سيظهر الرسم البياني بعد القياس التالي.',
+    weightEmpty: 'سجّل وزنك ليظهر الرسم البياني هنا.',
+    weightChartLabel: 'مخطط الوزن'
   },
   de: {
     pageTitle: 'Profil',
@@ -240,7 +262,13 @@ const translations = {
     loadError: 'Profil konnte nicht geladen werden. Versuche es später erneut.',
     unit: 'kcal/Tag',
     expend: 'Tagesverbrauch',
-    kcal: 'kcal'
+    kcal: 'kcal',
+    weightTitle: 'Gewicht',
+    weightUnit: 'kg',
+    weightTrend: '{v} kg pro Woche',
+    weightHint: 'Das Diagramm erscheint nach der nächsten Messung.',
+    weightEmpty: 'Trag dein Gewicht ein – hier erscheint dann das Diagramm.',
+    weightChartLabel: 'Gewichtsverlauf'
   },
   es: {
     pageTitle: 'Perfil',
@@ -287,7 +315,13 @@ const translations = {
     loadError: 'No se pudo cargar el perfil. Inténtalo más tarde.',
     unit: 'kcal/día',
     expend: 'gasto diario',
-    kcal: 'kcal'
+    kcal: 'kcal',
+    weightTitle: 'Peso',
+    weightUnit: 'kg',
+    weightTrend: '{v} kg por semana',
+    weightHint: 'El gráfico aparecerá tras tu próximo registro.',
+    weightEmpty: 'Registra tu peso para ver aquí el gráfico.',
+    weightChartLabel: 'Gráfico de peso'
   },
   fr: {
     pageTitle: 'Profil',
@@ -334,7 +368,13 @@ const translations = {
     loadError: 'Impossible de charger le profil. Réessaie plus tard.',
     unit: 'kcal/jour',
     expend: 'dépense quotidienne',
-    kcal: 'kcal'
+    kcal: 'kcal',
+    weightTitle: 'Poids',
+    weightUnit: 'kg',
+    weightTrend: '{v} kg par semaine',
+    weightHint: 'Le graphique apparaîtra après la prochaine pesée.',
+    weightEmpty: 'Indique ton poids pour voir le graphique ici.',
+    weightChartLabel: 'Courbe de poids'
   },
   tr: {
     pageTitle: 'Profil',
@@ -381,7 +421,13 @@ const translations = {
     loadError: 'Profil yüklenemedi. Daha sonra tekrar dene.',
     unit: 'kcal/gün',
     expend: 'günlük harcama',
-    kcal: 'kcal'
+    kcal: 'kcal',
+    weightTitle: 'Kilo',
+    weightUnit: 'kg',
+    weightTrend: 'haftada {v} kg',
+    weightHint: 'Grafik bir sonraki ölçümden sonra görünecek.',
+    weightEmpty: 'Kilonu gir, grafik burada görünecek.',
+    weightChartLabel: 'Kilo grafiği'
   },
   uk: {
     pageTitle: 'Профіль',
@@ -429,7 +475,13 @@ const translations = {
     loadError: 'Не вдалося завантажити профіль. Спробуйте пізніше.',
     unit: 'ккал/день',
     expend: 'денні витрати',
-    kcal: 'ккал'
+    kcal: 'ккал',
+    weightTitle: 'Вага',
+    weightUnit: 'кг',
+    weightTrend: '{v} кг на тиждень',
+    weightHint: 'Графік з’явиться після наступного виміру.',
+    weightEmpty: 'Відмітьте вагу — тут з’явиться графік.',
+    weightChartLabel: 'Графік ваги'
   },
   uz: {
     pageTitle: 'Profil',
@@ -476,7 +528,13 @@ const translations = {
     loadError: 'Profilni yuklab boʻlmadi. Keyinroq urinib koʻring.',
     unit: 'kkal/kun',
     expend: 'kunlik sarf',
-    kcal: 'kkal'
+    kcal: 'kkal',
+    weightTitle: 'Vazn',
+    weightUnit: 'kg',
+    weightTrend: 'haftasiga {v} kg',
+    weightHint: 'Grafik keyingi oʻlchovdan soʻng paydo boʻladi.',
+    weightEmpty: 'Vazningizni kiriting — grafik shu yerda paydo boʻladi.',
+    weightChartLabel: 'Vazn grafigi'
   }
 };
 
@@ -529,7 +587,13 @@ const els = {
   followingLink: document.getElementById('row-following'),
   notificationsLink: document.getElementById('row-notifications'),
   notificationsValue: document.getElementById('notifications-value'),
-  languageValue: document.getElementById('language-value')
+  languageValue: document.getElementById('language-value'),
+  weightCard: document.getElementById('weight-card'),
+  weightBody: document.getElementById('weight-body'),
+  weightValue: document.getElementById('weight-value'),
+  weightTrend: document.getElementById('weight-trend'),
+  weightSpark: document.getElementById('weight-spark'),
+  weightHint: document.getElementById('weight-hint')
 };
 
 const PREFERENCE_DEFS = [
@@ -708,6 +772,135 @@ function renderNorm(norm, goal) {
     els.normEditLabel.textContent = s.normCalc;
     els.normEditLink.setAttribute('href', withLang('../bmr/?source=profile'));
   }
+}
+
+function isFiniteNumber(value) {
+  return typeof value === 'number' && Number.isFinite(value);
+}
+
+function normalizeWeight(raw) {
+  const points = (Array.isArray(raw?.points) ? raw.points : [])
+    .map((p) => ({ time: Date.parse(p?.date), kg: p?.weightKg }))
+    .filter((p) => Number.isFinite(p.time) && isFiniteNumber(p.kg))
+    .sort((a, b) => a.time - b.time);
+  return {
+    points,
+    currentKg: isFiniteNumber(raw?.currentKg) ? raw.currentKg : points[points.length - 1]?.kg,
+    kgPerWeek: isFiniteNumber(raw?.kgPerWeek) ? raw.kgPerWeek : null
+  };
+}
+
+function formatKg(value) {
+  return Number(value).toLocaleString(intlLocale(), { maximumFractionDigits: 2 });
+}
+
+function formatSignedKg(value) {
+  const abs = formatKg(Math.abs(value));
+  let text = abs;
+  if (value > 0) text = '+' + abs;
+  else if (value < 0) text = '−' + abs;
+  return resolveLocale() === 'ar' ? '⁦' + text + '⁩' : text;
+}
+
+function svgNode(name, attrs) {
+  const node = document.createElementNS(SVG_NS, name);
+  Object.keys(attrs).forEach((key) => node.setAttribute(key, attrs[key]));
+  return node;
+}
+
+function buildWeightSpark(points, width) {
+  const height = WEIGHT_SPARK_HEIGHT;
+  const top = 5;
+  const bottom = height - 5;
+  const left = 5;
+  const right = width - 5;
+  const values = points.map((p) => p.kg);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const pad = max > min ? (max - min) * 0.1 : 1;
+  const yMin = min - pad;
+  const yMax = max + pad;
+  const t0 = points[0].time;
+  const t1 = points[points.length - 1].time;
+  const coords = points.map((p) => [
+    left + ((p.time - t0) / (t1 - t0)) * (right - left),
+    top + ((yMax - p.kg) / (yMax - yMin)) * (bottom - top)
+  ]);
+  const line = coords.map((c, i) => `${i ? 'L' : 'M'}${c[0].toFixed(1)} ${c[1].toFixed(1)}`).join(' ');
+  const area = `${line} L${coords[coords.length - 1][0].toFixed(1)} ${height} L${coords[0][0].toFixed(1)} ${height} Z`;
+  const svg = svgNode('svg', {
+    viewBox: `0 0 ${width} ${height}`,
+    width: String(width),
+    height: String(height),
+    role: 'img',
+    'aria-label': t().weightChartLabel
+  });
+  svg.appendChild(svgNode('path', { class: 'weight-spark__area', d: area }));
+  svg.appendChild(svgNode('path', { class: 'weight-spark__line', d: line }));
+  const last = coords[coords.length - 1];
+  svg.appendChild(svgNode('circle', { class: 'weight-spark__dot', cx: last[0].toFixed(1), cy: last[1].toFixed(1), r: 4 }));
+  return svg;
+}
+
+function renderWeight(raw, hasNorm) {
+  const s = t();
+  const data = raw ? normalizeWeight(raw) : null;
+  if (!data || (!data.points.length && !hasNorm)) {
+    els.weightCard.hidden = true;
+    return;
+  }
+  els.weightCard.setAttribute(
+    'href',
+    withLang(hasNorm ? `../bmr/index.html?mode=edit&source=${WEIGHT_SOURCE}` : `../bmr/?source=${WEIGHT_SOURCE}`)
+  );
+  els.weightCard.hidden = false;
+  els.weightSpark.textContent = '';
+
+  if (!data.points.length) {
+    els.weightBody.hidden = true;
+    els.weightHint.textContent = s.weightEmpty;
+    els.weightHint.hidden = false;
+    return;
+  }
+
+  els.weightBody.hidden = false;
+  els.weightValue.textContent = formatKg(data.currentKg);
+  const trendText = data.kgPerWeek != null ? s.weightTrend.replace('{v}', formatSignedKg(data.kgPerWeek)) : '';
+  els.weightTrend.textContent = trendText;
+  els.weightTrend.hidden = !trendText;
+
+  const hasChart = data.points.length >= 2;
+  els.weightSpark.hidden = !hasChart;
+  els.weightHint.textContent = hasChart ? '' : s.weightHint;
+  els.weightHint.hidden = hasChart;
+  if (hasChart) {
+    const width = Math.max(Math.round(els.weightSpark.clientWidth) || 140, 80);
+    els.weightSpark.appendChild(buildWeightSpark(data.points, width));
+  }
+}
+
+function loadWeight() {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  return fetch(`${API_BASE_URL}/api/weight`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    },
+    mode: 'cors',
+    body: JSON.stringify({ initData: getInitDataString() }),
+    signal: controller.signal
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return response.json();
+    })
+    .catch((error) => {
+      console.warn('Failed to load weight', error);
+      return null;
+    })
+    .finally(() => window.clearTimeout(timeout));
 }
 
 function renderPreferences(preferences) {
@@ -890,6 +1083,8 @@ function render(profile) {
   renderMisc(profile?.locale);
   els.status.hidden = true;
   els.body.hidden = false;
+  const hasNorm = Number.isFinite(Number(profile?.norm?.tdee));
+  weightRequest.then((raw) => renderWeight(raw, hasNorm));
   // Событие оставляем для возможных модулей-карточек Профиля: полный профиль +
   // резолвнутая локаль, чтобы карточка переводилась тем же языком.
   document.dispatchEvent(
@@ -948,4 +1143,5 @@ applyNavLang();
 setupNavClickInterception();
 setupPremiumCta();
 setSubtitle();
+weightRequest = loadWeight();
 loadProfile();
