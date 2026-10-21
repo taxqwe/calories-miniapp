@@ -97,6 +97,16 @@ document.addEventListener('DOMContentLoaded', () => {
       profileErrorText: "Couldn't load your profile. Saving is off so your goal isn't overwritten.",
       profileErrorRetry: "Retry",
       // validation
+      weightTrend: {
+        title: "Weight",
+        unit: "kg",
+        hint: "The chart will appear after your next weigh-in.",
+        trend: "{v} kg per week",
+        eta: "Goal {goal} kg ≈ by {date}",
+        reached: "Weight goal reached 🎯",
+        goalLabel: "Goal",
+        chartLabel: "Weight chart"
+      },
       validation: {
         heightRange: "Height must be between 100 and 250 cm",
         weightRange: "Weight must be between 30 and 300 kg",
@@ -167,6 +177,16 @@ document.addEventListener('DOMContentLoaded', () => {
       profileLoading: "Загружаем профиль…",
       profileErrorText: "Не удалось загрузить профиль. Сохранение отключено, чтобы не стереть вашу цель.",
       profileErrorRetry: "Повторить",
+      weightTrend: {
+        title: "Вес",
+        unit: "кг",
+        hint: "График появится после следующего замера.",
+        trend: "{v} кг в неделю",
+        eta: "Цель {goal} кг ≈ к {date}",
+        reached: "Цель по весу достигнута 🎯",
+        goalLabel: "Цель",
+        chartLabel: "График веса"
+      },
       validation: {
         heightRange: "Рост должен быть от 100 до 250 см",
         weightRange: "Вес должен быть от 30 до 300 кг",
@@ -237,6 +257,16 @@ document.addEventListener('DOMContentLoaded', () => {
       profileLoading: "Profilingiz yuklanmoqda…",
       profileErrorText: "Profilni yuklab boʻlmadi. Maqsadingiz oʻchib ketmasligi uchun saqlash vaqtincha toʻxtatildi.",
       profileErrorRetry: "Qayta urinish",
+      weightTrend: {
+        title: "Vazn",
+        unit: "kg",
+        hint: "Grafik keyingi o'lchovdan so'ng paydo bo'ladi.",
+        trend: "haftasiga {v} kg",
+        eta: "Maqsad {goal} kg ≈ {date} atrofida",
+        reached: "Vazn maqsadiga erishildi 🎯",
+        goalLabel: "Maqsad",
+        chartLabel: "Vazn grafigi"
+      },
       validation: {
         heightRange: "Boʻy 100 dan 250 sm gacha boʻlishi kerak",
         weightRange: "Vazn 30 dan 300 kg gacha boʻlishi kerak",
@@ -307,6 +337,16 @@ document.addEventListener('DOMContentLoaded', () => {
       profileLoading: "Завантажуємо профіль…",
       profileErrorText: "Не вдалося завантажити профіль. Збереження вимкнено, щоб не стерти вашу ціль.",
       profileErrorRetry: "Повторити",
+      weightTrend: {
+        title: "Вага",
+        unit: "кг",
+        hint: "Графік з’явиться після наступного виміру.",
+        trend: "{v} кг на тиждень",
+        eta: "Ціль {goal} кг ≈ до {date}",
+        reached: "Ціль щодо ваги досягнуто 🎯",
+        goalLabel: "Ціль",
+        chartLabel: "Графік ваги"
+      },
       validation: {
         heightRange: "Зріст має бути від 100 до 250 см",
         weightRange: "Вага має бути від 30 до 300 кг",
@@ -377,6 +417,16 @@ document.addEventListener('DOMContentLoaded', () => {
       profileLoading: "Profil wird geladen…",
       profileErrorText: "Profil konnte nicht geladen werden. Speichern ist aus, damit dein Ziel nicht überschrieben wird.",
       profileErrorRetry: "Erneut versuchen",
+      weightTrend: {
+        title: "Gewicht",
+        unit: "kg",
+        hint: "Das Diagramm erscheint nach der nächsten Messung.",
+        trend: "{v} kg pro Woche",
+        eta: "Ziel {goal} kg ≈ bis {date}",
+        reached: "Gewichtsziel erreicht 🎯",
+        goalLabel: "Ziel",
+        chartLabel: "Gewichtsverlauf"
+      },
       validation: {
         heightRange: "Die Größe muss zwischen 100 und 250 cm liegen",
         weightRange: "Das Gewicht muss zwischen 30 und 300 kg liegen",
@@ -447,6 +497,16 @@ document.addEventListener('DOMContentLoaded', () => {
       profileLoading: "Cargando tu perfil…",
       profileErrorText: "No se pudo cargar el perfil. Guardar está desactivado para no borrar tu objetivo.",
       profileErrorRetry: "Reintentar",
+      weightTrend: {
+        title: "Peso",
+        unit: "kg",
+        hint: "El gráfico aparecerá tras tu próximo registro.",
+        trend: "{v} kg por semana",
+        eta: "Meta {goal} kg ≈ hacia el {date}",
+        reached: "Meta de peso alcanzada 🎯",
+        goalLabel: "Meta",
+        chartLabel: "Gráfico de peso"
+      },
       validation: {
         heightRange: "La estatura debe estar entre 100 y 250 cm",
         weightRange: "El peso debe estar entre 30 y 300 kg",
@@ -517,6 +577,16 @@ document.addEventListener('DOMContentLoaded', () => {
       profileLoading: "Chargement du profil…",
       profileErrorText: "Impossible de charger le profil. L'enregistrement est désactivé pour ne pas effacer votre objectif.",
       profileErrorRetry: "Réessayer",
+      weightTrend: {
+        title: "Poids",
+        unit: "kg",
+        hint: "Le graphique apparaîtra après la prochaine pesée.",
+        trend: "{v} kg par semaine",
+        eta: "Objectif {goal} kg ≈ vers le {date}",
+        reached: "Objectif de poids atteint 🎯",
+        goalLabel: "Objectif",
+        chartLabel: "Courbe de poids"
+      },
       validation: {
         heightRange: "La taille doit être entre 100 et 250 cm",
         weightRange: "Le poids doit être entre 30 et 300 kg",
@@ -587,6 +657,16 @@ document.addEventListener('DOMContentLoaded', () => {
       profileLoading: "Profil yükleniyor…",
       profileErrorText: "Profil yüklenemedi. Hedefinizin silinmemesi için kaydetme kapalı.",
       profileErrorRetry: "Tekrar dene",
+      weightTrend: {
+        title: "Kilo",
+        unit: "kg",
+        hint: "Grafik bir sonraki ölçümden sonra görünecek.",
+        trend: "haftada {v} kg",
+        eta: "Hedef {goal} kg ≈ {date} civarı",
+        reached: "Kilo hedefine ulaşıldı 🎯",
+        goalLabel: "Hedef",
+        chartLabel: "Kilo grafiği"
+      },
       validation: {
         heightRange: "Boy 100 ile 250 cm arasında olmalı",
         weightRange: "Kilo 30 ile 300 kg arasında olmalı",
@@ -657,6 +737,16 @@ document.addEventListener('DOMContentLoaded', () => {
       profileLoading: "جارٍ تحميل الملف الشخصي…",
       profileErrorText: "تعذر تحميل الملف الشخصي. تم تعطيل الحفظ حتى لا يُمحى هدفك.",
       profileErrorRetry: "إعادة المحاولة",
+      weightTrend: {
+        title: "الوزن",
+        unit: "كغ",
+        hint: "سيظهر الرسم البياني بعد القياس التالي.",
+        trend: "{v} كغ في الأسبوع",
+        eta: "الهدف {goal} كغ ≈ بحلول {date}",
+        reached: "تم بلوغ هدف الوزن 🎯",
+        goalLabel: "الهدف",
+        chartLabel: "مخطط الوزن"
+      },
       validation: {
         heightRange: "يجب أن يكون الطول بين 100 و250 سم",
         weightRange: "يجب أن يكون الوزن بين 30 و300 كجم",
@@ -717,6 +807,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const macroToggleEl = document.getElementById('macro-toggle');
   const labelMacroToggleEl = document.getElementById('label-macro-toggle');
   const macroBodyEl = document.getElementById('macro-body');
+  const weightCardEl = document.getElementById('weight-card');
+  const weightTitleEl = document.getElementById('weight-title');
+  const weightValueEl = document.getElementById('weight-value');
+  const weightUnitEl = document.getElementById('weight-unit');
+  const weightChartEl = document.getElementById('weight-chart');
+  const weightHintEl = document.getElementById('weight-hint');
+  const weightTrendEl = document.getElementById('weight-trend');
+  const weightForecastEl = document.getElementById('weight-forecast');
+
   const macroRefLabelEl = document.getElementById('macro-ref-label');
   const macroRefCurrentEl = document.getElementById('macro-ref-current');
   const macroRefCurrentLabelEl = document.getElementById('macro-ref-current-label');
@@ -822,7 +921,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function formatNumber(n) {
     // Пробел-разделитель тысяч (узкий неразрывный)
-    return Math.round(n).toLocaleString('ru-RU').replace(/ /g, ' ');
+    const text = Math.round(n).toLocaleString('ru-RU').replace(/ /g, ' ');
+    return lang === 'ar' ? '⁦' + text + '⁩' : text;
   }
 
   function formatMultiplier(n) {
@@ -1678,6 +1778,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ctaHintEl.textContent = t.ctaHintFirst;
 
     updateMacroSection();
+    renderWeightCard();
   }
 
   // ── Презентация: онбординг (нет данных) vs edit-вид (данные есть) ──
@@ -1882,6 +1983,243 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  const WEIGHT_DIGEST_SOURCE = 'weekly_digest_weight';
+  const WEIGHT_AXIS_MIN_RANGE_KG = 15;
+  const WEIGHT_AXIS_SPAN_FACTOR = 4;
+  const WEIGHT_CHART_HEIGHT = 170;
+  const WEIGHT_DOT_LIMIT = 45;
+  const WEIGHT_FOCUS_WAIT_MS = 3000;
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  let weightData = null;
+
+  function weightTexts() {
+    return Object.assign({}, translations.en.weightTrend, t.weightTrend);
+  }
+
+  function isFiniteNumber(value) {
+    return typeof value === 'number' && Number.isFinite(value);
+  }
+
+  function parseIsoDate(value) {
+    if (typeof value !== 'string') return null;
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if (!m) return null;
+    return new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])));
+  }
+
+  function formatWeightDate(date, monthStyle, withYear) {
+    const options = { day: 'numeric', month: monthStyle, timeZone: 'UTC' };
+    if (withYear) options.year = 'numeric';
+    try {
+      return new Intl.DateTimeFormat(lang === 'ar' ? 'ar-u-nu-latn' : lang, options).format(date);
+    } catch (_) {
+      return date.toISOString().slice(0, 10);
+    }
+  }
+
+  function formatKg(value) {
+    return String(Math.round(value * 100) / 100);
+  }
+
+  function formatSignedKg(value) {
+    const abs = formatKg(Math.abs(value));
+    let text = abs;
+    if (value > 0) text = '+' + abs;
+    else if (value < 0) text = '−' + abs;
+    return lang === 'ar' ? '⁦' + text + '⁩' : text;
+  }
+
+  function normalizeWeightResponse(raw) {
+    if (!raw || typeof raw !== 'object' || raw.forecast === 'no_data') return null;
+    const points = (Array.isArray(raw.points) ? raw.points : [])
+      .map((p) => ({ date: parseIsoDate(p && p.date), kg: p && p.weightKg }))
+      .filter((p) => p.date && isFiniteNumber(p.kg))
+      .sort((a, b) => a.date - b.date);
+    if (!points.length) return null;
+    return {
+      points,
+      currentKg: isFiniteNumber(raw.currentKg) ? raw.currentKg : points[points.length - 1].kg,
+      desiredKg: isFiniteNumber(raw.desiredKg) && raw.desiredKg > 0 ? raw.desiredKg : null,
+      kgPerWeek: isFiniteNumber(raw.kgPerWeek) ? raw.kgPerWeek : null,
+      forecast: typeof raw.forecast === 'string' ? raw.forecast : '',
+      etaDate: parseIsoDate(raw.etaDate)
+    };
+  }
+
+  function svgNode(name, attrs, text) {
+    const node = document.createElementNS(SVG_NS, name);
+    Object.keys(attrs).forEach((key) => node.setAttribute(key, attrs[key]));
+    if (text != null) node.textContent = text;
+    return node;
+  }
+
+  function buildWeightChart(data, width, texts) {
+    const height = WEIGHT_CHART_HEIGHT;
+    const left = 34;
+    const right = width - 10;
+    const top = 12;
+    const bottom = height - 26;
+    const points = data.points;
+    const values = points.map((p) => p.kg);
+    const dataMin = Math.min(...values);
+    const dataMax = Math.max(...values);
+    let axisMin = dataMin;
+    let axisMax = dataMax;
+    let goal = data.desiredKg;
+    if (goal != null) {
+      const extMin = Math.min(dataMin, goal);
+      const extMax = Math.max(dataMax, goal);
+      if (extMax - extMin > Math.max((dataMax - dataMin) * WEIGHT_AXIS_SPAN_FACTOR, WEIGHT_AXIS_MIN_RANGE_KG)) {
+        goal = null;
+      } else {
+        axisMin = extMin;
+        axisMax = extMax;
+      }
+    }
+    const pad = axisMax > axisMin ? (axisMax - axisMin) * 0.15 : 1;
+    const yMin = axisMin - pad;
+    const yMax = axisMax + pad;
+    const t0 = points[0].date.getTime();
+    const t1 = points[points.length - 1].date.getTime();
+    const xOf = (date) => left + ((date.getTime() - t0) / (t1 - t0)) * (right - left);
+    const yOf = (kg) => top + ((yMax - kg) / (yMax - yMin)) * (bottom - top);
+
+    const svg = svgNode('svg', {
+      viewBox: `0 0 ${width} ${height}`,
+      width: String(width),
+      height: String(height),
+      role: 'img',
+      'aria-label': texts.chartLabel
+    });
+
+    const goalY = goal != null ? yOf(goal) : null;
+    const labelYs = [];
+    if (dataMax === dataMin) {
+      labelYs.push(dataMax);
+    } else {
+      labelYs.push(dataMax, dataMin);
+    }
+    labelYs.forEach((kg) => {
+      const y = yOf(kg);
+      if (goalY != null && Math.abs(y - goalY) < 13) return;
+      svg.appendChild(svgNode('line', { class: 'weight-chart__grid', x1: left, x2: right, y1: y, y2: y }));
+      svg.appendChild(svgNode('text', {
+        class: 'weight-chart__text', x: left - 6, y: y + 4, 'text-anchor': 'end'
+      }, formatKg(kg)));
+    });
+
+    if (goalY != null) {
+      svg.appendChild(svgNode('line', { class: 'weight-chart__goal', x1: left, x2: right, y1: goalY, y2: goalY }));
+      svg.appendChild(svgNode('text', {
+        class: 'weight-chart__text weight-chart__text--goal', x: left - 6, y: goalY + 4, 'text-anchor': 'end'
+      }, formatKg(goal)));
+      const above = goalY - top > 16;
+      svg.appendChild(svgNode('text', {
+        class: 'weight-chart__text weight-chart__text--goal',
+        x: right,
+        y: above ? goalY - 6 : goalY + 14,
+        'text-anchor': 'end'
+      }, texts.goalLabel));
+    }
+
+    const coords = points.map((p) => [xOf(p.date), yOf(p.kg)]);
+    const linePath = coords.map((c, i) => `${i ? 'L' : 'M'}${c[0].toFixed(1)} ${c[1].toFixed(1)}`).join(' ');
+    const areaPath = `${linePath} L${coords[coords.length - 1][0].toFixed(1)} ${bottom} L${coords[0][0].toFixed(1)} ${bottom} Z`;
+    svg.appendChild(svgNode('path', { class: 'weight-chart__area', d: areaPath }));
+    svg.appendChild(svgNode('path', { class: 'weight-chart__line', d: linePath }));
+    if (points.length <= WEIGHT_DOT_LIMIT) {
+      coords.forEach((c) => {
+        svg.appendChild(svgNode('circle', { class: 'weight-chart__dot', cx: c[0].toFixed(1), cy: c[1].toFixed(1), r: 4 }));
+      });
+    } else {
+      const last = coords[coords.length - 1];
+      svg.appendChild(svgNode('circle', { class: 'weight-chart__dot', cx: last[0].toFixed(1), cy: last[1].toFixed(1), r: 4 }));
+    }
+
+    const first = points[0].date;
+    const lastDate = points[points.length - 1].date;
+    const withYear = first.getUTCFullYear() !== lastDate.getUTCFullYear();
+    svg.appendChild(svgNode('text', {
+      class: 'weight-chart__text', x: left, y: height - 6, 'text-anchor': 'start'
+    }, formatWeightDate(first, 'short', withYear)));
+    svg.appendChild(svgNode('text', {
+      class: 'weight-chart__text', x: right, y: height - 6, 'text-anchor': 'end'
+    }, formatWeightDate(lastDate, 'short', withYear)));
+    return svg;
+  }
+
+  function weightForecastText(data, texts) {
+    if (data.forecast === 'reached') return texts.reached;
+    if (data.forecast === 'toward' && data.etaDate && data.desiredKg != null) {
+      const withYear = data.etaDate.getUTCFullYear() !== new Date().getFullYear();
+      return texts.eta
+        .replace('{goal}', formatKg(data.desiredKg))
+        .replace('{date}', formatWeightDate(data.etaDate, 'long', withYear));
+    }
+    return '';
+  }
+
+  function renderWeightCard() {
+    if (!weightData) {
+      weightCardEl.hidden = true;
+      return;
+    }
+    const texts = weightTexts();
+    weightCardEl.hidden = false;
+    weightTitleEl.textContent = texts.title;
+    weightValueEl.textContent = formatKg(weightData.currentKg);
+    weightUnitEl.textContent = texts.unit;
+
+    const hasChart = weightData.points.length >= 2;
+    weightChartEl.hidden = !hasChart;
+    weightHintEl.hidden = hasChart;
+    weightHintEl.textContent = hasChart ? '' : texts.hint;
+    weightChartEl.textContent = '';
+    if (hasChart) {
+      const width = Math.max(Math.round(weightChartEl.clientWidth) || 300, 200);
+      weightChartEl.appendChild(buildWeightChart(weightData, width, texts));
+    }
+
+    const trendText = weightData.kgPerWeek != null
+      ? texts.trend.replace('{v}', formatSignedKg(weightData.kgPerWeek))
+      : '';
+    weightTrendEl.hidden = !trendText;
+    weightTrendEl.textContent = trendText;
+
+    const forecastText = weightForecastText(weightData, texts);
+    weightForecastEl.hidden = !forecastText;
+    weightForecastEl.textContent = forecastText;
+  }
+
+  async function loadWeightTrend() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/weight`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Source-App': 'BMR-Calculator'
+        },
+        body: JSON.stringify({ initData: (tg && tg.initData) || '' }),
+        mode: 'cors'
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      weightData = normalizeWeightResponse(await response.json());
+    } catch (error) {
+      weightData = null;
+      console.warn('Не удалось получить историю веса:', error);
+    }
+    renderWeightCard();
+  }
+
+  function focusWeightField() {
+    try { weightEl.focus({ preventScroll: true }); } catch (_) { weightEl.focus(); }
+    try {
+      weightEl.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    } catch (_) {
+      weightEl.scrollIntoView();
+    }
+  }
+
   // ── Тема (Telegram-driven, как в history/profile/stats) ──
   // Красим по tg.colorScheme + tg.themeParams, НЕ по prefers-color-scheme.
   function applyTheme(themeParams = {}, colorScheme = (tg && tg.colorScheme)) {
@@ -2058,9 +2396,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Префилл — ВСЕГДА, независимо от точки входа. Если /api/profile вернёт
     // bmrInputs — поля заполнятся, hasData=true, и вид переключится на edit.
-    prefillFromProfile();
+    const prefillDone = prefillFromProfile();
+    const weightDone = loadWeightTrend();
+    window.addEventListener('resize', renderWeightCard);
 
-    if (!isEdit) {
+    if (ctaSource === WEIGHT_DIGEST_SOURCE) {
+      Promise.race([
+        Promise.allSettled([prefillDone, weightDone]),
+        new Promise((resolve) => setTimeout(resolve, WEIGHT_FOCUS_WAIT_MS))
+      ]).then(focusWeightField);
+    } else if (!isEdit) {
       // Вход из меню бота: автофокус на первом поле (открывает клавиатуру).
       // Для существующего юзера фокус безвреден — данные приедут асинхронно
       // и заполнят форму. Из Профиля (?mode=edit) фокус не навязываем.

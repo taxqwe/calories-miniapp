@@ -201,6 +201,103 @@ body {
   color: var(--text-secondary);
 }
 
+.weight-card {
+  gap: 10px;
+}
+
+.weight-card__value {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.weight-card__value .unit {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-inline-start: 6px;
+}
+
+.weight-chart {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.weight-chart svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+.weight-chart__grid {
+  stroke: var(--separator-color);
+  stroke-width: 1;
+}
+
+.weight-chart__area {
+  fill: var(--accent-soft);
+  stroke: none;
+}
+
+.weight-chart__line {
+  fill: none;
+  stroke: var(--accent-color);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.weight-chart__dot {
+  fill: var(--accent-color);
+  stroke: var(--card-bg);
+  stroke-width: 2;
+}
+
+.weight-chart__goal {
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+  opacity: 0.85;
+}
+
+.weight-chart__text {
+  fill: var(--text-secondary);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.weight-chart__text--goal {
+  fill: var(--text-color);
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--card-bg);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.weight-card__hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.weight-card__trend {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.weight-card__forecast {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-color);
+}
+
 /* ── Поля тела: горизонтальные строки ── */
 .metab-rows {
   display: flex;
