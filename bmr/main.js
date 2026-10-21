@@ -2199,7 +2199,7 @@ document.addEventListener('DOMContentLoaded', () => {
           'Content-Type': 'application/json',
           'X-Source-App': 'BMR-Calculator'
         },
-        body: JSON.stringify({ initData: (tg && tg.initData) || '' }),
+        body: JSON.stringify({ initData: (tg && tg.initData) || '', src: ctaSource || '' }),
         mode: 'cors'
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);

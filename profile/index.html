@@ -81,6 +81,21 @@
         </a>
       </section>
 
+      <a class="card weight-card" id="weight-card" href="../bmr/index.html?mode=edit&source=profile_weight" hidden>
+        <div class="weight-card__head">
+          <h2 class="card__title" data-i18n="weightTitle">Вес</h2>
+          <svg class="weight-card__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.3 6.3a1 1 0 0 1 1.4 0l4.8 4.8a1 1 0 0 1 0 1.4l-4.8 4.8a1 1 0 1 1-1.4-1.4l4.1-4.1-4.1-4.1a1 1 0 0 1 0-1.4z"/></svg>
+        </div>
+        <div class="weight-card__body" id="weight-body">
+          <div class="weight-card__summary">
+            <div class="weight-card__value"><span id="weight-value">—</span><span class="unit" data-i18n="weightUnit">кг</span></div>
+            <div class="weight-card__trend" id="weight-trend" hidden></div>
+          </div>
+          <div class="weight-spark" id="weight-spark" dir="ltr" hidden></div>
+        </div>
+        <p class="profile__hint" id="weight-hint" hidden></p>
+      </a>
+
       <!-- ПРОЧЕЕ -->
       <div class="rows">
         <a class="row" id="row-following" href="../following/index.html?src=profile" hidden>
