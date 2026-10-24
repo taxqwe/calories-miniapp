@@ -613,6 +613,15 @@ function getInitDataString() {
   return tg?.initData || window.Telegram?.WebApp?.initData || '';
 }
 
+function openSource() {
+  try {
+    if (document.referrer && new URL(document.referrer).origin === window.location.origin) {
+      return 'in_app';
+    }
+  } catch (_) { /* noop */ }
+  return new URLSearchParams(window.location.search || '').get('src') || '';
+}
+
 function intlLocale() {
   return INTL_LOCALES[resolveLocale()] || INTL_LOCALES.en;
 }
@@ -1114,7 +1123,7 @@ async function loadProfile() {
         Accept: 'application/json'
       },
       mode: 'cors',
-      body: JSON.stringify({ initData }),
+      body: JSON.stringify({ initData, src: openSource() }),
       signal: controller.signal
     });
 
