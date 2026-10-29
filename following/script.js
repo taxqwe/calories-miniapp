@@ -77,6 +77,8 @@ const translations = {
     resetLink: 'Сбросить ссылку',
     resetConfirm: 'Сбросить ссылку? Старая перестанет работать, текущие подписки останутся.',
     shareText: '👋 Открой ссылку и разреши подписку на итоги твоего дня: видны только калории и БЖУ против нормы, без блюд и фото.',
+    shareProgress: '📤 Поделиться прогрессом',
+    shareProgressText: '👀 Смотри мой прогресс: открой ссылку, и тебе будут видны итоги моего дня — калории и БЖУ против нормы. Блюда и фото не видны.',
     linkCopied: 'Ссылка скопирована',
     linkReset: 'Новая ссылка готова, старая больше не работает',
     linkError: 'Не удалось получить ссылку. Попробуй позже.',
@@ -160,6 +162,8 @@ const translations = {
     resetLink: 'Reset link',
     resetConfirm: 'Reset the link? The old one will stop working; current follows stay.',
     shareText: '👋 Open the link and allow following your daily summaries: only calories and macros vs. norm are visible, no dishes or photos.',
+    shareProgress: '📤 Share progress',
+    shareProgressText: '👀 See my progress: open the link to see my daily totals — calories and macros vs. target. Dishes and photos stay hidden.',
     linkCopied: 'Link copied',
     linkReset: 'New link is ready, the old one no longer works',
     linkError: "Couldn't get the link. Please try again later.",
@@ -245,6 +249,8 @@ const translations = {
     resetLink: 'إعادة تعيين الرابط',
     resetConfirm: 'إعادة تعيين الرابط؟ سيتوقف الرابط القديم عن العمل، وتبقى المتابعات الحالية.',
     shareText: '👋 افتح الرابط واسمح بمتابعة ملخصات يومك: يظهر فقط السعرات والمغذيات الكبرى مقارنة بالمعيار، دون أطباق أو صور.',
+    shareProgress: '📤 شارك تقدّمك',
+    shareProgressText: '👀 شاهد تقدّمي: افتح الرابط وسترى ملخص يومي — السعرات والمغذيات الكبرى مقارنة بالهدف. الأطباق والصور تبقى مخفية.',
     linkCopied: 'تم نسخ الرابط',
     linkReset: 'الرابط الجديد جاهز، والقديم لم يعد يعمل',
     linkError: 'تعذّر الحصول على الرابط. حاول لاحقًا.',
@@ -327,6 +333,8 @@ const translations = {
     resetLink: 'Link zurücksetzen',
     resetConfirm: 'Link zurücksetzen? Der alte funktioniert nicht mehr, bestehende Follows bleiben.',
     shareText: '👋 Öffne den Link und erlaube das Folgen deiner Tagesbilanz: Sichtbar sind nur Kalorien und Makros im Vergleich zur Norm, keine Gerichte oder Fotos.',
+    shareProgress: '📤 Fortschritt teilen',
+    shareProgressText: '👀 Sieh meinen Fortschritt: Öffne den Link, dann siehst du meine Tagesbilanz — Kalorien und Makros im Vergleich zum Ziel. Gerichte und Fotos bleiben verborgen.',
     linkCopied: 'Link kopiert',
     linkReset: 'Neuer Link ist bereit, der alte funktioniert nicht mehr',
     linkError: 'Link konnte nicht abgerufen werden. Versuche es später erneut.',
@@ -409,6 +417,8 @@ const translations = {
     resetLink: 'Restablecer enlace',
     resetConfirm: '¿Restablecer el enlace? El anterior dejará de funcionar; los seguimientos actuales se mantienen.',
     shareText: '👋 Abre el enlace y permite seguir el resumen de tu día: solo se ven las calorías y los macros frente a la norma, sin platos ni fotos.',
+    shareProgress: '📤 Compartir progreso',
+    shareProgressText: '👀 Mira mi progreso: abre el enlace y verás el resumen de mi día — calorías y macros frente al objetivo. Platos y fotos quedan ocultos.',
     linkCopied: 'Enlace copiado',
     linkReset: 'El enlace nuevo está listo; el anterior ya no funciona',
     linkError: 'No se pudo obtener el enlace. Inténtalo más tarde.',
@@ -491,6 +501,8 @@ const translations = {
     resetLink: 'Réinitialiser le lien',
     resetConfirm: 'Réinitialiser le lien ? L’ancien ne fonctionnera plus, les abonnements actuels restent.',
     shareText: '👋 Ouvre le lien et autorise l’abonnement à ton bilan du jour : seules les calories et les macros par rapport à la norme sont visibles, sans plats ni photos.',
+    shareProgress: '📤 Partager ma progression',
+    shareProgressText: '👀 Vois mes progrès : ouvre le lien pour voir mon bilan du jour — calories et macros par rapport à l\'objectif. Les plats et les photos restent cachés.',
     linkCopied: 'Lien copié',
     linkReset: 'Le nouveau lien est prêt, l’ancien ne fonctionne plus',
     linkError: 'Impossible d’obtenir le lien. Réessaie plus tard.',
@@ -573,6 +585,8 @@ const translations = {
     resetLink: 'Bağlantıyı sıfırla',
     resetConfirm: 'Bağlantı sıfırlansın mı? Eski bağlantı çalışmayacak, mevcut takipler kalacak.',
     shareText: '👋 Bağlantıyı aç ve günlük özetimi takip etmeye izin ver: yalnızca norma göre kalori ve makrolar görünür, yemekler ve fotoğraflar görünmez.',
+    shareProgress: '📤 İlerlemeyi paylaş',
+    shareProgressText: '👀 İlerlememi gör: bağlantıyı aç, günlük özetimi göreceksin — hedefe göre kalori ve makrolar. Yemekler ve fotoğraflar gizli kalır.',
     linkCopied: 'Bağlantı kopyalandı',
     linkReset: 'Yeni bağlantı hazır, eskisi artık çalışmıyor',
     linkError: 'Bağlantı alınamadı. Daha sonra tekrar dene.',
@@ -656,6 +670,8 @@ const translations = {
     resetLink: 'Скинути посилання',
     resetConfirm: 'Скинути посилання? Старе перестане працювати, поточні підписки залишаться.',
     shareText: '👋 Відкрий посилання й дозволь підписку на підсумки мого дня: видно лише калорії та БЖВ проти норми, без страв і фото.',
+    shareProgress: '📤 Поділитися прогресом',
+    shareProgressText: '👀 Дивись мій прогрес: відкрий посилання, і тобі буде видно підсумки мого дня — калорії та БЖВ проти норми. Страви й фото не видно.',
     linkCopied: 'Посилання скопійовано',
     linkReset: 'Нове посилання готове, старе більше не працює',
     linkError: 'Не вдалося отримати посилання. Спробуй пізніше.',
@@ -738,6 +754,8 @@ const translations = {
     resetLink: 'Havolani yangilash',
     resetConfirm: 'Havola yangilansinmi? Eskisi ishlamay qoladi, joriy obunalar saqlanadi.',
     shareText: '👋 Havolani oching va mening kun yakunlarimga obunaga ruxsat bering: faqat meʼyorga nisbatan kaloriya va OYU koʻrinadi, taomlar va rasmlar koʻrinmaydi.',
+    shareProgress: '📤 Natijani ulashish',
+    shareProgressText: '👀 Mening natijamni koʻr: havolani och va kun yakunimni koʻrasan — me\'yorga nisbatan kaloriya va OYU. Taomlar va rasmlar koʻrinmaydi.',
     linkCopied: 'Havola nusxalandi',
     linkReset: 'Yangi havola tayyor, eskisi endi ishlamaydi',
     linkError: 'Havolani olib boʻlmadi. Keyinroq urinib koʻring.',
@@ -804,6 +822,7 @@ const els = {
   watchingBody: document.getElementById('watching-body'),
   sharingStatus: document.getElementById('sharing-status'),
   sharingBody: document.getElementById('sharing-body'),
+  shareProgressBtn: document.getElementById('share-progress-btn'),
   viewers: document.getElementById('viewers'),
   viewersEmpty: document.getElementById('viewers-empty'),
   dayAvatar: document.getElementById('day-avatar'),
@@ -1078,6 +1097,7 @@ const state = {
   people: null,
   viewers: null,
   linksEnabled: false,
+  shareLinksAvailable: false,
   inviteUrl: null,
   currentPerson: null,
   currentDay: null,
@@ -1348,6 +1368,7 @@ function renderSharing() {
     els.viewers.appendChild(row);
   });
   els.viewersEmpty.hidden = viewers.length > 0;
+  els.shareProgressBtn.hidden = !state.shareLinksAvailable;
   hideStatus(els.sharingStatus);
   els.sharingBody.hidden = false;
   renderTabs();
@@ -1363,7 +1384,9 @@ async function loadWatching() {
     if (!result.ok || !result.data) throw new Error(`HTTP ${result.status}`);
     state.people = Array.isArray(result.data.people) ? result.data.people : [];
     state.linksEnabled = result.data.linksEnabled !== false;
+    state.shareLinksAvailable = result.data.shareLinksAvailable === true;
     renderWatching();
+    if (state.viewers) renderSharing();
   } catch (error) {
     console.error('Failed to load follow list', error);
     showStatusWithRetry(els.watchingStatus, els.watchingBody, loadWatching);
@@ -1443,6 +1466,31 @@ async function shareInvite(button) {
     }
   } catch (error) {
     console.error('Failed to share invite', error);
+    showToast(t().linkError);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function shareProgress(button) {
+  button.disabled = true;
+  try {
+    const result = await postJson('/api/follow/share-link');
+    if (result.status === 403) {
+      state.shareLinksAvailable = false;
+      renderSharing();
+      showToast(t().linksDisabled);
+      return;
+    }
+    if (!result.ok || !result.data || !result.data.url) throw new Error(`HTTP ${result.status}`);
+    const shareUrl = 'https://t.me/share/url?url=' + encodeURIComponent(result.data.url) + '&text=' + encodeURIComponent(t().shareProgressText);
+    if (tg && typeof tg.openTelegramLink === 'function') {
+      tg.openTelegramLink(shareUrl);
+    } else {
+      window.open(shareUrl, '_blank');
+    }
+  } catch (error) {
+    console.error('Failed to share progress', error);
     showToast(t().linkError);
   } finally {
     button.disabled = false;
@@ -1834,6 +1882,7 @@ els.tabSharing.addEventListener('click', () => selectTab('sharing'));
   });
 });
 els.unfollowBtn.addEventListener('click', unfollowCurrent);
+els.shareProgressBtn.addEventListener('click', () => shareProgress(els.shareProgressBtn));
 els.noAccessBack.addEventListener('click', showList);
 
 applyStaticI18n();
