@@ -129,6 +129,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return data;
   }
 
+  function getUserTimezone() {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    } catch (error) {
+      console.error('Failed to resolve timezone', error);
+      return 'UTC';
+    }
+  }
+
   // Получение реальных данных с сервера
   async function fetchUserStats() {
     try {
@@ -141,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       try {
         // Получаем таймзону пользователя
-        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const userTimezone = getUserTimezone();
         
         const response = await fetch(`${API_BASE_URL}/api/stats`, {
           method: 'POST',
